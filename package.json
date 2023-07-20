@@ -10,6 +10,7 @@
   "dependencies": {
     "@vueuse/core": "^10.2.1",
     "aplayer": "^1.10.1",
+    "axios": "^1.4.0",
     "jquery": "^3.7.0",
     "md-editor-v3": "^4.2.2",
     "primeflex": "^3.3.1",
@@ -17,6 +18,7 @@
     "primevue": "^3.30.1",
     "tingle.js": "^0.16.0",
     "vue": "^3.3.4",
+    "vue-meta": "^3.0.0-alpha.10",
     "vue-router": "^4.2.4"
   },
   "devDependencies": {

@@ -8,7 +8,7 @@ import "./assets/global.css";
 //endregion
 
 //region 其他组件
-import { useLocalStorage, useMouse, usePreferredDark } from '@vueuse/core';
+import {useLocalStorage, useMouse, usePreferredDark} from '@vueuse/core';
 
 import $ from 'jquery';
 
@@ -20,16 +20,11 @@ import 'md-editor-v3/lib/style.css';
 
 import {tingle} from 'tingle.js';
 import 'tingle.js/src/tingle.css';
-
 //endregion
 
-
-//vue相关
-import App from "./App.vue";
+import {AxiosHelper} from '@/utils/axios_helper';
 
 //region primevue组件相关
-import { createApp } from "vue";
-import { router } from "./router";
 import PrimeVue from "primevue/config";
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
@@ -129,15 +124,29 @@ import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
 //endregion
 
+
+//region vue相关
+import App from "./App.vue";
+import {createMetaManager, useMeta} from "vue-meta";
+import {createApp, ref, onMounted} from "vue";
+import {useRoute, useRouter} from 'vue-router';
+import router from "./router";
+
+const metaManager = createMetaManager();
+//endregion
+
 const app = createApp(App);
 
-app.use(PrimeVue, { ripple: true });
+app.use(PrimeVue, {ripple: true});
 app.use(ConfirmationService);
 app.use(ToastService);
 app.use(DialogService);
+
 app.use(router);
 
 app.use(MdEditor);
+
+app.use(metaManager);
 
 //region primevue组件引用相关
 app.directive('tooltip', Tooltip);

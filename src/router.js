@@ -1,8 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
-import App from "./App.vue";
-import AlbumDetail from "./components/AlbumDetail.vue";
 import {reactive} from "vue";
 import {useLocalStorage} from "@vueuse/core";
+import {DATABASE_ROUTER} from "@/config/Web_Routes";
 
 // 创建一个用于存储用户信息的响应式对象
 const user = reactive({
@@ -30,10 +29,12 @@ const beforeRouteEnter = (to, from, next) => {
     next();
 };
 
-export const router = createRouter({
+const router = createRouter({
     history: createWebHistory(),
-    routes: [
-        {path: "/", component: App},
-        {path: "/album", component: AlbumDetail}
-    ]
+    routes: DATABASE_ROUTER
 });
+
+// 注册全局前置守卫
+router.beforeEach(beforeRouteEnter);
+
+export default router;
