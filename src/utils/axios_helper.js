@@ -107,4 +107,27 @@ export class AxiosHelper {
         });
     }
 
+    static basePost(url, data) {
+        return axios({
+            method: 'post',
+            url: url,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+        }).then(res => {
+            if(res.data.state === 1) {
+                return res.data;
+            }else {
+                if(res.data.message && res.data.message.trim() !== '') {
+                    console.log(res.data.message);
+                }
+            }
+            return res.data;
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
 }

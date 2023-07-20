@@ -3,8 +3,11 @@ import "primeflex/primeflex.css";
 import "primevue/resources/themes/bootstrap4-dark-blue/theme.css";
 import "primevue/resources/primevue.min.css"; /* Deprecated */
 import "primeicons/primeicons.css";
-import "./assets/font.css";
-import "./assets/global.css";
+
+import "@/assets/font.css";
+import "@/assets/global.css";
+import "@/assets/search.css";
+import "@/assets/topbar.css";
 //endregion
 
 //region 其他组件

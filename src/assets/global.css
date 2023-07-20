@@ -318,7 +318,7 @@ img.flag {
 }
 
 .sidebar-panel-image-small-div a:hover {
-    text-decoration: none;/*a去掉下划线*/
+    text-decoration: none;/*//a去掉下划线*/
 }
 
 .info_bit_small {
@@ -429,7 +429,7 @@ ul.info_bit_detail {
 }
 
 a {
-    text-decoration: none;/*a去掉下划线*/
+    text-decoration: none;/*//a去掉下划线*/
 }
 /*a:hover {*/
 /*    !*text-decoration:underline;//鼠标悬停出现下划线*!*/
@@ -438,7 +438,7 @@ a {
 
 
 .no-text-decoration {
-    text-decoration: none;/*a去掉下划线*/
+    text-decoration: none;/*//a去掉下划线*/
 }
 
 
