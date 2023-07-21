@@ -26,6 +26,8 @@ export const DATABASE_ROUTER = [
                     to.meta.itemImageInfo = res.data.itemImageInfo;
                     to.meta.options = res.data.options;
                     to.meta.audioInfos = res.data.audioInfos;
+
+                    document.title = res.data.album.name;
                     next();
                 }else {
                     console.log(res.message);
