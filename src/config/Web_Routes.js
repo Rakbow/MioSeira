@@ -1,4 +1,6 @@
 import {AxiosHelper} from "@/utils/axios_helper";
+import "@/config/Web_Helper_Strs";
+import {API} from "@/config/Web_Helper_Strs";
 
 export const DATABASE_ROUTER = [
     {
@@ -11,11 +13,11 @@ export const DATABASE_ROUTER = [
     },
     {
         name: "AlbumDetail",
-        path: "/db/album/:id",
+        path: API.ALBUM_DETAIL + "/:id",
         component: () => import('@/components/AlbumDetail.vue'),
         beforeEnter: async (to, from, next) => {
             try {
-                const res = await AxiosHelper.basePost('http://localhost:8081/db/album/get-album-detail', {id: to.params.id});
+                const res = await AxiosHelper.basePost(API.UPDATE_ITEM_STATUS, {id: to.params.id});
                 if (res.state === 1) {
                     console.log(res.data);
                     to.meta.album = res.data.album;
