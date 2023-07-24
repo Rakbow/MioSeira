@@ -12,6 +12,14 @@ export const DATABASE_ROUTER = [
         }
     },
     {
+        name: "Login",
+        path: API.LOGIN_PAGE,
+        component: () => import('@/components/Login.vue'),
+        meta: {
+            title: "Login"
+        }
+    },
+    {
         name: "AlbumDetail",
         path: API.ALBUM_DETAIL + "/:id",
         component: () => import('@/components/AlbumDetail.vue'),

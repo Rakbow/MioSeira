@@ -5,7 +5,16 @@ const ORIGIN_DOMAIN = 'http://localhost:8081';
 export const API = {
     
     //region
-    DOMAIN: 'http://localhost:8081',
+    DOMAIN: ORIGIN_DOMAIN,
+
+    //region user
+    CHECK_USER_AUTHORITY: ORIGIN_DOMAIN + "/user/check-authority",
+    LOGIN_PAGE: "/login",
+    LOGIN: ORIGIN_DOMAIN + "/login",
+    LOGOUT: ORIGIN_DOMAIN + "/logout",
+    VERIFY_CODE: ORIGIN_DOMAIN + "/kaptcha",
+    //endregion
+
     GET_ALBUM_DETAIL: ORIGIN_DOMAIN + '/db/album/get-album-detail',
 
     UPDATE_ITEM_STATUS: ORIGIN_DOMAIN + "/db/album/get-album-detail",
@@ -82,12 +91,6 @@ export const API = {
     UPDATE_MUSIC: ORIGIN_DOMAIN + "/db/music/update",
     UPDATE_MUSIC_ARTISTS: ORIGIN_DOMAIN + "/db/music/update-artists",
     UPDATE_MUSIC_LYRICS_TEXT: ORIGIN_DOMAIN + "/db/music/update-lyrics-text",
-    //endregion
-
-    //region user
-    CHECK_USER_AUTHORITY: ORIGIN_DOMAIN + "/user/check-authority",
-    LOGIN: ORIGIN_DOMAIN + "/login",
-    LOGOUT: ORIGIN_DOMAIN + "/logout",
     //endregion
 
     //region product
