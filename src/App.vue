@@ -1,5 +1,9 @@
 <script setup>
-import HelloWorld from './components/CommonHeader.vue'
+import {onMounted} from "vue";
+
+onMounted(() => {
+
+})
 </script>
 
 <template>

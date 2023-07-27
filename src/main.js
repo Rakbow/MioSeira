@@ -15,8 +15,8 @@ import {useLocalStorage, useMouse, usePreferredDark} from '@vueuse/core';
 
 import $ from 'jquery';
 
-import 'APlayer/dist/APlayer.min.css';
-import APlayer from 'aplayer';
+// import 'APlayer/dist/APlayer.min.css';
+// import APlayer from 'aplayer';
 
 import {MdEditor} from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
@@ -127,7 +127,6 @@ import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
 //endregion
 
-
 //region vue相关
 import App from "./App.vue";
 import {createMetaManager, useMeta} from "vue-meta";
@@ -150,6 +149,26 @@ app.use(router);
 app.use(MdEditor);
 
 app.use(metaManager);
+
+//region 
+import {EnText} from '@/config/Web_Control_Strs_EN';   // 导入英文语言文件
+import {CnText}  from '@/config/Web_Control_Strs_CN';   // 导入英文语言文件
+import { useCookies } from '@vueuse/integrations/useCookies';
+
+const cookie = useCookies();
+
+// 根据 cookie 中的 locale 值导入不同的语言文件
+const locale = cookie.get('locale') || 'zh';   // 从 cookie 中获取 locale 值，默认为英文
+const ticket = cookie.get('ticket');
+console.log(ticket)
+if (locale === 'en') {
+    app.config.globalProperties.WebText = EnText;
+} else if (locale === 'zh') {
+    app.config.globalProperties.WebText = CnText;
+}
+
+//endregion
+
 
 //region primevue组件引用相关
 app.directive('tooltip', Tooltip);

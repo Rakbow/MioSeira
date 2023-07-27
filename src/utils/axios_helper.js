@@ -1,4 +1,5 @@
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 // import {useToast} from "primevue/usetoast";
 //
 // const toast = useToast();

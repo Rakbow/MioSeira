@@ -35,7 +35,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-dingdanbianhao"></i>
-                          <strong>{{ RKW_Web.AlbumCatalogNo }}</strong>
+                          <strong>{{ WebText.AlbumCatalogNo }}</strong>
                         </td>
                         <td>
                           {{ album.catalogNo ? album.catalogNo : "N/A" }}
@@ -44,7 +44,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-bar-code"></i>
-                          <strong>{{ RKW_Web.Barcode }}</strong>
+                          <strong>{{ WebText.Barcode }}</strong>
                         </td>
                         <td>{{ album.barcode ? album.barcode : "N/A" }}
                         </td>
@@ -52,7 +52,7 @@
                       <tr>
                         <td>
                           <i class="pi pi-calendar"></i>
-                          <strong>{{ RKW_Web.ReleaseDate }}</strong>
+                          <strong>{{ WebText.ReleaseDate }}</strong>
                         </td>
                         <td>
                           {{ album.releaseDate ? album.releaseDate : "N/A" }}
@@ -61,19 +61,19 @@
                       <tr>
                         <td>
                           <i class="pi pi-tag"></i>
-                          <strong>{{ RKW_Web.ReleasePrice }}</strong>
+                          <strong>{{ WebText.ReleasePrice }}</strong>
                         </td>
                         <td>
                           {{ album.price != 0 ? album.price : "&nbsp;&nbsp;-" }}
                           <span v-if="album.price != 0">
                             <span v-if="album.currencyUnit == 'JPY'" class="ml-1"
                                   style="text-decoration-line: underline;text-decoration-style: dashed;"
-                                  v-tooltip.right="{value: RKW_Web.TaxInclusive, class: 'region-tooltip'}">JPY</span>
+                                  v-tooltip.right="{value: WebText.TaxInclusive, class: 'region-tooltip'}">JPY</span>
                             <span v-else>{{ album.currencyUnit }}</span>
                             <span class="ml-2 dropdown">
                                 <a href="#" class="dropdown-toggle"
                                    data-bs-toggle="dropdown">{{
-                                    RKW_Web.OtherCurrencyUnit
+                                    WebText.OtherCurrencyUnit
                                   }}</a>
                                 <div class="dropdown-menu">
                                     <a :href="'https://www.bing.com/search?q='+album.price+'+'+album.currencyUnit+'+'+'IN'+'+CNY'"
@@ -92,7 +92,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-gift"></i>
-                          <strong>{{ RKW_Web.Bonus }}</strong>
+                          <strong>{{ WebText.Bonus }}</strong>
                         </td>
                         <td>
                           <a v-if="album.hasBonus" href="#bonus" class="ml-3">
@@ -104,7 +104,7 @@
                       <tr>
                         <td>
                           <i class="pi pi-print"></i>
-                          <strong>{{ RKW_Web.PublishFormat }}</strong>
+                          <strong>{{ WebText.PublishFormat }}</strong>
                         </td>
                         <td v-for="format of album.publishFormat" style="display:inline">
                           <a :href="'/db/albums?publishFormat=' + format.value">
@@ -115,7 +115,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-zhuanjiguangpan"></i>
-                          <strong>{{ RKW_Web.MediaFormat }}</strong>
+                          <strong>{{ WebText.MediaFormat }}</strong>
                         </td>
                         <td v-for="format of album.mediaFormat" style="display:inline">
                           <a :href="'/db/albums?mediaFormat=' + format.value">
@@ -126,7 +126,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-musicfill"></i>
-                          <strong>{{ RKW_Web.AlbumFormat }}</strong>
+                          <strong>{{ WebText.AlbumFormat }}</strong>
                         </td>
                         <td v-for="format of album.albumFormat" style="display:inline">
                           <a :href="'/db/albums?albumFormat=' + format.value">
@@ -149,11 +149,11 @@
             <Fieldset :toggleable="true">
               <template #legend>
                 <i class="pi iconfont icon-music"></i>
-                <b>{{ RKW_Web.ItemDetailPlayListTitle }}</b>
+                <b>{{ WebText.ItemDetailPlayListTitle }}</b>
               </template>
               <Button v-if="audioInfos!=null" @click="playerOption.fixed=true, createAplayer()"
                       class="mr-2"
-                      v-tooltip.bottom="RKW_Web.TooltipMusicPlayerChangeBottom">
+                      v-tooltip.bottom="WebText.TooltipMusicPlayerChangeBottom">
                 <i class="pi pi-arrow-circle-down"></i>
               </Button>
               <div id="aplayer"></div>
@@ -162,7 +162,7 @@
             <Fieldset :toggleable="true">
               <template #legend>
                 <i class="pi pi-building"></i>
-                <b>{{ RKW_Web.ItemDetailCompaniesTitle }}</b>
+                <b>{{ WebText.ItemDetailCompaniesTitle }}</b>
               </template>
               <div class="grid ml-4" v-if="album.companies.length != 0">
                 <table class="table-borderless table-sm">
@@ -180,14 +180,14 @@
                 </table>
               </div>
               <div v-else>
-                <span class="emptyInfo"><em>{{ RKW_Web.ItemDetailMessageNoCompanies }}</em></span>
+                <span class="emptyInfo"><em>{{ WebText.ItemDetailMessageNoCompanies }}</em></span>
               </div>
             </Fieldset>
             <!-- artists -->
             <Fieldset :toggleable="true">
               <template #legend>
                 <i class="pi pi-users"></i>
-                <b>{{ RKW_Web.AlbumDetailArtistInfoTitle }}</b>
+                <b>{{ WebText.AlbumDetailArtistInfoTitle }}</b>
               </template>
               <div class="grid ml-4" v-if="album.artists.length != 0">
                 <table class="table-borderless table-sm">
@@ -205,24 +205,24 @@
                 </table>
               </div>
               <div v-else>
-                <span class="emptyInfo"><em>{{ RKW_Web.ItemDetailMessageNoArtistInfo }}</em></span>
+                <span class="emptyInfo"><em>{{ WebText.ItemDetailMessageNoArtistInfo }}</em></span>
               </div>
             </Fieldset>
             <!-- tracks info -->
             <Fieldset :toggleable="true">
               <template #legend>
                 <i class="pi iconfont icon-playlist"></i>
-                <b>{{ RKW_Web.AlbumDetailTrackInfoTitle }}</b>
+                <b>{{ WebText.AlbumDetailTrackInfoTitle }}</b>
               </template>
               <div v-if="album.trackInfo === null || JSON.stringify(album.trackInfo) === '{}' ">
-                <span class="emptyInfo"><em>{{ RKW_Web.AlbumDetailMessageNoTrackInfo }}</em></span>
+                <span class="emptyInfo"><em>{{ WebText.AlbumDetailMessageNoTrackInfo }}</em></span>
               </div>
               <div>
                 <p class="text-start"
                    v-if="album.trackInfo !== null && JSON.stringify(album.trackInfo) !== '{}' ">
-                  {{ RKW_Web.TotalDiscNum }}: <b>{{ album.trackInfo.discList.length }} </b>
-                  {{ RKW_Web.TotalTrackNum }}: <b>{{ album.trackInfo.totalTracks }} </b>
-                  {{ RKW_Web.TotalLength }}: <b>{{ album.trackInfo.totalLength }}</b>
+                  {{ WebText.TotalDiscNum }}: <b>{{ album.trackInfo.discList.length }} </b>
+                  {{ WebText.TotalTrackNum }}: <b>{{ album.trackInfo.totalTracks }} </b>
+                  {{ WebText.TotalLength }}: <b>{{ album.trackInfo.totalLength }}</b>
                 </p>
               </div>
               <div v-if="album.trackInfo !== null && JSON.stringify(album.trackInfo) !== '{}' "
@@ -255,9 +255,9 @@
                   </tbody>
                 </table>
                 <p class="text-end">
-                  {{ RKW_Web.TrackNum }}: <b>{{ disc.trackList.length }} </b>
+                  {{ WebText.TrackNum }}: <b>{{ disc.trackList.length }} </b>
                   <span v-if="disc.discLength != '00:00'">
-                                            {{ RKW_Web.DiscLength }}: <b>{{ disc.discLength }}</b>
+                                            {{ WebText.DiscLength }}: <b>{{ disc.discLength }}</b>
                                         </span>
                 </p>
               </div>
@@ -279,7 +279,7 @@
       <Panel class="mt-2" v-if="!relatedItemLoad">
         <template #header>
           <span class="text-start side-panel-header">
-              <i class="pi iconfont icon-album"></i><span><strong>{{ RKW_Web.RelatedAlbumTitle }}</strong></span>
+              <i class="pi iconfont icon-album"></i><span><strong>{{ WebText.RelatedAlbumTitle }}</strong></span>
           </span>
         </template>
         <div class="grid" v-if="relatedAlbums.length != 0">
@@ -290,7 +290,7 @@
                     <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
                         <a :href="'/db/album/'+ relatedAlbum.id">
                             <img class="sidebar-panel-image-small" :src="relatedAlbum.cover.blackUrl"
-                                 v-tooltip.bottom="RKW_Web.AddedTime + ': ' + relatedAlbum.addedTime + RKW_Web.EditedTime + ': ' + relatedAlbum.editedTime">
+                                 v-tooltip.bottom="WebText.AddedTime + ': ' + relatedAlbum.addedTime + WebText.EditedTime + ': ' + relatedAlbum.editedTime">
                         </a>
                     </div>
                     <div class="col p-0" style="height: 80px">
@@ -317,75 +317,75 @@
             </span>
         </div>
         <div v-else>
-          <span class="emptyInfo"><em>{{ RKW_Web.ItemDetailMessageNoRelatedItem }}</em></span>
+          <span class="emptyInfo"><em>{{ WebText.ItemDetailMessageNoRelatedItem }}</em></span>
         </div>
       </Panel>
       <!--      <div insert="~{template/item-detail-template :: page_info_card}"></div>-->
     </div>
   </div>
-  <!--  <Dialog modal v-model:visible="displayEditDialog" :header="RKW_Web.ItemDetailBaseInfoEditTitle"-->
+  <!--  <Dialog modal v-model:visible="displayEditDialog" :header="WebText.ItemDetailBaseInfoEditTitle"-->
   <!--          :style="{width: '800px'}" class="p-fluid">-->
   <!--    <BlockUI :blocked="editBlock">-->
   <!--      <div class="formgrid grid">-->
   <!--        <div class="field col">-->
-  <!--          <label>{{ RKW_Web.AlbumName }}<span style="color: red">*</span></label>-->
+  <!--          <label>{{ WebText.AlbumName }}<span style="color: red">*</span></label>-->
   <!--          <InputText id="name" v-model.trim="albumEdit.name"></InputText>-->
   <!--        </div>-->
   <!--        <div class="field col">-->
-  <!--          <label>{{ RKW_Web.AlbumEnglishName }}</label>-->
+  <!--          <label>{{ WebText.AlbumEnglishName }}</label>-->
   <!--          <InputText id="nameEn" v-model.trim="albumEdit.nameEn"></InputText>-->
   <!--        </div>-->
   <!--        <div class="field col">-->
-  <!--          <label>{{ RKW_Web.AlbumChineseName }}</label>-->
+  <!--          <label>{{ WebText.AlbumChineseName }}</label>-->
   <!--          <InputText id="nameZh" v-model.trim="albumEdit.nameZh"></InputText>-->
   <!--        </div>-->
   <!--      </div>-->
   <!--      <div class="formgrid grid">-->
   <!--        <div class="field col">-->
-  <!--          <label>{{ RKW_Web.AlbumCatalogNo }}</label>-->
+  <!--          <label>{{ WebText.AlbumCatalogNo }}</label>-->
   <!--          <InputText id="catalogNo" v-model.trim="albumEdit.catalogNo"></InputText>-->
   <!--        </div>-->
   <!--        <div class="field col">-->
-  <!--          <label>{{ RKW_Web.Barcode }}</label>-->
+  <!--          <label>{{ WebText.Barcode }}</label>-->
   <!--          <InputText id="barcode" v-model.trim="albumEdit.barcode"></InputText>-->
   <!--        </div>-->
   <!--      </div>-->
   <!--      <div class="formgrid grid">-->
   <!--        <div class="field col-6">-->
-  <!--          <label>{{ RKW_Web.ReleaseDate }}<span style="color: red">*</span></label>-->
+  <!--          <label>{{ WebText.ReleaseDate }}<span style="color: red">*</span></label>-->
   <!--          <Calendar id="releaseDate" v-model="albumEdit.releaseDate" dateFormat="yy/mm/dd"-->
   <!--                    :show-button-bar="true"-->
   <!--                    :show-icon="true"></Calendar>-->
   <!--        </div>-->
   <!--        <div class="field col-3">-->
-  <!--          <label>{{ RKW_Web.ReleasePrice }}</label>-->
+  <!--          <label>{{ WebText.ReleasePrice }}</label>-->
   <!--          <InputNumber id="price" v-model="albumEdit.price"></InputNumber>-->
   <!--        </div>-->
   <!--        <div class="field col-3">-->
-  <!--          <label>{{ RKW_Web.CurrencyUnit }}</label>-->
+  <!--          <label>{{ WebText.CurrencyUnit }}</label>-->
   <!--          <Dropdown v-model="albumEdit.currencyUnit" :options="currencyUnitSet"-->
-  <!--                      option-label="label" option-value="value" :placeholder="RKW_Web.PlaceholderCurrencyUnit">-->
+  <!--                      option-label="label" option-value="value" :placeholder="WebText.PlaceholderCurrencyUnit">-->
   <!--          </Dropdown>-->
   <!--        </div>-->
   <!--      </div>-->
   <!--      <div class="formgrid grid">-->
   <!--        <div class="field col-4">-->
-  <!--          <label class="mb-3">{{ RKW_Web.BelongToFranchises }}<span style="color: red">*</span></label>-->
+  <!--          <label class="mb-3">{{ WebText.BelongToFranchises }}<span style="color: red">*</span></label>-->
   <!--          <MultiSelect v-model="albumEdit.franchises" @change="getProducts($event)"-->
-  <!--                         :options="option.franchiseSet" :placeholder="RKW_Web.PlaceholderBelongToFranchises"-->
+  <!--                         :options="option.franchiseSet" :placeholder="WebText.PlaceholderBelongToFranchises"-->
   <!--                         option-label="label" option-value="value" display="chip" :filter="true">-->
   <!--          </MultiSelect>-->
   <!--        </div>-->
   <!--        <div class="field col-6">-->
-  <!--          <label class="mb-3">{{ RKW_Web.BelongToProducts }}<span style="color: red">*</span></label>-->
+  <!--          <label class="mb-3">{{ WebText.BelongToProducts }}<span style="color: red">*</span></label>-->
   <!--          <MultiSelect v-model="albumEdit.products" :options="productSet"-->
-  <!--                         option-label="label" option-value="value" :placeholder="RKW_Web.PlaceholderBelongToProducts"-->
+  <!--                         option-label="label" option-value="value" :placeholder="WebText.PlaceholderBelongToProducts"-->
   <!--                         display="chip" :filter="true" :disabled="productSelect">-->
   <!--          </MultiSelect>-->
   <!--        </div>-->
   <!--        <div class="field col">-->
   <!--          <div class="col-12">-->
-  <!--            <label class="mb-3">{{ RKW_Web.Bonus }}</label>-->
+  <!--            <label class="mb-3">{{ WebText.Bonus }}</label>-->
   <!--          </div>-->
   <!--          <div class="col-12 mt-4">-->
   <!--            <InputSwitch v-model="albumEdit.hasBonus" :true-value="1"-->
@@ -395,7 +395,7 @@
   <!--      </div>-->
   <!--      <div class="formgrid grid">-->
   <!--        <div class="field col-4">-->
-  <!--          <label class="mb-3">{{ RKW_Web.PublishFormat }}<span-->
+  <!--          <label class="mb-3">{{ WebText.PublishFormat }}<span-->
   <!--              style="color: red">*</span></label>-->
   <!--          <MultiSelect id="publishFormat" v-model="albumEdit.publishFormat"-->
   <!--                         :options="option.publishFormatSet"-->
@@ -404,14 +404,14 @@
   <!--          </MultiSelect>-->
   <!--        </div>-->
   <!--        <div class="field col-4">-->
-  <!--          <label class="mb-3">{{ RKW_Web.AlbumFormat }}<span style="color: red">*</span></label>-->
+  <!--          <label class="mb-3">{{ WebText.AlbumFormat }}<span style="color: red">*</span></label>-->
   <!--          <MultiSelect id="albumFormat" v-model="albumEdit.albumFormat" :options="option.albumFormatSet"-->
   <!--                         option-label="label" option-value="value"-->
   <!--                         display="chip">-->
   <!--          </MultiSelect>-->
   <!--        </div>-->
   <!--        <div class="field col-4">-->
-  <!--          <label class="mb-3">{{ RKW_Web.MediaFormat }}<span style="color: red">*</span></label>-->
+  <!--          <label class="mb-3">{{ WebText.MediaFormat }}<span style="color: red">*</span></label>-->
   <!--          <MultiSelect id="mediaFormat" v-model="albumEdit.mediaFormat" :options="option.mediaFormatSet"-->
   <!--                         option-label="label" option-value="value"-->
   <!--                         display="chip">-->
@@ -419,25 +419,25 @@
   <!--        </div>-->
   <!--      </div>-->
   <!--      <div class="field">-->
-  <!--        <label>{{ RKW_Web.Remark }}</label>-->
+  <!--        <label>{{ WebText.Remark }}</label>-->
   <!--        <Textarea id="remark" v-model="albumEdit.remark" rows="3" cols="20"-->
   <!--                    :auto-resize="true"></Textarea>-->
   <!--      </div>-->
   <!--    </BlockUI>-->
   <!--    <template #footer>-->
-  <!--      <Button :label="RKW_Web.Cancel" icon="pi pi-times" class="Button-text"-->
+  <!--      <Button :label="WebText.Cancel" icon="pi pi-times" class="Button-text"-->
   <!--              @click="closeEditDialog" :disabled="editBlock"></Button>-->
-  <!--      <Button :label="RKW_Web.Save" icon="pi pi-check" class="Button-text"-->
+  <!--      <Button :label="WebText.Save" icon="pi pi-check" class="Button-text"-->
   <!--              @click="submitEditAlbum" :disabled="editBlock"></Button>-->
   <!--    </template>-->
   <!--  </Dialog>-->
-  <!--  <Dialog :modal="true" v-model:visible="displayTrackEditDialog" :header="RKW_Web.AlbumDetailTrackEditTitle"-->
+  <!--  <Dialog :modal="true" v-model:visible="displayTrackEditDialog" :header="WebText.AlbumDetailTrackEditTitle"-->
   <!--          :style="{width: '800px'}">-->
   <!--    <BlockUI :blocked="editBlock">-->
   <!--      <Panel>-->
   <!--        <template #header>-->
   <!--          <i class="pi pi-plus-circle mr-2" style="font-size: 2rem"></i>-->
-  <!--          <b>{{ RKW_Web.Add }}</b>-->
+  <!--          <b>{{ WebText.Add }}</b>-->
   <!--        </template>-->
   <!--        <div class="grid">-->
   <!--          <div class="col-10">-->
@@ -445,7 +445,7 @@
   <!--                            <span class="p-inputgroup-addon">-->
   <!--                                <i class="pi pi-tag"></i>-->
   <!--                            </span>-->
-  <!--              <Chips v-model="tracks.audioNames" :placeholder="RKW_Web.AlbumDetailEditTrackAudioNames"></Chips>-->
+  <!--              <Chips v-model="tracks.audioNames" :placeholder="WebText.AlbumDetailEditTrackAudioNames"></Chips>-->
   <!--            </div>-->
   <!--          </div>-->
   <!--          <div class="col-10">-->
@@ -453,7 +453,7 @@
   <!--                            <span class="p-inputgroup-addon">-->
   <!--                                <i class="pi pi-users"></i>-->
   <!--                            </span>-->
-  <!--              <Chips v-model="tracks.audioLengths" :placeholder="RKW_Web.AlbumDetailEditTrackAudioLengths"-->
+  <!--              <Chips v-model="tracks.audioLengths" :placeholder="WebText.AlbumDetailEditTrackAudioLengths"-->
   <!--                       separator=","></Chips>-->
   <!--            </div>-->
   <!--          </div>-->
@@ -464,7 +464,7 @@
   <!--                                            <i class="pi pi-tag"></i>-->
   <!--                                        </span>-->
   <!--              <MultiSelect id="mediaFormat" v-model="disc.mediaFormat" :options="option.mediaFormatSet"-->
-  <!--                             option-label="label" option-value="label" :placeholder="RKW_Web.MediaFormat"-->
+  <!--                             option-label="label" option-value="label" :placeholder="WebText.MediaFormat"-->
   <!--                             display="chip">-->
   <!--              </MultiSelect>-->
   <!--            </div>-->
@@ -475,14 +475,14 @@
   <!--                                            <i class="pi pi-tag"></i>-->
   <!--                                        </span>-->
   <!--              <MultiSelect id="albumFormat" v-model="disc.albumFormat" :options="option.albumFormatSet"-->
-  <!--                             option-label="label" option-value="label" :placeholder="RKW_Web.AlbumFormat"-->
+  <!--                             option-label="label" option-value="label" :placeholder="WebText.AlbumFormat"-->
   <!--                             display="chip">-->
   <!--              </MultiSelect>-->
   <!--            </div>-->
   <!--          </div>-->
 
   <!--          <div class="col-2">-->
-  <!--            <Button :label="RKW_Web.AlbumDetailEditTrackDiscAdd" icon="pi pi-save" class="Button-success"-->
+  <!--            <Button :label="WebText.AlbumDetailEditTrackDiscAdd" icon="pi pi-save" class="Button-success"-->
   <!--                    @click="addDisc"></Button>-->
   <!--          </div>-->
   <!--        </div>-->
@@ -490,7 +490,7 @@
   <!--      <Panel>-->
   <!--        <template #header>-->
   <!--          <i class="pi pi-pencil mr-2" style="font-size: 2rem"></i>-->
-  <!--          <b>{{ RKW_Web.Edit }}</b>-->
+  <!--          <b>{{ WebText.Edit }}</b>-->
   <!--        </template>-->
   <!--        <div v-if="tmpEditDiscList.length != 0">-->
   <!--          <DataTable :value="tmpEditDiscList" class="DataTable-sm" striped-rows-->
@@ -501,38 +501,38 @@
   <!--                       v-model:editing-rows="editingRowsDisc" @row-edit-save="onRowEditSaveDisc">-->
   <!--            <template #header>-->
   <!--              <div class="table-header-container">-->
-  <!--                <Button icon="pi pi-plus" :label="RKW_Web.ExpandAll" @click="expandAll"-->
+  <!--                <Button icon="pi pi-plus" :label="WebText.ExpandAll" @click="expandAll"-->
   <!--                        class="mr-2"></Button>-->
-  <!--                <Button icon="pi pi-minus" :label="RKW_Web.CollapseAll" @click="collapseAll"></Button>-->
+  <!--                <Button icon="pi pi-minus" :label="WebText.CollapseAll" @click="collapseAll"></Button>-->
   <!--              </div>-->
   <!--            </template>-->
   <!--            <Column :row-reorder="true"></Column>-->
   <!--            <Column :expander="true" headerStyle="width: 3rem"></Column>-->
-  <!--            <Column :header="RKW_Web.AlbumDetailEditTrackDiscIndex">-->
+  <!--            <Column :header="WebText.AlbumDetailEditTrackDiscIndex">-->
   <!--              <template #body="slotProps">-->
   <!--                {{ slotProps.index + 1 }}-->
   <!--              </template>-->
   <!--            </Column>-->
-  <!--            <Column field="albumFormat" :header="RKW_Web.AlbumFormat">-->
+  <!--            <Column field="albumFormat" :header="WebText.AlbumFormat">-->
   <!--              <template #body="slotProps">-->
   <!--                {{ slotProps.data.albumFormat.join("/") }}-->
   <!--              </template>-->
   <!--              <template #editor="{ data, field }">-->
   <!--                <MultiSelect v-model="data[field]" :options="option.albumFormatSet"-->
   <!--                               option-label="label" option-value="label"-->
-  <!--                               :placeholder="RKW_Web.AlbumFormat"-->
+  <!--                               :placeholder="WebText.AlbumFormat"-->
   <!--                               display="chip">-->
   <!--                </MultiSelect>-->
   <!--              </template>-->
   <!--            </Column>-->
-  <!--            <Column field="mediaFormat" :header="RKW_Web.MediaFormat">-->
+  <!--            <Column field="mediaFormat" :header="WebText.MediaFormat">-->
   <!--              <template #body="slotProps">-->
   <!--                {{ slotProps.data.mediaFormat.join("/") }}-->
   <!--              </template>-->
   <!--              <template #editor="{ data, field }">-->
   <!--                <MultiSelect v-model="data[field]" :options="option.mediaFormatSet"-->
   <!--                               option-label="label" option-value="label"-->
-  <!--                               :placeholder="RKW_Web.MediaFormat"-->
+  <!--                               :placeholder="WebText.MediaFormat"-->
   <!--                               display="chip">-->
   <!--                </MultiSelect>-->
   <!--              </template>-->
@@ -550,18 +550,18 @@
   <!--                             v-model:editing-rows="editingRowsTrack"-->
   <!--                             @row-edit-save="onRowEditSaveTrack">-->
   <!--                  <Column :row-reorder="true"></Column>-->
-  <!--                  <Column :header="RKW_Web.AlbumDetailEditTrackTrackIndex">-->
+  <!--                  <Column :header="WebText.AlbumDetailEditTrackTrackIndex">-->
   <!--                    <template #body="slotProps">-->
   <!--                      {{ slotProps.index + 1 }}-->
   <!--                    </template>-->
   <!--                  </Column>-->
-  <!--                  <Column field="musicId" :header="RKW_Web.AlbumDetailEditTrackTrackID" sortable></Column>-->
+  <!--                  <Column field="musicId" :header="WebText.AlbumDetailEditTrackTrackID" sortable></Column>-->
   <!--                  <Column field="name" header="曲名">-->
   <!--                    <template #editor="{ data, field }">-->
   <!--                      <InputText v-model="data[field]" autofocus></InputText>-->
   <!--                    </template>-->
   <!--                  </Column>-->
-  <!--                  <Column field="length" :header="RKW_Web.AlbumDetailEditTrackTrackLength">-->
+  <!--                  <Column field="length" :header="WebText.AlbumDetailEditTrackTrackLength">-->
   <!--                    <template #editor="{ data, field }">-->
   <!--                      <InputText v-model="data[field]" autofocus></InputText>-->
   <!--                    </template>-->
@@ -576,12 +576,12 @@
   <!--          </DataTable>-->
   <!--        </div>-->
   <!--        <div v-else>-->
-  <!--          <span class="emptyInfo">{{ RKW_Web.AlbumDetailMessageNoTrackInfo }}</span>-->
+  <!--          <span class="emptyInfo">{{ WebText.AlbumDetailMessageNoTrackInfo }}</span>-->
   <!--        </div>-->
   <!--      </Panel>-->
   <!--    </BlockUI>-->
   <!--    <template #footer>-->
-  <!--      <Button :label="RKW_Web.Save" icon="pi pi-save" class="Button-success mr-4"-->
+  <!--      <Button :label="WebText.Save" icon="pi pi-save" class="Button-success mr-4"-->
   <!--              @click="submitTrackInfo" :disabled="editBlock"></Button>-->
   <!--    </template>-->
   <!--  </Dialog>-->
@@ -599,7 +599,7 @@ import {useRoute, useRouter} from "vue-router";
 import {useMeta} from "vue-meta";
 import {AxiosHelper} from "@/utils/axios_helper";
 import {useToast} from "primevue/usetoast";
-import {RKW_Web} from "@/config/Web_Control_Strs_CN";
+import {WebText} from "@/config/Web_Control_Strs_CN";
 
 const route = useRoute();
 const router = useRouter();

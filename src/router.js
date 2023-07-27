@@ -3,6 +3,10 @@ import {reactive} from "vue";
 import {useLocalStorage} from "@vueuse/core";
 import {DATABASE_ROUTER} from "@/config/Web_Routes";
 
+import { useCookies } from '@vueuse/integrations/useCookies';
+
+const cookies = useCookies();
+
 // 创建一个用于存储用户信息的响应式对象
 const user = reactive({
     username: '',
@@ -33,6 +37,31 @@ const router = createRouter({
     history: createWebHistory(),
     routes: DATABASE_ROUTER
 });
+
+// router.beforeEach((to, from, next) => {
+//     // const locale = cookies.get('locale'); // 获取 cookie 中的 locale 值
+//     const locale = 'en';
+//     if (locale) {
+//         console.log(locale);
+//         // 根据 locale 值修改导入的 JavaScript 文件
+//         if (locale === 'en') {
+//             // 导入英文版本的 JavaScript 文件
+//             import('@/config/Web_Control_Strs_EN').then(() => {
+//                 next();
+//             });
+//         } else {
+//             // 其他情况默认导入英文版本的 JavaScript 文件
+//             import('@/config/Web_Control_Strs_CN').then(() => {
+//                 next();
+//             });
+//         }
+//     } else {
+//         // 默认情况下导入默认语言版本的 JavaScript 文件
+//         import('@/config/Web_Control_Strs_CN').then(() => {
+//             next();
+//         });
+//     }
+// });
 
 // 注册全局前置守卫
 router.beforeEach(beforeRouteEnter);
