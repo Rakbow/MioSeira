@@ -16,8 +16,8 @@ body {
     color: var(--text-color);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    padding: .5em;
-    margin-bottom: 50px;
+    /*padding: .5em;*/
+    margin: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
