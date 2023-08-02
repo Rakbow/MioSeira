@@ -1,69 +1,20 @@
 import {createRouter, createWebHistory} from "vue-router";
-import {reactive} from "vue";
-import {useLocalStorage} from "@vueuse/core";
 import {DATABASE_ROUTER} from "@/config/Web_Routes";
-
-import { useCookies } from '@vueuse/integrations/useCookies';
-
-const cookies = useCookies();
-
-// 创建一个用于存储用户信息的响应式对象
-const user = reactive({
-    username: '',
-    headerUrl: '',
-    type: 0
-});
-
-// 使用vueuse的useLocalStorage工具函数创建一个localStorage绑定
-const localStorageUser = useLocalStorage('user', user);
-
-// 导航守卫的回调函数，在每次路由跳转之前执行
-const beforeRouteEnter = (to, from, next) => {
-    // 从cookie中读取用户信息并存入localStorage
-    const cookie = document.cookie;
-    // 解析cookie，获取用户信息
-    // 假设cookie格式为 "username=xxx; avatarUrl=xxx"
-    const username = /username=(\w+)/.exec(cookie)?.[1];
-    const avatarUrl = /avatarUrl=(\S+)/.exec(cookie)?.[1];
-
-    // 更新localStorage中的用户信息
-    localStorageUser.value.username = username;
-    localStorageUser.value.avatarUrl = avatarUrl;
-
-    next();
-};
+import {useAuth} from "@/utils/useAuth";
 
 const router = createRouter({
     history: createWebHistory(),
     routes: DATABASE_ROUTER
 });
 
-// router.beforeEach((to, from, next) => {
-//     // const locale = cookies.get('locale'); // 获取 cookie 中的 locale 值
-//     const locale = 'en';
-//     if (locale) {
-//         console.log(locale);
-//         // 根据 locale 值修改导入的 JavaScript 文件
-//         if (locale === 'en') {
-//             // 导入英文版本的 JavaScript 文件
-//             import('@/config/Web_Control_Strs_EN').then(() => {
-//                 next();
-//             });
-//         } else {
-//             // 其他情况默认导入英文版本的 JavaScript 文件
-//             import('@/config/Web_Control_Strs_CN').then(() => {
-//                 next();
-//             });
-//         }
-//     } else {
-//         // 默认情况下导入默认语言版本的 JavaScript 文件
-//         import('@/config/Web_Control_Strs_CN').then(() => {
-//             next();
-//         });
-//     }
-// });
+router.beforeEach((to, from, next) => {
+    const isAuthenticated = useAuth().checkAuth(); // 自定义函数，用于检查登录状态
 
-// 注册全局前置守卫
-router.beforeEach(beforeRouteEnter);
+    if (isAuthenticated && to.name === "Login") {
+        next('/'); // 如果用户已登录且要访问的是登录页面，则重定向到"/index"
+    } else {
+        next(); // 继续正常导航
+    }
+});
 
 export default router;

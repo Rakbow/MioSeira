@@ -597,7 +597,7 @@ import "@/lib/bootstrap/bootstrap.bundle.min";
 import {onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useMeta} from "vue-meta";
-import {AxiosHelper} from "@/utils/axios_helper";
+import {AxiosHelper} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import {WebText} from "@/config/Web_Control_Strs_CN";
 

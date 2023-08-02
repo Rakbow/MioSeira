@@ -25,7 +25,7 @@ import {tingle} from 'tingle.js';
 import 'tingle.js/src/tingle.css';
 //endregion
 
-import {AxiosHelper} from '@/utils/axios_helper';
+import {AxiosHelper} from '@/utils/axiosHelper';
 
 //region primevue组件相关
 import PrimeVue from "primevue/config";
@@ -159,7 +159,7 @@ const cookie = useCookies();
 
 // 根据 cookie 中的 locale 值导入不同的语言文件
 const locale = cookie.get('locale') || 'zh';   // 从 cookie 中获取 locale 值，默认为英文
-const ticket = cookie.get('ticket');
+
 if (locale === 'en') {
     app.config.globalProperties.WebText = EnText;
 } else if (locale === 'zh') {
