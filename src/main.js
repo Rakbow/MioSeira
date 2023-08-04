@@ -133,6 +133,7 @@ import {createMetaManager, useMeta} from "vue-meta";
 import {createApp, ref, onMounted} from "vue";
 import {useRoute, useRouter} from 'vue-router';
 import router from "./router";
+import { createPinia } from 'pinia';
 
 const metaManager = createMetaManager();
 //endregion
@@ -150,20 +151,26 @@ app.use(MdEditor);
 
 app.use(metaManager);
 
+
+const pinia = createPinia();
+app.use(pinia);
 //region 
 import {EnText} from '@/config/Web_Control_Strs_EN';   // 导入英文语言文件
 import {CnText}  from '@/config/Web_Control_Strs_CN';   // 导入英文语言文件
 import { useCookies } from '@vueuse/integrations/useCookies';
+import {API} from "@/config/Web_Helper_Strs";
 
 const cookie = useCookies();
+
+app.config.globalProperties.$api = API;
 
 // 根据 cookie 中的 locale 值导入不同的语言文件
 const locale = cookie.get('locale') || 'zh';   // 从 cookie 中获取 locale 值，默认为英文
 
 if (locale === 'en') {
-    app.config.globalProperties.WebText = EnText;
+    app.config.globalProperties.webText = EnText;
 } else if (locale === 'zh') {
-    app.config.globalProperties.WebText = CnText;
+    app.config.globalProperties.webText = CnText;
 }
 
 //endregion

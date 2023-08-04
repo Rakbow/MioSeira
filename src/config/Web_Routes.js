@@ -1,25 +1,14 @@
 import {AxiosHelper} from "@/utils/axiosHelper";
 import "@/config/Web_Helper_Strs";
 import {API} from "@/config/Web_Helper_Strs";
-import {useAuth} from "@/utils/useAuth";
-
-
 
 export const DATABASE_ROUTER = [
     {
         name: "Home",
         path: "/",
-        component: () => import('@/App.vue'),
+        component: () => import('@/components/Index.vue'),
         meta: {
-            title: "Home"
-        }
-    },
-    {
-        name: "Login",
-        path: API.LOGIN_PAGE,
-        component: () => import('@/components/Login.vue'),
-        meta: {
-            title: "Login"
+            title: "Home",
         }
     },
     {
@@ -30,13 +19,7 @@ export const DATABASE_ROUTER = [
             try {
                 const res = await AxiosHelper.basePost(API.UPDATE_ITEM_STATUS, {id: to.params.id});
                 if (res.state === 1) {
-                    console.log(res.data);
-                    to.meta.album = res.data.album;
-                    to.meta.pageInfo = res.data.pageInfo;
-                    to.meta.detailInfo = res.data.detailInfo;
-                    to.meta.itemImageInfo = res.data.itemImageInfo;
-                    to.meta.options = res.data.options;
-                    to.meta.audioInfos = res.data.audioInfos;
+                    to.meta.info = res.data;
 
                     document.title = res.data.album.name;
                     next();

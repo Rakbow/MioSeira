@@ -21,6 +21,7 @@ export const CnText = {
     RefreshVerifyCode: '刷新验证码',
     RememberMe: '记住我',
     SignIn: '登录',
+    SignOut: '登出',
 
 
 

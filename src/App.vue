@@ -1,19 +1,23 @@
 <template>
   <header>
-    <CommonHeader></CommonHeader>
+    <PageHeader />
   </header>
   <main ref="mainContent">
     <router-view></router-view>
   </main>
   <footer>
-    <CommonFooter></CommonFooter>
+    <PageFooter />
   </footer>
+  <DynamicDialog />
 </template>
 
 <script setup>
-import {ref, onMounted, onBeforeUnmount} from "vue";
-import CommonHeader from "@/components/common/CommonHeader.vue";
-import CommonFooter from "@/components/common/CommonFooter.vue";
+import {ref, onMounted, onBeforeUnmount, computed} from "vue";
+import PageHeader from "@/components/common/PageHeader.vue";
+import PageFooter from "@/components/common/PageFooter.vue";
+import { useDialog } from 'primevue/usedialog';
+
+const dialog = useDialog();
 
 const mainContent = ref(null);
 
@@ -28,6 +32,7 @@ const setMainContentHeight = () => {
 };
 
 onMounted(() => {
+
   window.addEventListener('resize', setMainContentHeight);
   setMainContentHeight();
 });
