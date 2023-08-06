@@ -1,12 +1,9 @@
 import axios from 'axios';
 axios.defaults.withCredentials = true;
-// import {useToast} from "primevue/usetoast";
-//
-// const toast = useToast();
 
 //axios封装post请求
 export class AxiosHelper {
-    static post(toast, url, data) {
+    static post(url, data) {
         return axios({
             method: 'post',
             url: url,
@@ -17,12 +14,10 @@ export class AxiosHelper {
             },
         }).then(res => {
             if(res.data.state === 1) {
-                if(res.data.message && res.data.message.trim() !== '') {
-                    toast.add({severity: 'success', summary: 'Success', detail: res.data.message, life: 3000});
-                }
+                return res.data;
             }else {
                 if(res.data.message && res.data.message.trim() !== '') {
-                    toast.add({severity: 'error', summary: 'Error', detail: res.data.message, life: 3000});
+                    console.log(res.data.message);
                 }
             }
             return res.data;
@@ -42,12 +37,10 @@ export class AxiosHelper {
             },
         }).then(res => {
             if(res.data.state === 1) {
-                if(res.data.message && res.data.message.trim() !== '') {
-                    toast.add({severity: 'success', summary: 'Success', detail: res.data.message, life: 3000});
-                }
+                return res.data;
             }else {
                 if(res.data.message && res.data.message.trim() !== '') {
-                    toast.add({severity: 'error', summary: 'Error', detail: res.data.message, life: 3000});
+                    console.log(res.data.message);
                 }
             }
             return res.data;
@@ -68,12 +61,10 @@ export class AxiosHelper {
             },
         }).then(res => {
             if(res.data.state === 1) {
-                if(res.data.message && res.data.message.trim() !== '') {
-                    toast.add({severity: 'success', summary: 'Success', detail: res.data.message, life: 3000});
-                }
+                return res.data;
             }else {
                 if(res.data.message && res.data.message.trim() !== '') {
-                    toast.add({severity: 'error', summary: 'Error', detail: res.data.message, life: 3000});
+                    console.log(res.data.message);
                 }
             }
             return res.data;
@@ -90,31 +81,6 @@ export class AxiosHelper {
             data: data,
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-        }).then(res => {
-            if(res.data.state === 1) {
-                if(res.data.message && res.data.message.trim() !== '') {
-                    toast.add({severity: 'success', summary: 'Success', detail: res.data.message, life: 3000});
-                }
-            }else {
-                if(res.data.message && res.data.message.trim() !== '') {
-                    toast.add({severity: 'error', summary: 'Error', detail: res.data.message, life: 3000});
-                }
-            }
-            return res.data;
-        }).catch(error => {
-            console.log(error);
-        });
-    }
-
-    static basePost(url, data) {
-        return axios({
-            method: 'post',
-            url: url,
-            data: data,
-            headers: {
-                'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             },
         }).then(res => {
