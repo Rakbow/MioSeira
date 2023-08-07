@@ -23,10 +23,14 @@ export const CnText = {
     SignIn: '登录',
     SignOut: '登出',
 
+    ImageUploadSuccess: '图片已上传！',
 
+    Category: '分类',
+    Franchises: '所属系列',
+    Products: '所属作品',
 
-
-
+    Image: '图片',
+    NoImage: '暂无图片',
 
 
 
@@ -281,6 +285,10 @@ export const CnText = {
 
 
 
-
+    imageTypes: [
+        {label: '展示', value: 0},
+        {label: '主要', value: 1},
+        {label: '其他', value: 2}
+    ]
 
 }

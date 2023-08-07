@@ -24,7 +24,6 @@ const Login = defineAsyncComponent(() => import('@/components/Login.vue'));
 const DialogFooter = defineAsyncComponent(() => import('@/components/common/DialogFooter.vue'));
 
 onMounted(() => {
-
 })
 
 const userStore = useUserStore();

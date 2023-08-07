@@ -56,7 +56,7 @@ const refreshKaptcha = () => {
 }
 
 const login = async () => {
-  const res = await AxiosHelper.basePost(API.LOGIN, param.value);
+  const res = await AxiosHelper.post(API.LOGIN, param.value);
   if(res.state === 1) {
     userStore.login(res.data.user, res.data.token);
     location.reload();

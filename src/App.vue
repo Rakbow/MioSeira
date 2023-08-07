@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, onBeforeUnmount, computed} from "vue";
+import {ref, onMounted, onBeforeUnmount} from "vue";
 import PageHeader from "@/components/common/PageHeader.vue";
 import PageFooter from "@/components/common/PageFooter.vue";
 import { useDialog } from 'primevue/usedialog';
@@ -43,11 +43,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* 使页面最小高度为视口高度，以撑开内容 */
-}
 
 header {
   //position: fixed;

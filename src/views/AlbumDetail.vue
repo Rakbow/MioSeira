@@ -149,7 +149,8 @@
             <Fieldset :toggleable="true">
               <template #legend>
                 <i class="pi iconfont icon-music"></i>
-                <b>{{ webText.ItemDetailPlayListTitle }}</b>
+                <b>{{ webText.ItemDetailPlayListTitle
+ }}</b>
               </template>
               <Button v-if="audioInfos!=null" @click="playerOption.fixed=true, createAplayer()"
                       class="mr-2"
@@ -273,7 +274,9 @@
       </Card>
     </div>
     <div class="col-2" style="min-width: 300px">
-      <!--      <div th:insert="~{template/item-detail-template :: belong_to_panel}"></div>-->
+      <CategoryInfo :info="detailInfo" />
+      <SiderImages :images="itemImageInfo" />
+      <TrafficInfo :info="pageInfo" />
       <!--      <div class="mt-2" th:insert="~{template/item-detail-template :: sider_image_panel}"></div>-->
       <!--      <div class="mt-2" th:insert="~{template/item-detail-template :: index_loading_related_item_panel}"></div>-->
       <Panel class="mt-2" v-if="!relatedItemLoad">
@@ -599,6 +602,9 @@ import {useRoute, useRouter} from "vue-router";
 import {useMeta} from "vue-meta";
 import {AxiosHelper} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
+import CategoryInfo from "@/components/database/CategoryInfo.vue";
+import SiderImages from "@/components/database/SiderImages.vue";
+import TrafficInfo from "@/components/database/TrafficInfo.vue";
 
 const route = useRoute();
 const router = useRouter();

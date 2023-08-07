@@ -6,7 +6,7 @@ export const DATABASE_ROUTER = [
     {
         name: "Home",
         path: "/",
-        component: () => import('@/components/Index.vue'),
+        component: () => import('@/views/Index.vue'),
         meta: {
             title: "Home",
         }
@@ -14,10 +14,10 @@ export const DATABASE_ROUTER = [
     {
         name: "AlbumDetail",
         path: API.ALBUM_DETAIL + "/:id",
-        component: () => import('@/components/AlbumDetail.vue'),
+        component: () => import('@/views/AlbumDetail.vue'),
         beforeEnter: async (to, from, next) => {
             try {
-                const res = await AxiosHelper.basePost(API.UPDATE_ITEM_STATUS, {id: to.params.id});
+                const res = await AxiosHelper.post(API.UPDATE_ITEM_STATUS, {id: to.params.id});
                 if (res.state === 1) {
                     to.meta.info = res.data;
 
