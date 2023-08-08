@@ -1,6 +1,7 @@
 <template>
   <div class="card relative z-2">
-    <Menubar :model="items">
+<!--    <Menubar :model="items">-->
+    <Menubar>
       <template #start>
         <img alt="logo" src="https://img.rakbow.com/common/logo/logo.png" height="40" class="mr-2" />
       </template>

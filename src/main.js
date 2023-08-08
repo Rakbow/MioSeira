@@ -15,9 +15,6 @@ import {useLocalStorage, useMouse, usePreferredDark} from '@vueuse/core';
 
 import $ from 'jquery';
 
-// import 'APlayer/dist/APlayer.min.css';
-// import APlayer from 'aplayer';
-
 import {MdEditor} from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 
@@ -150,7 +147,6 @@ app.use(router);
 app.use(MdEditor);
 
 app.use(metaManager);
-
 
 const pinia = createPinia();
 app.use(pinia);

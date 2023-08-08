@@ -30,9 +30,36 @@ export const CnText = {
     Products: '所属作品',
 
     Image: '图片',
+
     NoImage: '暂无图片',
+    NoCompanies: '暂无相关企业信息',
+    NoPerson: '暂无相关人员信息',
 
-
+    //region 名词
+    Persons: "相关人员",
+    Companies: "相关企业",
+    OtherCurrencyUnit: "其他货币",
+    IsLimited: '限定版',
+    TaxInclusive: '含税',
+    AddedTime: '收录时间',
+    EditedTime: '编辑时间',
+    Barcode: '商品条形码',
+    ReleaseDate: '发行时间',
+    PublishDate: '出版时间',
+    ReleasePrice: '发行价格',
+    PublishPrice: '出版价格',
+    CurrencyUnit: '货币单位',
+    BelongToFranchises: '所属系列',
+    BelongToProducts: '所属作品',
+    Remark: '备注',
+    Bonus: '特典',
+    PublishFormat: '出版形式',
+    MediaFormat: '媒体格式',
+    Region: '地区',
+    Language: '语言',
+    Summary: '简介',
+    Spec: '规格',
+    Description: '描述',
 
 
 
@@ -92,33 +119,6 @@ export const CnText = {
 
     FranchiseDetailMessageNoProduct: '暂无作品',
     FranchiseDetailMessageNoChildFranchise: '暂无子系列',
-
-
-
-
-    //region 名词
-    Companies: "相关企业",
-    OtherCurrencyUnit: "其他货币",
-    IsLimited: '限定版',
-    TaxInclusive: '含税',
-    AddedTime: '收录时间',
-    EditedTime: '编辑时间',
-    Barcode: '商品条形码',
-    ReleaseDate: '发行时间',
-    PublishDate: '出版时间',
-    ReleasePrice: '发行价格',
-    PublishPrice: '出版价格',
-    CurrencyUnit: '货币单位',
-    BelongToFranchises: '所属系列',
-    BelongToProducts: '所属作品',
-    Remark: '备注',
-    Bonus: '特典',
-    PublishFormat: '出版形式',
-    MediaFormat: '媒体格式',
-    Region: '地区',
-    Language: '语言',
-    Summary: '简介',
-    Spec: '规格',
 
 
 

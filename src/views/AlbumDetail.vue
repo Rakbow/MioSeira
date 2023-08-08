@@ -145,70 +145,10 @@
             </div>
           </div>
           <div class="detail-item-field">
-            <!-- audio player -->
-            <Fieldset :toggleable="true">
-              <template #legend>
-                <i class="pi iconfont icon-music"></i>
-                <b>{{ webText.ItemDetailPlayListTitle
- }}</b>
-              </template>
-              <Button v-if="audioInfos!=null" @click="playerOption.fixed=true, createAplayer()"
-                      class="mr-2"
-                      v-tooltip.bottom="webText.TooltipMusicPlayerChangeBottom">
-                <i class="pi pi-arrow-circle-down"></i>
-              </Button>
-              <div id="aplayer"></div>
-            </Fieldset>
             <!-- companies -->
-            <Fieldset :toggleable="true">
-              <template #legend>
-                <i class="pi pi-building"></i>
-                <b>{{ webText.ItemDetailCompaniesTitle }}</b>
-              </template>
-              <div class="grid ml-4" v-if="album.companies.length != 0">
-                <table class="table-borderless table-sm">
-                  <tbody class="detail-item-artists-table">
-                  <tr v-for="company in album.companies">
-                    <td width="150px"><strong>{{ company.role.label }}</strong></td>
-                    <td v-for="(member, index) of company.members" class="a_with_underline">
-                      <a :href="'/db/entry/' + member.value" style="display:inline">
-                        {{ member.label }}
-                      </a>
-                      <span v-if="index < company.members.length - 1">, </span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div v-else>
-                <span class="emptyInfo"><em>{{ webText.ItemDetailMessageNoCompanies }}</em></span>
-              </div>
-            </Fieldset>
+            <CompaniesInfo :companies="album.companies" />
             <!-- artists -->
-            <Fieldset :toggleable="true">
-              <template #legend>
-                <i class="pi pi-users"></i>
-                <b>{{ webText.AlbumDetailArtistInfoTitle }}</b>
-              </template>
-              <div class="grid ml-4" v-if="album.artists.length != 0">
-                <table class="table-borderless table-sm">
-                  <tbody class="detail-item-artists-table">
-                  <tr v-for="item in album.artists">
-                    <td width="150px"><strong>{{ item.role.label }}</strong></td>
-                    <td v-for="(member, index) in item.members" style="display:inline" class="a_with_underline">
-                      <a :href="'/db/entry/' + member.value">
-                        <span style="white-space: nowrap;">{{ member.label }}</span>
-                      </a>
-                      <span v-if="index < item.members.length - 1">,</span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div v-else>
-                <span class="emptyInfo"><em>{{ webText.ItemDetailMessageNoArtistInfo }}</em></span>
-              </div>
-            </Fieldset>
+            <PersonsInfo :persons="album.artists" />
             <!-- tracks info -->
             <Fieldset :toggleable="true">
               <template #legend>
@@ -264,7 +204,7 @@
               </div>
             </Fieldset>
             <!-- description -->
-            <!--            <div th:insert="~{template/item-detail-template :: description_field_set}"></div>-->
+            <Description :description="detailInfo.description" />
             <!-- bonus -->
             <div v-if="album.hasBonus">
               <!--              <div th:insert="~{template/item-detail-template :: bonus_field_set}"></div>-->
@@ -275,7 +215,7 @@
     </div>
     <div class="col-2" style="min-width: 300px">
       <CategoryInfo :info="detailInfo" />
-      <SiderImages :images="itemImageInfo" />
+      <SideImages :images="itemImageInfo" />
       <TrafficInfo :info="pageInfo" />
       <!--      <div class="mt-2" th:insert="~{template/item-detail-template :: sider_image_panel}"></div>-->
       <!--      <div class="mt-2" th:insert="~{template/item-detail-template :: index_loading_related_item_panel}"></div>-->
@@ -593,9 +533,9 @@
 </template>
 
 <script setup>
-import "@/assets/item-detail.css";
-import "@/assets/bootstrap/myBootstrap.min.css";
-import "@/lib/bootstrap/bootstrap.bundle.min";
+import '@/assets/item-detail.css';
+import '@/assets/bootstrap/myBootstrap.min.css';
+import '@/lib/bootstrap.bundle.min';
 
 import {onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
@@ -603,8 +543,12 @@ import {useMeta} from "vue-meta";
 import {AxiosHelper} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import CategoryInfo from "@/components/database/CategoryInfo.vue";
-import SiderImages from "@/components/database/SiderImages.vue";
+import SideImages from "@/components/database/SideImages.vue";
 import TrafficInfo from "@/components/database/TrafficInfo.vue";
+import CompaniesInfo from "@/components/database/CompaniesInfo.vue";
+import AudioPlayer from "@/components/database/AudioPlayer.vue";
+import PersonsInfo from "@/components/database/PersonsInfo.vue";
+import Description from "@/components/database/Description.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -632,40 +576,11 @@ onBeforeMount(() => {
   itemImageInfo.value = router.currentRoute.value.meta.info.itemImageInfo;
   option.value = router.currentRoute.value.meta.info.options;
   audioInfos.value = router.currentRoute.value.meta.info.audioInfos;
-  // console.log(album.value);
-  // console.log(pageInfo.value);
-  // console.log(detailInfo.value);
-  // console.log(itemImageInfo.value);
-  // console.log(option.value);
-  // console.log(audioInfos.value);
 });
-
-// const loadItemDetail = () => {
-//   let json = {
-//     id: route.params.id
-//   };
-//   AxiosHelper.post(toast, 'http://localhost:8081/db/album/get-album-detail', json)
-//       .then(res => {
-//         if (res.state === 1) {
-//           album.value = res.data.album;
-//           pageInfo.value = res.data.pageInfo;
-//           detailInfo.value = res.data.detailInfo;
-//           itemImageInfo.value = res.data.itemImageInfo;
-//           option.value = res.data.options;
-//         }
-//       });
-// }
 
 </script>
 
 <style scoped>
-.aplayer .aplayer-list ol li {
-  color: black;
-}
-
-.aplayer .aplayer-info .aplayer-music .aplayer-title {
-  color: black;
-}
 
 .orders-subtable {
   padding: 1rem;

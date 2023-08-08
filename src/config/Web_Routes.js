@@ -12,6 +12,14 @@ export const DATABASE_ROUTER = [
         }
     },
     {
+        name: "Home",
+        path: "/db/entry/:id",
+        component: () => import('@/views/Index.vue'),
+        meta: {
+            title: "Home",
+        }
+    },
+    {
         name: "AlbumDetail",
         path: API.ALBUM_DETAIL + "/:id",
         component: () => import('@/views/AlbumDetail.vue'),

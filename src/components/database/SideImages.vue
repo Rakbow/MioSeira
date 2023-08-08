@@ -53,11 +53,11 @@ const responsiveOptions = [
                 :numVisible="7" containerStyle="max-width: 800px"
                 :circular="true" :fullScreen="true" :showItemNavigators="true"
                 :showThumbnails="false" v-model:visible="displayCustom">
-        <template #item="item">
+        <template #item="{item}">
           <img :class="initGalleriaImageClass(item.url)" :src="item.url" :alt="item.name"
                oncontextmenu="return false"/>
         </template>
-        <template #caption="item">
+        <template #caption="{item}">
           <div class="custom-galleria-footer">
             <div class="col-6">-
               <span v-if="images.displayImages" class="title-container">
