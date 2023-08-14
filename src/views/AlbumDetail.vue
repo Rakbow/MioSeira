@@ -72,9 +72,7 @@
                             <span v-else>{{ album.currencyUnit }}</span>
                             <span class="ml-2 dropdown">
                                 <a href="#" class="dropdown-toggle"
-                                   data-bs-toggle="dropdown">{{
-                                    webText.OtherCurrencyUnit
-                                  }}</a>
+                                   data-bs-toggle="dropdown">{{ webText.OtherCurrencyUnit }}</a>
                                 <div class="dropdown-menu">
                                     <a :href="'https://www.bing.com/search?q='+album.price+'+'+album.currencyUnit+'+'+'IN'+'+CNY'"
                                        class="dropdown-item">CNY</a>
@@ -204,11 +202,9 @@
               </div>
             </Fieldset>
             <!-- description -->
-            <Description :description="detailInfo.description" />
+            <DescriptionPad :text="detailInfo.description" />
             <!-- bonus -->
-            <div v-if="album.hasBonus">
-              <!--              <div th:insert="~{template/item-detail-template :: bonus_field_set}"></div>-->
-            </div>
+            <BonusPad :text="album.bonus" v-if="album.hasBonus" />
           </div>
         </template>
       </Card>
@@ -266,270 +262,6 @@
       <!--      <div insert="~{template/item-detail-template :: page_info_card}"></div>-->
     </div>
   </div>
-  <!--  <Dialog modal v-model:visible="displayEditDialog" :header="webText.ItemDetailBaseInfoEditTitle"-->
-  <!--          :style="{width: '800px'}" class="p-fluid">-->
-  <!--    <BlockUI :blocked="editBlock">-->
-  <!--      <div class="formgrid grid">-->
-  <!--        <div class="field col">-->
-  <!--          <label>{{ webText.AlbumName }}<span style="color: red">*</span></label>-->
-  <!--          <InputText id="name" v-model.trim="albumEdit.name"></InputText>-->
-  <!--        </div>-->
-  <!--        <div class="field col">-->
-  <!--          <label>{{ webText.AlbumEnglishName }}</label>-->
-  <!--          <InputText id="nameEn" v-model.trim="albumEdit.nameEn"></InputText>-->
-  <!--        </div>-->
-  <!--        <div class="field col">-->
-  <!--          <label>{{ webText.AlbumChineseName }}</label>-->
-  <!--          <InputText id="nameZh" v-model.trim="albumEdit.nameZh"></InputText>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--      <div class="formgrid grid">-->
-  <!--        <div class="field col">-->
-  <!--          <label>{{ webText.AlbumCatalogNo }}</label>-->
-  <!--          <InputText id="catalogNo" v-model.trim="albumEdit.catalogNo"></InputText>-->
-  <!--        </div>-->
-  <!--        <div class="field col">-->
-  <!--          <label>{{ webText.Barcode }}</label>-->
-  <!--          <InputText id="barcode" v-model.trim="albumEdit.barcode"></InputText>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--      <div class="formgrid grid">-->
-  <!--        <div class="field col-6">-->
-  <!--          <label>{{ webText.ReleaseDate }}<span style="color: red">*</span></label>-->
-  <!--          <Calendar id="releaseDate" v-model="albumEdit.releaseDate" dateFormat="yy/mm/dd"-->
-  <!--                    :show-button-bar="true"-->
-  <!--                    :show-icon="true"></Calendar>-->
-  <!--        </div>-->
-  <!--        <div class="field col-3">-->
-  <!--          <label>{{ webText.ReleasePrice }}</label>-->
-  <!--          <InputNumber id="price" v-model="albumEdit.price"></InputNumber>-->
-  <!--        </div>-->
-  <!--        <div class="field col-3">-->
-  <!--          <label>{{ webText.CurrencyUnit }}</label>-->
-  <!--          <Dropdown v-model="albumEdit.currencyUnit" :options="currencyUnitSet"-->
-  <!--                      option-label="label" option-value="value" :placeholder="webText.PlaceholderCurrencyUnit">-->
-  <!--          </Dropdown>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--      <div class="formgrid grid">-->
-  <!--        <div class="field col-4">-->
-  <!--          <label class="mb-3">{{ webText.BelongToFranchises }}<span style="color: red">*</span></label>-->
-  <!--          <MultiSelect v-model="albumEdit.franchises" @change="getProducts($event)"-->
-  <!--                         :options="option.franchiseSet" :placeholder="webText.PlaceholderBelongToFranchises"-->
-  <!--                         option-label="label" option-value="value" display="chip" :filter="true">-->
-  <!--          </MultiSelect>-->
-  <!--        </div>-->
-  <!--        <div class="field col-6">-->
-  <!--          <label class="mb-3">{{ webText.BelongToProducts }}<span style="color: red">*</span></label>-->
-  <!--          <MultiSelect v-model="albumEdit.products" :options="productSet"-->
-  <!--                         option-label="label" option-value="value" :placeholder="webText.PlaceholderBelongToProducts"-->
-  <!--                         display="chip" :filter="true" :disabled="productSelect">-->
-  <!--          </MultiSelect>-->
-  <!--        </div>-->
-  <!--        <div class="field col">-->
-  <!--          <div class="col-12">-->
-  <!--            <label class="mb-3">{{ webText.Bonus }}</label>-->
-  <!--          </div>-->
-  <!--          <div class="col-12 mt-4">-->
-  <!--            <InputSwitch v-model="albumEdit.hasBonus" :true-value="1"-->
-  <!--                           :false-value="0"></InputSwitch>-->
-  <!--          </div>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--      <div class="formgrid grid">-->
-  <!--        <div class="field col-4">-->
-  <!--          <label class="mb-3">{{ webText.PublishFormat }}<span-->
-  <!--              style="color: red">*</span></label>-->
-  <!--          <MultiSelect id="publishFormat" v-model="albumEdit.publishFormat"-->
-  <!--                         :options="option.publishFormatSet"-->
-  <!--                         option-label="label" option-value="value"-->
-  <!--                         display="chip">-->
-  <!--          </MultiSelect>-->
-  <!--        </div>-->
-  <!--        <div class="field col-4">-->
-  <!--          <label class="mb-3">{{ webText.AlbumFormat }}<span style="color: red">*</span></label>-->
-  <!--          <MultiSelect id="albumFormat" v-model="albumEdit.albumFormat" :options="option.albumFormatSet"-->
-  <!--                         option-label="label" option-value="value"-->
-  <!--                         display="chip">-->
-  <!--          </MultiSelect>-->
-  <!--        </div>-->
-  <!--        <div class="field col-4">-->
-  <!--          <label class="mb-3">{{ webText.MediaFormat }}<span style="color: red">*</span></label>-->
-  <!--          <MultiSelect id="mediaFormat" v-model="albumEdit.mediaFormat" :options="option.mediaFormatSet"-->
-  <!--                         option-label="label" option-value="value"-->
-  <!--                         display="chip">-->
-  <!--          </MultiSelect>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--      <div class="field">-->
-  <!--        <label>{{ webText.Remark }}</label>-->
-  <!--        <Textarea id="remark" v-model="albumEdit.remark" rows="3" cols="20"-->
-  <!--                    :auto-resize="true"></Textarea>-->
-  <!--      </div>-->
-  <!--    </BlockUI>-->
-  <!--    <template #footer>-->
-  <!--      <Button :label="webText.Cancel" icon="pi pi-times" class="Button-text"-->
-  <!--              @click="closeEditDialog" :disabled="editBlock"></Button>-->
-  <!--      <Button :label="webText.Save" icon="pi pi-check" class="Button-text"-->
-  <!--              @click="submitEditAlbum" :disabled="editBlock"></Button>-->
-  <!--    </template>-->
-  <!--  </Dialog>-->
-  <!--  <Dialog :modal="true" v-model:visible="displayTrackEditDialog" :header="webText.AlbumDetailTrackEditTitle"-->
-  <!--          :style="{width: '800px'}">-->
-  <!--    <BlockUI :blocked="editBlock">-->
-  <!--      <Panel>-->
-  <!--        <template #header>-->
-  <!--          <i class="pi pi-plus-circle mr-2" style="font-size: 2rem"></i>-->
-  <!--          <b>{{ webText.Add }}</b>-->
-  <!--        </template>-->
-  <!--        <div class="grid">-->
-  <!--          <div class="col-10">-->
-  <!--            <div class="p-inputgroup">-->
-  <!--                            <span class="p-inputgroup-addon">-->
-  <!--                                <i class="pi pi-tag"></i>-->
-  <!--                            </span>-->
-  <!--              <Chips v-model="tracks.audioNames" :placeholder="webText.AlbumDetailEditTrackAudioNames"></Chips>-->
-  <!--            </div>-->
-  <!--          </div>-->
-  <!--          <div class="col-10">-->
-  <!--            <div class="p-inputgroup">-->
-  <!--                            <span class="p-inputgroup-addon">-->
-  <!--                                <i class="pi pi-users"></i>-->
-  <!--                            </span>-->
-  <!--              <Chips v-model="tracks.audioLengths" :placeholder="webText.AlbumDetailEditTrackAudioLengths"-->
-  <!--                       separator=","></Chips>-->
-  <!--            </div>-->
-  <!--          </div>-->
-
-  <!--          <div class="col-5">-->
-  <!--            <div class="p-inputgroup">-->
-  <!--                                        <span class="p-inputgroup-addon">-->
-  <!--                                            <i class="pi pi-tag"></i>-->
-  <!--                                        </span>-->
-  <!--              <MultiSelect id="mediaFormat" v-model="disc.mediaFormat" :options="option.mediaFormatSet"-->
-  <!--                             option-label="label" option-value="label" :placeholder="webText.MediaFormat"-->
-  <!--                             display="chip">-->
-  <!--              </MultiSelect>-->
-  <!--            </div>-->
-  <!--          </div>-->
-  <!--          <div class="col-5">-->
-  <!--            <div class="p-inputgroup">-->
-  <!--                                        <span class="p-inputgroup-addon">-->
-  <!--                                            <i class="pi pi-tag"></i>-->
-  <!--                                        </span>-->
-  <!--              <MultiSelect id="albumFormat" v-model="disc.albumFormat" :options="option.albumFormatSet"-->
-  <!--                             option-label="label" option-value="label" :placeholder="webText.AlbumFormat"-->
-  <!--                             display="chip">-->
-  <!--              </MultiSelect>-->
-  <!--            </div>-->
-  <!--          </div>-->
-
-  <!--          <div class="col-2">-->
-  <!--            <Button :label="webText.AlbumDetailEditTrackDiscAdd" icon="pi pi-save" class="Button-success"-->
-  <!--                    @click="addDisc"></Button>-->
-  <!--          </div>-->
-  <!--        </div>-->
-  <!--      </Panel>-->
-  <!--      <Panel>-->
-  <!--        <template #header>-->
-  <!--          <i class="pi pi-pencil mr-2" style="font-size: 2rem"></i>-->
-  <!--          <b>{{ webText.Edit }}</b>-->
-  <!--        </template>-->
-  <!--        <div v-if="tmpEditDiscList.length != 0">-->
-  <!--          <DataTable :value="tmpEditDiscList" class="DataTable-sm" striped-rows-->
-  <!--                       responsive-layout="scroll" v-model:expanded-rows="expandedRows"-->
-  <!--                       @row-reorder="onRowReorderDisc"-->
-  <!--                       context-menu v-model:context-menu-selection="selectedDisc"-->
-  <!--                       @row-contextmenu="discRowMenu" edit-mode="row"-->
-  <!--                       v-model:editing-rows="editingRowsDisc" @row-edit-save="onRowEditSaveDisc">-->
-  <!--            <template #header>-->
-  <!--              <div class="table-header-container">-->
-  <!--                <Button icon="pi pi-plus" :label="webText.ExpandAll" @click="expandAll"-->
-  <!--                        class="mr-2"></Button>-->
-  <!--                <Button icon="pi pi-minus" :label="webText.CollapseAll" @click="collapseAll"></Button>-->
-  <!--              </div>-->
-  <!--            </template>-->
-  <!--            <Column :row-reorder="true"></Column>-->
-  <!--            <Column :expander="true" headerStyle="width: 3rem"></Column>-->
-  <!--            <Column :header="webText.AlbumDetailEditTrackDiscIndex">-->
-  <!--              <template #body="slotProps">-->
-  <!--                {{ slotProps.index + 1 }}-->
-  <!--              </template>-->
-  <!--            </Column>-->
-  <!--            <Column field="albumFormat" :header="webText.AlbumFormat">-->
-  <!--              <template #body="slotProps">-->
-  <!--                {{ slotProps.data.albumFormat.join("/") }}-->
-  <!--              </template>-->
-  <!--              <template #editor="{ data, field }">-->
-  <!--                <MultiSelect v-model="data[field]" :options="option.albumFormatSet"-->
-  <!--                               option-label="label" option-value="label"-->
-  <!--                               :placeholder="webText.AlbumFormat"-->
-  <!--                               display="chip">-->
-  <!--                </MultiSelect>-->
-  <!--              </template>-->
-  <!--            </Column>-->
-  <!--            <Column field="mediaFormat" :header="webText.MediaFormat">-->
-  <!--              <template #body="slotProps">-->
-  <!--                {{ slotProps.data.mediaFormat.join("/") }}-->
-  <!--              </template>-->
-  <!--              <template #editor="{ data, field }">-->
-  <!--                <MultiSelect v-model="data[field]" :options="option.mediaFormatSet"-->
-  <!--                               option-label="label" option-value="label"-->
-  <!--                               :placeholder="webText.MediaFormat"-->
-  <!--                               display="chip">-->
-  <!--                </MultiSelect>-->
-  <!--              </template>-->
-  <!--            </Column>-->
-  <!--            <Column :row-editor="true" style="width:10%; min-width:8rem"-->
-  <!--                      bodyStyle="text-align:center"></Column>-->
-  <!--            <template #expansion="slotProps">-->
-  <!--              <div class="orders-subtable">-->
-  <!--                <DataTable :value="slotProps.data.trackList" class="DataTable-sm"-->
-  <!--                             striped-rows-->
-  <!--                             responsive-layout="scroll"-->
-  <!--                             @row-reorder="onRowReorderTrack"-->
-  <!--                             context-menu v-model:context-menu-selection="selectedTrack"-->
-  <!--                             @row-contextmenu="trackRowMenu" edit-mode="row"-->
-  <!--                             v-model:editing-rows="editingRowsTrack"-->
-  <!--                             @row-edit-save="onRowEditSaveTrack">-->
-  <!--                  <Column :row-reorder="true"></Column>-->
-  <!--                  <Column :header="webText.AlbumDetailEditTrackTrackIndex">-->
-  <!--                    <template #body="slotProps">-->
-  <!--                      {{ slotProps.index + 1 }}-->
-  <!--                    </template>-->
-  <!--                  </Column>-->
-  <!--                  <Column field="musicId" :header="webText.AlbumDetailEditTrackTrackID" sortable></Column>-->
-  <!--                  <Column field="name" header="曲名">-->
-  <!--                    <template #editor="{ data, field }">-->
-  <!--                      <InputText v-model="data[field]" autofocus></InputText>-->
-  <!--                    </template>-->
-  <!--                  </Column>-->
-  <!--                  <Column field="length" :header="webText.AlbumDetailEditTrackTrackLength">-->
-  <!--                    <template #editor="{ data, field }">-->
-  <!--                      <InputText v-model="data[field]" autofocus></InputText>-->
-  <!--                    </template>-->
-  <!--                  </Column>-->
-  <!--                  <Column :row-editor="true" style="width:10%; min-width:8rem"-->
-  <!--                            bodyStyle="text-align:center"></Column>-->
-  <!--                  <ContextMenu :model="menuModelTrack" ref="cmTrack"></ContextMenu>-->
-  <!--                </DataTable>-->
-  <!--              </div>-->
-  <!--            </template>-->
-  <!--            <ContextMenu :model="menuModelDisc" ref="cmDisc"></ContextMenu>-->
-  <!--          </DataTable>-->
-  <!--        </div>-->
-  <!--        <div v-else>-->
-  <!--          <span class="emptyInfo">{{ webText.AlbumDetailMessageNoTrackInfo }}</span>-->
-  <!--        </div>-->
-  <!--      </Panel>-->
-  <!--    </BlockUI>-->
-  <!--    <template #footer>-->
-  <!--      <Button :label="webText.Save" icon="pi pi-save" class="Button-success mr-4"-->
-  <!--              @click="submitTrackInfo" :disabled="editBlock"></Button>-->
-  <!--    </template>-->
-  <!--  </Dialog>-->
-
-  <!--  <DynamicDialog></DynamicDialog>-->
 </template>
 
 <script setup>
@@ -546,9 +278,9 @@ import CategoryInfo from "@/components/database/CategoryInfo.vue";
 import SideImages from "@/components/database/SideImages.vue";
 import TrafficInfo from "@/components/database/TrafficInfo.vue";
 import CompaniesInfo from "@/components/database/CompaniesInfo.vue";
-import AudioPlayer from "@/components/database/AudioPlayer.vue";
 import PersonsInfo from "@/components/database/PersonsInfo.vue";
-import Description from "@/components/database/Description.vue";
+import DescriptionPad from "@/components/database/DescriptionPad.vue";
+import BonusPad from "@/components/database/BonusPad.vue";
 
 const route = useRoute();
 const router = useRouter();

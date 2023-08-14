@@ -17,7 +17,6 @@ const imageClick = (index) => {
   displayCustom.value = true;
 };
 const initGalleriaImageClass = (url) => {
-  console.log(url)
   const image = new Image();
   image.src = url;
   return (image.naturalWidth > image.naturalHeight) ? "galleria-div-width" : "galleria-div-height";
