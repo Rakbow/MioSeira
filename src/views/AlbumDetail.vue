@@ -202,7 +202,7 @@
               </div>
             </Fieldset>
             <!-- description -->
-            <DescriptionPad :entityType="detailInfo.entity" :entityId="detailInfo.id"
+            <DescriptionPad :entityType="detailInfo.entityType" :entityId="detailInfo.id"
                             :text="detailInfo.description" :images="itemImageInfo.images" />
             <!-- bonus -->
             <BonusPad :text="album.bonus" v-if="album.hasBonus"/>

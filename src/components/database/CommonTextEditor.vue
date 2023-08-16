@@ -3,8 +3,8 @@
     <MdEditor v-model="text" preview-theme="github"/>
     <div class="text-end mt-3 mb-2">
       <Button icon="pi pi-times" :label="$constant.Cancel" @click="close"
-              class="p-button-text" />
-      <Button icon="pi pi-save" :label="$constant.Save" @click="submit" />
+              class="p-button-text"/>
+      <Button icon="pi pi-save" :label="$constant.Save" @click="submit"/>
     </div>
     <Panel>
       <div v-if="images.length > 0">
@@ -39,12 +39,12 @@
 
 <script setup>
 import {MdEditor} from "md-editor-v3";
-import { onMounted, ref, inject } from "vue";
+import {onMounted, ref, inject, defineEmits} from "vue";
 import {PublicHelper} from '@/utils/publicHelper';
 import {AxiosHelper} from '@/utils/axiosHelper';
 import {useToast} from "primevue/usetoast";
-import { useDialog } from 'primevue/usedialog';
-import { API } from '@/config/Web_Helper_Strs';
+import {useDialog} from 'primevue/usedialog';
+import {API} from '@/config/Web_Helper_Strs';
 
 const toast = useToast();
 const dialog = useDialog();
@@ -52,6 +52,8 @@ const dialogRef = inject("dialogRef");
 const text = ref('');
 const type = ref('');
 const images = ref([]);
+// const emit = defineEmits(['update']);
+const isUpdate = ref(false);
 
 onMounted(() => {
   text.value = dialogRef.value.data.text;
@@ -73,26 +75,33 @@ const submit = () => {
     text: text.value
   };
 
-  if(type.value === 'desc') {
+  if (type.value === 'desc') {
     url = API.UPDATE_DESCRIPTION;
-  }else if(type.value === 'bonus') {
+  } else if (type.value === 'bonus') {
     url = API.UPDATE_BONUS;
   }
 
   AxiosHelper.post(url, json)
       .then(res => {
         if (res.state === 1) {
-          toast.add({severity: 'info', summary: 'Success', detail: res.message, life: 3000});
+          toast.add({severity: 'success', detail: res.message, life: 3000});
+          isUpdate.value = true;
           close();
-        }else {
-          toast.add({severity: 'info', summary: 'Error', detail: res.message, life: 3000});
+        } else {
+          toast.add({severity: 'error', detail: res.message, life: 3000});
         }
         editBlock.value = false;
       })
 }
 
 const close = () => {
-  dialogRef.value.close();
+  // emit('update', isUpdate.value)
+  dialogRef.value.close(
+      {
+        isUpdate: isUpdate.value,
+        text: text.value
+      }
+  );
 }
 
 </script>
