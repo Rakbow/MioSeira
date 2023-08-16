@@ -35,7 +35,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-dingdanbianhao"></i>
-                          <strong>{{ webText.AlbumCatalogNo }}</strong>
+                          <strong>{{ $constant.AlbumCatalogNo }}</strong>
                         </td>
                         <td>
                           {{ album.catalogNo ? album.catalogNo : "N/A" }}
@@ -44,7 +44,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-bar-code"></i>
-                          <strong>{{ webText.Barcode }}</strong>
+                          <strong>{{ $constant.Barcode }}</strong>
                         </td>
                         <td>{{ album.barcode ? album.barcode : "N/A" }}
                         </td>
@@ -52,7 +52,7 @@
                       <tr>
                         <td>
                           <i class="pi pi-calendar"></i>
-                          <strong>{{ webText.ReleaseDate }}</strong>
+                          <strong>{{ $constant.ReleaseDate }}</strong>
                         </td>
                         <td>
                           {{ album.releaseDate ? album.releaseDate : "N/A" }}
@@ -61,18 +61,18 @@
                       <tr>
                         <td>
                           <i class="pi pi-tag"></i>
-                          <strong>{{ webText.ReleasePrice }}</strong>
+                          <strong>{{ $constant.ReleasePrice }}</strong>
                         </td>
                         <td>
                           {{ album.price != 0 ? album.price : "&nbsp;&nbsp;-" }}
                           <span v-if="album.price != 0">
                             <span v-if="album.currencyUnit == 'JPY'" class="ml-1"
                                   style="text-decoration-line: underline;text-decoration-style: dashed;"
-                                  v-tooltip.right="{value: webText.TaxInclusive, class: 'region-tooltip'}">JPY</span>
+                                  v-tooltip.right="{value: $constant.TaxInclusive, class: 'region-tooltip'}">JPY</span>
                             <span v-else>{{ album.currencyUnit }}</span>
                             <span class="ml-2 dropdown">
                                 <a href="#" class="dropdown-toggle"
-                                   data-bs-toggle="dropdown">{{ webText.OtherCurrencyUnit }}</a>
+                                   data-bs-toggle="dropdown">{{ $constant.OtherCurrencyUnit }}</a>
                                 <div class="dropdown-menu">
                                     <a :href="'https://www.bing.com/search?q='+album.price+'+'+album.currencyUnit+'+'+'IN'+'+CNY'"
                                        class="dropdown-item">CNY</a>
@@ -90,7 +90,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-gift"></i>
-                          <strong>{{ webText.Bonus }}</strong>
+                          <strong>{{ $constant.Bonus }}</strong>
                         </td>
                         <td>
                           <a v-if="album.hasBonus" href="#bonus" class="ml-3">
@@ -102,7 +102,7 @@
                       <tr>
                         <td>
                           <i class="pi pi-print"></i>
-                          <strong>{{ webText.PublishFormat }}</strong>
+                          <strong>{{ $constant.PublishFormat }}</strong>
                         </td>
                         <td v-for="format of album.publishFormat" style="display:inline">
                           <a :href="'/db/albums?publishFormat=' + format.value">
@@ -113,7 +113,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-zhuanjiguangpan"></i>
-                          <strong>{{ webText.MediaFormat }}</strong>
+                          <strong>{{ $constant.MediaFormat }}</strong>
                         </td>
                         <td v-for="format of album.mediaFormat" style="display:inline">
                           <a :href="'/db/albums?mediaFormat=' + format.value">
@@ -124,7 +124,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-musicfill"></i>
-                          <strong>{{ webText.AlbumFormat }}</strong>
+                          <strong>{{ $constant.AlbumFormat }}</strong>
                         </td>
                         <td v-for="format of album.albumFormat" style="display:inline">
                           <a :href="'/db/albums?albumFormat=' + format.value">
@@ -144,24 +144,24 @@
           </div>
           <div class="detail-item-field">
             <!-- companies -->
-            <CompaniesInfo :companies="album.companies" />
+            <CompaniesInfo :companies="album.companies"/>
             <!-- artists -->
-            <PersonsInfo :persons="album.artists" />
+            <PersonsInfo :persons="album.artists"/>
             <!-- tracks info -->
             <Fieldset :toggleable="true">
               <template #legend>
                 <i class="pi iconfont icon-playlist"></i>
-                <b>{{ webText.AlbumDetailTrackInfoTitle }}</b>
+                <b>{{ $constant.AlbumDetailTrackInfoTitle }}</b>
               </template>
               <div v-if="album.trackInfo === null || JSON.stringify(album.trackInfo) === '{}' ">
-                <span class="emptyInfo"><em>{{ webText.AlbumDetailMessageNoTrackInfo }}</em></span>
+                <span class="emptyInfo"><em>{{ $constant.AlbumDetailMessageNoTrackInfo }}</em></span>
               </div>
               <div>
                 <p class="text-start"
                    v-if="album.trackInfo !== null && JSON.stringify(album.trackInfo) !== '{}' ">
-                  {{ webText.TotalDiscNum }}: <b>{{ album.trackInfo.discList.length }} </b>
-                  {{ webText.TotalTrackNum }}: <b>{{ album.trackInfo.totalTracks }} </b>
-                  {{ webText.TotalLength }}: <b>{{ album.trackInfo.totalLength }}</b>
+                  {{ $constant.TotalDiscNum }}: <b>{{ album.trackInfo.discList.length }} </b>
+                  {{ $constant.TotalTrackNum }}: <b>{{ album.trackInfo.totalTracks }} </b>
+                  {{ $constant.TotalLength }}: <b>{{ album.trackInfo.totalLength }}</b>
                 </p>
               </div>
               <div v-if="album.trackInfo !== null && JSON.stringify(album.trackInfo) !== '{}' "
@@ -194,31 +194,31 @@
                   </tbody>
                 </table>
                 <p class="text-end">
-                  {{ webText.TrackNum }}: <b>{{ disc.trackList.length }} </b>
+                  {{ $constant.TrackNum }}: <b>{{ disc.trackList.length }} </b>
                   <span v-if="disc.discLength != '00:00'">
-                                            {{ webText.DiscLength }}: <b>{{ disc.discLength }}</b>
+                                            {{ $constant.DiscLength }}: <b>{{ disc.discLength }}</b>
                                         </span>
                 </p>
               </div>
             </Fieldset>
             <!-- description -->
-            <DescriptionPad :text="detailInfo.description" />
+            <DescriptionPad :entityType="detailInfo.entity" :entityId="detailInfo.id"
+                            :text="detailInfo.description" :images="itemImageInfo.images" />
             <!-- bonus -->
-            <BonusPad :text="album.bonus" v-if="album.hasBonus" />
+            <BonusPad :text="album.bonus" v-if="album.hasBonus"/>
           </div>
         </template>
       </Card>
     </div>
     <div class="col-2" style="min-width: 300px">
-      <CategoryInfo :info="detailInfo" />
-      <SideImages :images="itemImageInfo" />
-      <TrafficInfo :info="pageInfo" />
-      <!--      <div class="mt-2" th:insert="~{template/item-detail-template :: sider_image_panel}"></div>-->
+      <CategoryInfo :info="detailInfo"/>
+      <SideImages :images="itemImageInfo"/>
+      <TrafficInfo :info="pageInfo"/>
       <!--      <div class="mt-2" th:insert="~{template/item-detail-template :: index_loading_related_item_panel}"></div>-->
       <Panel class="mt-2" v-if="!relatedItemLoad">
         <template #header>
           <span class="text-start side-panel-header">
-              <i class="pi iconfont icon-album"></i><span><strong>{{ webText.RelatedAlbumTitle }}</strong></span>
+              <i class="pi iconfont icon-album"></i><span><strong>{{ $constant.RelatedAlbumTitle }}</strong></span>
           </span>
         </template>
         <div class="grid" v-if="relatedAlbums.length != 0">
@@ -229,7 +229,7 @@
                     <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
                         <a :href="'/db/album/'+ relatedAlbum.id">
                             <img class="sidebar-panel-image-small" :src="relatedAlbum.cover.blackUrl"
-                                 v-tooltip.bottom="webText.AddedTime + ': ' + relatedAlbum.addedTime + webText.EditedTime + ': ' + relatedAlbum.editedTime">
+                                 v-tooltip.bottom="$constant.AddedTime + ': ' + relatedAlbum.addedTime + $constant.EditedTime + ': ' + relatedAlbum.editedTime">
                         </a>
                     </div>
                     <div class="col p-0" style="height: 80px">
@@ -256,10 +256,9 @@
             </span>
         </div>
         <div v-else>
-          <span class="emptyInfo"><em>{{ webText.ItemDetailMessageNoRelatedItem }}</em></span>
+          <span class="emptyInfo"><em>{{ $constant.ItemDetailMessageNoRelatedItem }}</em></span>
         </div>
       </Panel>
-      <!--      <div insert="~{template/item-detail-template :: page_info_card}"></div>-->
     </div>
   </div>
 </template>
@@ -270,8 +269,7 @@ import '@/assets/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
 import {onBeforeMount, onMounted, ref} from "vue";
-import {useRoute, useRouter} from "vue-router";
-import {useMeta} from "vue-meta";
+import {useRouter} from "vue-router";
 import {AxiosHelper} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import CategoryInfo from "@/components/database/CategoryInfo.vue";
@@ -282,9 +280,7 @@ import PersonsInfo from "@/components/database/PersonsInfo.vue";
 import DescriptionPad from "@/components/database/DescriptionPad.vue";
 import BonusPad from "@/components/database/BonusPad.vue";
 
-const route = useRoute();
 const router = useRouter();
-const {title} = useMeta({});
 const toast = useToast();
 
 const album = ref({});

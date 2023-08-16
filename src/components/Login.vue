@@ -6,21 +6,21 @@
     <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
   </div>
   <div>
-    <label for="username" class="block text-900 font-medium mb-2">{{webText.Username}}</label>
+    <label for="username" class="block text-900 font-medium mb-2">{{$constant.Username}}</label>
     <InputText id="username" v-model="param.username" type="text" class="w-full mb-3"/>
 
-    <label for="password" class="block text-900 font-medium mb-2">{{webText.Password}}</label>
+    <label for="password" class="block text-900 font-medium mb-2">{{$constant.Password}}</label>
     <InputText id="password" v-model="param.password" type="password" class="w-full mb-3"/>
 
     <div class="flex align-items-center justify-content-between mb-6">
       <div class="flex align-items-center">
         <InputText id="verifyCode" name="verifyCode" v-model="param.verifyCode" class="mr-1"
-                   :placeholder="webText.VerifyCode"></InputText>
+                   :placeholder="$constant.VerifyCode"></InputText>
         <!--                        <label htmlFor="verifyCode" class="block text-900 font-medium mb-2">验证码</label>-->
       </div>
       <div class="flex align-items-center">
         <img id="kaptcha" style="width:100px;height:40px;" class="mr-2"/>
-        <Button @click="refreshKaptcha" icon="pi pi-refresh" :v-tooltip="webText.RefreshVerifyCode"
+        <Button @click="refreshKaptcha" icon="pi pi-refresh" :v-tooltip="$constant.RefreshVerifyCode"
                 class="p-button-rounded p-button-text"></Button>
       </div>
     </div>
@@ -28,12 +28,12 @@
     <div class="flex align-items-center justify-content-between mb-6">
       <div class="flex align-items-center">
         <Checkbox id="rememberMe" :binary="true" v-model="param.rememberMe" class="mr-2"></Checkbox>
-        <label for="rememberMe">{{webText.RememberMe}}</label>
+        <label for="rememberMe">{{$constant.RememberMe}}</label>
       </div>
       <!--        <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>-->
     </div>
 
-    <Button :label="webText.SignIn" icon="pi pi-user" class="w-full" @click="login"></Button>
+    <Button :label="$constant.SignIn" icon="pi pi-user" class="w-full" @click="login"></Button>
   </div>
 </template>
 
@@ -41,8 +41,8 @@
 import {onMounted, ref} from "vue";
 import $ from 'jquery';
 import {AxiosHelper} from "@/utils/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
 import {useUserStore} from "@/store/user";
+import { API } from '@/config/Web_Helper_Strs';
 
 const userStore = useUserStore();
 

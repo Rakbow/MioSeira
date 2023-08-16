@@ -20,6 +20,8 @@ import 'md-editor-v3/lib/style.css';
 
 import {tingle} from 'tingle.js';
 import 'tingle.js/src/tingle.css';
+
+import 'material-symbols';
 //endregion
 
 import {AxiosHelper} from '@/utils/axiosHelper';
@@ -164,9 +166,9 @@ app.config.globalProperties.$api = API;
 const locale = cookie.get('locale') || 'zh';   // 从 cookie 中获取 locale 值，默认为英文
 
 if (locale === 'en') {
-    app.config.globalProperties.webText = EnText;
+    app.config.globalProperties.$constant = EnText;
 } else if (locale === 'zh') {
-    app.config.globalProperties.webText = CnText;
+    app.config.globalProperties.$constant = CnText;
 }
 
 //endregion

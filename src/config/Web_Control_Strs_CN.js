@@ -12,7 +12,11 @@ export const CnText = {
     Refresh: '刷新',
     ExpandAll: '全部展开',
     CollapseAll: '全部折叠',
+    FullScreen: '全屏',
     //endregion
+
+    NameZh: '名称(中)',
+    NameEn: '名称(英)',
 
     Username: '用户名',
     Password: '密码',
@@ -30,10 +34,12 @@ export const CnText = {
     Products: '所属作品',
 
     Image: '图片',
+    Images: '图片',
 
     NoImage: '暂无图片',
     NoCompanies: '暂无相关企业信息',
     NoPerson: '暂无相关人员信息',
+    NoDescription: '暂无描述',
 
     //region 名词
     Persons: "相关人员",

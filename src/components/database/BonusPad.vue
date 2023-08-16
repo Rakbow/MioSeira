@@ -41,8 +41,8 @@ const tingleModal = new tingle.modal({
 <template>
   <Fieldset :toggleable="true">
     <template #legend>
-      <i class="pi iconfont icon-gift"></i>
-      <b>{{ webText.Bonus }}</b>
+      <span class="material-symbols-outlined fieldset-icon">workspace_premium</span>
+      <b>{{ $constant.Bonus }}</b>
     </template>
     <div class="relative">
       <Button class="p-button-link absolute top-0 right-0" icon="pi pi-external-link" @click="openTextTingle"

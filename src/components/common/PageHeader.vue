@@ -6,8 +6,18 @@
         <img alt="logo" src="https://img.rakbow.com/common/logo/logo.png" height="40" class="mr-2" />
       </template>
       <template #end>
-        <Button v-if="!userStore.isAuthenticated" icon="pi pi-sign-in" text rounded @click="openLogin"></Button>
-        <Button v-if="userStore.isAuthenticated" icon="pi pi-sign-out" text rounded @click="logout"></Button>
+        <Button v-if="!userStore.isAuthenticated" text rounded @click="openLogin"
+                v-tooltip.bottom="{value: $constant.SignIn, class: 'short-tooltip'}">
+          <template #icon>
+            <span class="material-symbols-outlined">login</span>
+          </template>
+        </Button>
+        <Button v-if="userStore.isAuthenticated" text rounded @click="logout"
+                v-tooltip.bottom="{value: $constant.SignOut, class: 'short-tooltip'}">
+          <template #icon>
+            <span class="material-symbols-outlined">logout</span>
+          </template>
+        </Button>
         <InputText placeholder="Search" type="text" class="mr-2" />
         <Avatar v-if="userStore.isAuthenticated" :image="userStore.user.headerUrl" class="mr-2" size="large" shape="circle" />
       </template>
@@ -20,11 +30,11 @@ import {ref, onMounted, markRaw, defineAsyncComponent, getCurrentInstance, compu
 import { useDialog } from 'primevue/usedialog';
 import { logout } from '@/logic/login';
 import {useUserStore} from "@/store/user";
-const webText = getCurrentInstance().appContext.config.globalProperties.webText;
+const $constant = getCurrentInstance().appContext.config.globalProperties.$constant;
 const Login = defineAsyncComponent(() => import('@/components/Login.vue'));
-const DialogFooter = defineAsyncComponent(() => import('@/components/common/DialogFooter.vue'));
 
 onMounted(() => {
+
 })
 
 const userStore = useUserStore();
@@ -37,7 +47,7 @@ const dialog = useDialog();
 const openLogin = () => {
   const dialogRef = dialog.open(Login, {
     props: {
-      header: webText.SignIn,
+      header: $constant.SignIn,
       style: {
         width: '40vw',
       },

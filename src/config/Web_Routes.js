@@ -25,7 +25,7 @@ export const DATABASE_ROUTER = [
         component: () => import('@/views/AlbumDetail.vue'),
         beforeEnter: async (to, from, next) => {
             try {
-                const res = await AxiosHelper.post(API.UPDATE_ITEM_STATUS, {id: to.params.id});
+                const res = await AxiosHelper.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
                 if (res.state === 1) {
                     to.meta.info = res.data;
 

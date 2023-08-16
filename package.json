@@ -1,9 +1,9 @@
 {
-  "name": "mio_seira",
+  "name": "mioseira",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.config.js",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -23,6 +23,8 @@
     "jquery": "^3.7.0",
     "jwt-decode": "^3.1.2",
     "marked": "^7.0.1",
+    "material-icons": "^1.13.9",
+    "material-symbols": "^0.10.4",
     "md-editor-v3": "^4.2.2",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.6",

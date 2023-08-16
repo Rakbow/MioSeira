@@ -63,10 +63,10 @@ const createAplayer = () => {
   <Fieldset :toggleable="true" v-if="audios">
     <template #legend>
       <i class="pi iconfont icon-music"></i>
-      <b>{{ webText.ItemDetailPlayListTitle }}</b>
+      <b>{{ $constant.ItemDetailPlayListTitle }}</b>
     </template>
     <Button @click="playerOption.fixed=true, createAplayer()" class="mr-2"
-            v-tooltip.bottom="webText.TooltipMusicPlayerChangeBottom">
+            v-tooltip.bottom="$constant.TooltipMusicPlayerChangeBottom">
       <i class="pi pi-arrow-circle-down"></i>
     </Button>
     <div ref="aplayer"></div>
