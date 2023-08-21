@@ -1,24 +1,109 @@
+<template>
+  <Fieldset :toggleable="true">
+    <template #legend>
+      <span class="material-symbols-outlined fieldset-icon">workspace_premium</span>
+      <b>{{ $constant.Bonus }}</b>
+    </template>
+    <div class="relative">
+      <div v-if="userStore.user">
+        <Button v-if="userStore.user.type === 0 || userStore.user.type > 1" class="p-button-link absolute top-0"
+                @click="openEditDialog" style="right: 5%"
+                v-tooltip.bottom="{value: $constant.Edit, class: 'short-tooltip'}" >
+          <template #icon>
+            <span class="material-symbols-outlined">edit_note</span>
+          </template>
+        </Button>
+      </div>
+      <Button v-if="!empty" class="p-button-link absolute top-0 right-0" icon="pi pi-external-link" @click="openTextTingle"
+              v-tooltip.bottom="{value: $constant.FullScreen, class: 'short-tooltip'}" />
+      <article ref="html" class="markdown-body" />
+    </div>
+  </Fieldset>
+</template>
+
 <script setup>
-import { ref, onMounted, defineProps} from "vue";
+import {ref, onMounted, defineProps, defineAsyncComponent, getCurrentInstance } from "vue";
+import {useUserStore} from "@/store/user";
 import {marked} from 'marked';
 import tingle from 'tingle.js';
+import { useDialog } from 'primevue/usedialog';
+const CommonTextEditor = defineAsyncComponent(() => import('@/components/database/CommonTextEditor.vue'));
+const $constant = getCurrentInstance().appContext.config.globalProperties.$constant;
+
+const empty = ref(false);
 
 const props = defineProps({
   text: {
     type: String,
+    required: true,
     default: () => ('')
+  },
+  entityType: {
+    type: Number,
+    required: true,
+    default: () => (0)
+  },
+  entityId: {
+    type: Number,
+    required: true,
+    default: () => (0)
+  },
+  images: {
+    type: Array,
+    required: false,
+    default: () => ([])
   }
 });
 
-const html = ref();
-
 onMounted(() => {
+  text.value = props.text;
   text2Markdown();
 })
 
+const dialog = useDialog();
+const userStore = useUserStore();
+const html = ref();
+const text = ref('');
+
+const openEditDialog = () => {
+  dialog.open(CommonTextEditor, {
+    props: {
+      header: $constant.Bonus,
+      style: {
+        width: '80vw',
+      },
+      breakpoints:{
+        '960px': '80vw',
+        '640px': '70vw'
+      },
+      modal: true,
+      closable: false
+    },
+    data: {
+      text: text.value,
+      type: 'bonus',
+      images: props.images,
+      entityType: props.entityType,
+      entityId: props.entityId,
+    },
+    onClose: (options) => {
+      if(options.data !== undefined) {
+        if(options.data.isUpdate) {
+          text.value = options.data.text;
+          text2Markdown();
+        }
+      }
+    }
+  });
+}
+
 const text2Markdown = () => {
-  if (props.text != null && props.text !== "") {
-    html.value.innerHTML = marked.parse(props.text);
+  if (text.value == null || text.value === '') {
+    html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + $constant.NoBonus + '</em></span>');
+    empty.value = true;
+  }else {
+    empty.value = false;
+    html.value.innerHTML = marked.parse(text.value);
   }
 }
 
@@ -31,26 +116,22 @@ const tingleModal = new tingle.modal({
   closeLabel: "Close",
   cssClass: ['tingle-markdown-body'],
   onOpen: function () {
-    if (props.text != null && props.text !== "") {
-      tingleModal.setContent(marked.parse(props.text));
+    if (text.value != null && text.value !== "") {
+      tingleModal.setContent(marked.parse(text.value));
     }
   }
 });
 </script>
 
-<template>
-  <Fieldset :toggleable="true">
-    <template #legend>
-      <span class="material-symbols-outlined fieldset-icon">workspace_premium</span>
-      <b>{{ $constant.Bonus }}</b>
-    </template>
-    <div class="relative">
-      <Button class="p-button-link absolute top-0 right-0" icon="pi pi-external-link" @click="openTextTingle"
-                v-tooltip.bottom="{value:'全屏', class: 'short-tooltip'}" />
-      <article ref="html" class="markdown-body" />
-    </div>
-  </Fieldset>
-</template>
+<style scoped>
+
+@import 'tingle.js/src/tingle.css';
+
+article {
+  width: 100%;
+  font-size: 13px;
+}
+</style>
 
 <style scoped>
 @import 'tingle.js/src/tingle.css';

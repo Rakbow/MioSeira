@@ -50,7 +50,7 @@ const props = defineProps({
   },
   images: {
     type: Array,
-    required: true,
+    required: false,
     default: () => ([])
   }
 });
@@ -94,13 +94,6 @@ const openEditDialog = () => {
         }
       }
     }
-    // emits: {
-    //   onUpdate: (isUpdate) => {
-    //     if(isUpdate) {
-    //
-    //     }
-    //   }
-    // }
   });
 }
 

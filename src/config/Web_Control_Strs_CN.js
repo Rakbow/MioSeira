@@ -40,6 +40,16 @@ export const CnText = {
     NoCompanies: '暂无相关企业信息',
     NoPerson: '暂无相关人员信息',
     NoDescription: '暂无描述',
+    NoBonus: '暂无特典信息',
+
+    TrackInfo: '音轨信息',
+    NoTrackInfo: '暂无音轨信息',
+
+    TotalDiscNum: '总碟片数',
+    TotalTrackNum: '总曲目数',
+    DiscLength: '碟片时长',
+    TrackNum: '曲目数',
+    TotalLength: '总时长',
 
     //region 名词
     Persons: "相关人员",
@@ -97,11 +107,7 @@ export const CnText = {
 
 
     //item-detail 展示模块 名词
-    TotalDiscNum: '总碟片数',
-    TotalTrackNum: '总曲目数',
-    DiscLength: '碟片时长',
-    TrackNum: '曲目数',
-    TotalLength: '总时长',
+
 
     FranchiseDetailReleaseDate: '日&nbsp期',
     FranchiseDetailProduct: '作&nbsp品',

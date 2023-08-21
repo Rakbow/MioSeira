@@ -148,64 +148,13 @@
             <!-- artists -->
             <PersonsInfo :persons="album.artists"/>
             <!-- tracks info -->
-            <Fieldset :toggleable="true">
-              <template #legend>
-                <i class="pi iconfont icon-playlist"></i>
-                <b>{{ $constant.AlbumDetailTrackInfoTitle }}</b>
-              </template>
-              <div v-if="album.trackInfo === null || JSON.stringify(album.trackInfo) === '{}' ">
-                <span class="emptyInfo"><em>{{ $constant.AlbumDetailMessageNoTrackInfo }}</em></span>
-              </div>
-              <div>
-                <p class="text-start"
-                   v-if="album.trackInfo !== null && JSON.stringify(album.trackInfo) !== '{}' ">
-                  {{ $constant.TotalDiscNum }}: <b>{{ album.trackInfo.discList.length }} </b>
-                  {{ $constant.TotalTrackNum }}: <b>{{ album.trackInfo.totalTracks }} </b>
-                  {{ $constant.TotalLength }}: <b>{{ album.trackInfo.totalLength }}</b>
-                </p>
-              </div>
-              <div v-if="album.trackInfo !== null && JSON.stringify(album.trackInfo) !== '{}' "
-                   v-for="(disc, index) in album.trackInfo.discList">
-                <table class="table table-sm table-hover">
-                  <thead>
-                  <h5>
-                    Disc {{ index + 1 }} ({{ disc.mediaFormat }})
-                    <span v-if="disc.catalogNo != ''">[{{ album.catalogNo + "-" + (index + 1) }}]</span>
-                    {{ disc.albumFormat }}
-                  </h5>
-                  </thead>
-                  <tbody class="detail-item-track-table">
-                  <tr v-for="(track, index) in disc.trackList">
-                    <th>{{ index + 1 > 9 ? index + 1 : "0" + (index + 1) }}</th>
-                    <td nowrap="nowrap">
-                      <a :href="'/db/music/' + track.musicId">
-                        {{ track.name }}
-                      </a>
-                    </td>
-                    <td class="text-end" style="color: #b0c4de">
-                                            <span v-if="track.length == '00:00'">
-                                                N/A
-                                            </span>
-                      <span v-else>
-                                                {{ track.length }}
-                                            </span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-                <p class="text-end">
-                  {{ $constant.TrackNum }}: <b>{{ disc.trackList.length }} </b>
-                  <span v-if="disc.discLength != '00:00'">
-                                            {{ $constant.DiscLength }}: <b>{{ disc.discLength }}</b>
-                                        </span>
-                </p>
-              </div>
-            </Fieldset>
+
             <!-- description -->
             <DescriptionPad :entityType="detailInfo.entityType" :entityId="detailInfo.id"
                             :text="detailInfo.description" :images="itemImageInfo.images" />
             <!-- bonus -->
-            <BonusPad :text="album.bonus" v-if="album.hasBonus"/>
+            <BonusPad v-if="album.hasBonus" :entityType="detailInfo.entityType" :entityId="detailInfo.id"
+                      :text="album.bonus" :images="itemImageInfo.images" />
           </div>
         </template>
       </Card>
