@@ -14,13 +14,11 @@
         {{ $constant.TotalLength }}: <b>{{ info.totalLength }}</b>
       </p>
       <div v-for="(disc, index) in info.discList">
+        <h5>
+          {{ `Disc ${index + 1} (${disc.mediaFormat}) ${catalogNo?'[' + catalogNo + '-' + (index + 1) + ']':''} ${disc.albumFormat}` }}
+        </h5>
         <table class="table table-sm table-hover">
           <thead>
-          <h5>
-            Disc {{ index + 1 }} ({{ disc.mediaFormat }})
-            <span v-if="disc.catalogNo !== ''">[{{ catalogNo + "-" + (index + 1) }}]</span>
-            {{ disc.albumFormat }}
-          </h5>
           </thead>
           <tbody class="detail-item-track-table">
           <tr v-for="(track, index) in disc.trackList">
