@@ -18,7 +18,7 @@
           <thead>
           <h5>
             Disc {{ index + 1 }} ({{ disc.mediaFormat }})
-            <span v-if="disc.catalogNo !== ''">[{{ album.catalogNo + "-" + (index + 1) }}]</span>
+            <span v-if="disc.catalogNo !== ''">[{{ catalogNo + "-" + (index + 1) }}]</span>
             {{ disc.albumFormat }}
           </h5>
           </thead>
@@ -26,26 +26,22 @@
           <tr v-for="(track, index) in disc.trackList">
             <th>{{ index + 1 > 9 ? index + 1 : "0" + (index + 1) }}</th>
             <td nowrap="nowrap">
-              <a :href="'/db/music/' + track.musicId">
+              <router-link :to="'/db/music/' + track.musicId">
                 {{ track.name }}
-              </a>
+              </router-link>
             </td>
             <td class="text-end" style="color: #b0c4de">
-                                            <span v-if="track.length == '00:00'">
-                                                N/A
-                                            </span>
-              <span v-else>
-                                                {{ track.length }}
-                                            </span>
+              <span v-if="track.length === '00:00'">N/A</span>
+              <span v-else>{{ track.length }}</span>
             </td>
           </tr>
           </tbody>
         </table>
         <p class="text-end">
           {{ $constant.TrackNum }}: <b>{{ disc.trackList.length }} </b>
-          <span v-if="disc.discLength != '00:00'">
-                                            {{ $constant.DiscLength }}: <b>{{ disc.discLength }}</b>
-                                        </span>
+          <span v-if="disc.discLength !== '00:00'">
+              {{ $constant.DiscLength }}: <b>{{ disc.discLength }}</b>
+          </span>
         </p>
       </div>
     </div>
@@ -64,6 +60,10 @@ const props = defineProps({
     default: () => ({
 
     })
+  },
+  catalogNo: {
+    type: String,
+    default: () => ('')
   }
 });
 

@@ -148,7 +148,7 @@
             <!-- artists -->
             <PersonsInfo :persons="album.artists"/>
             <!-- tracks info -->
-
+            <TrackInfo :info="album.trackInfo" :catalogNo="album.catalogNo" />
             <!-- description -->
             <DescriptionPad :entityType="detailInfo.entityType" :entityId="detailInfo.id"
                             :text="detailInfo.description" :images="itemImageInfo.images" />
@@ -228,6 +228,7 @@ import CompaniesInfo from "@/components/database/CompaniesInfo.vue";
 import PersonsInfo from "@/components/database/PersonsInfo.vue";
 import DescriptionPad from "@/components/database/DescriptionPad.vue";
 import BonusPad from "@/components/database/BonusPad.vue";
+import TrackInfo from "@/components/database/AlbumTrackInfo.vue";
 
 const router = useRouter();
 const toast = useToast();
