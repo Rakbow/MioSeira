@@ -34,8 +34,8 @@
                       <tbody class="detail-item-header-table">
                       <tr>
                         <td>
-                          <i class="pi iconfont icon-dingdanbianhao"></i>
-                          <strong>{{ $constant.AlbumCatalogNo }}</strong>
+                          <i class="pi material-symbols-outlined">tag</i>
+                          <strong>{{ $const.AlbumCatalogNo }}</strong>
                         </td>
                         <td>
                           {{ album.catalogNo ? album.catalogNo : "N/A" }}
@@ -43,8 +43,8 @@
                       </tr>
                       <tr>
                         <td>
-                          <i class="pi iconfont icon-bar-code"></i>
-                          <strong>{{ $constant.Barcode }}</strong>
+                          <i class="pi material-symbols-outlined">barcode</i>
+                          <strong>{{ $const.Barcode }}</strong>
                         </td>
                         <td>{{ album.barcode ? album.barcode : "N/A" }}
                         </td>
@@ -52,7 +52,7 @@
                       <tr>
                         <td>
                           <i class="pi pi-calendar"></i>
-                          <strong>{{ $constant.ReleaseDate }}</strong>
+                          <strong>{{ $const.ReleaseDate }}</strong>
                         </td>
                         <td>
                           {{ album.releaseDate ? album.releaseDate : "N/A" }}
@@ -61,18 +61,18 @@
                       <tr>
                         <td>
                           <i class="pi pi-tag"></i>
-                          <strong>{{ $constant.ReleasePrice }}</strong>
+                          <strong>{{ $const.ReleasePrice }}</strong>
                         </td>
                         <td>
                           {{ album.price != 0 ? album.price : "&nbsp;&nbsp;-" }}
                           <span v-if="album.price != 0">
                             <span v-if="album.currencyUnit == 'JPY'" class="ml-1"
                                   style="text-decoration-line: underline;text-decoration-style: dashed;"
-                                  v-tooltip.right="{value: $constant.TaxInclusive, class: 'region-tooltip'}">JPY</span>
+                                  v-tooltip.right="{value: $const.TaxInclusive, class: 'region-tooltip'}">JPY</span>
                             <span v-else>{{ album.currencyUnit }}</span>
                             <span class="ml-2 dropdown">
                                 <a href="#" class="dropdown-toggle"
-                                   data-bs-toggle="dropdown">{{ $constant.OtherCurrencyUnit }}</a>
+                                   data-bs-toggle="dropdown">{{ $const.OtherCurrencyUnit }}</a>
                                 <div class="dropdown-menu">
                                     <a :href="'https://www.bing.com/search?q='+album.price+'+'+album.currencyUnit+'+'+'IN'+'+CNY'"
                                        class="dropdown-item">CNY</a>
@@ -89,8 +89,8 @@
                       </tr>
                       <tr>
                         <td>
-                          <i class="pi iconfont icon-gift"></i>
-                          <strong>{{ $constant.Bonus }}</strong>
+                          <i class="pi material-symbols-outlined detail-list-icon">workspace_premium</i>
+                          <strong>{{ $const.Bonus }}</strong>
                         </td>
                         <td>
                           <a v-if="album.hasBonus" href="#bonus" class="ml-3">
@@ -102,7 +102,7 @@
                       <tr>
                         <td>
                           <i class="pi pi-print"></i>
-                          <strong>{{ $constant.PublishFormat }}</strong>
+                          <strong>{{ $const.PublishFormat }}</strong>
                         </td>
                         <td v-for="format of album.publishFormat" style="display:inline">
                           <a :href="'/db/albums?publishFormat=' + format.value">
@@ -113,7 +113,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-zhuanjiguangpan"></i>
-                          <strong>{{ $constant.MediaFormat }}</strong>
+                          <strong>{{ $const.MediaFormat }}</strong>
                         </td>
                         <td v-for="format of album.mediaFormat" style="display:inline">
                           <a :href="'/db/albums?mediaFormat=' + format.value">
@@ -124,7 +124,7 @@
                       <tr>
                         <td>
                           <i class="pi iconfont icon-musicfill"></i>
-                          <strong>{{ $constant.AlbumFormat }}</strong>
+                          <strong>{{ $const.AlbumFormat }}</strong>
                         </td>
                         <td v-for="format of album.albumFormat" style="display:inline">
                           <a :href="'/db/albums?albumFormat=' + format.value">
@@ -153,7 +153,7 @@
             <DescriptionPad :entityType="detailInfo.entityType" :entityId="detailInfo.id"
                             :text="detailInfo.description" :images="itemImageInfo.images" />
             <!-- bonus -->
-            <BonusPad v-if="album.hasBonus" :entityType="detailInfo.entityType" :entityId="detailInfo.id"
+            <BonusPad id="bonus" v-if="album.hasBonus" :entityType="detailInfo.entityType" :entityId="detailInfo.id"
                       :text="album.bonus" :images="itemImageInfo.images" />
           </div>
         </template>
@@ -167,18 +167,18 @@
       <Panel class="mt-2" v-if="!relatedItemLoad">
         <template #header>
           <span class="text-start side-panel-header">
-              <i class="pi iconfont icon-album"></i><span><strong>{{ $constant.RelatedAlbumTitle }}</strong></span>
+              <i class="pi iconfont icon-album"></i><span><strong>{{ $const.RelatedAlbumTitle }}</strong></span>
           </span>
         </template>
-        <div class="grid" v-if="relatedAlbums.length != 0">
+        <div class="grid" v-if="relatedAlbums.length !== 0">
             <span class="small_font">
                 <div class="info_bit_small small_font grid m-0 p-0"
-                     v-if="relatedAlbums.length != 0"
+                     v-if="relatedAlbums.length !== 0"
                      v-for="relatedAlbum of relatedAlbums">
                     <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
                         <a :href="'/db/album/'+ relatedAlbum.id">
                             <img class="sidebar-panel-image-small" :src="relatedAlbum.cover.blackUrl"
-                                 v-tooltip.bottom="$constant.AddedTime + ': ' + relatedAlbum.addedTime + $constant.EditedTime + ': ' + relatedAlbum.editedTime">
+                                 v-tooltip.bottom="$const.AddedTime + ': ' + relatedAlbum.addedTime + $const.EditedTime + ': ' + relatedAlbum.editedTime">
                         </a>
                     </div>
                     <div class="col p-0" style="height: 80px">
@@ -205,7 +205,7 @@
             </span>
         </div>
         <div v-else>
-          <span class="emptyInfo"><em>{{ $constant.ItemDetailMessageNoRelatedItem }}</em></span>
+          <span class="emptyInfo"><em>{{ $const.ItemDetailMessageNoRelatedItem }}</em></span>
         </div>
       </Panel>
     </div>
@@ -260,8 +260,9 @@ onBeforeMount(() => {
 
 <style scoped>
 
-.orders-subtable {
-  padding: 1rem;
+.detail-list-icon {
+  margin-right: 0.25rem;
+  font-size: 1.3rem;
 }
 
 .album-detail-cover {

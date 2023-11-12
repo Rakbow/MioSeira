@@ -7,13 +7,13 @@
       </template>
       <template #end>
         <Button v-if="!userStore.isAuthenticated" text rounded @click="openLogin"
-                v-tooltip.bottom="{value: $constant.SignIn, class: 'short-tooltip'}">
+                v-tooltip.bottom="{value: $const.SignIn, class: 'short-tooltip'}">
           <template #icon>
             <span class="material-symbols-outlined">login</span>
           </template>
         </Button>
         <Button v-if="userStore.isAuthenticated" text rounded @click="logout"
-                v-tooltip.bottom="{value: $constant.SignOut, class: 'short-tooltip'}">
+                v-tooltip.bottom="{value: $const.SignOut, class: 'short-tooltip'}">
           <template #icon>
             <span class="material-symbols-outlined">logout</span>
           </template>
@@ -30,7 +30,7 @@ import {ref, onMounted, markRaw, defineAsyncComponent, getCurrentInstance, compu
 import { useDialog } from 'primevue/usedialog';
 import { logout } from '@/logic/login';
 import {useUserStore} from "@/store/user";
-const $constant = getCurrentInstance().appContext.config.globalProperties.$constant;
+const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const Login = defineAsyncComponent(() => import('@/components/Login.vue'));
 
 onMounted(() => {
@@ -47,7 +47,7 @@ const dialog = useDialog();
 const openLogin = () => {
   const dialogRef = dialog.open(Login, {
     props: {
-      header: $constant.SignIn,
+      header: $const.SignIn,
       style: {
         width: '40vw',
       },

@@ -2,12 +2,12 @@
   <Panel>
     <template #header>
       <span class="text-start side-panel-header">
-          <i class="pi iconfont icon-product_b"></i><span><strong>{{ $constant.Category }}</strong></span>
+          <i class="pi iconfont icon-product_b"></i><span><strong>{{ $const.Category }}</strong></span>
       </span>
     </template>
     <div class="grid">
       <div class="col-fixed pt-0 pb-0">
-        <i class="pi pi-bookmark mr-2"></i><b>{{ $constant.Franchises }}</b>
+        <i class="pi pi-bookmark mr-2"></i><b>{{ $const.Franchises }}</b>
       </div>
       <div class="col-10 col-offset-2 pt-0 pb-0">
         <p class="mb-0 a_with_underline" v-for="franchise of info.franchises">
@@ -19,7 +19,7 @@
         </p>
       </div>
       <div class="col-fixed pt-0 pb-0">
-        <i class="pi pi-tags mr-2"></i><b>{{ $constant.Products }}</b>
+        <i class="pi pi-tags mr-2"></i><b>{{ $const.Products }}</b>
       </div>
       <div class="col-10 col-offset-2 pt-0 pb-0">
         <p class="mb-0 a_with_underline" v-for="product of info.products">

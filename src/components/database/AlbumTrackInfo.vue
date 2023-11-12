@@ -2,16 +2,16 @@
   <Fieldset :toggleable="true">
     <template #legend>
       <span class="material-symbols-outlined fieldset-icon">queue_music</span>
-      <b>{{ $constant.TrackInfo }}</b>
+      <b>{{ $const.TrackInfo }}</b>
     </template>
     <div v-if="isEmpty">
-      <span class="emptyInfo"><em>{{ $constant.NoTrackInfo }}</em></span>
+      <span class="emptyInfo"><em>{{ $const.NoTrackInfo }}</em></span>
     </div>
     <div v-else>
       <p class="text-start">
-        {{ $constant.TotalDiscNum }}: <b>{{ info.discList.length }} </b>
-        {{ $constant.TotalTrackNum }}: <b>{{ info.totalTracks }} </b>
-        {{ $constant.TotalLength }}: <b>{{ info.totalLength }}</b>
+        {{ $const.TotalDiscNum }}: <b>{{ info.discList.length }} </b>
+        {{ $const.TotalTrackNum }}: <b>{{ info.totalTracks }} </b>
+        {{ $const.TotalLength }}: <b>{{ info.totalLength }}</b>
       </p>
       <div v-for="(disc, index) in info.discList">
         <h5>
@@ -36,9 +36,9 @@
           </tbody>
         </table>
         <p class="text-end">
-          {{ $constant.TrackNum }}: <b>{{ disc.trackList.length }} </b>
+          {{ $const.TrackNum }}: <b>{{ disc.trackList.length }} </b>
           <span v-if="disc.discLength !== '00:00'">
-              {{ $constant.DiscLength }}: <b>{{ disc.discLength }}</b>
+              {{ $const.DiscLength }}: <b>{{ disc.discLength }}</b>
           </span>
         </p>
       </div>
@@ -47,9 +47,9 @@
 </template>
 
 <script setup>
-import {defineProps, getCurrentInstance, onMounted, ref} from "vue";
+import {defineProps, getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
 import {useUserStore} from "@/store/user";
-const $constant = getCurrentInstance().appContext.config.globalProperties.$constant;
+const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 const props = defineProps({
   info: {
@@ -67,7 +67,7 @@ const props = defineProps({
 
 const isEmpty = ref(false);
 
-onMounted(() => {
+onBeforeMount(() => {
   if(JSON.stringify(props.info) === '{}') {
     isEmpty.value = true;
   }

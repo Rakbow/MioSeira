@@ -19,7 +19,7 @@ const props = defineProps({
   <Fieldset :toggleable="true">
     <template #legend>
       <i class="pi pi-users"></i>
-      <b>{{ $constant.Persons }}</b>
+      <b>{{ $const.Persons }}</b>
     </template>
     <div class="grid ml-4" v-if="persons.length !== 0">
       <table class="table-borderless table-sm">
@@ -37,7 +37,7 @@ const props = defineProps({
       </table>
     </div>
     <div v-else>
-      <span class="emptyInfo"><em>{{ $constant.NoPerson }}</em></span>
+      <span class="emptyInfo"><em>{{ $const.NoPerson }}</em></span>
     </div>
   </Fieldset>
 </template>

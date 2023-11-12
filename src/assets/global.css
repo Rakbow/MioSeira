@@ -507,3 +507,9 @@ a {
 .fieldset-icon {
     color: #beb993;
 }
+
+.ellipsis-list {
+    max-height: 3em; /* 设置最大高度为2行 */
+    overflow: auto; /* 隐藏超出部分 */
+    list-style-type: none; /* 去掉列表项的默认样式 */
+}

@@ -19,6 +19,31 @@ export const DATABASE_ROUTER = [
             title: "Home",
         }
     },
+
+    {
+        name: "PersonDetail",
+        path: API.PERSON_DETAIL + "/:id",
+        component: () => import('@/views/PersonDetail.vue'),
+        beforeEnter: async (to, from, next) => {
+            try {
+                const res = await AxiosHelper.post(API.GET_PERSON_DETAIL, {id: to.params.id});
+                if (res.state === 1) {
+                    to.meta.info = res.data;
+
+                    document.title = res.data.item.name;
+                    next();
+                }else {
+                    console.log(res.message);
+                }
+            }catch (e) {
+                console.error(e);
+            }
+        },
+        meta: {
+            title: "Person Detail"
+        }
+    },
+
     {
         name: "AlbumDetail",
         path: API.ALBUM_DETAIL + "/:id",
@@ -41,5 +66,19 @@ export const DATABASE_ROUTER = [
         meta: {
             title: "Album Detail"
         }
+    },
+    {
+        name: "Manager",
+        path: "/db/manager",
+        component: () => import('@/views/Manager.vue'),
+        meta: {
+            title: "Manager",
+        },
+        children: [
+            {
+                path: 'person',
+                component: () => import('@/views/PersonManager.vue'),
+            }
+        ],
     }
 ];

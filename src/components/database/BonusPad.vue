@@ -2,20 +2,20 @@
   <Fieldset :toggleable="true">
     <template #legend>
       <span class="material-symbols-outlined fieldset-icon">workspace_premium</span>
-      <b>{{ $constant.Bonus }}</b>
+      <b>{{ $const.Bonus }}</b>
     </template>
     <div class="relative">
       <div v-if="userStore.user">
         <Button v-if="userStore.user.type === 0 || userStore.user.type > 1" class="p-button-link absolute top-0"
                 @click="openEditDialog" style="right: 5%"
-                v-tooltip.bottom="{value: $constant.Edit, class: 'short-tooltip'}" >
+                v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
           <template #icon>
             <span class="material-symbols-outlined">edit_note</span>
           </template>
         </Button>
       </div>
       <Button v-if="!empty" class="p-button-link absolute top-0 right-0" icon="pi pi-external-link" @click="openTextTingle"
-              v-tooltip.bottom="{value: $constant.FullScreen, class: 'short-tooltip'}" />
+              v-tooltip.bottom="{value: $const.FullScreen, class: 'short-tooltip'}" />
       <article ref="html" class="markdown-body" />
     </div>
   </Fieldset>
@@ -28,7 +28,7 @@ import {marked} from 'marked';
 import tingle from 'tingle.js';
 import { useDialog } from 'primevue/usedialog';
 const CommonTextEditor = defineAsyncComponent(() => import('@/components/database/CommonTextEditor.vue'));
-const $constant = getCurrentInstance().appContext.config.globalProperties.$constant;
+const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 const empty = ref(false);
 
@@ -68,7 +68,7 @@ const text = ref('');
 const openEditDialog = () => {
   dialog.open(CommonTextEditor, {
     props: {
-      header: $constant.Bonus,
+      header: $const.Bonus,
       style: {
         width: '80vw',
       },
@@ -99,7 +99,7 @@ const openEditDialog = () => {
 
 const text2Markdown = () => {
   if (text.value == null || text.value === '') {
-    html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + $constant.NoBonus + '</em></span>');
+    html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + $const.NoBonus + '</em></span>');
     empty.value = true;
   }else {
     empty.value = false;

@@ -41,10 +41,10 @@ const responsiveOptions = [
   <Panel class="mt-2">
     <template #header>
       <span class="text-start side-panel-header">
-          <i class="pi pi-images"></i><span><strong>{{ $constant.Image }}</strong></span>
+          <i class="pi pi-images"></i><span><strong>{{ $const.Image }}</strong></span>
       </span>
     </template>
-    <i v-if="images.displayImages.length === 0" class="rkw-side-empty-info">{{ $constant.NoImage }}</i>
+    <i v-if="images.displayImages.length === 0" class="rkw-side-empty-info">{{ $const.NoImage }}</i>
 
     <div class="card flex justify-content-center">
       <Galleria v-if="images.displayImages" :value="images.displayImages"

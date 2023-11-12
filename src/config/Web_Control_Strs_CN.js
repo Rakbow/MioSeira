@@ -13,10 +13,17 @@ export const CnText = {
     ExpandAll: '全部展开',
     CollapseAll: '全部折叠',
     FullScreen: '全屏',
+    Whole: '全部',
     //endregion
 
+    Unknown: '未知',
+    Name: '名称(原)',
     NameZh: '名称(中)',
     NameEn: '名称(英)',
+    Aliases: '别名',
+    Gender: '性别',
+    BirthDate: '生日',
+    Detail: '详情',
 
     Username: '用户名',
     Password: '密码',
@@ -52,6 +59,7 @@ export const CnText = {
     TotalLength: '总时长',
 
     //region 名词
+    BasicInfo: '基础信息',
     Persons: "相关人员",
     Companies: "相关企业",
     OtherCurrencyUnit: "其他货币",
@@ -281,15 +289,13 @@ export const CnText = {
     personnelRoleEmpty: '未选择角色！',
     personnelMemberEmpty: '未填写相关人员信息！',
 
+    Person: '人物',
 
-
-
-
-
-
-
-
-
+    DataTablePageTemplate: '当前显示第【{first}】至【{last}】条数据，总【{totalRecords}】条数据',
+    SelectedDisplayColumns: '可选显示列',
+    CommonDataTableEmptyInfo: '未检索到符合条件的数据',
+    CommonDataTableLoadingInfo: '加载中',
+    RequiredInfo: '请完善必填项',
 
 
 
@@ -301,6 +307,6 @@ export const CnText = {
         {label: '展示', value: 0},
         {label: '主要', value: 1},
         {label: '其他', value: 2}
-    ]
+    ],
 
 }

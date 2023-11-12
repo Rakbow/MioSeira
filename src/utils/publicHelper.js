@@ -7,4 +7,9 @@ export class PublicHelper {
         document.execCommand("copy");
         document.body.removeChild(aux);
     }
+
+    static deepCopy(object) {
+        return JSON.parse(JSON.stringify(object))
+    }
+
 }

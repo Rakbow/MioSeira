@@ -166,9 +166,9 @@ app.config.globalProperties.$api = API;
 const locale = cookie.get('locale') || 'zh';   // 从 cookie 中获取 locale 值，默认为英文
 
 if (locale === 'en') {
-    app.config.globalProperties.$constant = EnText;
+    app.config.globalProperties.$const = EnText;
 } else if (locale === 'zh') {
-    app.config.globalProperties.$constant = CnText;
+    app.config.globalProperties.$const = CnText;
 }
 
 //endregion

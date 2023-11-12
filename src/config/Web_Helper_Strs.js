@@ -4,6 +4,8 @@ export const API = {
     //region
     DOMAIN: '/',
 
+    GET_META_DATA: '/api/db/get-meta-data',
+
     //region user
     CHECK_USER_AUTHORITY: '/api/user/check-authority',
     LOGIN_PAGE: '/login',
@@ -12,12 +14,21 @@ export const API = {
     VERIFY_CODE: '/api/kaptcha',
     //endregion
 
+    //region
+    PERSON_DETAIL: '/db/person',
+    GET_PERSON_LIST: '/api/db/get-persons',
+    ADD_PERSON: '/api/db/add-person',
+    UPDATE_PERSON: '/api/db/update-person',
+    DELETE_PERSON: '/api/db/delete-person',
+    GET_PERSON_DETAIL: '/api/db/get-person-detail',
+    //endregion
+
     GET_ALBUM_DETAIL: '/api/db/album/get-album-detail',
 
     UPDATE_ITEM_STATUS: '/api/db/update-item-status',
     UPDATE_ITEMS_STATUS: '/api/db/update-items-status',
     LIKE_ITEM: '/api/db/like',
-    UPDATE_DESCRIPTION: '/api/db/update-item-description',
+    UPDATE_DETAIL: '/api/db/update-item-detail',
     UPDATE_BONUS: '/api/db/update-item-bonus',
     UPDATE_SPECS: '/api/db/update-item-specs',
     UPDATE_COMPANIES: '/api/db/update-item-companies',

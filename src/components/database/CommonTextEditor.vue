@@ -2,16 +2,16 @@
   <BlockUI :blocked="editBlock">
     <MdEditor v-model="text" preview-theme="github"/>
     <div class="text-end mt-3 mb-2">
-      <Button icon="pi pi-times" :label="$constant.Cancel" @click="close"
+      <Button icon="pi pi-times" :label="$const.Cancel" @click="close"
               class="p-button-text"/>
-      <Button icon="pi pi-save" :label="$constant.Save" @click="submit"/>
+      <Button icon="pi pi-save" :label="$const.Save" @click="submit"/>
     </div>
     <Panel>
       <div v-if="images.length > 0">
         <DataTable :value="images" class="p-datatable-sm" striped-rows>
           <template #header>
             <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-              <span class="text-xl text-900 font-bold">{{ $constant.Images }}</span>
+              <span class="text-xl text-900 font-bold">{{ $const.Images }}</span>
             </div>
           </template>
           <Column header-style="width: 5%">
@@ -19,19 +19,19 @@
               <Button icon="pi pi-copy" @click="copyImageUrl(slotProps.data.url)"></Button>
             </template>
           </Column>
-          <Column :header="$constant.Image" header-style="width: 8%">
+          <Column :header="$const.Image" header-style="width: 8%">
             <template #body="slotProps">
               <img :src="slotProps.data.thumbUrl50" :alt="slotProps.data.nameEn"
                    class="edit-image"/>
             </template>
           </Column>
-          <Column field="nameZh" :header="$constant.NameZh" header-style="width: 10%"></Column>
-          <Column field="nameEn" :header="$constant.NameEn" header-style="width: 10%"></Column>
-          <Column field="description" :header="$constant.Description" header-style="width: 20%"></Column>
+          <Column field="nameZh" :header="$const.NameZh" header-style="width: 10%"></Column>
+          <Column field="nameEn" :header="$const.NameEn" header-style="width: 10%"></Column>
+          <Column field="description" :header="$const.Description" header-style="width: 20%"></Column>
         </DataTable>
       </div>
       <div v-else>
-        <span class="emptyInfo"><em>{{ $constant.NoImage }}</em></span>
+        <span class="emptyInfo"><em>{{ $const.NoImage }}</em></span>
       </div>
     </Panel>
   </BlockUI>
@@ -76,7 +76,7 @@ const submit = () => {
   };
 
   if (type.value === 'desc') {
-    url = API.UPDATE_DESCRIPTION;
+    url = API.UPDATE_DETAIL;
   } else if (type.value === 'bonus') {
     url = API.UPDATE_BONUS;
   }

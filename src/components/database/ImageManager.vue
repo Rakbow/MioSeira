@@ -3,7 +3,7 @@
     <Panel>
       <template #header>
         <i class="pi pi-plus-circle mr-2" style="font-size: 2rem"></i>
-        <b>{{$constant.Add}}</b>
+        <b>{{$const.Add}}</b>
       </template>
       <div class="grid">
         <div class="col-5">
@@ -185,7 +185,7 @@
   import {API} from '@/config/Web_Helper_Strs';
   import {AxiosHelper} from "@/utils/axiosHelper";
 
-  const $constant = getCurrentInstance().appContext.config.globalProperties.$constant;
+  const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
   const toast = useToast();
   const itemImageInfo = ref({
@@ -215,7 +215,7 @@
   const expandedRows = ref([]);
 
   const onUpload = (ev) => {
-    toast.add({severity: 'info', summary: 'Success', detail: $constant.ImageUploadSuccess, life: 3000});
+    toast.add({severity: 'info', summary: 'Success', detail: $const.ImageUploadSuccess, life: 3000});
   }
   const imgRowReorder = (ev) => {
     itemImageInfo.value.images = ev.value;
