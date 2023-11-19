@@ -8,6 +8,7 @@ export const CnText = {
     Delete: '删除',
     Cancel: '取消',
     Update: '更新',
+    Commit: '提交',
     Clear: '清空',
     Refresh: '刷新',
     ExpandAll: '全部展开',
@@ -15,6 +16,10 @@ export const CnText = {
     FullScreen: '全屏',
     Whole: '全部',
     //endregion
+
+    Type: '类型',
+
+    UploadTime: '上传时间',
 
     Unknown: '未知',
     Name: '名称(原)',
@@ -297,16 +302,26 @@ export const CnText = {
     CommonDataTableLoadingInfo: '加载中',
     RequiredInfo: '请完善必填项',
 
+    //region image
 
-
-
-
-
-
-    imageTypes: [
+    ConfirmDeleteImage: '确定删除所选的图片？',
+    PleaseSelectImageType: '选择图片类型',
+    NotImageSelected: '还未选择图片',
+    UploadImage: '上传图片',
+    ImageInvalidFileSizeMessage: '{0}大小已超过{1}',
+    ImageNameZh: '图片名(中)',
+    ImageNameEn: '图片名(英)',
+    ImageTypes: [
         {label: '展示', value: 0},
         {label: '主要', value: 1},
         {label: '其他', value: 2}
     ],
+    //endregion
+
+
+
+
+
+
 
 }

@@ -3,7 +3,7 @@
     <Panel>
       <template #header>
         <i class="pi pi-plus-circle mr-2" style="font-size: 2rem"></i>
-        <b>{{$const.Add}}</b>
+        <b>{{ $const.Add }}</b>
       </template>
       <div class="grid">
         <div class="col-5">
@@ -14,52 +14,52 @@
                   :customUpload="true"
                   accept="image/*"
                   :auto="true"
-                  chooseLabel="上传图片"
+                  :chooseLabel="$const.UploadImage"
                   :maxFileSize="2000000" :previewWidth="100"
-                  invalidFileDizeMessage="{0}大小已超过{1}"
+                  :invalidFileSizeMessage="$const.ImageInvalidFileSizeMessage"
                   @uploader="onUpload"
                   @select="selectFile" />
             </div>
             <div class="col-6 text-end">
               <Button class="ml-2 p-button-text" icon="pi pi-trash"
-                        label="清空所选" @click="clearUploadedImage" />
+                        :label="$const.Clear" @click="clearUploadedImage" />
             </div>
           </div>
           <div class="formgrid grid mt-2">
             <div class="field col-6">
               <div class="p-inputgroup">
-                                                <span class="p-inputgroup-addon">
-                                                    <i class="pi pi-image"></i>
-                                                </span>
-                <InputText v-model="imageInfo.nameZh" placeholder="图片名(中)" />
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-image" />
+                </span>
+                <InputText v-model="imageInfo.nameZh" :placeholder="$const.ImageNameZh" />
               </div>
             </div>
             <div class="field col-6">
               <div class="p-inputgroup">
-                                                <span class="p-inputgroup-addon">
-                                                    <i class="pi pi-image"></i>
-                                                </span>
-                <InputText v-model="imageInfo.nameEn" placeholder="图片名(英)" />
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-image" />
+                </span>
+                <InputText v-model="imageInfo.nameEn" :placeholder="$const.ImageNameEn" />
               </div>
             </div>
             <div class="field col-6">
-              <Dropdown v-model="imageInfo.type" :options="imageTypes" option-label="label"
-                          option-value="value" placeholder="选择图片类型"
+              <Dropdown v-model="imageInfo.type" :options="$const.ImageTypes" option-label="label"
+                          option-value="value" :placeholder="$const.PleaseSelectImageType"
                           style="width: 224px" />
             </div>
             <div class="field col-6">
               <Textarea v-model="imageInfo.description" rows="1" cols="20"
-                          :auto-resize="true" placeholder="图片描述"
+                          :auto-resize="true" :placeholder="$const.Description"
                           style="width: 224px" />
             </div>
           </div>
           <div class="formgrid grid mt-2">
             <div class="field col" align="left">
-              <Button label="新增图片" icon="pi pi-save"
+              <Button :label="$const.Add" icon="pi pi-save"
                         @click="save2imageInfos" />
             </div>
             <div class="field col" align="right">
-              <Button label="提交新增" icon="pi pi-save"
+              <Button :label="$const.Commit" icon="pi pi-save"
                         @click="submitImages" class="p-button-success" />
             </div>
           </div>
@@ -69,9 +69,9 @@
         </div>
         <div class="col-5">
           <div class="field">
-            <span v-if=" imageHtml == '' " class="emptyInfo">还未选择图片</span>
+            <span v-if=" imageHtml === '' " class="emptyInfo">{{ $const.NotImageSelected }}</span>
             <section>
-              <div id="imgBox" v-html="imageHtml"></div>
+              <div id="imgBox" v-html="imageHtml" />
             </section>
           </div>
         </div>
@@ -80,9 +80,9 @@
     <Panel>
       <template #header>
         <i class="pi pi-pencil mr-2" style="font-size: 2rem"></i>
-        <b>编辑</b>
+        <b>{{ $const.Edit }}</b>
       </template>
-      <div v-if="itemImageInfo.images.length != 0">
+      <div v-if="itemImageInfo.images.length !== 0">
         <DataTable :value="itemImageInfo.images" class="p-datatable-sm"
                      @row-reorder="imgRowReorder" edit-mode="row" striped-rows
                      v-model:editing-rows="editingImages" @row-edit-save="imgRowEditSave"
@@ -95,7 +95,7 @@
           <Column selection-mode="multiple" header-style="width: 4%"></Column>
           <Column :row-reorder="true" header-style="width: 3%"></Column>
           <Column :expander="true" headerStyle="width: 3%"></Column>
-          <Column header="图片" header-style="width: 8%">
+          <Column :header="$const.Image" header-style="width: 8%">
             <template #body="slotProps">
               <img :src="slotProps.data.thumbUrl50" :alt="slotProps.data.nameEn"
                    class="edit-image"/>
@@ -106,26 +106,26 @@
           <!--                                {{slotProps.data.url.substr(22)}}-->
           <!--                            </template>-->
           <!--                        </p-column>-->
-          <Column field="nameZh" header="名(中)" header-style="width: 25%">
+          <Column field="nameZh" :header="$const.ImageNameZh" header-style="width: 25%">
             <template #editor="{ data, field }">
               <InputText v-model="data[field]" autofocus style="width: 240px" />
             </template>
           </Column>
-          <Column field="nameEn" header="名(英)" header-style="width: 25%">
+          <Column field="nameEn" :header="$const.ImageNameEn" header-style="width: 25%">
             <template #editor="{ data, field }">
               <InputText v-model="data[field]" autofocus style="width: 240px" />
             </template>
           </Column>
-          <Column field="type" header="类型" header-style="width: 8%">
+          <Column field="type" :header="$const.Type" header-style="width: 8%">
             <template #editor="{ data, field }">
-              <Dropdown v-model="data[field]" :options="imageTypes" option-label="label"
-                          option-value="value" placeholder="图片类型" />
+              <Dropdown v-model="data[field]" :options="$const.ImageTypes" option-label="label"
+                          option-value="value" :placeholder="$const.Type" />
             </template>
             <template #body="slotProps">
-              {{getImageTypeLabel(slotProps.data.type)}}
+              {{ getImageTypeLabel(slotProps.data.type) }}
             </template>
           </Column>
-          <Column field="description" header="描述" header-style="width: 17%">
+          <Column field="description" :header="$const.Description" header-style="width: 17%">
             <template #editor="{ data, field }">
               <InputText v-model="data[field]" autofocus style="width: 180px" />
             </template>
@@ -136,7 +136,7 @@
               <table class="table-borderless table-sm">
                 <tbody class="detail-item-artists-table">
                 <tr>
-                  <td width="120px"><strong>上传时间</strong></td>
+                  <td width="120px"><strong>{{ $const.UploadTime }}</strong></td>
                   <td>
                     {{slotProps.data.uploadTime}}
                   </td>
@@ -154,26 +154,26 @@
         </DataTable>
       </div>
       <div v-else>
-        <span class="emptyInfo"><em>暂无图片</em></span>
+        <span class="emptyInfo"><em>{{ $const.NoImage }}</em></span>
       </div>
     </Panel>
   </BlockUI>
   <div class="text-end mt-3">
-    <Button icon="pi pi-times" label="取消" @click="closeImageEditDialog"
+    <Button icon="pi pi-times" :label="$const.Cancel" @click="closeImageEditDialog"
               class="p-button-text" :disabled="editBlock" />
-    <Button v-if="itemImageInfo.images.length != 0"
-              icon="pi pi-save" label="提交更新" @click="updateImage" :disabled="editBlock" />
+    <Button v-if="itemImageInfo.images.length !== 0"
+              icon="pi pi-save" :label="$const.Commit" @click="updateImage" :disabled="editBlock" />
   </div>
-  <Dialog :modal="true" v-model:visible="deleteImageDialog" header="删除图片"
+  <Dialog :modal="true" v-model:visible="deleteImageDialog" :header="$const.Delete"
             :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
     <div class="confirmation-content">
       <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-      <span>确定删除所选的图片？</span>
+      <span>{{ $const.ConfirmDeleteImage }}</span>
     </div>
     <template #footer>
-      <Button label="取消" icon="pi pi-times" class="p-button-text"
+      <Button :label="$const.Cancel" icon="pi pi-times" class="p-button-text"
                 @click="cancelDeleteSelectedImage" />
-      <Button label="确认删除" icon="pi pi-check" class="p-button-text"
+      <Button :label="$const.Delete" icon="pi pi-check" class="p-button-text"
                 @click="deleteImage" />
     </template>
   </Dialog>
@@ -181,25 +181,36 @@
 
 <script setup>
   import { useToast } from 'primevue/usetoast';
-  import {ref, getCurrentInstance} from "vue";
+  import {ref, getCurrentInstance, defineProps, inject, onMounted, onBeforeMount} from "vue";
   import {API} from '@/config/Web_Helper_Strs';
   import {AxiosHelper} from "@/utils/axiosHelper";
+  import {PublicHelper} from "@/utils/publicHelper";
+  import {useRoute} from "vue-router";
 
+  const dialogRef = inject("dialogRef");
+  const route = useRoute();
   const $const = getCurrentInstance().appContext.config.globalProperties.$const;
-
   const toast = useToast();
-  const itemImageInfo = ref({
-    images: [],
-    cover: {},
-    displayImages: [],
-    otherImages: []
+  const entityType = ref();
+  const entityId = ref();
+
+  onBeforeMount(() => {
+    itemImageInfo.value = dialogRef.value.data.itemImageInfo;
   });
-  const detailInfo = ref({});
+
+  onMounted(() => {
+    getEntityInfo();
+  });
+
+  const getEntityInfo = () => {
+    let typeName = route.path.split('/')[2];
+    entityType.value = PublicHelper.getEntityType(typeName);
+    entityId.value = route.params.id;
+  }
+
+  const itemImageInfo = ref();
   const editBlock = ref(false);
   const editingImages = ref([]);
-  const activeIndex = ref(0);
-  const displayCustom = ref(false);
-  const galleriaItemClass = ref('');
   const selectedImage = ref([]);
   const deleteImageDialog = ref(false);
   const  imageInfo = ref({
@@ -210,11 +221,14 @@
     type: 0
   });
   const imageInfos = ref([]);
-  const displayImageEditDialog = ref(false);
   const imageHtml = ref('');
   const expandedRows = ref([]);
 
-  const onUpload = (ev) => {
+  const getImageTypeLabel = (type) => {
+    return PublicHelper.value2Label(type, $const.ImageTypes);
+  };
+
+  const onUpload = () => {
     toast.add({severity: 'info', summary: 'Success', detail: $const.ImageUploadSuccess, life: 3000});
   }
   const imgRowReorder = (ev) => {
@@ -224,16 +238,12 @@
     let {newData, index} = ev;
     itemImageInfo.value.images[index] = newData;
   };
-  const imageClick = (index) => {
-    activeIndex.value = index;
-    displayCustom.value = true;
-  };
 
   const updateImage = () => {
     editBlock.value = true;
     let json = {
-      entityType: detailInfo.value.entityType,
-      entityId: detailInfo.value.id,
+      entityType: entityType.value,
+      entityId: entityId.value,
       images: itemImageInfo.value.images,
       action: "1"
     };
@@ -259,8 +269,8 @@
   const deleteImage = () => {
     editBlock.value = true;
     let json = {
-      entityType: detailInfo.value.entityType,
-      entityId: detailInfo.value.id,
+      entityType: entityType.value,
+      entityId: entityId.value,
       images: selectedImage.value,
       action: "2"
     };
@@ -287,8 +297,8 @@
       type: 0
     };
     imageInfos.value = [];
-    this.dialogRef.close();
     document.getElementById("imgBox").innerHTML = "";
+    dialogRef.value.close();
   };
   const showImage = () => {
     imageHtml.value = "";
@@ -312,60 +322,60 @@
   const selectFile = (ev) => {
     imageInfo.value.image = ev.files[0];
   };
-  const checkImageInfo = (ev) => {
-    if (typeof this.imageInfo.description == "undefined") {
+  const checkImageInfo = () => {
+    if (typeof imageInfo.value.description == "undefined") {
       imageInfo.description = "";
     }
-    if (this.imageInfo.image === null) {
-      this.toast.add({severity: 'error', summary: 'Error', detail: IMAGE_EMPTY_EXCEPTION, life: 3000});
+    if (imageInfo.value.image === null) {
+      toast.add({severity: 'error', summary: 'Error', detail: IMAGE_EMPTY_EXCEPTION, life: 3000});
     }
-    if (typeof this.imageInfo.nameZh == "undefined") {
-      this.toast.add({severity: 'error', summary: 'Error', detail: IMAGE_NAME_ZH_EMPTY_EXCEPTION, life: 3000});
+    if (typeof imageInfo.value.nameZh == "undefined") {
+      toast.add({severity: 'error', summary: 'Error', detail: IMAGE_NAME_ZH_EMPTY_EXCEPTION, life: 3000});
       return false;
     }
-    if (typeof this.imageInfo.nameEn == "undefined") {
-      this.toast.add({severity: 'error', summary: 'Error', detail: IMAGE_NAME_EN_EMPTY_EXCEPTION, life: 3000});
+    if (typeof imageInfo.value.nameEn == "undefined") {
+      toast.add({severity: 'error', summary: 'Error', detail: IMAGE_NAME_EN_EMPTY_EXCEPTION, life: 3000});
       return false;
     }
-    if (typeof this.imageInfo.type == "undefined") {
-      this.toast.add({severity: 'error', summary: 'Error', detail: IMAGE_TYPE_EMPTY_EXCEPTION, life: 3000});
+    if (typeof imageInfo.value.type == "undefined") {
+      toast.add({severity: 'error', summary: 'Error', detail: IMAGE_TYPE_EMPTY_EXCEPTION, life: 3000});
       return false;
     }
     return true;
-  },
-  save2imageInfos() {
-    if (this.checkImageInfo()) {
-      this.imageInfos.push(this.imageInfo);
-      this.showImage();
-      this.imageInfo = {};
+  };
+  const save2imageInfos = () => {
+    if (checkImageInfo()) {
+      imageInfos.value.push(imageInfo.value);
+      showImage();
+      imageInfo.value = {};
     }
-  },
-  clearUploadedImage() {
-    this.imageInfos = [];
+  };
+  const clearUploadedImage = () => {
+    imageInfos.value = [];
     document.getElementById("imgBox").innerHTML = "";
-  },
-  submitImages() {
-    this.editBlock = true;
+  };
+  const submitImages = () => {
+    editBlock.value = true;
     const formData = new FormData();
-    for (const img of this.imageInfos) {
+    for (const img of imageInfos.value) {
       formData.append("images", img.image);
     }
-    formData.append("entityType", this.detailInfo.entityType);
-    formData.append("entityId", this.detailInfo.id);
-    formData.append("imageInfos", JSON.stringify(this.imageInfos));
+    formData.append("entityType", entityType.value);
+    formData.append("entityId", entityId.value);
+    formData.append("imageInfos", JSON.stringify(imageInfos.value));
 
-    HttpUtil.formPost(this.toast, this.editBlock, INSERT_IMAGES_URL, formData)
+    AxiosHelper.form(toast, editBlock.value, API.INSERT_IMAGES_URL, formData)
         .then(res => {
           if (res.state === 1) {
-            this.closeImageEditDialog();
-            location.reload(true);
+            closeImageEditDialog();
+            location.reload();
           }else {
-            this.editBlock = false;
+            editBlock.value = false;
           }
         }).catch(err => {
       console.error(err);
     });
-  },
+  };
 
 </script>
 

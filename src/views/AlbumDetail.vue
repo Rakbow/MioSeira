@@ -150,8 +150,7 @@
             <!-- tracks info -->
             <TrackInfo :info="album.trackInfo" :catalogNo="album.catalogNo" />
             <!-- description -->
-            <DescriptionPad :entityType="detailInfo.entityType" :entityId="detailInfo.id"
-                            :text="detailInfo.description" :images="itemImageInfo.images" />
+            <DescriptionPad :header="$const.Description" :text="detailInfo.description" :images="itemImageInfo.images" />
             <!-- bonus -->
             <BonusPad id="bonus" v-if="album.hasBonus" :entityType="detailInfo.entityType" :entityId="detailInfo.id"
                       :text="album.bonus" :images="itemImageInfo.images" />

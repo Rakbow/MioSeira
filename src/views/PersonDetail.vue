@@ -105,8 +105,7 @@ onBeforeMount(() => {
           </div>
           <div class="detail-item-field">
             <!-- description -->
-            <DescriptionPad :entityType="8" :entityId="item.id"
-                            :text="item.detail"  :header="$const.Detail"/>
+            <DescriptionPad :header="$const.Detail" :text="item.detail" />
             <!-- bonus -->
           </div>
         </template>

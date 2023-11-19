@@ -1,11 +1,19 @@
 <script setup>
-import { ref, defineProps } from 'vue';
+import {ref, defineProps, defineAsyncComponent, getCurrentInstance} from 'vue';
+import { useDialog } from 'primevue/usedialog';
+const imageManager = defineAsyncComponent(() => import('@/components/database/ImageManager.vue'));
+const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
+const dialog = useDialog();
 const props = defineProps({
   images: {
     type: Object,
+    required: true,
     default: () => ({
-      displayImages: []
+      images: [],
+      cover: {},
+      displayImages: [],
+      otherImages: []
     })
   }
 });
@@ -35,17 +43,46 @@ const responsiveOptions = [
     numVisible: 1
   }
 ];
+
+const openEditDialog = () => {
+  dialog.open(imageManager, {
+    props: {
+      header: $const.Images,
+      style: {
+        width: '80vw',
+      },
+      breakpoints:{
+        '960px': '80vw',
+        '640px': '70vw'
+      },
+      modal: true,
+      closable: false
+    },
+    data: {
+      itemImageInfo: props.images
+    }
+    // onClose: (options) => {
+    //   if(options.data !== undefined) {
+    //     if(options.data.isUpdate) {
+    //       text.value = options.data.text;
+    //       text2Markdown();
+    //     }
+    //   }
+    // }
+  });
+}
+
 </script>
 
 <template>
   <Panel class="mt-2">
     <template #header>
       <span class="text-start side-panel-header">
-          <i class="pi pi-images"></i><span><strong>{{ $const.Image }}</strong></span>
+          <i class="pi pi-images"></i><span><strong>{{ $const.Images }}</strong></span>
+        <Button icon="pi pi-pencil" @click="openEditDialog"></Button>
       </span>
     </template>
     <i v-if="images.displayImages.length === 0" class="rkw-side-empty-info">{{ $const.NoImage }}</i>
-
     <div class="card flex justify-content-center">
       <Galleria v-if="images.displayImages" :value="images.displayImages"
                 v-model:activeIndex="activeIndex" :responsiveOptions="responsiveOptions"
@@ -83,13 +120,12 @@ const responsiveOptions = [
                draggable="false"
                oncontextmenu="return false"
                v-tooltip.bottom="{value: '上传于 ' + image.uploadTime, class: 'image-tooltip'}"
-               @click="imageClick(index)" alt=""/>
+               @click="imageClick(index)" alt="" />
         </div>
       </div>
       <ScrollTop target="parent" :threshold="100" class="search-scrolltop"
-                   icon="pi pi-arrow-up"></ScrollTop>
+                   icon="pi pi-arrow-up" />
     </ScrollPanel>
-
     <br>
     <b class="rbot"><b></b></b>
   </Panel>
