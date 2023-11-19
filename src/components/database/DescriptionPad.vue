@@ -41,14 +41,6 @@ const props = defineProps({
     type: String,
     required: true
   },
-  entityType: {
-    type: Number,
-    required: true
-  },
-  entityId: {
-    type: Number,
-    required: true
-  },
   images: {
     type: Array,
     required: false,
@@ -83,9 +75,7 @@ const openEditDialog = () => {
     data: {
       text: text.value,
       type: 'desc',
-      images: props.images,
-      entityType: props.entityType,
-      entityId: props.entityId,
+      images: props.images
     },
     onClose: (options) => {
       if(options.data !== undefined) {

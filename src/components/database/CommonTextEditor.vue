@@ -39,12 +39,13 @@
 
 <script setup>
 import {MdEditor} from "md-editor-v3";
-import {onMounted, ref, inject, defineEmits} from "vue";
+import {onMounted, ref, inject} from "vue";
 import {PublicHelper} from '@/utils/publicHelper';
 import {AxiosHelper} from '@/utils/axiosHelper';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
 import {API} from '@/config/Web_Helper_Strs';
+import { useRoute } from 'vue-router';
 
 const toast = useToast();
 const dialog = useDialog();
@@ -54,12 +55,22 @@ const type = ref('');
 const images = ref([]);
 // const emit = defineEmits(['update']);
 const isUpdate = ref(false);
+const route = useRoute();
 
 onMounted(() => {
   text.value = dialogRef.value.data.text;
   type.value = dialogRef.value.data.type;
   images.value = dialogRef.value.data.images;
+  getEntityInfo();
 });
+
+const entityType = ref();
+const entityId = ref();
+const getEntityInfo = () => {
+  let typeName = route.path.split('/')[2];
+  entityType.value = PublicHelper.getEntityType(typeName);
+  entityId.value = route.params.id;
+}
 
 const editBlock = ref(false);
 const copyImageUrl = (url) => {
@@ -70,8 +81,8 @@ const submit = () => {
   editBlock.value = true;
   let url;
   let json = {
-    entityType: dialogRef.value.data.entityType,
-    entityId: dialogRef.value.data.entityId,
+    entityType: entityType.value,
+    entityId: entityId.value,
     text: text.value
   };
 
