@@ -15,6 +15,13 @@ export const API = {
     //endregion
 
     //region
+
+    ADD_IMAGES: '/api/db/add-images',
+    UPDATE_IMAGES: '/api/db/update-images',
+
+    //endregion
+
+    //region
     PERSON_DETAIL: '/db/person',
     GET_PERSON_LIST: '/api/db/get-persons',
     ADD_PERSON: '/api/db/add-person',
@@ -33,8 +40,6 @@ export const API = {
     UPDATE_SPECS: '/api/db/update-item-specs',
     UPDATE_COMPANIES: '/api/db/update-item-companies',
     UPDATE_PERSONNEL: '/api/db/update-item-personnel',
-    INSERT_IMAGES: '/api/db/add-images',
-    UPDATE_IMAGES: '/api/db/update-images',
 
     //endregion
 

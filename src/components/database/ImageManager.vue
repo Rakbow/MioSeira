@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <BlockUI :blocked="editBlock">
     <Panel>
       <template #header>
@@ -183,9 +184,11 @@
   import { useToast } from 'primevue/usetoast';
   import {ref, getCurrentInstance, defineProps, inject, onMounted, onBeforeMount} from "vue";
   import {API} from '@/config/Web_Helper_Strs';
+  import {META} from '@/config/Web_Const';
   import {AxiosHelper} from "@/utils/axiosHelper";
   import {PublicHelper} from "@/utils/publicHelper";
   import {useRoute} from "vue-router";
+  import _ from 'lodash';
 
   const dialogRef = inject("dialogRef");
   const route = useRoute();
@@ -245,7 +248,7 @@
       entityType: entityType.value,
       entityId: entityId.value,
       images: itemImageInfo.value.images,
-      action: "1"
+      action: META.ACTION.UPDATE
     };
     AxiosHelper.post(API.UPDATE_IMAGES, json)
         .then(res => {
@@ -253,6 +256,7 @@
             closeImageEditDialog();
             location.reload();
           }else {
+            toast.add({severity: 'error', detail: res.message, life: 3000});
             editBlock.value = false;
           }
         }).catch(err => {
@@ -272,7 +276,7 @@
       entityType: entityType.value,
       entityId: entityId.value,
       images: selectedImage.value,
-      action: "2"
+      action: META.ACTION.REAL_DELETE
     };
     AxiosHelper.post(API.UPDATE_IMAGES, json)
         .then(res => {
@@ -282,6 +286,7 @@
             selectedImage.value = [];
             location.reload();
           }else {
+            toast.add({severity: 'error', detail: res.message, life: 3000});
             editBlock.value = false;
           }
         }).catch(err => {
@@ -323,22 +328,22 @@
     imageInfo.value.image = ev.files[0];
   };
   const checkImageInfo = () => {
-    if (typeof imageInfo.value.description == "undefined") {
-      imageInfo.description = "";
+    if (_.isEmpty(imageInfo.value.description)) {
+      imageInfo.value.description = "";
     }
-    if (imageInfo.value.image === null) {
-      toast.add({severity: 'error', summary: 'Error', detail: IMAGE_EMPTY_EXCEPTION, life: 3000});
+    if (_.isEmpty(imageInfo.value.image)) {
+      toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageSelected, life: 3000});
     }
-    if (typeof imageInfo.value.nameZh == "undefined") {
-      toast.add({severity: 'error', summary: 'Error', detail: IMAGE_NAME_ZH_EMPTY_EXCEPTION, life: 3000});
+    if (_.isEmpty(imageInfo.value.nameZh)) {
+      toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageNameZh, life: 3000});
       return false;
     }
-    if (typeof imageInfo.value.nameEn == "undefined") {
-      toast.add({severity: 'error', summary: 'Error', detail: IMAGE_NAME_EN_EMPTY_EXCEPTION, life: 3000});
+    if (_.isEmpty(imageInfo.value.nameEn)) {
+      toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageNameEn, life: 3000});
       return false;
     }
-    if (typeof imageInfo.value.type == "undefined") {
-      toast.add({severity: 'error', summary: 'Error', detail: IMAGE_TYPE_EMPTY_EXCEPTION, life: 3000});
+    if (_.isNil(imageInfo.value.type)) {
+      toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageType, life: 3000});
       return false;
     }
     return true;
@@ -364,12 +369,13 @@
     formData.append("entityId", entityId.value);
     formData.append("imageInfos", JSON.stringify(imageInfos.value));
 
-    AxiosHelper.form(toast, editBlock.value, API.INSERT_IMAGES_URL, formData)
+    AxiosHelper.form(API.ADD_IMAGES, formData)
         .then(res => {
           if (res.state === 1) {
             closeImageEditDialog();
             location.reload();
           }else {
+            toast.add({severity: 'error', detail: res.message, life: 3000});
             editBlock.value = false;
           }
         }).catch(err => {

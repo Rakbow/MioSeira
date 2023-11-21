@@ -29,7 +29,7 @@ onBeforeMount(() => {
 
 <template>
   <div id="main" class="grid mt-2">
-    <Toast></Toast>
+    <Toast />
     <div class="detail-card col-8 lg:col-offset-1">
       <Card>
         <template #title>
