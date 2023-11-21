@@ -27,7 +27,7 @@ export const DATABASE_ROUTER = [
         beforeEnter: async (to, from, next) => {
             try {
                 const res = await AxiosHelper.post(API.GET_PERSON_DETAIL, {id: to.params.id});
-                if (res.state === 1) {
+                if (res.state === AxiosHelper.SUCCESS) {
                     to.meta.info = res.data;
 
                     document.title = res.data.item.name;
@@ -51,7 +51,7 @@ export const DATABASE_ROUTER = [
         beforeEnter: async (to, from, next) => {
             try {
                 const res = await AxiosHelper.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
-                if (res.state === 1) {
+                if (res.state === AxiosHelper.SUCCESS) {
                     to.meta.info = res.data;
 
                     document.title = res.data.album.name;

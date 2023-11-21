@@ -3,6 +3,10 @@ axios.defaults.withCredentials = true;
 
 //axios封装post请求
 export class AxiosHelper {
+
+    static SUCCESS = 1;
+    static ERROR = 0;
+
     static post(url, data) {
         return axios({
             method: 'post',

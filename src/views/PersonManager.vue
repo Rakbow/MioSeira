@@ -2,7 +2,7 @@
 import {onMounted, ref} from "vue";
 import {getCurrentInstance} from "vue";
 import { FilterMatchMode } from 'primevue/api';
-import {AxiosHelper as axiosHelper} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import {PublicHelper} from "@/utils/publicHelper";
 
@@ -40,7 +40,7 @@ const queryParams = ref({});
 const option = ref({});
 
 const initData = async () => {
-  const res = await axiosHelper.post($api.GET_META_DATA, null);
+  const res = await axios.post($api.GET_META_DATA, null);
   option.value.genderSet = res.data.genderSet;
   option.value.linkTypeSet = res.data.linkTypeSet;
 }
@@ -79,8 +79,8 @@ const getItems = async () => {
   let json = {
     queryParams: queryParams.value
   }
-  const res = await axiosHelper.post($api.GET_PERSON_LIST, json);
-  if (res.state === 1) {
+  const res = await axios.post($api.GET_PERSON_LIST, json);
+  if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total
   } else {
@@ -123,8 +123,8 @@ const confirmDeleteSelected = () => {
 
 const submitAddItem = async () => {
   loading.value = true;
-  const res = await axiosHelper.post($api.ADD_PERSON, itemAdd.value);
-  if (res.state === 1) {
+  const res = await axios.post($api.ADD_PERSON, itemAdd.value);
+  if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeAddDialog();
     await getItems();
@@ -136,8 +136,8 @@ const submitAddItem = async () => {
 
 const submitEditItem = async () => {
   loading.value = true;
-  const res = await axiosHelper.post($api.UPDATE_PERSON, itemEdit.value);
-  if (res.state === 1) {
+  const res = await axios.post($api.UPDATE_PERSON, itemEdit.value);
+  if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeEditDialog();
     await getItems();

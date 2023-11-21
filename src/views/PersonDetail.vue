@@ -7,7 +7,7 @@ import TrafficInfo from "@/components/database/TrafficInfo.vue";
 
 import {onBeforeMount, onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
-import {AxiosHelper} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 
 const router = useRouter();
