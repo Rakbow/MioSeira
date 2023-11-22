@@ -3,7 +3,9 @@ import {ref, defineProps, defineAsyncComponent, getCurrentInstance} from 'vue';
 import { useDialog } from 'primevue/usedialog';
 const imageManager = defineAsyncComponent(() => import('@/components/database/ImageManager.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+import {useUserStore} from "@/store/user";
 
+const userStore = useUserStore();
 const dialog = useDialog();
 const props = defineProps({
   images: {
@@ -78,10 +80,18 @@ const openEditDialog = () => {
   <Panel class="mt-2">
     <template #header>
       <span class="text-start side-panel-header">
-          <i class="pi pi-images"></i><span><strong>{{ $const.Images }}</strong></span>
-        <Button icon="pi pi-pencil" @click="openEditDialog"></Button>
+          <i class="pi pi-images" /><span><strong>{{ $const.Images }}</strong></span>
       </span>
     </template>
+    <template #icons>
+      <div v-if="userStore.user">
+        <Button v-if="userStore.user.type === 0 || userStore.user.type > 1" class="p-panel-header-icon p-link mr-2"
+                @click="openEditDialog" v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
+          <span class="pi pi-cog" />
+        </Button>
+      </div>
+    </template>
+
     <i v-if="images.displayImages.length === 0" class="rkw-side-empty-info">{{ $const.NoImage }}</i>
     <div class="card flex justify-content-center">
       <Galleria v-if="images.displayImages" :value="images.displayImages"
@@ -97,14 +107,14 @@ const openEditDialog = () => {
           <div class="custom-galleria-footer">
             <div class="col-6">-
               <span v-if="images.displayImages" class="title-container">
-                <span>共{{images.displayImages.length}}张</span>
-                <span class="title">{{item.nameZh}}</span>
-                <span style="font-size: 10px">{{item.description}}</span>
+                <span>{{ `${activeIndex+1}/${images.displayImages.length}` }}</span>
+                <span class="title">{{ item.nameZh }}</span>
+                <span style="font-size: 10px">{{ item.description }}</span>
             </span>
             </div>
             <div class="col-6 text-end">
             <span v-if="images.displayImages">
-                <span>上传于 {{item.uploadTime}}</span>
+                <span>{{ $const.UploadIn + item.uploadTime }}</span>
             </span>
             </div>
           </div>
@@ -119,12 +129,12 @@ const openEditDialog = () => {
           <img class="sidebar-panel-image-middle" :src="image.thumbUrl"
                draggable="false"
                oncontextmenu="return false"
-               v-tooltip.bottom="{value: '上传于 ' + image.uploadTime, class: 'image-tooltip'}"
+               v-tooltip.bottom="{value: $const.UploadIn + image.uploadTime, class: 'image-tooltip'}"
                @click="imageClick(index)" alt="" />
         </div>
       </div>
       <ScrollTop target="parent" :threshold="100" class="search-scrolltop"
-                   icon="pi pi-arrow-up" />
+                 icon="pi pi-arrow-up" />
     </ScrollPanel>
     <br>
     <b class="rbot"><b></b></b>

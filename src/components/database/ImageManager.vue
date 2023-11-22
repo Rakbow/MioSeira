@@ -55,11 +55,11 @@
             </div>
           </div>
           <div class="formgrid grid mt-2">
-            <div class="field col" align="left">
+            <div class="field col" style="text-align: left">
               <Button :label="$const.Add" icon="pi pi-save"
                       @click="save2imageInfos"/>
             </div>
-            <div class="field col" align="right">
+            <div class="field col" style="text-align: right">
               <Button :label="$const.Commit" icon="pi pi-save"
                       @click="submitImages" class="p-button-success"/>
             </div>
@@ -137,13 +137,13 @@
               <table class="table-borderless table-sm">
                 <tbody class="detail-item-artists-table">
                 <tr>
-                  <td width="120px"><strong>{{ $const.UploadTime }}</strong></td>
+                  <td style="width: 120px"><strong>{{ $const.UploadTime }}</strong></td>
                   <td>
                     {{ slotProps.data.uploadTime }}
                   </td>
                 </tr>
                 <tr>
-                  <td width="120px"><strong>URL</strong></td>
+                  <td style="width: 120px"><strong>URL</strong></td>
                   <td>
                     {{ slotProps.data.url.substr(22) }}
                   </td>

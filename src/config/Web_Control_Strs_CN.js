@@ -20,6 +20,7 @@ export const CnText = {
     Type: '类型',
 
     UploadTime: '上传时间',
+    UploadIn: '上传于 ',
 
     Unknown: '未知',
     Name: '名称(原)',
@@ -39,7 +40,6 @@ export const CnText = {
     SignIn: '登录',
     SignOut: '登出',
 
-    ImageUploadSuccess: '图片已上传！',
 
     Category: '分类',
     Franchises: '所属系列',
@@ -303,7 +303,7 @@ export const CnText = {
     RequiredInfo: '请完善必填项',
 
     //region image
-
+    ImageUploadSuccess: '图片已上传！',
     ConfirmDeleteImage: '确定删除所选的图片？',
     PleaseSelectImageType: '选择图片类型',
     NotImageSelected: '还未选择图片',
