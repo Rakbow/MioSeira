@@ -32,7 +32,6 @@ export const API = {
 
     GET_ALBUM_DETAIL: '/api/db/album/get-album-detail',
 
-    UPDATE_ITEM_STATUS: '/api/db/update-item-status',
     UPDATE_ITEMS_STATUS: '/api/db/update-items-status',
     LIKE_ITEM: '/api/db/like',
     UPDATE_DETAIL: '/api/db/update-item-detail',

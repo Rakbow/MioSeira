@@ -134,9 +134,7 @@
                       </tr>
                       </tbody>
                     </table>
-                    <!--                    <div th:insert="~{template/item-detail-template :: item_status_edit}"-->
-                    <!--                         th:if="${loginUser != null}"></div>-->
-                    <!--                    <div th:insert="~{template/item-detail-template :: item_statistic_info}"></div>-->
+                    <StatusEditor :status="detailInfo.status" />
                   </div>
                 </template>
               </Card>
@@ -228,6 +226,7 @@ import PersonsInfo from "@/components/database/PersonsInfo.vue";
 import DescriptionPad from "@/components/database/DescriptionPad.vue";
 import BonusPad from "@/components/database/BonusPad.vue";
 import TrackInfo from "@/components/database/AlbumTrackInfo.vue";
+import StatusEditor from "@/components/database/StatusEditor.vue";
 
 const router = useRouter();
 const toast = useToast();
