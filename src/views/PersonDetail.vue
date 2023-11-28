@@ -9,6 +9,7 @@ import {onBeforeMount, onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
+import StatusEditor from "@/components/database/StatusEditor.vue";
 
 const router = useRouter();
 const toast = useToast();
@@ -95,9 +96,7 @@ onBeforeMount(() => {
                       </tr>
                       </tbody>
                     </table>
-                    <!--                    <div th:insert="~{template/item-detail-template :: item_status_edit}"-->
-                    <!--                         th:if="${loginUser != null}"></div>-->
-                    <!--                    <div th:insert="~{template/item-detail-template :: item_statistic_info}"></div>-->
+                    <StatusEditor :status="item.status" />
                   </div>
                 </template>
               </Card>
