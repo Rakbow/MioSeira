@@ -135,6 +135,7 @@
                       </tbody>
                     </table>
                     <StatusEditor :status="detailInfo.status" />
+                    <ItemLike :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
                   </div>
                 </template>
               </Card>
@@ -227,6 +228,7 @@ import DescriptionPad from "@/components/database/DescriptionPad.vue";
 import BonusPad from "@/components/database/BonusPad.vue";
 import TrackInfo from "@/components/database/AlbumTrackInfo.vue";
 import StatusEditor from "@/components/database/StatusEditor.vue";
+import ItemLike from "@/components/database/ItemLike.vue";
 
 const router = useRouter();
 const toast = useToast();

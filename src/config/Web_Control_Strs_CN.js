@@ -15,6 +15,7 @@ export const CnText = {
     CollapseAll: '全部折叠',
     FullScreen: '全屏',
     Whole: '全部',
+    Like: '点赞',
     //endregion
 
     Type: '类型',
