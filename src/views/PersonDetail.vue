@@ -10,6 +10,7 @@ import {useRouter} from "vue-router";
 import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import StatusEditor from "@/components/database/StatusEditor.vue";
+import ItemLike from "@/components/database/ItemLike.vue";
 
 const router = useRouter();
 const toast = useToast();
@@ -97,6 +98,7 @@ onBeforeMount(() => {
                       </tbody>
                     </table>
                     <StatusEditor :status="item.status" />
+                    <ItemLike :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
                   </div>
                 </template>
               </Card>
