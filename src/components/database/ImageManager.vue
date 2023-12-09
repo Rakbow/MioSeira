@@ -188,7 +188,9 @@ import {META} from '@/config/Web_Const';
 import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {PublicHelper} from "@/utils/publicHelper";
 import {useRoute} from "vue-router";
-import _ from 'lodash';
+import _find from 'lodash/find';
+import _isEmpty from 'lodash/isEmpty';
+import _isNil from 'lodash/isNil';
 
 const dialogRef = inject("dialogRef");
 const route = useRoute();
@@ -306,7 +308,7 @@ const showImage = () => {
     imageHtml.value += `<img src="${img.image.objectURL}" style="max-height: 90px" />`;
     imageHtml.value += '</div>';
     imageHtml.value += '<div class="col-6" style="max-height: 100px">';
-    imageHtml.value += `<span>${$const.Type}: ${_.find($const.ImageTypes, { value: img.type }).label}</span><br>`;
+    imageHtml.value += `<span>${$const.Type}: ${_find($const.ImageTypes, { value: img.type }).label}</span><br>`;
     imageHtml.value += `<span>${$const.ImageNameZh}: ${img.nameZh}</span><br>`;
     imageHtml.value += `<span>${$const.ImageNameEn}: ${img.nameEn}</span><br>`;
     imageHtml.value += `<span>${$const.Description}: ${img.description}</span><br>`;
@@ -320,21 +322,21 @@ const selectFile = (ev) => {
   imageInfo.value.image = ev.files[0];
 };
 const checkImageInfo = () => {
-  if (_.isEmpty(imageInfo.value.description)) {
+  if (_isEmpty(imageInfo.value.description)) {
     imageInfo.value.description = "";
   }
-  if (_.isEmpty(imageInfo.value.image)) {
+  if (_isEmpty(imageInfo.value.image)) {
     toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageSelected, life: 3000});
   }
-  if (_.isEmpty(imageInfo.value.nameZh)) {
+  if (_isEmpty(imageInfo.value.nameZh)) {
     toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageNameZh, life: 3000});
     return false;
   }
-  if (_.isEmpty(imageInfo.value.nameEn)) {
+  if (_isEmpty(imageInfo.value.nameEn)) {
     toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageNameEn, life: 3000});
     return false;
   }
-  if (_.isNil(imageInfo.value.type)) {
+  if (_isNil(imageInfo.value.type)) {
     toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageType, life: 3000});
     return false;
   }
