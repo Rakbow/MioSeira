@@ -1,5 +1,5 @@
 <script setup>
-import ManagerMenu from "@/components/ManagerMenu.vue";
+import ManagerMenu from "@/components/common/ManagerMenu.vue";
 import {getCurrentInstance} from "vue";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 </script>

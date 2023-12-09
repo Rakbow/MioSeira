@@ -23,7 +23,7 @@ export const DATABASE_ROUTER = [
     {
         name: "PersonDetail",
         path: API.PERSON_DETAIL + "/:id",
-        component: () => import('@/views/PersonDetail.vue'),
+        component: () => import('@/views/detail/PersonDetail.vue'),
         beforeEnter: async (to, from, next) => {
             try {
                 const res = await AxiosHelper.post(API.GET_PERSON_DETAIL, {id: to.params.id});
@@ -47,7 +47,7 @@ export const DATABASE_ROUTER = [
     {
         name: "AlbumDetail",
         path: API.ALBUM_DETAIL + "/:id",
-        component: () => import('@/views/AlbumDetail.vue'),
+        component: () => import('@/views/detail/AlbumDetail.vue'),
         beforeEnter: async (to, from, next) => {
             try {
                 const res = await AxiosHelper.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
@@ -70,14 +70,14 @@ export const DATABASE_ROUTER = [
     {
         name: "Manager",
         path: "/db/manager",
-        component: () => import('@/views/Manager.vue'),
+        component: () => import('@/views/manager/Manager.vue'),
         meta: {
             title: "Manager",
         },
         children: [
             {
                 path: 'person',
-                component: () => import('@/views/PersonManager.vue'),
+                component: () => import('@/views/manager/PersonManager.vue'),
             }
         ],
     }

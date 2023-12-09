@@ -31,7 +31,7 @@ import { useDialog } from 'primevue/usedialog';
 import { logout } from '@/logic/login';
 import {useUserStore} from "@/store/user";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
-const Login = defineAsyncComponent(() => import('@/components/Login.vue'));
+const Login = defineAsyncComponent(() => import('@/components/common/Login.vue'));
 
 onMounted(() => {
 

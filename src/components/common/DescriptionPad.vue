@@ -1,8 +1,8 @@
 <template>
   <Fieldset :toggleable="true">
     <template #legend>
-      <span class="material-symbols-outlined fieldset-icon">workspace_premium</span>
-      <b>{{ $const.Bonus }}</b>
+      <span class="material-symbols-outlined fieldset-icon">article</span>
+      <b>{{ props.header }}</b>
     </template>
     <div class="relative">
       <div v-if="userStore.user">
@@ -15,7 +15,7 @@
         </Button>
       </div>
       <Button v-if="!empty" class="p-button-link absolute top-0 right-0" icon="pi pi-external-link" @click="openTextTingle"
-              v-tooltip.bottom="{value: $const.FullScreen, class: 'short-tooltip'}" />
+                v-tooltip.bottom="{value: $const.FullScreen, class: 'short-tooltip'}" />
       <article ref="html" class="markdown-body" />
     </div>
   </Fieldset>
@@ -27,7 +27,7 @@ import {useUserStore} from "@/store/user";
 import {marked} from 'marked';
 import tingle from 'tingle.js';
 import { useDialog } from 'primevue/usedialog';
-const CommonTextEditor = defineAsyncComponent(() => import('@/components/database/CommonTextEditor.vue'));
+const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/CommonTextEditor.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 const empty = ref(false);
@@ -35,18 +35,11 @@ const empty = ref(false);
 const props = defineProps({
   text: {
     type: String,
-    required: true,
-    default: () => ('')
+    required: true
   },
-  entityType: {
-    type: Number,
-    required: true,
-    default: () => (0)
-  },
-  entityId: {
-    type: Number,
-    required: true,
-    default: () => (0)
+  header: {
+    type: String,
+    required: true
   },
   images: {
     type: Array,
@@ -68,7 +61,7 @@ const text = ref('');
 const openEditDialog = () => {
   dialog.open(CommonTextEditor, {
     props: {
-      header: $const.Bonus,
+      header: $const.Description,
       style: {
         width: '80vw',
       },
@@ -81,10 +74,8 @@ const openEditDialog = () => {
     },
     data: {
       text: text.value,
-      type: 'bonus',
-      images: props.images,
-      entityType: props.entityType,
-      entityId: props.entityId,
+      type: 'desc',
+      images: props.images
     },
     onClose: (options) => {
       if(options.data !== undefined) {
@@ -99,7 +90,7 @@ const openEditDialog = () => {
 
 const text2Markdown = () => {
   if (text.value == null || text.value === '') {
-    html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + $const.NoBonus + '</em></span>');
+    html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + $const.NoDescription + '</em></span>');
     empty.value = true;
   }else {
     empty.value = false;
@@ -125,16 +116,7 @@ const tingleModal = new tingle.modal({
 
 <style scoped>
 
-@import 'tingle.js/src/tingle.css';
-
-article {
-  width: 100%;
-  font-size: 13px;
-}
-</style>
-
-<style scoped>
-@import 'tingle.js/src/tingle.css';
+@import 'tingle.css';
 
 article {
   width: 100%;

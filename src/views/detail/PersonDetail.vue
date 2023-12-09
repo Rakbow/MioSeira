@@ -2,15 +2,15 @@
 import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 
-import DescriptionPad from "@/components/database/DescriptionPad.vue";
-import TrafficInfo from "@/components/database/TrafficInfo.vue";
+import DescriptionPad from "@/components/common/DescriptionPad.vue";
+import TrafficInfo from "@/components/common/TrafficInfo.vue";
 
 import {onBeforeMount, onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
-import StatusEditor from "@/components/database/StatusEditor.vue";
-import ItemLike from "@/components/database/ItemLike.vue";
+import StatusEditor from "@/components/common/StatusEditor.vue";
+import ItemLike from "@/components/common/ItemLike.vue";
 
 const router = useRouter();
 const toast = useToast();

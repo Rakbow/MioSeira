@@ -13,8 +13,8 @@
 
 <script setup>
 import {ref, onMounted, onBeforeUnmount} from "vue";
-import PageHeader from "@/components/common/PageHeader.vue";
-import PageFooter from "@/components/common/PageFooter.vue";
+import PageHeader from "@/components/page/PageHeader.vue";
+import PageFooter from "@/components/page/PageFooter.vue";
 import { useDialog } from 'primevue/usedialog';
 
 const dialog = useDialog();

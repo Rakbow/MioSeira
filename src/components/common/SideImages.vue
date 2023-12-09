@@ -1,7 +1,7 @@
 <script setup>
 import {ref, defineProps, defineAsyncComponent, getCurrentInstance} from 'vue';
 import { useDialog } from 'primevue/usedialog';
-const imageManager = defineAsyncComponent(() => import('@/components/database/ImageManager.vue'));
+const imageManager = defineAsyncComponent(() => import('@/components/common/ImageManager.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 import {useUserStore} from "@/store/user";
 
