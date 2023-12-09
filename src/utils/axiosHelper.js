@@ -7,7 +7,7 @@ export class AxiosHelper {
     static SUCCESS = 1;
     static ERROR = 0;
 
-    static post(url, data) {
+    static post(url, data=null) {
         return axios({
             method: 'post',
             url: url,
