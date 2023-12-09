@@ -1,14 +1,61 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {getCurrentInstance} from "vue";
-import { FilterMatchMode } from 'primevue/api';
+import {FilterMatchMode} from 'primevue/api';
 import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import {PublicHelper} from "@/utils/publicHelper";
+import {useRoute, useRouter} from "vue-router";
+import _isEmpty from "lodash/isEmpty";
+import _isUndefined from "lodash/isUndefined";
+
+//region query
+const route = useRoute();
+const router = useRouter();
+const first = ref();
+const initQueryParam = async () => {
+  let page = !_isUndefined(route.query.page) ? route.query.page : 1;
+  filters.value.name.value = !_isUndefined(route.query.name) ? route.query.name : '';
+  filters.value.nameZh.value = !_isUndefined(route.query.nameZh) ? route.query.nameZh : '';
+  filters.value.nameEn.value = !_isUndefined(route.query.nameEn) ? route.query.nameEn : '';
+  filters.value.aliases.value = !_isUndefined(route.query.aliases) ? route.query.aliases : '';
+  loading.value = true;
+  queryParams.value = {
+    first: (page - 1) * dt.value.rows,
+    rows: dt.value.rows,
+    sortField: null,
+    sortOrder: null,
+    filters: filters.value
+  };
+  await getItems();
+  loading.value = false;
+}
+
+const updateQueryParam = () => {
+  // 获取当前查询参数对象
+  const currentQueryParams = { ...route.query };
+
+  // 修改查询参数的值
+  currentQueryParams.page = queryParams.value.first/dt.value.rows + 1;
+  currentQueryParams.size = dt.value.rows;
+  if(!_isEmpty(queryParams.value.filters.name.value))
+    currentQueryParams.name = queryParams.value.filters.name.value;
+  if(!_isEmpty(queryParams.value.filters.nameZh.value))
+    currentQueryParams.nameZh = queryParams.value.filters.nameZh.value;
+  if(!_isEmpty(queryParams.value.filters.nameEn.value))
+    currentQueryParams.nameEn = queryParams.value.filters.nameEn.value;
+  if(!_isEmpty(queryParams.value.filters.aliases.value))
+    currentQueryParams.aliases = queryParams.value.filters.aliases.value;
+
+  // 使用 router.push 更新 URL
+  router.push({ path: route.path, query: currentQueryParams });
+};
+//endregion
+
 
 onMounted(() => {
-  initData();
-  init();
+  initOption();
+  initQueryParam();
 })
 
 
@@ -39,22 +86,10 @@ const columns = ref([
 const queryParams = ref({});
 const option = ref({});
 
-const initData = async () => {
-  const res = await axios.post($api.GET_META_DATA, null);
+const initOption= async () => {
+  const res = await axios.post($api.GET_META_DATA);
   option.value.genderSet = res.data.genderSet;
   option.value.linkTypeSet = res.data.linkTypeSet;
-}
-const init = async () => {
-  loading.value = true;
-  queryParams.value = {
-    first: (queryParams.value !== {} ? queryParams.value.first : 0),
-    rows: dt.value.rows,
-    sortField: null,
-    sortOrder: null,
-    filters: filters.value
-  };
-  await getItems();
-  loading.value = false;
 }
 
 const onPage = (event) => {
@@ -87,6 +122,8 @@ const getItems = async () => {
     toast.add({severity: 'error', detail: res.message, life: 3000});
   }
   loading.value = false;
+  first.value = queryParams.value.first;
+  updateQueryParam();
 }
 
 //region item CRUD
@@ -162,7 +199,7 @@ const exportCSV = () => {
                lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter($event)"
                filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn']"
-               paginator :rows="10" stripedRows columnResizeMode="fit"
+               paginator :rows="10" :first="first" stripedRows columnResizeMode="fit"
                v-model:selection="selectedItems" dataKey="id" removableSort
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
