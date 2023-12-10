@@ -116,7 +116,7 @@ const tingleModal = new tingle.modal({
 
 <style scoped>
 
-@import 'tingle.css';
+@import 'tingle.js/src/tingle.css';
 
 article {
   width: 100%;
