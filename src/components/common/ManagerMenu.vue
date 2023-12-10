@@ -33,6 +33,11 @@ const items = ref([
         label: $const.Person,
         icon: 'pi pi-users',
         route: '/db/manager/person'
+      },
+      {
+        label: $const.PersonRole,
+        icon: 'pi pi-tags',
+        route: '/db/manager/person-role'
       }
     ]
   }

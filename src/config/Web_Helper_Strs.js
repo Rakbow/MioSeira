@@ -21,13 +21,20 @@ export const API = {
 
     //endregion
 
-    //region
+    //region person
     PERSON_DETAIL: '/db/person',
     GET_PERSON_LIST: '/api/db/get-persons',
     ADD_PERSON: '/api/db/add-person',
     UPDATE_PERSON: '/api/db/update-person',
     DELETE_PERSON: '/api/db/delete-person',
     GET_PERSON_DETAIL: '/api/db/get-person-detail',
+    //endregion
+
+    //region person role
+    GET_PERSON_ROLE_LIST: '/api/db/get-person-roles',
+    ADD_PERSON_ROLE: '/api/db/add-person-role',
+    UPDATE_PERSON_ROLE: '/api/db/update-person-role',
+    DELETE_PERSON_ROLE: '/api/db/delete-person-role',
     //endregion
 
     GET_ALBUM_DETAIL: '/api/db/album/get-album-detail',

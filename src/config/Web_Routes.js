@@ -78,6 +78,10 @@ export const DATABASE_ROUTER = [
             {
                 path: 'person',
                 component: () => import('@/views/manager/PersonManager.vue'),
+            },
+            {
+                path: 'person-role',
+                component: () => import('@/views/manager/PersonRoleManager.vue'),
             }
         ],
     }

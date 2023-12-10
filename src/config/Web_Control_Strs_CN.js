@@ -296,6 +296,7 @@ export const CnText = {
     personnelMemberEmpty: '未填写相关人员信息！',
 
     Person: '人物',
+    PersonRole: '人物职位',
 
     DataTablePageTemplate: '当前显示第【{first}】至【{last}】条数据，总【{totalRecords}】条数据',
     SelectedDisplayColumns: '可选显示列',
