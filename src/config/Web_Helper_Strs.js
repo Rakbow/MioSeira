@@ -35,6 +35,7 @@ export const API = {
     ADD_PERSON_ROLE: '/api/db/add-person-role',
     UPDATE_PERSON_ROLE: '/api/db/update-person-role',
     DELETE_PERSON_ROLE: '/api/db/delete-person-role',
+    REFRESH_PERSON_ROLE: '/api/db/refresh-person-role',
     //endregion
 
     GET_ALBUM_DETAIL: '/api/db/album/get-album-detail',

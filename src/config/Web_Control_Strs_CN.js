@@ -16,6 +16,7 @@ export const CnText = {
     FullScreen: '全屏',
     Whole: '全部',
     Like: '点赞',
+    ExportCSV: '导出(CSV)',
     //endregion
 
     Type: '类型',

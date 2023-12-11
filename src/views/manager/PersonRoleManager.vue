@@ -165,6 +165,18 @@ const submitEditItem = async () => {
   }
   loading.value = false;
 }
+
+const refreshItem = async () => {
+  loading.value = true;
+  const res = await axios.post($api.REFRESH_PERSON_ROLE);
+  if (res.state === axios.SUCCESS) {
+    toast.add({severity: 'success', detail: res.message, life: 3000});
+    await getItems();
+  } else {
+    toast.add({severity: 'error', detail: res.message, life: 3000});
+  }
+  loading.value = false;
+}
 //endregion
 
 const exportCSV = () => {
@@ -191,13 +203,15 @@ const exportCSV = () => {
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">
           <div class="col-8">
-            <Button :label="$const.Add" icon="pi pi-plus" class="p-button-success p-button-sm mr-2"
+            <Button :label="$const.Add" icon="pi pi-plus" severity="success" size="small" class="mr-2"
                     @click="openAddDialog" style="width: 6em"/>
-            <Button :label="$const.Delete" icon="pi pi-trash" class="p-button-danger p-button-sm mr-2"
+            <Button :label="$const.Delete" icon="pi pi-trash" severity="danger" size="small" class="mr-2"
                     @click="confirmDeleteSelected"
                     :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-            <Button label="导出(CSV)" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
+            <Button :label="$const.ExportCSV" icon="pi pi-external-link" severity="help" size="small" class="ml-2"
                     @click="exportCSV()" style="width: 8em"/>
+            <Button :label="$const.Refresh" icon="pi pi-refresh" severity="info" size="small" class="ml-2"
+                    @click="refreshItem()" style="width: 6em"/>
           </div>
         </BlockUI>
       </template>
