@@ -145,7 +145,8 @@
             <!-- companies -->
             <CompaniesInfo :companies="album.companies"/>
             <!-- artists -->
-            <PersonsInfo :persons="album.artists"/>
+            <TmpPersonsInfo :persons="album.artists"/>
+            <PersonsInfo :personnel="personnel"/>
             <!-- tracks info -->
             <TrackInfo :info="album.trackInfo" :catalogNo="album.catalogNo" />
             <!-- description -->
@@ -223,7 +224,8 @@ import CategoryInfo from "@/components/common/CategoryInfo.vue";
 import SideImages from "@/components/common/SideImages.vue";
 import TrafficInfo from "@/components/common/TrafficInfo.vue";
 import CompaniesInfo from "@/components/common/CompaniesInfo.vue";
-import PersonsInfo from "@/components/special/PersonsInfo.vue";
+import TmpPersonsInfo from "@/components/special/TmpPersonsInfo.vue";
+import PersonsInfo from "@/components/common/PersonInfo.vue";
 import DescriptionPad from "@/components/common/DescriptionPad.vue";
 import BonusPad from "@/components/common/BonusPad.vue";
 import TrackInfo from "@/components/special/AlbumTrackInfo.vue";
@@ -243,6 +245,7 @@ const relatedAlbums = ref([]);
 const productSet = ref([]);
 const productSelect = ref(true);
 const audioInfos = ref(null);
+const personnel = ref([]);
 
 const displayEditDialog = ref(false);
 const displayTrackEditDialog = ref(false);
@@ -254,6 +257,7 @@ onBeforeMount(() => {
   itemImageInfo.value = router.currentRoute.value.meta.info.itemImageInfo;
   option.value = router.currentRoute.value.meta.info.options;
   audioInfos.value = router.currentRoute.value.meta.info.audioInfos;
+  personnel.value = router.currentRoute.value.meta.info.personnel;
 });
 
 </script>

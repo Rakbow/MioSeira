@@ -23,19 +23,19 @@ export const API = {
 
     //region person
     PERSON_DETAIL: '/db/person',
-    GET_PERSON_LIST: '/api/db/get-persons',
-    ADD_PERSON: '/api/db/add-person',
-    UPDATE_PERSON: '/api/db/update-person',
-    DELETE_PERSON: '/api/db/delete-person',
-    GET_PERSON_DETAIL: '/api/db/get-person-detail',
-    //endregion
+    GET_PERSON_LIST: '/api/db/person/list',
+    ADD_PERSON: '/api/db/person/add',
+    UPDATE_PERSON: '/api/db/person/update',
+    DELETE_PERSON: '/api/db/person/delete',
+    GET_PERSON_DETAIL: '/api/db/person/detail',
 
-    //region person role
-    GET_PERSON_ROLE_LIST: '/api/db/get-person-roles',
-    ADD_PERSON_ROLE: '/api/db/add-person-role',
-    UPDATE_PERSON_ROLE: '/api/db/update-person-role',
-    DELETE_PERSON_ROLE: '/api/db/delete-person-role',
+    GET_PERSON_ROLE_LIST: '/api/db/person/get-roles',
+    ADD_PERSON_ROLE: '/api/db/person/add-role',
+    UPDATE_PERSON_ROLE: '/api/db/person/update-role',
+    DELETE_PERSON_ROLE: '/api/db/person/delete-role',
     REFRESH_PERSON_ROLE: '/api/db/refresh-person-role',
+
+    GET_PERSONNEL: '/api/db/person/get-personnel',
     //endregion
 
     GET_ALBUM_DETAIL: '/api/db/album/get-album-detail',
