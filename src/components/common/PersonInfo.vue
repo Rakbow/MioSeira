@@ -6,15 +6,15 @@ const editor = defineAsyncComponent(() => import('@/components/common/PersonEdit
 
 const props = defineProps({
   personnel: {
-    type: Array,
+    type: Object,
     required: true,
   },
-  validator: (value) => {
-    // 验证每个数组元素是否是合法的JSON对象
-    return value.every(item => {
-      return typeof item === 'object' && item !== null;
-    });
-  },
+  // validator: (value) => {
+  //   // 验证每个数组元素是否是合法的JSON对象
+  //   return value.every(item => {
+  //     return typeof item === 'object' && item !== null;
+  //   });
+  // },
 });
 
 const dialog = useDialog();
@@ -67,10 +67,10 @@ const openEditDialog = () => {
         </Button>
       </div>
 
-      <div class="grid ml-4" v-if="personnel.length !== 0">
+      <div class="grid ml-4" v-if="personnel.personnel.length !== 0">
         <table class="table-borderless table-sm">
           <tbody class="detail-item-artists-table">
-          <tr v-for="item in personnel">
+          <tr v-for="item in personnel.personnel">
             <td width="150px"><strong>{{ item.role.label }}</strong></td>
             <td v-for="(person, index) in item.persons" style="display:inline" class="a_with_underline">
               <router-link :to="'/db/person/' + person.value">

@@ -91,6 +91,7 @@ export const CnText = {
     Summary: '简介',
     Spec: '规格',
     Description: '描述',
+    Role: '职位',
 
 
 
