@@ -1,9 +1,10 @@
 export const META = {
     ACTION: {
-        INSERT: 0,
-        UPDATE: 1,
-        REAL_DELETE: 2,
-        FAKE_DELETE: 3,
-        ALL_DELETE: 4,
+        NO_ACTION: 0,
+        INSERT: 1,
+        UPDATE: 2,
+        REAL_DELETE: 3,
+        FAKE_DELETE: 4,
+        ALL_DELETE: 5,
     }
 }

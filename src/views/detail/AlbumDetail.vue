@@ -142,10 +142,6 @@
             </div>
           </div>
           <div class="detail-item-field">
-            <!-- companies -->
-            <CompaniesInfo :companies="album.companies"/>
-            <!-- artists -->
-            <TmpPersonsInfo :persons="album.artists"/>
             <PersonsInfo :personnel="personnel"/>
             <!-- tracks info -->
             <TrackInfo :info="album.trackInfo" :catalogNo="album.catalogNo" />
@@ -161,7 +157,7 @@
     <div class="col-2" style="min-width: 300px">
       <CategoryInfo :info="detailInfo"/>
       <SideImages :images="itemImageInfo"/>
-      <TrafficInfo :info="pageInfo"/>
+      <TrafficInfo :info="pageInfo" :addedTime="album.addedTime" :editedTime="album.editedTime" />
       <!--      <div class="mt-2" th:insert="~{template/item-detail-template :: index_loading_related_item_panel}"></div>-->
       <Panel class="mt-2" v-if="!relatedItemLoad">
         <template #header>
@@ -222,9 +218,7 @@ import {AxiosHelper} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import CategoryInfo from "@/components/common/CategoryInfo.vue";
 import SideImages from "@/components/common/SideImages.vue";
-import TrafficInfo from "@/components/common/TrafficInfo.vue";
-import CompaniesInfo from "@/components/common/CompaniesInfo.vue";
-import TmpPersonsInfo from "@/components/special/TmpPersonsInfo.vue";
+import TrafficInfo from "@/components/common/PageTraffic.vue";
 import PersonsInfo from "@/components/common/PersonInfo.vue";
 import DescriptionPad from "@/components/common/DescriptionPad.vue";
 import BonusPad from "@/components/common/BonusPad.vue";

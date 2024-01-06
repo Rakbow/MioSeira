@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps } from 'vue';
+import { defineProps } from 'vue';
 
 const props = defineProps({
   info: {
@@ -7,6 +7,14 @@ const props = defineProps({
     default: () => ({
 
     })
+  },
+  addedTime: {
+    type: String,
+    default: () => ('????/??/?? ??:??:??')
+  },
+  editedTime: {
+    type: String,
+    default: () => ('????/??/?? ??:??:??')
   }
 });
 </script>
@@ -18,19 +26,19 @@ const props = defineProps({
         <div class="formgrid grid">
           <div class="col-fixed">
             <i class="pi pi-chevron-circle-right mr-2 ml-2"></i><strong
-              class="label">录入时间</strong>
+              class="label">{{$const.AddedTime}}</strong>
           </div>
-          <div class="col-11 col-offset-1 mb-2">{{ info.addedTime }}</div>
+          <div class="col-11 col-offset-1 mb-2">{{ addedTime }}</div>
           <div class="col-fixed">
             <i class="pi pi-chevron-circle-right mr-2 ml-2"></i><strong
-              class="label">编辑时间</strong>
+              class="label">{{$const.EditedTime}}</strong>
           </div>
-          <div class="col-11 col-offset-1 mb-2">{{ info.editedTime }}</div>
+          <div class="col-11 col-offset-1 mb-2">{{ editedTime }}</div>
           <div class="col-fixed">
-            <i class="pi pi-chart-bar mr-2 ml-2"></i><strong class="label">页面流量</strong>
+            <i class="pi pi-chart-bar mr-2 ml-2"></i><strong class="label">{{$const.PageTraffic}}</strong>
           </div>
           <div class="col-11 col-offset-1 mb-2">
-            <i class="pi pi-eye mr-2"></i><strong>访问数：</strong>
+            <i class="pi pi-eye mr-2"></i><strong>{{$const.Visit}}: </strong>
             <span class="text-center">{{ info.visitCount }}</span>
           </div>
         </div>

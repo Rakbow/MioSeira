@@ -67,9 +67,9 @@ const itemAdd = ref({});
 const itemEdit = ref({});
 const dt = ref();
 const filters = ref({
-  'name': {value: '', matchMode: FilterMatchMode.CONTAINS},
-  'nameZh': {value: '', matchMode: FilterMatchMode.CONTAINS},
-  'nameEn': {value: '', matchMode: FilterMatchMode.CONTAINS},
+  'name': {value: ''},
+  'nameZh': {value: ''},
+  'nameEn': {value: ''},
   'aliases': {value: null},
   'gender': {value: null},
 });
@@ -111,10 +111,7 @@ const onToggle = (val) => {
 
 const getItems = async () => {
   loading.value = true;
-  let json = {
-    queryParams: queryParams.value
-  }
-  const res = await axios.post($api.GET_PERSON_LIST, json);
+  const res = await axios.post($api.GET_PERSON_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total

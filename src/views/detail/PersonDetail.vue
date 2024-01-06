@@ -3,7 +3,7 @@ import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 
 import DescriptionPad from "@/components/common/DescriptionPad.vue";
-import TrafficInfo from "@/components/common/TrafficInfo.vue";
+import TrafficInfo from "@/components/common/PageTraffic.vue";
 
 import {onBeforeMount, onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
@@ -16,14 +16,14 @@ const router = useRouter();
 const toast = useToast();
 
 const item = ref({});
-const pageInfo = ref({});
+const pageTraffic = ref({});
 const detailInfo = ref({});
 const itemImageInfo = ref({});
 const option = ref({});
 
 onBeforeMount(() => {
   item.value = router.currentRoute.value.meta.info.item;
-  pageInfo.value = router.currentRoute.value.meta.info.pageInfo;
+  pageTraffic.value = router.currentRoute.value.meta.info.traffic;
   detailInfo.value = router.currentRoute.value.meta.info.detailInfo;
 });
 
@@ -98,7 +98,7 @@ onBeforeMount(() => {
                       </tbody>
                     </table>
                     <StatusEditor :status="item.status" />
-                    <ItemLike :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
+                    <ItemLike :likeCount="pageTraffic.likeCount" :liked="pageTraffic.liked" />
                   </div>
                 </template>
               </Card>
@@ -113,7 +113,7 @@ onBeforeMount(() => {
       </Card>
     </div>
     <div class="col-2" style="min-width: 300px">
-      <TrafficInfo :info="pageInfo" />
+      <TrafficInfo :info="pageTraffic" :addedTime="item.addedTime" :editedTime="item.editedTime" />
     </div>
   </div>
 </template>

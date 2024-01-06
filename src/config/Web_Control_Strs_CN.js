@@ -1,5 +1,10 @@
 export const CnText = {
 
+    //region component name
+
+    PageTraffic: '页面流量',
+
+    //endregion
 
     //region 通用操作
     Add: '新增',
@@ -15,8 +20,8 @@ export const CnText = {
     CollapseAll: '全部折叠',
     FullScreen: '全屏',
     Whole: '全部',
-    Like: '点赞',
     ExportCSV: '导出(CSV)',
+    Action: '操作',
     //endregion
 
     Type: '类型',
@@ -92,6 +97,10 @@ export const CnText = {
     Spec: '规格',
     Description: '描述',
     Role: '职位',
+
+    Visit: '访问',
+    Like: '点赞',
+    Collect: '收藏',
 
 
 
@@ -199,6 +208,7 @@ export const CnText = {
 
     //操作提示信息
     MessageDeleted: '已删除',
+    MessageAdded: '已新增',
 
 
     //文字提示信息tooltip

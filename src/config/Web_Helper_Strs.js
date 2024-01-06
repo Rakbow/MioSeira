@@ -28,6 +28,7 @@ export const API = {
     UPDATE_PERSON: '/api/db/person/update',
     DELETE_PERSON: '/api/db/person/delete',
     GET_PERSON_DETAIL: '/api/db/person/detail',
+    SEARCH_PERSON: '/api/db/person/search',
 
     GET_PERSON_ROLE_LIST: '/api/db/person/get-roles',
     ADD_PERSON_ROLE: '/api/db/person/add-role',
@@ -36,9 +37,10 @@ export const API = {
     REFRESH_PERSON_ROLE: '/api/db/refresh-person-role',
 
     GET_PERSONNEL: '/api/db/person/get-personnel',
+    MANAGE_PERSONNEL: '/api/db/person/manage-personnel',
     //endregion
 
-    GET_ALBUM_DETAIL: '/api/db/album/get-album-detail',
+    GET_ALBUM_DETAIL: '/api/db/album/detail',
 
     UPDATE_ITEMS_STATUS: '/api/db/update-items-status',
     LIKE_ITEM: '/api/db/like',
