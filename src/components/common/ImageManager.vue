@@ -243,49 +243,12 @@ const imgRowEditSave = (ev) => {
   let {newData, index} = ev;
   itemImageInfo.value.images[index] = newData;
 };
-
-const updateImage = async () => {
-  editBlock.value = true;
-  let json = {
-    entityType: entityType.value,
-    entityId: entityId.value,
-    images: itemImageInfo.value.images,
-    action: META.ACTION.UPDATE
-  };
-  const res = await axios.post(API.UPDATE_IMAGES, json);
-  if (res.state === axios.SUCCESS) {
-    closeImageEditDialog();
-    location.reload();
-  } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
-    editBlock.value = false;
-  }
-}
 const confirmDeleteSelectedImage = () => {
   deleteImageDialog.value = true;
 };
 const cancelDeleteSelectedImage = () => {
   selectedImage.value = [];
   deleteImageDialog.value = false;
-};
-const deleteImage = async () => {
-  editBlock.value = true;
-  let json = {
-    entityType: entityType.value,
-    entityId: entityId.value,
-    images: selectedImage.value,
-    action: META.ACTION.REAL_DELETE
-  };
-  const res = await axios.post(API.UPDATE_IMAGES, json);
-  if (res.state === axios.SUCCESS) {
-    deleteImageDialog.value = false;
-    closeImageEditDialog();
-    selectedImage.value = [];
-    location.reload();
-  } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
-    editBlock.value = false;
-  }
 };
 const closeImageEditDialog = () => {
   imageInfo.value = {
@@ -308,7 +271,7 @@ const showImage = () => {
     imageHtml.value += `<img src="${img.image.objectURL}" style="max-height: 90px" />`;
     imageHtml.value += '</div>';
     imageHtml.value += '<div class="col-6" style="max-height: 100px">';
-    imageHtml.value += `<span>${$const.Type}: ${_find($const.ImageTypes, { value: img.type }).label}</span><br>`;
+    imageHtml.value += `<span>${$const.Type}: ${_find($const.ImageTypes, {value: img.type}).label}</span><br>`;
     imageHtml.value += `<span>${$const.ImageNameZh}: ${img.nameZh}</span><br>`;
     imageHtml.value += `<span>${$const.ImageNameEn}: ${img.nameEn}</span><br>`;
     imageHtml.value += `<span>${$const.Description}: ${img.description}</span><br>`;
@@ -353,6 +316,8 @@ const clearUploadedImage = () => {
   imageInfos.value = [];
   document.getElementById("imgBox").innerHTML = "";
 };
+//region crud
+
 const submitImages = async () => {
   editBlock.value = true;
   const formData = new FormData();
@@ -365,6 +330,25 @@ const submitImages = async () => {
 
   const res = await axios.form(API.ADD_IMAGES, formData);
   if (res.state === axios.SUCCESS) {
+    // closeImageEditDialog();
+    // location.reload();
+    await refreshImages();
+    toast.add({severity: 'success', detail: res.message, life: 3000});
+  } else {
+    toast.add({severity: 'error', detail: res.message, life: 3000});
+    editBlock.value = false;
+  }
+};
+const updateImage = async () => {
+  editBlock.value = true;
+  let json = {
+    entityType: entityType.value,
+    entityId: entityId.value,
+    images: itemImageInfo.value.images,
+    action: META.ACTION.UPDATE
+  };
+  const res = await axios.post(API.UPDATE_IMAGES, json);
+  if (res.state === axios.SUCCESS) {
     closeImageEditDialog();
     location.reload();
   } else {
@@ -372,6 +356,49 @@ const submitImages = async () => {
     editBlock.value = false;
   }
 };
+const deleteImage = async () => {
+  if(selectedImage.value.length === 0) {
+    deleteImageDialog.value = false;
+    toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageSelected, life: 3000});
+    return;
+  }
+  editBlock.value = true;
+  let json = {
+    entityType: entityType.value,
+    entityId: entityId.value,
+    images: selectedImage.value,
+    action: META.ACTION.REAL_DELETE
+  };
+  const res = await axios.post(API.UPDATE_IMAGES, json);
+  if (res.state === axios.SUCCESS) {
+    deleteImageDialog.value = false;
+    selectedImage.value = [];
+    await refreshImages();
+    toast.add({severity: 'success', detail: res.message, life: 3000});
+    // closeImageEditDialog();
+    // location.reload();
+  } else {
+    toast.add({severity: 'error', detail: res.message, life: 3000});
+    editBlock.value = false;
+  }
+};
+
+const refreshImages = async () => {
+  editBlock.value = true;
+  let param = {
+    entityType: entityType.value,
+    entityId: entityId.value
+  }
+  const res = await axios.post(API.GET_IMAGES, param);
+  if(res.state === axios.SUCCESS) {
+    itemImageInfo.value = res.data;
+    editBlock.value = false;
+  }else {
+    toast.add({severity: 'error', detail: res.message, life: 3000});
+    editBlock.value = false;
+  }
+}
+//endregion
 
 </script>
 

@@ -16,6 +16,7 @@ export const API = {
 
     //region
 
+    GET_IMAGES: '/api/db/get-images',
     ADD_IMAGES: '/api/db/add-images',
     UPDATE_IMAGES: '/api/db/update-images',
 

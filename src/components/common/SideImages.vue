@@ -105,7 +105,7 @@ const openEditDialog = () => {
         </template>
         <template #caption="{item}">
           <div class="custom-galleria-footer">
-            <div class="col-6">-
+            <div class="col-6">
               <span v-if="images.displayImages" class="title-container">
                 <span>{{ `${activeIndex+1}/${images.displayImages.length}` }}</span>
                 <span class="title">{{ item.nameZh }}</span>
@@ -126,7 +126,7 @@ const openEditDialog = () => {
       <div v-if="images.displayImages" class="grid justify-content-evenly justify-content-start" style="width: 260px">
         <div class="col-4 mt-2 mb-2" id="panel-image-div"
              v-for="(image, index) of images.displayImages" :key="index">
-          <img class="sidebar-panel-image-middle" :src="image.thumbUrl"
+          <img class="sidebar-panel-image-middle" :src="image.thumbUrl70"
                draggable="false"
                oncontextmenu="return false"
                v-tooltip.bottom="{value: $const.UploadIn + image.uploadTime, class: 'image-tooltip'}"
