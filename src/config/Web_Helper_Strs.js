@@ -85,8 +85,12 @@ export const API = {
     INSERT_ALBUM: '/api/db/album/add',
     GET_ALBUMS: '/api/db/album/get-albums',
     GET_RELATED_ALBUMS: '/api/db/album/get-related-albums',
-    UPDATE_ALBUM_ARTISTS: '/api/db/album/update-artists',
-    UPDATE_ALBUM_TRACK_INFO: '/api/db/album/update-trackInfo',
+    UPDATE_ALBUM_TRACK_INFO: '/api/db/album/update-track-info',
+    GET_ALBUM_TRACK_INFO: '/api/db/album/get-track-info',
+    //endregion
+
+    //region episode
+    EPISODE_DETAIL: '/db/ep',
     //endregion
 
     //region music

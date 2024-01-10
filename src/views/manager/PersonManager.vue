@@ -1,7 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {getCurrentInstance} from "vue";
-import {FilterMatchMode} from 'primevue/api';
 import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import {PublicHelper} from "@/utils/publicHelper";
@@ -185,9 +184,6 @@ const submitEditItem = async () => {
 const exportCSV = () => {
   dt.value.exportCSV();
 };
-
-
-
 </script>
 
 <template>
@@ -212,7 +208,7 @@ const exportCSV = () => {
                     @click="confirmDeleteSelected"
                     :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
             <Button label="导出(CSV)" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
-                    @click="exportCSV($event)" style="width: 8em"/>
+                    @click="exportCSV()" style="width: 8em"/>
           </div>
           <div class="col-4">
             <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
@@ -285,21 +281,21 @@ const exportCSV = () => {
               :header="col.header" :key="col.field + '_' + index" sortable/>
     </DataTable>
   </div>
-  <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '600px'}" :header="$const.Add"
-          class="p-fluid">
+  <Dialog modal :pt="{mask: {style: 'backdrop-filter: blur(2px)'}}" v-model:visible="displayAddDialog"
+          style="width: 600px" :header="$const.Add" class="p-fluid">
     <BlockUI :blocked="editBlock">
       <div class="formgrid grid">
         <div class="field col">
           <label class="font-bold block mb-2">{{ $const.Name }}<span style="color: red">*</span></label>
-          <InputText v-model.trim="itemAdd.name"/>
+          <InputText v-model="itemAdd.name"/>
         </div>
         <div class="field col">
           <label class="font-bold block mb-2">{{ $const.NameZh }}</label>
-          <InputText v-model.trim="itemAdd.nameZh"/>
+          <InputText v-model="itemAdd.nameZh"/>
         </div>
         <div class="field col">
           <label class="font-bold block mb-2">{{ $const.NameEn }}</label>
-          <InputText v-model.trim="itemAdd.nameEn"/>
+          <InputText v-model="itemAdd.nameEn"/>
         </div>
       </div>
 
@@ -312,7 +308,7 @@ const exportCSV = () => {
         </div>
         <div class="field col">
           <label class="font-bold block mb-2">{{ $const.BirthDate }}</label>
-          <InputText v-model.trim="itemAdd.birthDate" />
+          <InputMask v-model.trim="itemAdd.birthDate" mask="****/**/**" />
         </div>
       </div>
 
@@ -334,8 +330,8 @@ const exportCSV = () => {
     </template>
   </Dialog>
 
-  <Dialog :modal="true" v-model:visible="displayEditDialog" :style="{width: '600px'}" :header="$const.Edit"
-          class="p-fluid">
+  <Dialog modal :pt="{mask: {style: 'backdrop-filter: blur(2px)'}}" v-model:visible="displayEditDialog"
+          :style="{width: '600px'}" :header="$const.Edit" class="p-fluid">
     <BlockUI :blocked="editBlock">
       <div class="formgrid grid">
         <div class="field col">

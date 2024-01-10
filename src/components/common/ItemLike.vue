@@ -40,7 +40,7 @@ const props = defineProps({
 const like = async () => {
   editBlock.value = true;
   let json = {
-    entity: entityType.value,
+    entityType: entityType.value,
     entityId: entityId.value
   };
   const res = await axios.post(API.LIKE_ITEM, json);

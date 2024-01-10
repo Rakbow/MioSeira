@@ -144,7 +144,7 @@
           <div class="detail-item-field">
             <PersonsInfo :personnel="personnel"/>
             <!-- tracks info -->
-            <TrackInfo :info="album.trackInfo" :catalogNo="album.catalogNo" />
+            <TrackInfo :info="album.trackInfo" />
             <!-- description -->
             <DescriptionPad :header="$const.Description" :text="detailInfo.description" :images="itemImageInfo.images" />
             <!-- bonus -->

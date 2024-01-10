@@ -24,53 +24,7 @@ export const CnText = {
     Action: '操作',
     //endregion
 
-    Type: '类型',
-
-    UploadTime: '上传时间',
-    UploadIn: '上传于 ',
-
-    Unknown: '未知',
-    Name: '名称(原)',
-    NameZh: '名称(中)',
-    NameEn: '名称(英)',
-    Aliases: '别名',
-    Gender: '性别',
-    BirthDate: '生日',
-    Detail: '详情',
-
-    Username: '用户名',
-    Password: '密码',
-    VerifyCode: '验证码',
-
-    RefreshVerifyCode: '刷新验证码',
-    RememberMe: '记住我',
-    SignIn: '登录',
-    SignOut: '登出',
-
-
-    Category: '分类',
-    Franchises: '所属系列',
-    Products: '所属作品',
-
-    Image: '图片',
-    Images: '图片',
-
-    NoImage: '暂无图片',
-    NoCompanies: '暂无相关企业信息',
-    NoPerson: '暂无相关人员信息',
-    NoDescription: '暂无描述',
-    NoBonus: '暂无特典信息',
-
-    TrackInfo: '音轨信息',
-    NoTrackInfo: '暂无音轨信息',
-
-    TotalDiscNum: '总碟片数',
-    TotalTrackNum: '总曲目数',
-    DiscLength: '碟片时长',
-    TrackNum: '曲目数',
-    TotalLength: '总时长',
-
-    //region 名词
+    //region 通用名词
     BasicInfo: '基础信息',
     Persons: "相关人员",
     Companies: "相关企业",
@@ -102,63 +56,52 @@ export const CnText = {
     Like: '点赞',
     Collect: '收藏',
 
+    Index: '序号',
 
 
+    Type: '类型',
+
+    UploadTime: '上传时间',
+    UploadIn: '上传于 ',
+
+    Unknown: '未知',
+    Name: '名称(原)',
+    NameZh: '名称(中)',
+    NameEn: '名称(英)',
+    Aliases: '别名',
+    Gender: '性别',
+    BirthDate: '生日',
+    Detail: '详情',
+
+    Title: '标题(原)',
+    TitleEn: '标题(英)',
+    Duration: '时长',
+
+    Username: '用户名',
+    Password: '密码',
+    VerifyCode: '验证码',
+
+    RefreshVerifyCode: '刷新验证码',
+    RememberMe: '记住我',
+    SignIn: '登录',
+    SignOut: '登出',
 
 
+    Category: '分类',
+    Franchises: '所属系列',
+    Products: '所属作品',
 
+    Image: '图片',
+    Images: '图片',
 
+    NoImage: '暂无图片',
+    NoCompanies: '暂无相关企业信息',
+    NoPerson: '暂无相关人员信息',
+    NoDescription: '暂无描述',
+    NoBonus: '暂无特典信息',
+    //endregion
 
-    //item-detail 展示模块标题
-    ItemDetailPlayListTitle: '播放列表',
-    ItemDetailSummaryTitle: '简介',
-    ItemDetailCompaniesTitle: '相关企业',
-
-    AlbumDetailArtistInfoTitle: '创作信息',
-    AlbumDetailTrackInfoTitle: '音轨信息',
-
-    BookDetailAuthorSpecTitle: '作者/规格',
-
-    GameDetailStaffInfoTitle: '开发制作人员',
-
-    FranchiseDetailProductTitle: '作品',
-
-    RelatedAlbumTitle: '相关专辑',
-    RelatedBookTitle: '相关书籍',
-    RelatedDiscTitle: '相关碟片',
-    RelatedGameTitle: '相关游戏',
-    RelatedMerchTitle: '相关商品',
-    RelatedProductTitle: '相关作品',
-
-
-    //item-detail 展示模块 名词
-
-
-    FranchiseDetailReleaseDate: '日&nbsp期',
-    FranchiseDetailProduct: '作&nbsp品',
-
-
-    //item-detail 展示模块 提示
-    ItemDetailMessageNoArtistInfo: '暂无创作信息',
-    ItemDetailMessageNoBonusInfo: '暂无特典信息',
-    ItemDetailMessageNoAudioInfo: '暂无音频文件',
-    ItemDetailMessageNoRelatedItem: '暂无相关条目',
-    ItemDetailMessageNoSpec: '暂无规格信息',
-    ItemDetailMessageNoCompanies: '暂无相关企业信息',
-    ItemDetailMessageNoSummary: '暂无简介',
-    ItemDetailMessageNoOrganization: '暂无关联组织信息',
-
-    AlbumDetailMessageNoTrackInfo: '暂无音轨信息',
-
-    BookDetailMessageNoAuthor: '暂无作者信息',
-
-    GameDetailMessageNoStaffInfo: '暂无开发制作人员信息',
-
-    FranchiseDetailMessageNoProduct: '暂无作品',
-    FranchiseDetailMessageNoChildFranchise: '暂无子系列',
-
-
-
+    //region 专属名词
     AlbumCatalogNo: '专辑编号',
     AlbumName: '专辑名称',
     AlbumEnglishName: '专辑名称(英)',
@@ -166,6 +109,16 @@ export const CnText = {
     AlbumFormat: '专辑类型',
     AlbumLabel: '唱片公司',
     AlbumPublisher: '出版商',
+    TrackInfo: '音轨信息',
+    NoTrackInfo: '暂无音轨信息',
+    TotalDiscNum: '总碟片数',
+    TotalTrackNum: '总曲目数',
+    DiscLength: '碟片时长',
+    TrackNum: '曲目数',
+    TotalLength: '总时长',
+    AddDisc: '新增碟片',
+    Disc: '碟片',
+    Track: '音軌',
 
     BookTitle: '书名',
     BookChineseTitle: '书名(中)',
@@ -200,11 +153,59 @@ export const CnText = {
     FranchiseName: '名称',
     FranchiseChineseName: '名称(中)',
     FranchiseEnglishName: '名称(英)',
-
-
     //endregion
 
+    //region 展示模块标题
+    ItemDetailPlayListTitle: '播放列表',
+    ItemDetailSummaryTitle: '简介',
+    ItemDetailCompaniesTitle: '相关企业',
 
+    AlbumDetailArtistInfoTitle: '创作信息',
+    AlbumDetailTrackInfoTitle: '音轨信息',
+
+    BookDetailAuthorSpecTitle: '作者/规格',
+
+    GameDetailStaffInfoTitle: '开发制作人员',
+
+    FranchiseDetailProductTitle: '作品',
+
+    RelatedAlbumTitle: '相关专辑',
+    RelatedBookTitle: '相关书籍',
+    RelatedDiscTitle: '相关碟片',
+    RelatedGameTitle: '相关游戏',
+    RelatedMerchTitle: '相关商品',
+    RelatedProductTitle: '相关作品',
+    //endregion
+
+    //region 模块信息
+    //item-detail 展示模块 名词
+
+
+    FranchiseDetailReleaseDate: '日&nbsp期',
+    FranchiseDetailProduct: '作&nbsp品',
+
+
+    //item-detail 展示模块 提示
+    ItemDetailMessageNoArtistInfo: '暂无创作信息',
+    ItemDetailMessageNoBonusInfo: '暂无特典信息',
+    ItemDetailMessageNoAudioInfo: '暂无音频文件',
+    ItemDetailMessageNoRelatedItem: '暂无相关条目',
+    ItemDetailMessageNoSpec: '暂无规格信息',
+    ItemDetailMessageNoCompanies: '暂无相关企业信息',
+    ItemDetailMessageNoSummary: '暂无简介',
+    ItemDetailMessageNoOrganization: '暂无关联组织信息',
+
+    AlbumDetailMessageNoTrackInfo: '暂无音轨信息',
+
+    BookDetailMessageNoAuthor: '暂无作者信息',
+
+    GameDetailMessageNoStaffInfo: '暂无开发制作人员信息',
+
+    FranchiseDetailMessageNoProduct: '暂无作品',
+    FranchiseDetailMessageNoChildFranchise: '暂无子系列',
+    //endregion
+
+    //region 其他
 
     //操作提示信息
     MessageDeleted: '已删除',
@@ -255,10 +256,6 @@ export const CnText = {
 
     GameDetailStaffInfoEditTitle: '开发制作人员信息编辑',
 
-
-
-
-
     //item-detail 编辑界面 名词
     ItemDetailEditOrganizationLabel: '组织类型',
     ItemDetailEditOrganizationValue: '组织名称',
@@ -294,6 +291,9 @@ export const CnText = {
     ErrorMessageItemDetailPersonnelMain: '主要人员只能选择一项！',
     ErrorMessageMusicDetailArtistsMain: '主要人员只能选择一项！',
     ErrorMessageBookDetailAuthorsMain: '主要作者只能选择一项！',
+    TrackInfoTitleEmpty: '音轨标题列表为空',
+    TrackInfoDurationEmpty: '音轨时长列表为空',
+    TrackInfoNotEquals: "标题与时长列表不匹配",
 
 
     //exception
@@ -335,10 +335,6 @@ export const CnText = {
     ],
     //endregion
 
-
-
-
-
-
+    //endregion
 
 }

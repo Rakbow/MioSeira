@@ -1,10 +1,9 @@
 <script setup>
 import {onMounted, ref, inject, getCurrentInstance} from "vue";
 import {PublicHelper} from '@/utils/publicHelper';
-import {AxiosHelper as axios, AxiosHelper} from '@/utils/axiosHelper';
+import {AxiosHelper as axios} from '@/utils/axiosHelper';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
-import {API} from '@/config/Web_Helper_Strs';
 import {META} from '@/config/Web_Const';
 import { useRoute } from 'vue-router';
 import _isEmpty from "lodash/isEmpty";
@@ -162,7 +161,7 @@ const addItem = () => {
                         @complete="searchPerson" inputStyle="min-width: 270px">
             <template #option="slotProps">
               <div class="flex align-options-center">
-                <img :src="slotProps.option.cover" style="width: 50px" />
+                <img :src="slotProps.option.cover" style="width: 50px"  alt="cover"/>
                 <div>{{ `${slotProps.option.name}/${slotProps.option.nameZh}` }}</div>
               </div>
             </template>
