@@ -10,7 +10,6 @@
                 {{ album.name }}
               </b>
             </h4>
-            <!--            <div th:insert="~{template/item-detail-template :: item_common_edit_button}"></div>-->
           </div>
         </template>
         <template #subtitle>
@@ -30,110 +29,16 @@
               <Card>
                 <template #content>
                   <div class="relative">
-                    <table class="table-borderless table-sm ml-2">
-                      <tbody class="detail-item-header-table">
-                      <tr>
-                        <td>
-                          <i class="pi material-symbols-outlined">tag</i>
-                          <strong>{{ $const.AlbumCatalogNo }}</strong>
-                        </td>
-                        <td>
-                          {{ album.catalogNo ? album.catalogNo : "N/A" }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi material-symbols-outlined">barcode</i>
-                          <strong>{{ $const.Barcode }}</strong>
-                        </td>
-                        <td>{{ album.barcode ? album.barcode : "N/A" }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi pi-calendar"></i>
-                          <strong>{{ $const.ReleaseDate }}</strong>
-                        </td>
-                        <td>
-                          {{ album.releaseDate ? album.releaseDate : "N/A" }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi pi-tag"></i>
-                          <strong>{{ $const.ReleasePrice }}</strong>
-                        </td>
-                        <td>
-                          {{ album.price != 0 ? album.price : "&nbsp;&nbsp;-" }}
-                          <span v-if="album.price != 0">
-                            <span v-if="album.currencyUnit == 'JPY'" class="ml-1"
-                                  style="text-decoration-line: underline;text-decoration-style: dashed;"
-                                  v-tooltip.right="{value: $const.TaxInclusive, class: 'region-tooltip'}">JPY</span>
-                            <span v-else>{{ album.currencyUnit }}</span>
-                            <span class="ml-2 dropdown">
-                                <a href="#" class="dropdown-toggle"
-                                   data-bs-toggle="dropdown">{{ $const.OtherCurrencyUnit }}</a>
-                                <div class="dropdown-menu">
-                                    <a :href="'https://www.bing.com/search?q='+album.price+'+'+album.currencyUnit+'+'+'IN'+'+CNY'"
-                                       class="dropdown-item">CNY</a>
-                                    <a :href="'https://www.bing.com/search?q='+album.price+'+'+album.currencyUnit+'+'+'IN'+'+USD'"
-                                       class="dropdown-item">USD</a>
-                                    <a :href="'https://www.bing.com/search?q='+album.price+'+'+album.currencyUnit+'+'+'IN'+'+EUR'"
-                                       class="dropdown-item">EUR</a>
-                                    <a :href="'https://www.bing.com/search?q='+album.price+'+'+album.currencyUnit+'+'+'IN'+'+TWD'"
-                                       class="dropdown-item">TWD</a>
-                                </div>
-                            </span>
-                        </span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi material-symbols-outlined detail-list-icon">workspace_premium</i>
-                          <strong>{{ $const.Bonus }}</strong>
-                        </td>
-                        <td>
-                          <a v-if="album.hasBonus" href="#bonus" class="ml-3">
-                            <i class="pi true-icon pi-check-circle"></i>
-                          </a>
-                          <i v-else class="pi false-icon pi-times-circle"></i>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi pi-print"></i>
-                          <strong>{{ $const.PublishFormat }}</strong>
-                        </td>
-                        <td v-for="format of album.publishFormat" style="display:inline">
-                          <a :href="'/db/albums?publishFormat=' + format.value">
-                            <Tag class="ml-1" :value="format.label"></Tag>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi iconfont icon-zhuanjiguangpan"></i>
-                          <strong>{{ $const.MediaFormat }}</strong>
-                        </td>
-                        <td v-for="format of album.mediaFormat" style="display:inline">
-                          <a :href="'/db/albums?mediaFormat=' + format.value">
-                            <Tag class="ml-1" :value="format.label"></Tag>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi iconfont icon-musicfill"></i>
-                          <strong>{{ $const.AlbumFormat }}</strong>
-                        </td>
-                        <td v-for="format of album.albumFormat" style="display:inline">
-                          <a :href="'/db/albums?albumFormat=' + format.value">
-                            <Tag class="ml-1" :value="format.label"></Tag>
-                          </a>
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
+                    <div v-if="userStore.user">
+                      <Button v-if="userStore.user.type === 0 || userStore.user.type > 1" class="p-button-link absolute top-0"
+                              @click="openEditDialog" style="right: 25%"
+                              v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
+                        <template #icon>
+                          <span class="material-symbols-outlined">edit_note</span>
+                        </template>
+                      </Button>
+                    </div>
+                    <Info :album="album" />
                     <StatusEditor :status="album.status" />
                     <ItemLike :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
                   </div>
@@ -145,7 +50,7 @@
             <PersonsInfo :personnel="personnel"/>
             <!-- tracks info -->
             <TrackInfo :info="album.trackInfo" />
-            <!-- description -->
+            <!-- detail -->
             <DetailPad :header="$const.Description" :text="album.detail" />
             <!-- bonus -->
             <BonusPad id="bonus" v-if="album.hasBonus" :text="album.bonus" />
@@ -210,11 +115,13 @@ import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
-import {onBeforeMount, onMounted, ref} from "vue";
+import {getCurrentInstance, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
-import {AxiosHelper} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
-import CategoryInfo from "@/components/common/CategoryInfo.vue";
+import {useUserStore} from "@/store/user";
+import {META} from "@/config/Web_Const.js";
+const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+import {useDialog} from "primevue/usedialog";
 import SideImages from "@/components/common/SideImages.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
 import PersonsInfo from "@/components/common/PersonInfo.vue";
@@ -223,9 +130,13 @@ import BonusPad from "@/components/common/BonusPad.vue";
 import TrackInfo from "@/components/special/AlbumTrackInfo.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
+import Info from "@/views/detail/AlbumDetailInfo.vue";
+import InfoEditor from "@/components/common/entityEditor/AlbumInfoEditor.vue";
 
 const router = useRouter();
 const toast = useToast();
+const userStore = useUserStore();
+const dialog = useDialog();
 
 const album = ref({});
 const pageInfo = ref({});
@@ -249,6 +160,34 @@ onBeforeMount(() => {
   audios.value = router.currentRoute.value.meta.info.audios;
   personnel.value = router.currentRoute.value.meta.info.personnel;
 });
+
+const openEditDialog = () => {
+  dialog.open(InfoEditor, {
+    props: {
+      header: $const.Edit,
+      style: {
+        width: '800px',
+      },
+      breakpoints:{
+        '960px': '80vw',
+        '640px': '70vw'
+      },
+      modal: true,
+      closable: false
+    },
+    data: {
+      item: album.value,
+      option: option.value,
+    },
+    onClose: (options) => {
+      if(options.data !== undefined) {
+        if(options.data.isUpdate) {
+          location.reload();
+        }
+      }
+    }
+  });
+}
 
 </script>
 

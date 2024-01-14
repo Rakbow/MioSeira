@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', {
     getters: {
         isAuthenticated() {
             return this.user !== null;
-        },
+        }
     },
     actions: {
         login(user, ticket) {
