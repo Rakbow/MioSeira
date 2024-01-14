@@ -27,6 +27,7 @@ import {useUserStore} from "@/store/user";
 import {marked} from 'marked';
 import tingle from 'tingle.js';
 import { useDialog } from 'primevue/usedialog';
+import {META} from '@/config/Web_Const';
 const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/CommonTextEditor.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
@@ -37,21 +38,6 @@ const props = defineProps({
     type: String,
     required: true,
     default: () => ('')
-  },
-  entityType: {
-    type: Number,
-    required: true,
-    default: () => (0)
-  },
-  entityId: {
-    type: Number,
-    required: true,
-    default: () => (0)
-  },
-  images: {
-    type: Array,
-    required: false,
-    default: () => ([])
   }
 });
 
@@ -81,10 +67,7 @@ const openEditDialog = () => {
     },
     data: {
       text: text.value,
-      type: 'bonus',
-      images: props.images,
-      entityType: props.entityType,
-      entityId: props.entityId,
+      type: META.TEXT_TYPE.BONUS
     },
     onClose: (options) => {
       if(options.data !== undefined) {

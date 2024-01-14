@@ -24,6 +24,7 @@
 <script setup>
 import {ref, onMounted, defineProps, defineAsyncComponent, getCurrentInstance } from "vue";
 import {useUserStore} from "@/store/user";
+import {META} from '@/config/Web_Const';
 import {marked} from 'marked';
 import tingle from 'tingle.js';
 import { useDialog } from 'primevue/usedialog';
@@ -40,11 +41,6 @@ const props = defineProps({
   header: {
     type: String,
     required: true
-  },
-  images: {
-    type: Array,
-    required: false,
-    default: () => ([])
   }
 });
 
@@ -74,8 +70,7 @@ const openEditDialog = () => {
     },
     data: {
       text: text.value,
-      type: 'desc',
-      images: props.images
+      type: META.TEXT_TYPE.DETAIL
     },
     onClose: (options) => {
       if(options.data !== undefined) {

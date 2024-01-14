@@ -134,7 +134,7 @@
                       </tr>
                       </tbody>
                     </table>
-                    <StatusEditor :status="detailInfo.status" />
+                    <StatusEditor :status="album.status" />
                     <ItemLike :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
                   </div>
                 </template>
@@ -146,19 +146,17 @@
             <!-- tracks info -->
             <TrackInfo :info="album.trackInfo" />
             <!-- description -->
-            <DescriptionPad :header="$const.Description" :text="detailInfo.description" :images="itemImageInfo.images" />
+            <DetailPad :header="$const.Description" :text="album.detail" />
             <!-- bonus -->
-            <BonusPad id="bonus" v-if="album.hasBonus" :entityType="detailInfo.entityType" :entityId="detailInfo.id"
-                      :text="album.bonus" :images="itemImageInfo.images" />
+            <BonusPad id="bonus" v-if="album.hasBonus" :text="album.bonus" />
           </div>
         </template>
       </Card>
     </div>
     <div class="col-2" style="min-width: 300px">
-      <CategoryInfo :info="detailInfo"/>
+<!--      <CategoryInfo :info="detailInfo"/>-->
       <SideImages :images="itemImageInfo"/>
       <TrafficInfo :info="pageInfo" :addedTime="album.addedTime" :editedTime="album.editedTime" />
-      <!--      <div class="mt-2" th:insert="~{template/item-detail-template :: index_loading_related_item_panel}"></div>-->
       <Panel class="mt-2" v-if="!relatedItemLoad">
         <template #header>
           <span class="text-start side-panel-header">
@@ -220,7 +218,7 @@ import CategoryInfo from "@/components/common/CategoryInfo.vue";
 import SideImages from "@/components/common/SideImages.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
 import PersonsInfo from "@/components/common/PersonInfo.vue";
-import DescriptionPad from "@/components/common/DescriptionPad.vue";
+import DetailPad from "@/components/common/DetailPad.vue";
 import BonusPad from "@/components/common/BonusPad.vue";
 import TrackInfo from "@/components/special/AlbumTrackInfo.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
@@ -231,14 +229,13 @@ const toast = useToast();
 
 const album = ref({});
 const pageInfo = ref({});
-const detailInfo = ref({});
 const itemImageInfo = ref({});
 const option = ref({});
 const relatedItemLoad = ref(true);
 const relatedAlbums = ref([]);
 const productSet = ref([]);
 const productSelect = ref(true);
-const audioInfos = ref(null);
+const audios = ref(null);
 const personnel = ref([]);
 
 const displayEditDialog = ref(false);
@@ -247,10 +244,9 @@ const displayTrackEditDialog = ref(false);
 onBeforeMount(() => {
   album.value = router.currentRoute.value.meta.info.album;
   pageInfo.value = router.currentRoute.value.meta.info.pageInfo;
-  detailInfo.value = router.currentRoute.value.meta.info.detailInfo;
   itemImageInfo.value = router.currentRoute.value.meta.info.itemImageInfo;
   option.value = router.currentRoute.value.meta.info.options;
-  audioInfos.value = router.currentRoute.value.meta.info.audioInfos;
+  audios.value = router.currentRoute.value.meta.info.audios;
   personnel.value = router.currentRoute.value.meta.info.personnel;
 });
 

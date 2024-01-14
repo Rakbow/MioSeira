@@ -6,5 +6,10 @@ export const META = {
         REAL_DELETE: 3,
         FAKE_DELETE: 4,
         ALL_DELETE: 5,
+    },
+
+    TEXT_TYPE: {
+        BONUS: 'bonus',
+        DETAIL: 'detail'
     }
 }

@@ -53,7 +53,6 @@ export const DATABASE_ROUTER = [
                 const res = await AxiosHelper.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
                 if (res.state === AxiosHelper.SUCCESS) {
                     to.meta.info = res.data;
-
                     document.title = res.data.album.name;
                     next();
                 }else {

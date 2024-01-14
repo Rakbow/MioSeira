@@ -25,9 +25,9 @@
                    class="edit-image"/>
             </template>
           </Column>
-          <Column field="nameZh" :header="$const.NameZh" header-style="width: 10%"></Column>
-          <Column field="nameEn" :header="$const.NameEn" header-style="width: 10%"></Column>
-          <Column field="description" :header="$const.Description" header-style="width: 20%"></Column>
+          <Column field="nameZh" :header="$const.NameZh" header-style="width: 10%" />
+          <Column field="nameEn" :header="$const.NameEn" header-style="width: 10%" />
+          <Column field="description" :header="$const.Description" header-style="width: 20%" />
         </DataTable>
       </div>
       <div v-else>
@@ -41,10 +41,11 @@
 import {MdEditor} from "md-editor-v3";
 import {onMounted, ref, inject} from "vue";
 import {PublicHelper} from '@/utils/publicHelper';
-import {AxiosHelper} from '@/utils/axiosHelper';
+import {AxiosHelper as axios} from '@/utils/axiosHelper';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
 import {API} from '@/config/Web_Helper_Strs';
+import {META} from '@/config/Web_Const';
 import { useRoute } from 'vue-router';
 
 const toast = useToast();
@@ -60,8 +61,8 @@ const route = useRoute();
 onMounted(() => {
   text.value = dialogRef.value.data.text;
   type.value = dialogRef.value.data.type;
-  images.value = dialogRef.value.data.images;
   getEntityInfo();
+  loadImages();
 });
 
 const entityType = ref();
@@ -86,15 +87,15 @@ const submit = () => {
     text: text.value
   };
 
-  if (type.value === 'desc') {
+  if (type.value === META.TEXT_TYPE.DETAIL) {
     url = API.UPDATE_DETAIL;
-  } else if (type.value === 'bonus') {
+  } else if (type.value === META.TEXT_TYPE.BONUS) {
     url = API.UPDATE_BONUS;
   }
 
-  AxiosHelper.post(url, json)
+  axios.post(url, json)
       .then(res => {
-        if (res.state === 1) {
+        if (res.state === axios.SUCCESS) {
           toast.add({severity: 'success', detail: res.message, life: 3000});
           isUpdate.value = true;
           close();
@@ -113,6 +114,22 @@ const close = () => {
         text: text.value
       }
   );
+}
+
+const loadImages = async () => {
+  editBlock.value = true;
+  let param = {
+    entityType: entityType.value,
+    entityId: entityId.value
+  }
+  const res = await axios.post(API.GET_IMAGES, param);
+  if(res.state === axios.SUCCESS) {
+    images.value = res.data.images;
+    editBlock.value = false;
+  }else {
+    toast.add({severity: 'error', detail: res.message, life: 3000});
+    editBlock.value = false;
+  }
 }
 
 </script>

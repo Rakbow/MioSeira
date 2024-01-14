@@ -2,12 +2,11 @@
 import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 
-import DescriptionPad from "@/components/common/DescriptionPad.vue";
+import DetailPad from "@/components/common/DetailPad.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
 
-import {onBeforeMount, onMounted, ref} from "vue";
+import {onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
@@ -106,7 +105,7 @@ onBeforeMount(() => {
           </div>
           <div class="detail-item-field">
             <!-- description -->
-            <DescriptionPad :header="$const.Detail" :text="item.detail" />
+            <DetailPad :header="$const.Detail" :text="item.detail" />
             <!-- bonus -->
           </div>
         </template>

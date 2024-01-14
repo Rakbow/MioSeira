@@ -102,7 +102,7 @@ const getEntityInfo = () => {
           <table class="table-borderless table-sm">
             <tbody class="detail-item-artists-table">
             <tr v-for="item in personnel.personnel">
-              <td width="250px"><strong>{{ item.role.label }}</strong></td>
+              <td style="width:250px"><strong>{{ item.role.label }}</strong></td>
               <td v-for="(person, index) in item.persons" style="display:inline" class="a_with_underline">
                 <router-link :to="'/db/person/' + person.value">
                   <span style="white-space: nowrap;">{{ person.label }}</span>
