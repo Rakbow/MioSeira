@@ -146,6 +146,7 @@ export const CnText = {
     MerchEnglishName: '商品名(英)',
 
     Franchise: '系列',
+    Product: '作品',
     MetaFranchise: '元系列',
     ParentFranchise: '父系列',
     ChildFranchise: '子系列',

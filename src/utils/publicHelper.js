@@ -38,6 +38,8 @@ export class PublicHelper {
         {id: 6, name: 'goods'},
         {id: 7, name: 'figure'},
         {id: 8, name: 'person'},
+        {id: 99, name: 'product'},
+        {id: 100, name: 'franchise'},
     ]
 
 }

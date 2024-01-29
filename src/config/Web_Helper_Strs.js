@@ -104,7 +104,8 @@ export const API = {
 
     //region product
     PRODUCT_DETAIL: '/db/product',
-    GET_PRODUCTS: '/api/db/product/get-products',
+    GET_PRODUCT_DETAIL: '/db/product/detail',
+    GET_PRODUCTS: '/api/db/product/list',
     GET_PRODUCT_SET: '/api/db/product/get-product-set',
     ADD_PRODUCT: '/api/db/product/add',
     UPDATE_PRODUCT: '/api/db/product/update',
@@ -145,7 +146,7 @@ export const API = {
     //endregion
 
     //region game
-    GAME_DETAIL: '/db/game',
+    GAME_DETAIL: '/api/db/game',
     DELETE_GAME: '/api/db/game/delete',
     UPDATE_GAME: '/api/db/game/update',
     INSERT_GAME: '/api/db/game/add',
@@ -157,10 +158,11 @@ export const API = {
 
     //region franchise
     FRANCHISE_DETAIL: '/db/franchise',
+    GET_FRANCHISE_DETAIL: '/api/db/franchise/detail',
     DELETE_FRANCHISE: '/api/db/franchise/delete',
     UPDATE_FRANCHISE: '/api/db/franchise/update',
     ADD_FRANCHISE: '/api/db/franchise/add',
-    GET_FRANCHISES: '/api/db/franchise/get-franchises',
+    GET_FRANCHISE_LIST: '/api/db/franchise/list',
     //endregion
 }
 

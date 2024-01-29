@@ -1,4 +1,4 @@
-import {AxiosHelper} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import "@/config/Web_Helper_Strs";
 import {API} from "@/config/Web_Helper_Strs";
 
@@ -26,8 +26,8 @@ export const DATABASE_ROUTER = [
         component: () => import('@/views/detail/PersonDetail.vue'),
         beforeEnter: async (to, from, next) => {
             try {
-                const res = await AxiosHelper.post(API.GET_PERSON_DETAIL, {id: to.params.id});
-                if (res.state === AxiosHelper.SUCCESS) {
+                const res = await axios.post(API.GET_PERSON_DETAIL, {id: to.params.id});
+                if (res.state === axios.SUCCESS) {
                     to.meta.info = res.data;
 
                     document.title = res.data.item.name;
@@ -43,15 +43,36 @@ export const DATABASE_ROUTER = [
             title: "Person Detail"
         }
     },
-
+    {
+        name: "FranchiseDetail",
+        path: API.FRANCHISE_DETAIL + "/:id",
+        component: () => import('@/views/detail/FranchiseDetail.vue'),
+        beforeEnter: async (to, from, next) => {
+            try {
+                const res = await axios.post(API.GET_FRANCHISE_DETAIL, {id: to.params.id});
+                if (res.state === axios.SUCCESS) {
+                    to.meta.info = res.data;
+                    document.title = res.data.item.name;
+                    next();
+                }else {
+                    console.log(res.message);
+                }
+            }catch (e) {
+                console.error(e);
+            }
+        },
+        meta: {
+            title: "Franchise Detail"
+        }
+    },
     {
         name: "AlbumDetail",
         path: API.ALBUM_DETAIL + "/:id",
         component: () => import('@/views/detail/AlbumDetail.vue'),
         beforeEnter: async (to, from, next) => {
             try {
-                const res = await AxiosHelper.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
-                if (res.state === AxiosHelper.SUCCESS) {
+                const res = await axios.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
+                if (res.state === axios.SUCCESS) {
                     to.meta.info = res.data;
                     document.title = res.data.album.name;
                     next();
@@ -72,8 +93,8 @@ export const DATABASE_ROUTER = [
         component: () => import('@/views/detail/EpisodeDetail.vue'),
         // beforeEnter: async (to, from, next) => {
         //     try {
-        //         const res = await AxiosHelper.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
-        //         if (res.state === AxiosHelper.SUCCESS) {
+        //         const res = await axios.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
+        //         if (res.state === axios.SUCCESS) {
         //             to.meta.info = res.data;
         //
         //             document.title = res.data.album.name;
@@ -97,6 +118,14 @@ export const DATABASE_ROUTER = [
             title: "Manager",
         },
         children: [
+            {
+                path: 'franchise',
+                component: () => import('@/views/manager/FranchiseManager.vue'),
+            },
+            {
+                path: 'product',
+                component: () => import('@/views/manager/ProductManager.vue'),
+            },
             {
                 path: 'person',
                 component: () => import('@/views/manager/PersonManager.vue'),
