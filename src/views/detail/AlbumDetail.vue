@@ -119,7 +119,6 @@ import {getCurrentInstance, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import {useUserStore} from "@/store/user";
-import {META} from "@/config/Web_Const.js";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 import {useDialog} from "primevue/usedialog";
 import SideImages from "@/components/common/SideImages.vue";
@@ -153,8 +152,8 @@ const displayEditDialog = ref(false);
 const displayTrackEditDialog = ref(false);
 
 onBeforeMount(() => {
-  album.value = router.currentRoute.value.meta.info.album;
-  pageInfo.value = router.currentRoute.value.meta.info.pageInfo;
+  album.value = router.currentRoute.value.meta.info.item;
+  pageInfo.value = router.currentRoute.value.meta.info.traffic;
   itemImageInfo.value = router.currentRoute.value.meta.info.itemImageInfo;
   option.value = router.currentRoute.value.meta.info.options;
   audios.value = router.currentRoute.value.meta.info.audios;

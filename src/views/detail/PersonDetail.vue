@@ -1,23 +1,26 @@
 <script setup>
 import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
-
 import DetailPad from "@/components/common/DetailPad.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
-
-import {onBeforeMount, ref} from "vue";
+import {getCurrentInstance, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
+import {useUserStore} from "@/store/user.js";
+import {useDialog} from "primevue/usedialog";
+import InfoEditor from "@/components/common/entityEditor/PersonInfoEditor.vue";
 
+const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const router = useRouter();
 const toast = useToast();
+const userStore = useUserStore();
+const dialog = useDialog();
 
 const item = ref({});
 const pageTraffic = ref({});
 const detailInfo = ref({});
-const itemImageInfo = ref({});
 const option = ref({});
 
 onBeforeMount(() => {
@@ -25,6 +28,34 @@ onBeforeMount(() => {
   pageTraffic.value = router.currentRoute.value.meta.info.traffic;
   detailInfo.value = router.currentRoute.value.meta.info.detailInfo;
 });
+
+const openEditDialog = () => {
+  dialog.open(InfoEditor, {
+    props: {
+      header: $const.Edit,
+      style: {
+        width: '600px',
+      },
+      breakpoints:{
+        '960px': '70vw',
+        '640px': '60vw'
+      },
+      modal: true,
+      closable: false
+    },
+    data: {
+      item: item.value,
+      option: option.value,
+    },
+    onClose: async (options) => {
+      if (options.data !== undefined) {
+        if (options.data.isUpdate) {
+          await getItems();
+        }
+      }
+    }
+  });
+}
 
 </script>
 
@@ -40,7 +71,6 @@ onBeforeMount(() => {
                 {{ item.name }}
               </b>
             </h4>
-            <!--            <div th:insert="~{template/item-detail-template :: item_common_edit_button}"></div>-->
           </div>
         </template>
         <template #subtitle>
@@ -61,6 +91,15 @@ onBeforeMount(() => {
               <Card>
                 <template #content>
                   <div class="relative">
+                    <div v-if="userStore.user">
+                      <Button v-if="userStore.user.type === 0 || userStore.user.type > 1" class="p-button-link absolute top-0"
+                              @click="openEditDialog" style="right: 25%"
+                              v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
+                        <template #icon>
+                          <span class="material-symbols-outlined">edit_note</span>
+                        </template>
+                      </Button>
+                    </div>
                     <table class="table-borderless table-sm ml-2">
                       <tbody class="detail-item-header-table">
                       <tr>
