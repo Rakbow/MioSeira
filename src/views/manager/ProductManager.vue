@@ -3,10 +3,11 @@ import {onMounted, ref} from "vue";
 import {getCurrentInstance} from "vue";
 import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useToast} from "primevue/usetoast";
-import {PublicHelper} from "@/utils/publicHelper";
 import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
+import {useDialog} from "primevue/usedialog";
+import InfoEditor from "@/components/common/entityEditor/ProductInfoEditor.vue";
 
 //region query
 const route = useRoute();
@@ -54,19 +55,18 @@ onMounted(() => {
   initQueryParam();
 })
 
-
+const dialog = useDialog();
 const toast = useToast();
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const $api = getCurrentInstance().appContext.config.globalProperties.$api;
 const items = ref([]);
 const itemAdd = ref({});
-const itemEdit = ref({});
 const dt = ref();
 const filters = ref({
   'name': {value: ''},
   'nameZh': {value: ''},
   'nameEn': {value: ''},
-  'categories': {value: null},
+  'category': {value: null},
 });
 const loading = ref(false);
 const editBlock = ref(false);
@@ -84,6 +84,7 @@ const option = ref({});
 const initOption= async () => {
   const res = await axios.post($api.GET_META_DATA);
   option.value.productCategorySet = res.data.productCategorySet;
+  option.value.franchiseSet = res.data.franchiseSet;
 }
 
 const onPage = (ev) => {
@@ -94,7 +95,7 @@ const onSort = (ev) => {
   queryParams.value = ev;
   getItems();
 };
-const onFilter = $event => {
+const onFilter = () => {
   queryParams.value.filters = filters.value;
   getItems();
 };
@@ -120,7 +121,6 @@ const getItems = async () => {
 //region item CRUD
 
 const displayAddDialog = ref(false);
-const displayEditDialog = ref(false);
 const displayDeleteDialog = ref(false);
 
 const openAddDialog = () => {
@@ -136,15 +136,32 @@ const closeAddDialog = () => {
 }
 
 const openEditDialog = (data) => {
-  itemEdit.value = PublicHelper.deepCopy(data);
-  displayEditDialog.value = true;
+  dialog.open(InfoEditor, {
+    props: {
+      header: $const.Edit,
+      style: {
+        width: '600px',
+      },
+      breakpoints:{
+        '960px': '70vw',
+        '640px': '60vw'
+      },
+      modal: true,
+      closable: false
+    },
+    data: {
+      item: data,
+      option: option.value,
+    },
+    onClose: async (options) => {
+      if (options.data !== undefined) {
+        if (options.data.isUpdate) {
+          await getItems();
+        }
+      }
+    }
+  });
 }
-
-const closeEditDialog = () => {
-  itemEdit.value = {};
-  displayEditDialog.value = false;
-}
-
 const confirmDeleteSelected = () => {
   displayDeleteDialog.value = true;
 }
@@ -161,19 +178,6 @@ const submitAddItem = async () => {
   }
   loading.value = false;
 }
-
-const submitEditItem = async () => {
-  loading.value = true;
-  const res = await axios.post($api.UPDATE_PRODUCT, itemEdit.value);
-  if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
-    closeEditDialog();
-    await getItems();
-  } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
-  }
-  loading.value = false;
-}
 //endregion
 
 const exportCSV = () => {
@@ -183,7 +187,7 @@ const exportCSV = () => {
 
 <template>
   <div class="flex justify-content-center">
-    <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items !== 0"
+    <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items.length !== 0"
                lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
                filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn']"
@@ -230,7 +234,7 @@ const exportCSV = () => {
       <Column :header="$const.Name" field="name" :showFilterMenu="false"
               exportHeader="name" sortable style="flex: 0 0 5rem">
         <template #body="slotProps">
-          <a :href=`${$api.PRODUCT_DETAIL}'/'${slotProps.data.id}`>
+          <a :href="$api.PRODUCT_DETAIL + '/' + slotProps.data.id">
             {{ slotProps.data.name }}
           </a>
         </template>
@@ -270,100 +274,49 @@ const exportCSV = () => {
     </DataTable>
   </div>
 
-  <Dialog modal :pt="{mask: {style: 'backdrop-filter: blur(2px)'}}" v-model:visible="displayAddDialog"
+  <Dialog modal v-model:visible="displayAddDialog"
           style="width: 600px" :header="$const.Add" class="p-fluid">
     <BlockUI :blocked="editBlock">
+      <div class="field col">
+        <label>{{$const.Name}}<span style="color: red">*</span></label>
+        <InputText id="name" v-model="itemAdd.name" />
+      </div>
+      <div class="field col">
+        <label>{{$const.NameEn}}<span style="color: red">*</span></label>
+        <InputText id="nameEn" v-model="itemAdd.nameEn" />
+      </div>
+      <div class="field col">
+        <label>{{$const.NameZh}}<span style="color: red">*</span></label>
+        <InputText id="nameZh" v-model="itemAdd.nameZh" />
+      </div>
       <div class="formgrid grid">
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.Name }}<span style="color: red">*</span></label>
-          <InputText v-model="itemAdd.name"/>
+        <div class="field col-6">
+          <label>{{$const.ReleaseDate}}<span style="color: red">*</span></label>
+          <Calendar id="releaseDate" v-model="itemAdd.releaseDate" dateFormat="yy/mm/dd"
+                    :showButtonBar="true" :showIcon="true" />
         </div>
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.NameZh }}</label>
-          <InputText v-model="itemAdd.nameZh"/>
-        </div>
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.NameEn }}</label>
-          <InputText v-model="itemAdd.nameEn"/>
+        <div class="field col-6">
+          <label>{{$const.Category}}</label>
+          <Dropdown v-model="itemAdd.category" :options="option.productCategorySet"
+                    optionLabel="label" optionValue="value" />
         </div>
       </div>
-
       <div class="formgrid grid">
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.Gender }}</label>
-          <Dropdown v-model="itemAdd.gender"
-                    :options="option.genderSet" optionLabel="label" optionValue="value"
-                    :placeholder="$const.Unknown" class="w-full md:w-14rem"/>
-        </div>
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.BirthDate }}</label>
-          <InputMask v-model.trim="itemAdd.birthDate" mask="****/**/**" />
+        <div class="field col-6">
+          <label>{{$const.Franchise}}</label>
+          <Dropdown v-model="itemAdd.franchise" :options="option.franchiseSet"
+                    optionLabel="label" optionValue="value" />
         </div>
       </div>
-
-      <div class="p-fluid">
-        <label class="font-bold block mb-2">{{ $const.Aliases }}</label>
-        <Chips v-model="itemAdd.aliases" separator=","  />
-      </div>
-
       <div class="field">
-        <label>{{ $const.Remark }}</label>
-        <Textarea v-model="itemAdd.remark" rows="3" cols="20" autoResize/>
+        <label>{{$const.Remark}}</label>
+        <Textarea id="remark" v-model="itemAdd.remark" rows="3" cols="20" :autoResize="true" />
       </div>
     </BlockUI>
     <template #footer>
       <Button :label="$const.Cancel" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
               :disabled="editBlock"/>
       <Button :label="$const.Save" icon="pi pi-check" class="p-button-text" @click="submitAddItem"
-              :disabled="editBlock"/>
-    </template>
-  </Dialog>
-
-  <Dialog modal :pt="{mask: {style: 'backdrop-filter: blur(2px)'}}" v-model:visible="displayEditDialog"
-          :style="{width: '600px'}" :header="$const.Edit" class="p-fluid">
-    <BlockUI :blocked="editBlock">
-      <div class="formgrid grid">
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.Name }}<span style="color: red">*</span></label>
-          <InputText v-model.trim="itemEdit.name"/>
-        </div>
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.NameZh }}</label>
-          <InputText v-model.trim="itemEdit.nameZh"/>
-        </div>
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.NameEn }}</label>
-          <InputText v-model.trim="itemEdit.nameEn"/>
-        </div>
-      </div>
-
-      <div class="formgrid grid">
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.Gender }}</label>
-          <Dropdown v-model="itemEdit.gender.value"
-                    :options="option.genderSet" optionLabel="label" optionValue="value"
-                    :placeholder="$const.Unknown" class="w-full md:w-14rem"/>
-        </div>
-        <div class="field col">
-          <label class="font-bold block mb-2">{{ $const.BirthDate }}</label>
-          <InputText v-model.trim="itemEdit.birthDate" />
-        </div>
-      </div>
-
-      <div class="p-fluid">
-        <label class="font-bold block mb-2">{{ $const.Aliases }}</label>
-        <Chips v-model="itemEdit.aliases" separator=","  />
-      </div>
-
-      <div class="field">
-        <label>{{ $const.Remark }}</label>
-        <Textarea v-model="itemEdit.remark" rows="3" cols="20" autoResize/>
-      </div>
-    </BlockUI>
-    <template #footer>
-      <Button :label="$const.Cancel" icon="pi pi-times" class="p-button-text" @click="closeEditDialog"
-              :disabled="editBlock"/>
-      <Button :label="$const.Save" icon="pi pi-check" class="p-button-text" @click="submitEditItem"
               :disabled="editBlock"/>
     </template>
   </Dialog>

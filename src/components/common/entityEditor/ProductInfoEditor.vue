@@ -52,37 +52,34 @@ const close = () => {
 <template>
   <Toast/>
   <BlockUI :blocked="editBlock" class="p-fluid">
-    <div class="formgrid grid">
-      <div class="field col">
-        <label>{{$const.Name}}<span style="color: red">*</span></label>
-        <InputText id="name" v-model="item.name" />
-      </div>
-      <div class="field col">
-        <label>{{$const.NameEn}}</label>
-        <InputText id="nameEn" v-model="item.nameEn" />
-      </div>
-      <div class="field col">
-        <label>{{$const.NameZh}}</label>
-        <InputText id="nameZh" v-model="item.nameZh" />
-      </div>
+    <div class="field col">
+      <label>{{$const.Name}}<span style="color: red">*</span></label>
+      <InputText id="name" v-model="item.name" />
+    </div>
+    <div class="field col">
+      <label>{{$const.NameEn}}<span style="color: red">*</span></label>
+      <InputText id="nameEn" v-model="item.nameEn" />
+    </div>
+    <div class="field col">
+      <label>{{$const.NameZh}}<span style="color: red">*</span></label>
+      <InputText id="nameZh" v-model="item.nameZh" />
     </div>
     <div class="formgrid grid">
       <div class="field col-6">
         <label>{{$const.ReleaseDate}}<span style="color: red">*</span></label>
         <Calendar id="releaseDate" v-model="item.releaseDate" dateFormat="yy/mm/dd"
-                  :showButtonBar="true"
-                  :showIcon="true" />
+                  :showButtonBar="true" :showIcon="true" />
       </div>
-      <div class="field col-3">
+      <div class="field col-6">
         <label>{{$const.Category}}</label>
         <Dropdown v-model="item.category" :options="option.productCategorySet"
                   optionLabel="label" optionValue="value" />
       </div>
     </div>
     <div class="formgrid grid">
-      <div class="field col-3">
+      <div class="field col-6">
         <label>{{$const.Franchise}}</label>
-        <Dropdown v-model="item.franchise" :options="option.productCategorySet"
+        <Dropdown v-model="item.franchise" :options="option.franchiseSet"
                   optionLabel="label" optionValue="value" />
       </div>
     </div>
@@ -90,10 +87,14 @@ const close = () => {
       <label>{{$const.Remark}}</label>
       <Textarea id="remark" v-model="item.remark" rows="3" cols="20" :autoResize="true" />
     </div>
-    <div class="text-end mt-3 mb-2">
-      <Button icon="pi pi-times" :label="$const.Cancel" @click="close"
-              class="p-button-text" />
-      <Button icon="pi pi-save" :label="$const.Save" @click="submit" />
+    <div class="grid text-end mt-3 mb-2">
+      <div class="col-offset-6 col-3">
+        <Button icon="pi pi-times" :label="$const.Cancel" @click="close"
+                class="p-button-text" />
+      </div>
+      <div class="col-3">
+        <Button icon="pi pi-save" :label="$const.Save" @click="submit" />
+      </div>
     </div>
   </BlockUI>
 </template>
