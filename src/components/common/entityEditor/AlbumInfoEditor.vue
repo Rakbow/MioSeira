@@ -126,10 +126,14 @@ const close = () => {
       <label>{{$const.Remark}}</label>
       <Textarea id="remark" v-model="item.remark" rows="3" cols="20" :autoResize="true" />
     </div>
-    <div class="text-end mt-3 mb-2">
-      <Button icon="pi pi-times" :label="$const.Cancel" @click="close"
-              class="p-button-text" />
-      <Button icon="pi pi-save" :label="$const.Save" @click="submit" />
+    <div class="grid text-end mt-3 mb-2">
+      <div class="col-offset-6 col-3">
+        <Button icon="pi pi-times" :label="$const.Cancel" @click="close"
+                class="p-button-text" />
+      </div>
+      <div class="col-3">
+        <Button icon="pi pi-save" :label="$const.Save" @click="submit" />
+      </div>
     </div>
   </BlockUI>
 </template>
