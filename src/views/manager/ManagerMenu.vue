@@ -38,6 +38,11 @@ const items = ref([
         label: $const.Product,
         icon: 'pi pi-th-large',
         route: '/db/manager/product'
+      },
+      {
+        label: $const.Album,
+        icon: 'pi pi-th-large',
+        route: '/db/manager/album'
       }
     ]
   },
