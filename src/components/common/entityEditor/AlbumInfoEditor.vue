@@ -80,9 +80,7 @@ const close = () => {
     <div class="formgrid grid">
       <div class="field col-6">
         <label>{{$const.ReleaseDate}}<span style="color: red">*</span></label>
-        <Calendar id="releaseDate" v-model="item.releaseDate" dateFormat="yy/mm/dd"
-                    :showButtonBar="true"
-                    :showIcon="true" />
+        <InputMask v-model="item.releaseDate" mask="****/**/**" />
       </div>
       <div class="field col-3">
         <label>{{$const.ReleasePrice}}</label>
@@ -100,7 +98,7 @@ const close = () => {
           <label class="mb-3">{{$const.Bonus}}</label>
         </div>
         <div class="col-12 mt-4">
-          <InputSwitch v-model="item.hasBonus" :trueValue="1" :falseValue="0" />
+          <InputSwitch v-model="item.hasBonus" :trueValue="true" :falseValue="false" />
         </div>
       </div>
     </div>

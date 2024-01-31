@@ -4,7 +4,7 @@ export const API = {
     //region
     DOMAIN: '/',
 
-    GET_META_DATA: '/api/db/get-meta-data',
+    GET_ENTITY_OPTION: '/api/db/get-option',
 
     //region user
     CHECK_USER_AUTHORITY: '/api/user/check-authority',
@@ -82,8 +82,8 @@ export const API = {
     ALBUM_DETAIL: '/db/album',
     DELETE_ALBUM: '/api/db/album/delete',
     UPDATE_ALBUM: '/api/db/album/update',
-    INSERT_ALBUM: '/api/db/album/add',
-    GET_ALBUMS: '/api/db/album/get-albums',
+    ADD_ALBUM: '/api/db/album/add',
+    GET_ALBUMS: '/api/db/album/list',
     GET_RELATED_ALBUMS: '/api/db/album/get-related-albums',
     UPDATE_ALBUM_TRACK_INFO: '/api/db/album/update-track-info',
     GET_ALBUM_TRACK_INFO: '/api/db/album/get-track-info',

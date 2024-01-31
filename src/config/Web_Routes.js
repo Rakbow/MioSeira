@@ -74,7 +74,7 @@ export const DATABASE_ROUTER = [
                 const res = await axios.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
                 if (res.state === axios.SUCCESS) {
                     to.meta.info = res.data;
-                    document.title = res.data.album.name;
+                    document.title = res.data.item.name;
                     next();
                 }else {
                     console.log(res.message);
@@ -125,6 +125,10 @@ export const DATABASE_ROUTER = [
             {
                 path: 'product',
                 component: () => import('@/views/manager/ProductManager.vue'),
+            },
+            {
+                path: 'album',
+                component: () => import('@/views/manager/AlbumManager.vue'),
             },
             {
                 path: 'person',

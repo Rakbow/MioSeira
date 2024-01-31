@@ -51,6 +51,7 @@ export const CnText = {
     Spec: '规格',
     Description: '描述',
     Role: '职位',
+    Price: '价格',
 
     Visit: '访问',
     Like: '点赞',
@@ -102,6 +103,7 @@ export const CnText = {
     //endregion
 
     //region 专属名词
+    Album: '专辑',
     AlbumCatalogNo: '专辑编号',
     AlbumName: '专辑名称',
     AlbumEnglishName: '专辑名称(英)',

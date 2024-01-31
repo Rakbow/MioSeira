@@ -27,6 +27,7 @@ onBeforeMount(() => {
   item.value = router.currentRoute.value.meta.info.item;
   pageTraffic.value = router.currentRoute.value.meta.info.traffic;
   detailInfo.value = router.currentRoute.value.meta.info.detailInfo;
+  option.value = router.currentRoute.value.meta.info.options;
 });
 
 const openEditDialog = () => {

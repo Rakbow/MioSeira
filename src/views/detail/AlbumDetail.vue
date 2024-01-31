@@ -75,7 +75,7 @@
                      v-for="relatedAlbum of relatedAlbums">
                     <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
                         <a :href="'/db/album/'+ relatedAlbum.id">
-                            <img class="sidebar-panel-image-small" :src="relatedAlbum.cover.blackUrl"
+                            <img class="sidebar-panel-image-small" :src="relatedAlbum.cover.blackUrl" alt=""
                                  v-tooltip.bottom="$const.AddedTime + ': ' + relatedAlbum.addedTime + $const.EditedTime + ': ' + relatedAlbum.editedTime">
                         </a>
                     </div>
@@ -143,13 +143,8 @@ const itemImageInfo = ref({});
 const option = ref({});
 const relatedItemLoad = ref(true);
 const relatedAlbums = ref([]);
-const productSet = ref([]);
-const productSelect = ref(true);
 const audios = ref(null);
 const personnel = ref([]);
-
-const displayEditDialog = ref(false);
-const displayTrackEditDialog = ref(false);
 
 onBeforeMount(() => {
   album.value = router.currentRoute.value.meta.info.item;
@@ -191,11 +186,6 @@ const openEditDialog = () => {
 </script>
 
 <style scoped>
-
-.detail-list-icon {
-  margin-right: 0.25rem;
-  font-size: 1.3rem;
-}
 
 .album-detail-cover {
   transform: translateY(0);

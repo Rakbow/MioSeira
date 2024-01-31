@@ -75,7 +75,7 @@ const close = () => {
       </div>
       <div class="field col">
         <label class="font-bold block mb-2">{{ $const.BirthDate }}</label>
-        <InputText v-model.trim="item.birthDate" />
+        <InputMask v-model.trim="item.birthDate" mask="****/**/**" />
       </div>
     </div>
 

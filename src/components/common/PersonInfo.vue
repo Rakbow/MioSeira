@@ -7,7 +7,7 @@ import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useRoute} from "vue-router";
 
 
-const editor = defineAsyncComponent(() => import('@/components/common/PersonEditor.vue'));
+const editor = defineAsyncComponent(() => import('@/components/common/PersonnelEditor.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const $api = getCurrentInstance().appContext.config.globalProperties.$api;
 

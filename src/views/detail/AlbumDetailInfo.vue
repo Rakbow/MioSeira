@@ -1,5 +1,5 @@
 <script setup>
-import {defineProps, getCurrentInstance, ref} from "vue";
+import {defineProps, getCurrentInstance} from "vue";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 const props = defineProps({
@@ -119,5 +119,8 @@ const props = defineProps({
 </template>
 
 <style scoped>
-
+.detail-list-icon {
+  margin-right: 0.25rem;
+  font-size: 1.3rem;
+}
 </style>
