@@ -5,9 +5,10 @@ import {AxiosHelper as axios} from '@/utils/axiosHelper';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
 import {META} from '@/config/Web_Const';
-import { useRoute } from 'vue-router';
+import {useRoute} from 'vue-router';
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
+
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const $api = getCurrentInstance().appContext.config.globalProperties.$api;
 
@@ -21,9 +22,10 @@ const isUpdate = ref(false);
 const route = useRoute();
 
 const relationTypeOption = ref([]);
+const entityTypeOption = ref([]);
 
 onMounted(() => {
-  editRelatedItems.value = dialogRef.value.data.relatedItems;
+  editRelatedItems.value = JSON.parse(JSON.stringify(dialogRef.value.data.relatedItems));
   getEntityInfo();
   initOption();
   isUpdate.value = false;
@@ -38,16 +40,19 @@ const getEntityInfo = () => {
 }
 const editBlock = ref(false);
 
-const initOption= async () => {
-  if(relationTypeOption.value.length !== 0) return;
+const initOption = async () => {
+  if (relationTypeOption.value.length !== 0) return;
   const res = await axios.post($api.GET_ENTITY_OPTION, {entityType: 0});
   relationTypeOption.value = res.data.relationTypeSet;
+  entityTypeOption.value = res.data.entityTypeSet;
 }
 
 const item = ref({
-  main: false,
-  role: {},
-  person: {}
+  id: 0,
+  entityType: {},
+  entity: {},
+  type: {},
+  action: META.ACTION.NO_ACTION
 });
 
 const selectedItem = ref(null);
@@ -63,8 +68,8 @@ const menuModel = [
   }
 ];
 const deleteItem = (item) => {
-  let tmpItem = editRelatedItems.value.find((i) => i.person.value === item.person.value && i.role.value === item.role.value);
-  if(!_isUndefined(tmpItem)) {
+  let tmpItem = editRelatedItems.value.find((i) => i.entityType.value === item.entityType.value && i.entityId === item.entityId);
+  if (!_isUndefined(tmpItem)) {
     tmpItem.action = META.ACTION.REAL_DELETE;
   }
   toast.add({severity: 'error', summary: $const.MessageDeleted, detail: '', life: 3000});
@@ -85,49 +90,55 @@ const submit = async () => {
   let param = {
     entityId: entityId.value,
     entityType: entityType.value,
-    personnel: editRelatedItems.value
+    relations: editRelatedItems.value
   }
-  const res = await axios.post($api.MANAGE_PERSONNEL, param);
-  if(res.message !== '') {
-    if(res.state === axios.SUCCESS) {
+  const res = await axios.post($api.MANAGE_RELATION, param);
+  if (res.message !== '') {
+    if (res.state === axios.SUCCESS) {
       isUpdate.value = true;
       cancelEdit();
       toast.add({severity: 'success', summary: res.message, detail: '', life: 3000});
-    }else {
+    } else {
       toast.add({severity: 'error', summary: res.message, detail: '', life: 3000});
     }
   }
 };
 
-const personSet = ref([]);
-const searchPerson = async (event) => {
-  if(_isEmpty(event.query)) return;
+const itemSet = ref([]);
+const searchItem = async (event) => {
+  if (_isEmpty(event.query)) return;
   let param = {
-    keyword: event.query,
-    first: 0,
-    row: 100
+    entityType: item.value.entityType.value,
+    param: {
+      keyword: event.query,
+      first: 0,
+      row: 100
+    }
   }
-  const res = await axios.post($api.SEARCH_PERSON, param);
-  personSet.value = res.data.data;
+  const res = await axios.post($api.GENERAL_SEARCH, param);
+  itemSet.value = res.data.data;
 }
 const addItem = () => {
   let newItem = {
     id: 0,
-    main: item.value.main,
-    role: {
-      label: item.value.role.label,
-      value: item.value.role.value
-    },
-    person: {
-      label: `${item.value.person.name} / ${item.value.person.nameZh}`,
-      value: item.value.person.id
-    },
-    action: META.ACTION.INSERT
+    entityType: item.value.entityType,
+    entityId: item.value.entity.id,
+    relationType: item.value.type,
+    action: META.ACTION.INSERT,
+
+    cover: item.value.entity.cover,
+    name: item.value.entity.name,
+    nameZh: item.value.entity.nameZh
   }
   editRelatedItems.value.push(newItem);
   toast.add({severity: 'success', summary: $const.MessageAdded, detail: '', life: 3000});
-  item.value.main = false;
-  item.value.person = {};
+  item.value = {
+    id: 0,
+    entityType: {},
+    entity: {},
+    type: {},
+    action: META.ACTION.NO_ACTION
+  };
 }
 </script>
 
@@ -135,19 +146,17 @@ const addItem = () => {
   <BlockUI :blocked="editBlock">
     <panel>
       <template #header>
-        <i class="pi pi-user-plus mr-2" style="font-size: 2rem" />
-        <b>{{$const.Add}}</b>
+        <i class="pi pi-user-plus mr-2" style="font-size: 2rem"/>
+        <b>{{ $const.Add }}</b>
       </template>
       <div class="grid">
-        <div class="col-5">
+        <div class="col-3">
           <div class="p-inputgroup">
             <span class="p-inputgroup-addon">
-                <i class="pi pi-tag" />
+                <i class="pi pi-tag"/>
             </span>
-            <span class="p-inputgroup-addon">
-                <Checkbox v-model="item.main" :binary="true" :trueValue="1" :falseValue="0" />
-            </span>
-            <Dropdown v-model="item.role" :options="relationTypeOption" optionLabel="label" filter :placeholder="$const.Role" >
+            <Dropdown v-model="item.type" :options="relationTypeOption" optionLabel="label" filter
+                      :placeholder="$const.RelatedType">
               <template #option="slotProps">
                 <div class="flex align-options-center">
                   <div>{{ slotProps.option.label }}</div>
@@ -156,66 +165,78 @@ const addItem = () => {
             </Dropdown>
           </div>
         </div>
-        <div class="col-5">
-          <AutoComplete v-model="item.person" optionLabel="name" :suggestions="personSet"
-                        @complete="searchPerson" inputStyle="min-width: 270px">
+        <div class="col-2">
+          <Dropdown v-model="item.entityType" :options="entityTypeOption" optionLabel="label" filter
+                    :placeholder="$const.Type">
             <template #option="slotProps">
               <div class="flex align-options-center">
-                <img :src="slotProps.option.cover" style="width: 50px"  alt="cover"/>
+                <div>{{ slotProps.option.label }}</div>
+              </div>
+            </template>
+          </Dropdown>
+        </div>
+        <div class="col-5">
+          <AutoComplete v-model="item.entity" optionLabel="name" :suggestions="itemSet"
+                        @complete="searchItem" inputStyle="min-width: 270px">
+            <template #option="slotProps">
+              <div class="flex align-options-center">
+                <img :src="slotProps.option.cover" style="width: 50px" alt="cover"/>
                 <div>{{ `${slotProps.option.name}/${slotProps.option.nameZh}` }}</div>
               </div>
             </template>
           </AutoComplete>
         </div>
         <div class="col-2">
-          <Button icon="pi pi-plus-circle" rounded @click="addItem" />
+          <Button icon="pi pi-plus-circle" rounded @click="addItem"/>
         </div>
       </div>
     </panel>
     <panel>
       <template #header>
-        <i class="pi pi-user-edit mr-2" style="font-size: 2rem" />
-        <b>{{$const.Edit}}</b>
+        <i class="pi pi-user-edit mr-2" style="font-size: 2rem"/>
+        <b>{{ $const.Edit }}</b>
       </template>
       <div v-if="editRelatedItems">
         <DataTable dataKey="id" :value="editRelatedItems" responsiveLayout="scroll"
                    class="p-datatable-sm" stripedRows @rowContextmenu="rowMenu"
                    contextMenu v-model:contextMenuSelection="selectedItem">
-          <Column field="main" header-style="width: 3%">
+          <Column :header="$const.RelatedType">
             <template #body="slotProps">
-              <i v-if="slotProps.data.main" class="pi false-icon pi-star-fill"></i>
+              {{ slotProps.data.relationType.label }}
             </template>
           </Column>
-          <Column field="role" :header="$const.Role">
+          <Column :header="$const.Type">
             <template #body="slotProps">
-              {{slotProps.data.role.label}}
+              {{ slotProps.data.entityType.label }}
             </template>
           </Column>
-          <Column field="person" :header="$const.Person">
+          <Column :header="$const.Entity">
             <template #body="slotProps">
-              {{slotProps.data.person.label}}
+              <img :src="slotProps.data.cover" :alt="slotProps.data.name"
+                   class="edit-image" />
+              {{ slotProps.data.name }}
             </template>
           </Column>
-          <Column field="action" :header="$const.Action">
+          <Column :header="$const.Action">
             <template #body="slotProps">
               <i v-if="slotProps.data.action === META.ACTION.INSERT" class="pi pi-true-icon pi-check-circle"></i>
               <i v-if="slotProps.data.action === META.ACTION.REAL_DELETE" class="pi pi-false-icon pi-times-circle"></i>
             </template>
           </Column>
         </DataTable>
-        <ContextMenu :model="menuModel" ref="cm" />
+        <ContextMenu :model="menuModel" ref="cm"/>
       </div>
       <div v-else>
-        <span class="emptyInfo">{{$const.NoPerson}}</span>
+        <span class="emptyInfo">{{ $const.NoInfo }}</span>
       </div>
     </panel>
     <div class="text-end mt-3 mb-2">
       <Button :label="$const.Clear" icon="pi pi-trash" class="p-button-danger mr-4"
-              @click="clear" :disabled="editBlock" />
+              @click="clear" :disabled="editBlock"/>
       <Button :label="$const.Cancel" icon="pi pi-times" class="mr-4"
-              @click="cancelEdit" :disabled="editBlock" />
+              @click="cancelEdit" :disabled="editBlock"/>
       <Button :label="$const.Update" icon="pi pi-save" class="p-button-success mr-4"
-              @click="submit" :disabled="editBlock" />
+              @click="submit" :disabled="editBlock"/>
     </div>
   </BlockUI>
 </template>

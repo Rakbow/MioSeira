@@ -98,6 +98,7 @@ export const CnText = {
     NoImage: '暂无图片',
     NoCompanies: '暂无相关企业信息',
     NoPerson: '暂无相关人员信息',
+    NoInfo: '暂无数据',
     NoDescription: '暂无描述',
     NoBonus: '暂无特典信息',
     //endregion
@@ -345,7 +346,12 @@ export const CnText = {
         {label: '欧元', value: 'EUR'},
         {label: '新台币', value: 'TWD'},
         {label: '其他', value: 'UNKNOWN'}
-    ]
+    ],
+
+    RelatedType: '关联类型',
+    Relation: '关联关系',
+    Entity: '实体',
+    RelatedItem: '关联条目'
 
     //endregion
 

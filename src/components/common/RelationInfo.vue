@@ -7,36 +7,37 @@ import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import {useRoute} from "vue-router";
 
 
-const editor = defineAsyncComponent(() => import('@/components/common/PersonnelEditor.vue'));
+const editor = defineAsyncComponent(() => import('@/components/common/RelationEditor.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const $api = getCurrentInstance().appContext.config.globalProperties.$api;
 
 onBeforeMount(() => {
-  personnel.value = props.personnel;
+  // relatedItems.value = props.relations;
 });
 
 onMounted(() => {
   getEntityInfo();
+  getRelations();
 });
-const props = defineProps({
-  personnel: {
-    type: Object,
-    required: true,
-  },
-});
+// const props = defineProps({
+//   relations: {
+//     type: Array,
+//     required: true,
+//   },
+// });
 
 const route = useRoute();
 const dialog = useDialog();
 const userStore = useUserStore();
 const entityType = ref();
 const entityId = ref();
-const personnel = ref({});
+const relatedItems = ref({});
 const editBlock = ref(false);
 
 const openEditDialog = () => {
   dialog.open(editor, {
     props: {
-      header: $const.Person,
+      header: $const.Relation,
       style: {
         width: '60vw',
       },
@@ -48,27 +49,27 @@ const openEditDialog = () => {
       closable: false
     },
     data: {
-      personnel: personnel.value.editPersonnel
+      relatedItems: relatedItems.value
     },
     onClose: (options) => {
       if (options.data !== undefined) {
         if (options.data.isUpdate) {
-          getPersonnel();
+          getRelations();
         }
       }
     }
   });
 }
 
-const getPersonnel = async () => {
+const getRelations = async () => {
   editBlock.value = true;
   let param = {
     entityType: entityType.value,
     entityId: entityId.value
   }
-  const res = await axios.post($api.GET_PERSONNEL, param);
-  if(res.state === axios.SUCCESS)
-    personnel.value = res.data;
+  const res = await axios.post($api.GET_RELATION, param);
+  if (res.state === axios.SUCCESS)
+    relatedItems.value = res.data;
   editBlock.value = false;
 }
 
@@ -81,44 +82,62 @@ const getEntityInfo = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="editBlock">
-    <Fieldset :toggleable="true">
-      <template #legend>
-        <i class="pi pi-users"></i>
-        <b>{{ $const.Persons }}</b>
-      </template>
-      <div class="relative">
-        <div v-if="userStore.user">
-          <Button v-if="userStore.user.type === 0 || userStore.user.type > 1" class="p-button-link absolute top-0"
-                  @click="openEditDialog" style="right: 5%"
-                  v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}">
-            <template #icon>
-              <span class="material-symbols-outlined">edit_note</span>
-            </template>
-          </Button>
-        </div>
-
-        <div class="grid ml-4" v-if="personnel.personnel.length !== 0">
-          <table class="table-borderless table-sm">
-            <tbody class="detail-item-artists-table">
-            <tr v-for="item in personnel.personnel">
-              <td style="width:250px"><strong>{{ item.role.label }}</strong></td>
-              <td v-for="(person, index) in item.persons" style="display:inline" class="a_with_underline">
-                <router-link :to="'/db/person/' + person.value">
-                  <span style="white-space: nowrap;">{{ person.label }}</span>
-                </router-link>
-                <span v-if="index < item.persons.length - 1">,</span>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div v-else>
-          <span class="emptyInfo"><em>{{ $const.NoPerson }}</em></span>
-        </div>
+  <Panel class="mt-2">
+    <template #header>
+      <span class="text-start side-panel-header">
+          <i class="pi pi-images"/><span><strong>{{ $const.RelatedItem }}</strong></span>
+      </span>
+    </template>
+    <template #icons>
+      <div v-if="userStore.user">
+        <Button v-if="userStore.user.type === 0 || userStore.user.type > 1" class="p-panel-header-icon p-link mr-2"
+                @click="openEditDialog" v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}">
+          <span class="pi pi-cog"/>
+        </Button>
       </div>
-    </Fieldset>
-  </BlockUI>
+    </template>
+    <BlockUI :blocked="editBlock">
+      <div class="grid" v-if="relatedItems.length > 0">
+          <span class="small_font">
+              <div class="info_bit_small small_font grid m-0 p-0"
+                   v-if="relatedItems.length !== 0"
+                   v-for="item of relatedItems">
+                  <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
+                      <a :href="'/db/' + item.entityTypeName + '/' + item.entityId">
+                          <img class="sidebar-panel-image-small" :src="item.cover" alt=""
+                               v-tooltip.bottom="item.name + '/' + item.nameZh">
+                      </a>
+                  </div>
+                  <div class="col p-0" style="height: 80px">
+                      <ul class="info_bit_small_other">
+                        <li>
+                          <span class="small_font col-6 related-item-date">
+                              {{ item.relationType.label }}
+                          </span>
+                        </li>
+                        <li>
+                            <a class="small_font"
+                               :href="'/db/' + item.entityTypeName + '/' + item.entityId">
+                                <span class="text-truncate-2 mr-2">
+                                    {{ item.name }}
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                          <span class="small_font col-6 related-item-catalog">
+                              {{ item.nameZh }}
+                          </span>
+                        </li>
+                      </ul>
+                  </div>
+              </div>
+          </span>
+      </div>
+      <div v-else>
+        <span class="emptyInfo"><em>{{ $const.NoInfo }}</em></span>
+      </div>
+    </BlockUI>
+  </Panel>
 </template>
 
 <style scoped>

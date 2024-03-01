@@ -4,6 +4,8 @@ export const API = {
     //region
     DOMAIN: '/',
 
+    GENERAL_SEARCH: '/api/db/search',
+
     GET_ENTITY_OPTION: '/api/db/get-option',
 
     //region user
@@ -14,7 +16,7 @@ export const API = {
     VERIFY_CODE: '/api/kaptcha',
     //endregion
 
-    //region
+    //region image
 
     GET_IMAGES: '/api/db/get-images',
     ADD_IMAGES: '/api/db/add-images',
@@ -39,6 +41,9 @@ export const API = {
 
     GET_PERSONNEL: '/api/db/person/get-personnel',
     MANAGE_PERSONNEL: '/api/db/person/manage-personnel',
+
+    GET_RELATION: '/api/db/relation/get-relations',
+    MANAGE_RELATION: '/api/db/relation/manage-relation',
     //endregion
 
     GET_ALBUM_DETAIL: '/api/db/album/detail',

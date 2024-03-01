@@ -59,53 +59,9 @@
       </Card>
     </div>
     <div class="col-2" style="min-width: 300px">
-<!--      <CategoryInfo :info="detailInfo"/>-->
       <SideImages :images="itemImageInfo"/>
+      <RelationInfo />
       <TrafficInfo :info="pageInfo" :addedTime="album.addedTime" :editedTime="album.editedTime" />
-      <Panel class="mt-2" v-if="!relatedItemLoad">
-        <template #header>
-          <span class="text-start side-panel-header">
-              <i class="pi iconfont icon-album"></i><span><strong>{{ $const.RelatedAlbumTitle }}</strong></span>
-          </span>
-        </template>
-        <div class="grid" v-if="relatedAlbums.length !== 0">
-            <span class="small_font">
-                <div class="info_bit_small small_font grid m-0 p-0"
-                     v-if="relatedAlbums.length !== 0"
-                     v-for="relatedAlbum of relatedAlbums">
-                    <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
-                        <a :href="'/db/album/'+ relatedAlbum.id">
-                            <img class="sidebar-panel-image-small" :src="relatedAlbum.cover.blackUrl" alt=""
-                                 v-tooltip.bottom="$const.AddedTime + ': ' + relatedAlbum.addedTime + $const.EditedTime + ': ' + relatedAlbum.editedTime">
-                        </a>
-                    </div>
-                    <div class="col p-0" style="height: 80px">
-                        <ul class="info_bit_small_other">
-                            <li>
-                                <a class="small_font"
-                                   :href="'/db/album/'+ relatedAlbum.id ">
-                                    <span class="text-truncate-2 mr-2">
-                                        {{ relatedAlbum.name }}
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <span class="small_font col-6 related-item-catalog">
-                                    {{ relatedAlbum.catalogNo ? relatedAlbum.catalogNo : 'N/A' }}
-                                </span>
-                                <span class="small_font col-6 related-item-date">
-                                    {{ relatedAlbum.releaseDate }}
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </span>
-        </div>
-        <div v-else>
-          <span class="emptyInfo"><em>{{ $const.ItemDetailMessageNoRelatedItem }}</em></span>
-        </div>
-      </Panel>
     </div>
   </div>
 </template>
@@ -123,6 +79,7 @@ const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 import {useDialog} from "primevue/usedialog";
 import SideImages from "@/components/common/SideImages.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
+import RelationInfo from "@/components/common/RelationInfo.vue";
 import PersonsInfo from "@/components/common/PersonInfo.vue";
 import DetailPad from "@/components/common/DetailPad.vue";
 import BonusPad from "@/components/common/BonusPad.vue";
