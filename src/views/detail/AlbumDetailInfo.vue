@@ -48,21 +48,21 @@ const props = defineProps({
       <td>
         {{ album.price !== 0 ? album.price : "&nbsp;&nbsp;-" }}
         <span v-if="album.price !== 0">
-          <span v-if="album.currencyUnit === 'JPY'" class="ml-1"
+          <span v-if="album.currency === 'JPY'" class="ml-1"
                 style="text-decoration-line: underline;text-decoration-style: dashed;"
                 v-tooltip.right="{value: $const.TaxInclusive, class: 'region-tooltip'}">JPY</span>
-          <span v-else>{{ album.currencyUnit }}</span>
+          <span v-else>{{ album.currency }}</span>
           <span class="ml-2 dropdown">
             <a href="#" class="dropdown-toggle"
                data-bs-toggle="dropdown">{{ $const.OtherCurrencyUnit }}</a>
             <div class="dropdown-menu">
-                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currencyUnit}+IN+CNY`"
+                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currency}+IN+CNY`"
                    class="dropdown-item">CNY</a>
-                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currencyUnit}+IN+USD`"
+                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currency}+IN+USD`"
                    class="dropdown-item">USD</a>
-                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currencyUnit}+IN+EUR`"
+                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currency}+IN+EUR`"
                    class="dropdown-item">EUR</a>
-                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currencyUnit}+IN+TWD`"
+                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currency}+IN+TWD`"
                    class="dropdown-item">TWD</a>
             </div>
           </span>

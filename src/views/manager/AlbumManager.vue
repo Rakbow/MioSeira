@@ -99,6 +99,7 @@ const initOption= async () => {
   option.value.albumFormatSet = res.data.albumFormatSet;
   option.value.publishFormatSet = res.data.publishFormatSet;
   option.value.mediaFormatSet = res.data.mediaFormatSet;
+  option.value.currencySet = res.data.currencySet;
 }
 
 const onPage = (ev) => {
@@ -373,7 +374,7 @@ const exportCSV = () => {
         </div>
         <div class="field col-3">
           <label>{{$const.CurrencyUnit}}</label>
-          <Dropdown v-model="itemAdd.currencyUnit" :options="$const.CurrencyUnitSet"
+          <Dropdown v-model="itemAdd.currency" :options="option.currencySet"
                     optionLabel="label" optionValue="value" :placeholder="$const.PlaceholderCurrencyUnit" />
         </div>
       </div>

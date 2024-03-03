@@ -340,12 +340,12 @@ export const CnText = {
     //endregion
 
     CurrencyUnitSet: [
-        {label: '日元', value: 'JPY'},
-        {label: '人民币', value: 'CNY'},
-        {label: '美元', value: 'USD'},
-        {label: '欧元', value: 'EUR'},
-        {label: '新台币', value: 'TWD'},
-        {label: '其他', value: 'UNKNOWN'}
+        {label: 'JPY', value: 'JPY'},
+        {label: 'CNY', value: 'CNY'},
+        {label: 'USD', value: 'USD'},
+        {label: 'EUR', value: 'EUR'},
+        {label: 'TWD', value: 'TWD'},
+        {label: 'UNKNOWN', value: 'UNKNOWN'}
     ],
 
     RelatedType: '关联类型',

@@ -88,7 +88,7 @@ const close = () => {
       </div>
       <div class="field col-3">
         <label>{{$const.CurrencyUnit}}</label>
-        <Dropdown v-model="item.currencyUnit" :options="$const.CurrencyUnitSet"
+        <Dropdown v-model="item.currency" :options="option.currencySet"
                     optionLabel="label" optionValue="value" :placeholder="$const.PlaceholderCurrencyUnit" />
       </div>
     </div>
