@@ -292,8 +292,7 @@ const exportCSV = () => {
       <div class="formgrid grid">
         <div class="field col-6">
           <label>{{$const.ReleaseDate}}<span style="color: red">*</span></label>
-          <Calendar id="releaseDate" v-model="itemAdd.releaseDate" dateFormat="yy/mm/dd"
-                    :showButtonBar="true" :showIcon="true" />
+          <InputMask v-model="itemAdd.releaseDate" mask="****/**/**" />
         </div>
         <div class="field col-6">
           <label>{{$const.Category}}</label>

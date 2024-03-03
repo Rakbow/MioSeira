@@ -326,6 +326,9 @@ const submitImages = async () => {
   }
   formData.append("entityType", entityType.value);
   formData.append("entityId", entityId.value);
+  for (const img of imageInfos.value) {
+    delete img.image;
+  }
   formData.append("imageInfos", JSON.stringify(imageInfos.value));
 
   const res = await axios.form(API.ADD_IMAGES, formData);

@@ -98,8 +98,6 @@ const album = ref({});
 const pageInfo = ref({});
 const itemImageInfo = ref({});
 const option = ref({});
-const relatedItemLoad = ref(true);
-const relatedAlbums = ref([]);
 const audios = ref(null);
 const personnel = ref([]);
 

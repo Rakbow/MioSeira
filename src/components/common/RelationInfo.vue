@@ -85,7 +85,7 @@ const getEntityInfo = () => {
   <Panel class="mt-2">
     <template #header>
       <span class="text-start side-panel-header">
-          <i class="pi pi-images"/><span><strong>{{ $const.RelatedItem }}</strong></span>
+          <i class="pi pi-th-large"/><span><strong>{{ $const.RelatedItem }}</strong></span>
       </span>
     </template>
     <template #icons>
@@ -105,7 +105,7 @@ const getEntityInfo = () => {
                   <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
                       <a :href="'/db/' + item.entityTypeName + '/' + item.entityId">
                           <img class="sidebar-panel-image-small" :src="item.cover" alt=""
-                               v-tooltip.bottom="item.name + '/' + item.nameZh">
+                               v-tooltip.bottom="item.name + '\n' + item.nameZh + '\n' + item.nameEn">
                       </a>
                   </div>
                   <div class="col p-0" style="height: 80px">

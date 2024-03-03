@@ -109,7 +109,7 @@ export const API = {
 
     //region product
     PRODUCT_DETAIL: '/db/product',
-    GET_PRODUCT_DETAIL: '/db/product/detail',
+    GET_PRODUCT_DETAIL: '/api/db/product/detail',
     GET_PRODUCTS: '/api/db/product/list',
     GET_PRODUCT_SET: '/api/db/product/get-product-set',
     ADD_PRODUCT: '/api/db/product/add',
