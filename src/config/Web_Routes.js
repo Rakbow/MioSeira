@@ -110,6 +110,28 @@ export const DATABASE_ROUTER = [
         }
     },
     {
+        name: "BookDetail",
+        path: API.BOOK_DETAIL + "/:id",
+        component: () => import('@/views/detail/BookDetail.vue'),
+        beforeEnter: async (to, from, next) => {
+            try {
+                const res = await axios.post(API.GET_BOOK_DETAIL, {id: to.params.id});
+                if (res.state === axios.SUCCESS) {
+                    to.meta.info = res.data;
+                    document.title = res.data.item.title;
+                    next();
+                }else {
+                    console.log(res.message);
+                }
+            }catch (e) {
+                console.error(e);
+            }
+        },
+        meta: {
+            title: "Book Detail"
+        }
+    },
+    {
         name: "EpisodeDetail",
         path: API.EPISODE_DETAIL + "/:id",
         component: () => import('@/views/detail/EpisodeDetail.vue'),

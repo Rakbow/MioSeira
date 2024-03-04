@@ -130,6 +130,7 @@ export const API = {
 
     //region book
     BOOK_DETAIL: '/db/book',
+    GET_BOOK_DETAIL: '/api/db/book/detail',
     DELETE_BOOK: '/api/db/book/delete',
     UPDATE_BOOK: '/api/db/book/update',
     INSERT_BOOK: '/api/db/book/add',
@@ -167,7 +168,7 @@ export const API = {
     DELETE_FRANCHISE: '/api/db/franchise/delete',
     UPDATE_FRANCHISE: '/api/db/franchise/update',
     ADD_FRANCHISE: '/api/db/franchise/add',
-    GET_FRANCHISE_LIST: '/api/db/franchise/list',
+    GET_FRANCHISE_LIST: '/api/db/franchise/list'
     //endregion
 }
 
