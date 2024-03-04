@@ -18,6 +18,7 @@
     "change-case": "^4.1.2",
     "colorthief": "^2.4.0",
     "drauu": "^0.3.3",
+    "flag-icons": "^7.1.0",
     "focus-trap": "^7.5.2",
     "fuse.js": "^6.6.2",
     "idb-keyval": "^6.2.1",
