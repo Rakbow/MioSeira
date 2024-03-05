@@ -4,6 +4,7 @@ import {AxiosHelper as axios} from '@/utils/axiosHelper';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
 import {API} from '@/config/Web_Helper_Strs';
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 onMounted(() => {

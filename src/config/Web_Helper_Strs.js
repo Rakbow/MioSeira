@@ -133,8 +133,8 @@ export const API = {
     GET_BOOK_DETAIL: '/api/db/book/detail',
     DELETE_BOOK: '/api/db/book/delete',
     UPDATE_BOOK: '/api/db/book/update',
-    INSERT_BOOK: '/api/db/book/add',
-    GET_BOOKS: '/api/db/book/get-books',
+    ADD_BOOK: '/api/db/book/add',
+    GET_BOOKS: '/api/db/book/list',
     GET_RELATED_BOOKS: '/api/db/book/get-related-books',
 
     BOOK_GENERATE_ISBN: '/api/db/book/get-isbn',

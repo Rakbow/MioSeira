@@ -123,6 +123,7 @@ export const CnText = {
     Disc: '碟片',
     Track: '音軌',
 
+    Book: '书籍',
     BookTitle: '书名',
     BookChineseTitle: '书名(中)',
     BookEnglishTitle: '书名(英)',

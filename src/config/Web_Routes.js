@@ -175,6 +175,10 @@ export const DATABASE_ROUTER = [
                 component: () => import('@/views/manager/AlbumManager.vue'),
             },
             {
+                path: 'book',
+                component: () => import('@/views/manager/BookManager.vue'),
+            },
+            {
                 path: 'person',
                 component: () => import('@/views/manager/PersonManager.vue'),
             },

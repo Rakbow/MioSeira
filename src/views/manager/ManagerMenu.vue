@@ -43,6 +43,11 @@ const items = ref([
         label: $const.Album,
         icon: 'pi pi-th-large',
         route: '/db/manager/album'
+      },
+      {
+        label: $const.Book,
+        icon: 'pi pi-book',
+        route: '/db/manager/book'
       }
     ]
   },
