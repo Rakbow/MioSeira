@@ -5,6 +5,7 @@ export const API = {
     DOMAIN: '/',
 
     GENERAL_SEARCH: '/api/db/search',
+    GET_STATISTIC_INFO: '/api/db/statistic-info',
 
     GET_ENTITY_OPTION: '/api/db/get-option',
 

@@ -38,28 +38,28 @@ const initQueryParam = async () => {
 
 const updateQueryParam = () => {
   // 获取当前查询参数对象
-  const currentQueryParams = { ...route.query };
+  const currentQueryParams = {...route.query};
 
   // 修改查询参数的值
-  currentQueryParams.page = queryParams.value.first/dt.value.rows + 1;
+  currentQueryParams.page = queryParams.value.first / dt.value.rows + 1;
   currentQueryParams.size = dt.value.rows;
-  if(!_isEmpty(queryParams.value.filters.title.value))
+  if (!_isEmpty(queryParams.value.filters.title.value))
     currentQueryParams.title = queryParams.value.filters.title.value;
-  if(!_isEmpty(queryParams.value.filters.isbn10.value))
+  if (!_isEmpty(queryParams.value.filters.isbn10.value))
     currentQueryParams.isbn10 = queryParams.value.filters.isbn10.value;
-  if(!_isEmpty(queryParams.value.filters.isbn13.value))
+  if (!_isEmpty(queryParams.value.filters.isbn13.value))
     currentQueryParams.isbn13 = queryParams.value.filters.isbn13.value;
-  if(!_isEmpty(queryParams.value.filters.region.value))
+  if (!_isEmpty(queryParams.value.filters.region.value))
     currentQueryParams.region = queryParams.value.filters.region.value;
-  if(!_isEmpty(queryParams.value.filters.lang.value))
+  if (!_isEmpty(queryParams.value.filters.lang.value))
     currentQueryParams.lang = queryParams.value.filters.lang.value;
-  if(!_isEmpty(queryParams.value.filters.bookType.value))
+  if (!_isEmpty(queryParams.value.filters.bookType.value))
     currentQueryParams.bookType = queryParams.value.filters.bookType.value;
-  if(!_isEmpty(queryParams.value.filters.hasBonus.value))
+  if (!_isEmpty(queryParams.value.filters.hasBonus.value))
     currentQueryParams.hasBonus = queryParams.value.filters.hasBonus.value;
 
   // 使用 router.push 更新 URL
-  router.push({ path: route.path, query: currentQueryParams });
+  router.push({path: route.path, query: currentQueryParams});
 };
 //endregion
 
@@ -100,7 +100,7 @@ const columns = ref([
 const queryParams = ref({});
 const option = ref({});
 
-const initOption= async () => {
+const initOption = async () => {
   const res = await axios.post($api.GET_ENTITY_OPTION, {entityType: 2});
   option.value.bookTypeSet = res.data.bookTypeSet;
   option.value.regionSet = res.data.regionSet;
@@ -166,7 +166,7 @@ const openEditDialog = (data) => {
       style: {
         width: '600px',
       },
-      breakpoints:{
+      breakpoints: {
         '960px': '70vw',
         '640px': '60vw'
       },
@@ -212,11 +212,11 @@ const ISBNInterConvert = (label, isbn) => {
   };
   axios.post(API.BOOK_GENERATE_ISBN, json)
       .then(res => {
-        if(res.state === axios.SUCCESS) {
-          if(label === 'isbn13') {
+        if (res.state === axios.SUCCESS) {
+          if (label === 'isbn13') {
             item.value.isbn13 = res.data;
           }
-          if(label === 'isbn10') {
+          if (label === 'isbn10') {
             item.value.isbn10 = res.data;
           }
         }
@@ -272,7 +272,7 @@ const exportCSV = () => {
       <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
       <Column style="flex: 0 0 3rem">
         <template #body="slotProps">
-          <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)" />
+          <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
         </template>
       </Column>
       <Column :header="$const.BookTitle" field="title" :showFilterMenu="false"
@@ -302,10 +302,10 @@ const exportCSV = () => {
         </template>
         <template #filter="{filterModel,filterCallback}">
           <Dropdown v-model="filterModel.value" :options="option.bookTypeSet" :filter="true" @change="filterCallback()"
-                    :showClear="true" optionLabel="label" optionValue="value" />
+                    :showClear="true" optionLabel="label" optionValue="value"/>
         </template>
       </Column>
-      <Column :header="$const.PublishDate" field="publishDate" sortable />
+      <Column :header="$const.PublishDate" field="publishDate" sortable/>
       <Column :header="$const.Price" field="price" sortable>
         <template #body="slotProps">
           {{ `${slotProps.data.price} ${slotProps.data.currency}` }}
@@ -322,14 +322,14 @@ const exportCSV = () => {
             <template #value="slotProps">
               <div class="country-item" v-if="slotProps.value">
                 <span :class="'fi fi-' + slotProps.value"></span>
-                <div class="ml-2">{{slotProps.label}}</div>
+                <div class="ml-2">{{ slotProps.label }}</div>
               </div>
-              <span v-else>{{$const.PlaceholderRegion}}</span>
+              <span v-else>{{ $const.PlaceholderRegion }}</span>
             </template>
             <template #option="slotProps">
               <div class="country-item">
                 <span :class="'fi fi-' + slotProps.option.value"></span>
-                <div class="ml-2">{{slotProps.option.label}}</div>
+                <div class="ml-2">{{ slotProps.option.label }}</div>
               </div>
             </template>
           </Dropdown>
@@ -341,15 +341,16 @@ const exportCSV = () => {
         </template>
         <template #filter="{filterModel,filterCallback}">
           <Dropdown v-model="filterModel.value" :options="option.languageSet" :filter="true" @change="filterCallback()"
-                    :showClear="true" optionLabel="label" optionValue="value" />
+                    :showClear="true" optionLabel="label" optionValue="value"/>
         </template>
       </Column>
       <Column :header="$const.Bonus" field="hasBonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
         <template #body="{data}">
-          <i class="pi" :class="{'true-icon pi-check-circle': data.hasBonus, 'false-icon pi-times-circle': !data.hasBonus}"></i>
+          <i class="pi"
+             :class="{'true-icon pi-check-circle': data.hasBonus, 'false-icon pi-times-circle': !data.hasBonus}"></i>
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <TriStateCheckbox v-model="filterModel.value" @change="filterCallback()" />
+          <TriStateCheckbox v-model="filterModel.value" @change="filterCallback()"/>
         </template>
       </Column>
       <Column v-for="(col, index) of selectedColumns" :field="col.field"
@@ -362,99 +363,99 @@ const exportCSV = () => {
     <BlockUI :blocked="editBlock" class="p-fluid">
       <div class="formgrid grid">
         <div class="field col">
-          <label>{{$const.BookISBN10}}<span style="color: red">*</span></label>
+          <label>{{ $const.BookISBN10 }}<span style="color: red">*</span></label>
           <div class="p-inputgroup">
-            <InputText v-model="itemAdd.isbn10" />
+            <InputText v-model="itemAdd.isbn10"/>
             <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn10', itemAdd.isbn13)"
-                    v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN10, class: 'common-tooltip'}" />
+                    v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN10, class: 'common-tooltip'}"/>
           </div>
         </div>
         <div class="field col">
-          <label>{{$const.BookISBN13}}<span style="color: red">*</span></label>
+          <label>{{ $const.BookISBN13 }}<span style="color: red">*</span></label>
           <div class="p-inputgroup">
-            <InputText v-model="itemAdd.isbn13" />
+            <InputText v-model="itemAdd.isbn13"/>
             <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn13', itemAdd.isbn10)"
-                    v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN13, class: 'common-tooltip'}" />
+                    v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN13, class: 'common-tooltip'}"/>
           </div>
         </div>
       </div>
       <div class="field">
-        <label>{{$const.BookTitle}}<span style="color: red">*</span></label>
-        <InputText v-model="itemAdd.title" />
+        <label>{{ $const.BookTitle }}<span style="color: red">*</span></label>
+        <InputText v-model="itemAdd.title"/>
       </div>
       <div class="field">
-        <label>{{$const.BookChineseTitle}}</label>
-        <InputText v-model="itemAdd.titleZh" />
+        <label>{{ $const.BookChineseTitle }}</label>
+        <InputText v-model="itemAdd.titleZh"/>
       </div>
       <div class="field">
-        <label>{{$const.BookEnglishTitle}}</label>
-        <InputText v-model="itemAdd.titleEn" />
+        <label>{{ $const.BookEnglishTitle }}</label>
+        <InputText v-model="itemAdd.titleEn"/>
       </div>
       <div class="formgrid grid">
         <div class="field col">
-          <label class="mb-3">{{$const.BookType}}<span style="color: red">*</span></label>
+          <label class="mb-3">{{ $const.BookType }}<span style="color: red">*</span></label>
           <Dropdown v-model="itemAdd.bookType" :options="option.bookTypeSet"
-                    optionLabel="label" optionValue="value" />
+                    optionLabel="label" optionValue="value"/>
         </div>
         <div class="field col">
-          <label class="mb-3">{{$const.Region}}<span style="color: red">*</span></label>
+          <label class="mb-3">{{ $const.Region }}<span style="color: red">*</span></label>
           <Dropdown v-model="itemAdd.region" :options="option.regionSet" :filter="true"
                     :showClear="true" optionLabel="label" optionValue="value">
             <template #value="slotProps">
               <div class="country-item" v-if="slotProps.value">
                 <span :class="'fi fi-' + slotProps.value"></span>
-                <div class="ml-2">{{slotProps.label}}</div>
+                <div class="ml-2">{{ slotProps.label }}</div>
               </div>
-              <span v-else>{{$const.PlaceholderRegion}}</span>
+              <span v-else>{{ $const.PlaceholderRegion }}</span>
             </template>
             <template #option="slotProps">
               <div class="country-item">
                 <span :class="'fi fi-' + slotProps.option.value"></span>
-                <div class="ml-2">{{slotProps.option.label}}</div>
+                <div class="ml-2">{{ slotProps.option.label }}</div>
               </div>
             </template>
           </Dropdown>
         </div>
         <div class="field col">
-          <label class="mb-3">{{$const.Language}}<span style="color: red">*</span></label>
+          <label class="mb-3">{{ $const.Language }}<span style="color: red">*</span></label>
           <Dropdown v-model="itemAdd.lang" :options="option.languageSet"
-                    optionLabel="label" optionValue="value" />
+                    optionLabel="label" optionValue="value"/>
         </div>
       </div>
       <div class="formgrid grid">
         <div class="field col">
           <div class="col-12">
-            <label class="mb-3">{{$const.Bonus}}</label>
+            <label class="mb-3">{{ $const.Bonus }}</label>
           </div>
           <div class="col-12 mt-4">
-            <InputSwitch v-model="itemAdd.hasBonus" :trueValue="true" :falseValue="false" />
+            <InputSwitch v-model="itemAdd.hasBonus" :trueValue="true" :falseValue="false"/>
           </div>
         </div>
       </div>
       <div class="formgrid grid">
         <div class="field col-6">
-          <label>{{$const.PublishDate}}<span style="color: red">*</span></label>
-          <InputMask v-model="itemAdd.publishDate" mask="****/**/**" />
+          <label>{{ $const.PublishDate }}<span style="color: red">*</span></label>
+          <InputMask v-model="itemAdd.publishDate" mask="****/**/**"/>
         </div>
         <div class="field col">
-          <label>{{$const.PublishPrice}}</label>
-          <InputNumber v-model="itemAdd.price" />
+          <label>{{ $const.PublishPrice }}</label>
+          <InputNumber v-model="itemAdd.price"/>
         </div>
         <div class="field col-3">
-          <label>{{$const.CurrencyUnit}}</label>
+          <label>{{ $const.CurrencyUnit }}</label>
           <Dropdown v-model="itemAdd.currency" :options="option.currencySet"
-                    optionLabel="label" optionValue="value" :placeholder="$const.PlaceholderCurrencyUnit" />
+                    optionLabel="label" optionValue="value" :placeholder="$const.PlaceholderCurrencyUnit"/>
         </div>
       </div>
       <div class="field">
-        <label>{{$const.Summary}}</label>
-        <Textarea v-model="itemAdd.summary" rows="3" cols="20" :autoResize="true" />
+        <label>{{ $const.Summary }}</label>
+        <Textarea v-model="itemAdd.summary" rows="3" cols="20" :autoResize="true"/>
       </div>
       <div class="field">
-        <label>{{$const.Remark}}</label>
-        <Textarea v-model="itemAdd.remark" rows="3" cols="20" :autoResize="true" />
+        <label>{{ $const.Remark }}</label>
+        <Textarea v-model="itemAdd.remark" rows="3" cols="20" :autoResize="true"/>
       </div>
     </BlockUI>
     <template #footer>

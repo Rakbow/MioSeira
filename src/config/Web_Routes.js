@@ -163,6 +163,26 @@ export const DATABASE_ROUTER = [
         },
         children: [
             {
+                path: '',
+                component: () => import('@/views/manager/ManagerIndex.vue'),
+                beforeEnter: async (to, from, next) => {
+                    try {
+                        const res = await axios.post(API.GET_STATISTIC_INFO);
+                        if (res.state === axios.SUCCESS) {
+                            to.meta.items = res.data;
+                            next();
+                        }else {
+                            console.log(res.message);
+                        }
+                    }catch (e) {
+                        console.error(e);
+                    }
+                },
+                meta: {
+                    title: "Manager"
+                }
+            },
+            {
                 path: 'franchise',
                 component: () => import('@/views/manager/FranchiseManager.vue'),
             },

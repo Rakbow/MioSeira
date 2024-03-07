@@ -11,5 +11,19 @@ export const META = {
     TEXT_TYPE: {
         BONUS: 'bonus',
         DETAIL: 'detail'
+    },
+
+    ENTITY: {
+        ALBUM: 1,
+        BOOK: 2,
+        DISC: 3,
+        GAME: 4,
+        EPISODE: 5,
+        GOODS: 6,
+        FIGURE: 7,
+        PERSON: 8,
+        ROLE: 90,
+        PRODUCT: 99,
+        FRANCHISE: 100
     }
 }
