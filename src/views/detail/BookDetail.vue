@@ -30,7 +30,7 @@
                 <template #content>
                   <div class="relative">
                     <div v-if="userStore.user">
-                      <Button v-if="userStore.user.type === 0 || userStore.user.type > 1" class="p-button-link absolute top-0"
+                      <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
                               @click="openEditDialog" style="right: 25%"
                               v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
                         <template #icon>
