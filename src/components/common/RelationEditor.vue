@@ -181,7 +181,7 @@ const addItem = () => {
             <template #option="slotProps">
               <div class="flex align-options-center">
                 <img :src="slotProps.option.cover" style="width: 50px" alt="cover"/>
-                <div>{{ `${slotProps.option.name}/${slotProps.option.nameZh}` }}</div>
+                <div>{{ `${slotProps.option.name}/${slotProps.option.nameZh}(${slotProps.option.category.label})` }}</div>
               </div>
             </template>
           </AutoComplete>
