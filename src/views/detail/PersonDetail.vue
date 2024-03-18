@@ -11,6 +11,7 @@ import ItemLike from "@/components/common/ItemLike.vue";
 import {useUserStore} from "@/store/user.js";
 import {useDialog} from "primevue/usedialog";
 import InfoEditor from "@/components/common/entityEditor/PersonInfoEditor.vue";
+import {META} from "@/config/Web_Const.js";
 
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const router = useRouter();
@@ -130,6 +131,32 @@ const openEditDialog = () => {
                           <ul class="px-4">
                             <li v-for="alias in item.aliases">
                               {{ alias }}
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <i class="pi pi-link" />
+                          <strong>{{ $const.Link }}</strong>
+                        </td>
+                        <td v-if="item.links" style="display:inline">
+                          <ul class="px-4">
+                            <li v-for="link in item.links">
+                              <a v-if="link.type === META.LINK_TYPE.TWITTER" target="_blank"
+                                 :href="link.url">
+                                <span class="text-truncate-2 mr-2">
+                                  <i class="pi pi-twitter" />
+                                  <i>{{ link.name }}</i>
+                                </span>
+                              </a>
+                              <a v-else target="_blank"
+                                 :href="link.url">
+                                <span class="text-truncate-2 mr-2">
+                                  <i class="pi pi-at" />
+                                  <i>{{ link.name }}</i>
+                                </span>
+                              </a>
                             </li>
                           </ul>
                         </td>

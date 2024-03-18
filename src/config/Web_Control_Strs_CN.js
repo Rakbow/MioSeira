@@ -73,6 +73,9 @@ export const CnText = {
     Gender: '性别',
     BirthDate: '生日',
     Detail: '详情',
+    Link: '链接',
+    OfficialLink: '官网',
+    PersonBlog: '个人博客',
 
     Title: '标题(原)',
     TitleEn: '标题(英)',
