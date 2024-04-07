@@ -59,6 +59,12 @@ const openEditDialog = () => {
   });
 }
 
+const getGenderIcon = (value) => ({
+  0: "question",
+  1: "mars",
+  2: "venus",
+}[value]);
+
 </script>
 
 <template>
@@ -119,7 +125,9 @@ const openEditDialog = () => {
                           <strong>{{ $const.Gender }}</strong>
                         </td>
                         <td style="display:inline">
-                          <Tag class="ml-1" :value="item.gender.label" />
+                          <i :class="'ml-1 mt-2 pi pi-' + getGenderIcon(item.gender.value)"
+                             v-tooltip.right="{value: item.gender.label, class: 'short-tooltip'}" />
+<!--                          <Tag class="ml-1" :value="item.gender.label" />-->
                         </td>
                       </tr>
                       <tr>

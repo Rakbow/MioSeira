@@ -38,7 +38,7 @@
                         </template>
                       </Button>
                     </div>
-                    <Info :album="album" />
+                    <Info :item="album" />
                     <StatusEditor :status="album.status" />
                     <ItemLike :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
                   </div>

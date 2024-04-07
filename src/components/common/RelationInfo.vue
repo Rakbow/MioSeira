@@ -85,7 +85,7 @@ const getEntityInfo = () => {
   <Panel class="mt-2">
     <template #header>
       <span class="text-start side-panel-header">
-          <i class="pi pi-th-large"/><span><strong>{{ $const.RelatedItem }}</strong></span>
+          <i class="pi pi-list"/><span><strong>{{ $const.RelatedItem }}</strong></span>
       </span>
     </template>
     <template #icons>

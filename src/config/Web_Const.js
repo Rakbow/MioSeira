@@ -31,5 +31,11 @@ export const META = {
         FACEBOOK: 3,
         FAN_CLUB: 4,
         OTHER: 99
+    },
+    CURRENCIES: {
+        CNY: 'CNY',
+        USD: 'USD',
+        EUR: 'EUR',
+        TWD: 'TWD'
     }
 }

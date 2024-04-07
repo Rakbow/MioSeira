@@ -1,9 +1,10 @@
 <script setup>
 import {defineProps, getCurrentInstance} from "vue";
+import {META} from '@/config/Web_Const';
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 const props = defineProps({
-  album: {
+  item: {
     type: Object,
     required: true
   }
@@ -16,19 +17,19 @@ const props = defineProps({
     <tbody class="detail-item-header-table">
     <tr>
       <td>
-        <i class="pi material-symbols-outlined">tag</i>
+        <i class="pi pi-hashtag" />
         <strong>{{ $const.AlbumCatalogNo }}</strong>
       </td>
       <td>
-        {{ album.catalogNo ? album.catalogNo : "N/A" }}
+        {{ item.catalogNo ? item.catalogNo : "N/A" }}
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi material-symbols-outlined">barcode</i>
+        <i class="pi pi-barcode" />
         <strong>{{ $const.Barcode }}</strong>
       </td>
-      <td>{{ album.barcode ? album.barcode : "N/A" }}
+      <td>{{ item.barcode ? item.barcode : "N/A" }}
       </td>
     </tr>
     <tr>
@@ -37,33 +38,28 @@ const props = defineProps({
         <strong>{{ $const.ReleaseDate }}</strong>
       </td>
       <td>
-        {{ album.releaseDate ? album.releaseDate : "N/A" }}
+        {{ item.releaseDate ? item.releaseDate : "N/A" }}
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-tag"></i>
+        <i class="pi pi-ticket"></i>
         <strong>{{ $const.ReleasePrice }}</strong>
       </td>
       <td>
-        {{ album.price !== 0 ? album.price : "&nbsp;&nbsp;-" }}
-        <span v-if="album.price !== 0">
-          <span v-if="album.currency === 'JPY'" class="ml-1"
+        {{ item.price !== 0 ? item.price : "&nbsp;&nbsp;-" }}
+        <span v-if="item.price !== 0">
+          <span v-if="item.currency === 'JPY'" class="ml-1"
                 style="text-decoration-line: underline;text-decoration-style: dashed;"
                 v-tooltip.right="{value: $const.TaxInclusive, class: 'region-tooltip'}">JPY</span>
-          <span v-else>{{ album.currency }}</span>
+          <span v-else>{{ item.currency }}</span>
           <span class="ml-2 dropdown">
             <a href="#" class="dropdown-toggle"
                data-bs-toggle="dropdown">{{ $const.OtherCurrencyUnit }}</a>
-            <div class="dropdown-menu">
-                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currency}+IN+CNY`"
-                   class="dropdown-item">CNY</a>
-                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currency}+IN+USD`"
-                   class="dropdown-item">USD</a>
-                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currency}+IN+EUR`"
-                   class="dropdown-item">EUR</a>
-                <a :href="`https://www.bing.com/search?q=${album.price}+${album.currency}+IN+TWD`"
-                   class="dropdown-item">TWD</a>
+            <div class="dropdown-menu" style="background: black">
+              <a v-for="(currency, code) in META.CURRENCIES" :key="code"
+                 :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+${code}`"
+                 class="dropdown-item">{{ currency }}</a>
             </div>
           </span>
       </span>
@@ -71,14 +67,14 @@ const props = defineProps({
     </tr>
     <tr>
       <td>
-        <i class="pi material-symbols-outlined detail-list-icon">workspace_premium</i>
+        <i class="pi pi-verified" />
         <strong>{{ $const.Bonus }}</strong>
       </td>
       <td>
-        <a v-if="album.hasBonus" href="#bonus" class="ml-3">
-          <i class="pi true-icon pi-check-circle"></i>
+        <a v-if="item.hasBonus" href="#bonus" class="ml-3">
+          <i class="pi true-icon pi-check-circle" style="color: green" />
         </a>
-        <i v-else class="pi false-icon pi-times-circle"></i>
+        <i v-else class="pi false-icon pi-times-circle" />
       </td>
     </tr>
     <tr>
@@ -86,7 +82,7 @@ const props = defineProps({
         <i class="pi pi-print"></i>
         <strong>{{ $const.PublishFormat }}</strong>
       </td>
-      <td v-for="format of album.publishFormat" style="display:inline">
+      <td v-for="format of item.publishFormat" style="display:inline">
         <a :href="'/db/albums?publishFormat=' + format.value">
           <Tag class="ml-1" :value="format.label"></Tag>
         </a>
@@ -94,10 +90,10 @@ const props = defineProps({
     </tr>
     <tr>
       <td>
-        <i class="pi iconfont icon-zhuanjiguangpan"></i>
+        <i class="pi pi-video" />
         <strong>{{ $const.MediaFormat }}</strong>
       </td>
-      <td v-for="format of album.mediaFormat" style="display:inline">
+      <td v-for="format of item.mediaFormat" style="display:inline">
         <a :href="'/db/albums?mediaFormat=' + format.value">
           <Tag class="ml-1" :value="format.label"></Tag>
         </a>
@@ -105,10 +101,10 @@ const props = defineProps({
     </tr>
     <tr>
       <td>
-        <i class="pi iconfont icon-musicfill"></i>
+        <i class="pi pi-tag" />
         <strong>{{ $const.AlbumFormat }}</strong>
       </td>
-      <td v-for="format of album.albumFormat" style="display:inline">
+      <td v-for="format of item.albumFormat" style="display:inline">
         <a :href="'/db/albums?albumFormat=' + format.value">
           <Tag class="ml-1" :value="format.label"></Tag>
         </a>

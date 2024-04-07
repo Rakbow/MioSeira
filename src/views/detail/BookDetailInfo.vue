@@ -1,6 +1,7 @@
 <script setup>
 import {defineProps, getCurrentInstance} from "vue";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
+import {META} from '@/config/Web_Const';
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 const props = defineProps({
@@ -17,7 +18,7 @@ const props = defineProps({
     <tbody class="detail-item-header-table">
     <tr>
       <td>
-        <i class="pi material-symbols-outlined">barcode</i>
+        <i class="pi pi-barcode" />
         <strong>{{ $const.BookISBN10 }}</strong>
       </td>
       <td>
@@ -26,7 +27,7 @@ const props = defineProps({
     </tr>
     <tr>
       <td>
-        <i class="pi material-symbols-outlined">barcode</i>
+        <i class="pi pi-barcode" />
         <strong>{{ $const.BookISBN13 }}</strong>
       </td>
       <td>
@@ -76,7 +77,7 @@ const props = defineProps({
     </tr>
     <tr>
       <td>
-        <i class="pi pi-tag"></i>
+        <i class="pi pi-ticket"></i>
         <strong>{{ $const.PublishPrice }}</strong>
       </td>
       <td>
@@ -89,15 +90,10 @@ const props = defineProps({
           <span class="ml-2 dropdown">
             <a href="#" class="dropdown-toggle"
                data-bs-toggle="dropdown">{{ $const.OtherCurrencyUnit }}</a>
-            <div class="dropdown-menu">
-                <a :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+CNY`"
-                   class="dropdown-item">CNY</a>
-                <a :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+USD`"
-                   class="dropdown-item">USD</a>
-                <a :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+EUR`"
-                   class="dropdown-item">EUR</a>
-                <a :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+TWD`"
-                   class="dropdown-item">TWD</a>
+            <div class="dropdown-menu" style="background: black">
+              <a v-for="(currency, code) in META.CURRENCIES" :key="code"
+                 :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+${code}`"
+                 class="dropdown-item">{{ currency }}</a>
             </div>
           </span>
       </span>
@@ -105,14 +101,14 @@ const props = defineProps({
     </tr>
     <tr>
       <td>
-        <i class="pi material-symbols-outlined detail-list-icon">workspace_premium</i>
+        <i class="pi pi-verified" />
         <strong>{{ $const.Bonus }}</strong>
       </td>
       <td>
         <a v-if="item.hasBonus" href="#bonus" class="ml-3">
-          <i class="pi true-icon pi-check-circle"></i>
+          <i class="pi true-icon pi-check-circle" style="color: green" />
         </a>
-        <i v-else class="pi false-icon pi-times-circle"></i>
+        <i v-else class="pi false-icon pi-times-circle" />
       </td>
     </tr>
     </tbody>
