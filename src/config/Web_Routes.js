@@ -19,6 +19,14 @@ export const DATABASE_ROUTER = [
             title: "Home",
         }
     },
+    {
+        path: '/error',
+        component: () => import('@/views/Error.vue'),
+        props: true,
+        meta: {
+            title: "Error"
+        }
+    },
 
     {
         name: "PersonDetail",
@@ -99,7 +107,13 @@ export const DATABASE_ROUTER = [
                     document.title = res.data.item.name;
                     next();
                 }else {
-                    console.log(res.message);
+                    next({
+                        path: '/error',
+                        replace: true,
+                        meta: {
+                            errorMessage: res.message
+                        }
+                    });
                 }
             }catch (e) {
                 console.error(e);
