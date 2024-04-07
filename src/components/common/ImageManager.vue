@@ -32,7 +32,7 @@
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-image"/>
                 </span>
-                <InputText v-model="imageInfo.nameZh" :placeholder="$const.ImageNameZh"/>
+                <InputText v-model="imageInfo.nameZh" :placeholder="$const.ImageNameZh" />
               </div>
             </div>
             <div class="field col-6">
@@ -40,33 +40,38 @@
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-image"/>
                 </span>
-                <InputText v-model="imageInfo.nameEn" :placeholder="$const.ImageNameEn"/>
+                <InputText v-model="imageInfo.nameEn" :placeholder="$const.ImageNameEn" />
               </div>
             </div>
             <div class="field col-6">
-              <Dropdown v-model="imageInfo.type" :options="$const.ImageTypes" option-label="label"
-                        option-value="value" :placeholder="$const.PleaseSelectImageType"
-                        style="width: 224px"/>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-tag"/>
+                </span>
+                <Dropdown v-model="imageInfo.type" :options="$const.ImageTypes" optionLabel="label"
+                          optionValue="value" :placeholder="$const.PleaseSelectImageType" />
+              </div>
             </div>
             <div class="field col-6">
-              <Textarea v-model="imageInfo.description" rows="1" cols="20"
-                        :auto-resize="true" :placeholder="$const.Description"
-                        style="width: 224px"/>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-bars"/>
+                </span>
+                <InputText v-model="imageInfo.description" :placeholder="$const.Description" />
+              </div>
             </div>
           </div>
           <div class="formgrid grid mt-2">
             <div class="field col" style="text-align: left">
-              <Button :label="$const.Add" icon="pi pi-save"
-                      @click="save2imageInfos"/>
+              <Button :label="$const.Add" icon="pi pi-save" @click="save2imageInfos" />
             </div>
             <div class="field col" style="text-align: right">
-              <Button :label="$const.Commit" icon="pi pi-save"
-                      @click="submitImages" class="p-button-success"/>
+              <Button :label="$const.Commit" icon="pi pi-save" @click="submitImages" class="p-button-success" />
             </div>
           </div>
         </div>
         <div class="col-2">
-          <Divider layout="vertical"/>
+          <Divider layout="vertical" />
         </div>
         <div class="col-5">
           <div class="field">
@@ -223,7 +228,7 @@ const imageInfo = ref({
   nameZh: '',
   nameEn: '',
   description: '',
-  type: 0
+  type: 1
 });
 const imageInfos = ref([]);
 const imageHtml = ref('');
