@@ -161,7 +161,7 @@ const addItem = () => {
                         @complete="searchPerson" inputStyle="min-width: 270px">
             <template #option="slotProps">
               <div class="flex align-options-center">
-                <img :src="slotProps.option.cover" style="width: 50px"  alt="cover"/>
+<!--                <img :src="'https://' + slotProps.option.cover" style="height: 30px"  alt="cover"/>-->
                 <div>{{ `${slotProps.option.name}/${slotProps.option.nameZh}` }}</div>
               </div>
             </template>

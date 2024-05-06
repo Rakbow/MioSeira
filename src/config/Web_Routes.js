@@ -1,6 +1,7 @@
 import {AxiosHelper as axios} from "@/utils/axiosHelper";
 import "@/config/Web_Helper_Strs";
 import {API} from "@/config/Web_Helper_Strs";
+import {META} from "@/config/Web_Const.js";
 
 export const DATABASE_ROUTER = [
     {
@@ -95,75 +96,19 @@ export const DATABASE_ROUTER = [
             title: "Product Detail"
         }
     },
+
     {
-        name: "AlbumDetail",
-        path: API.ALBUM_DETAIL + "/:id",
-        component: () => import('@/views/detail/AlbumDetail.vue'),
-        beforeEnter: async (to, from, next) => {
-            try {
-                const res = await axios.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
-                if (res.state === axios.SUCCESS) {
-                    to.meta.info = res.data;
-                    document.title = res.data.item.name;
-                    next();
-                }else {
-                    next({
-                        path: '/error',
-                        replace: true,
-                        meta: {
-                            errorMessage: res.message
-                        }
-                    });
-                }
-            }catch (e) {
-                console.error(e);
-            }
-        },
+        name: "ItemDetail",
+        path: `${API.ITEM_DETAIL}/:id`,
+        component: () => import('@/views/detail/ItemDetail.vue'),
         meta: {
-            title: "Album Detail"
-        }
-    },
-    {
-        name: "BookDetail",
-        path: API.BOOK_DETAIL + "/:id",
-        component: () => import('@/views/detail/BookDetail.vue'),
-        beforeEnter: async (to, from, next) => {
-            try {
-                const res = await axios.post(API.GET_BOOK_DETAIL, {id: to.params.id});
-                if (res.state === axios.SUCCESS) {
-                    to.meta.info = res.data;
-                    document.title = res.data.item.title;
-                    next();
-                }else {
-                    console.log(res.message);
-                }
-            }catch (e) {
-                console.error(e);
-            }
-        },
-        meta: {
-            title: "Book Detail"
+            title: "Item Detail"
         }
     },
     {
         name: "EpisodeDetail",
         path: API.EPISODE_DETAIL + "/:id",
         component: () => import('@/views/detail/EpisodeDetail.vue'),
-        // beforeEnter: async (to, from, next) => {
-        //     try {
-        //         const res = await axios.post(API.GET_ALBUM_DETAIL, {id: to.params.id});
-        //         if (res.state === axios.SUCCESS) {
-        //             to.meta.info = res.data;
-        //
-        //             document.title = res.data.album.name;
-        //             next();
-        //         }else {
-        //             console.log(res.message);
-        //         }
-        //     }catch (e) {
-        //         console.error(e);
-        //     }
-        // },
         meta: {
             title: "Episode Detail"
         }

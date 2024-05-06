@@ -11,18 +11,18 @@ export const META = {
         BONUS: 'bonus',
         DETAIL: 'detail'
     },
-    ENTITY: {
+    ITEM_TYPE: {
         ALBUM: 1,
         BOOK: 2,
         DISC: 3,
         GAME: 4,
-        EPISODE: 5,
-        GOODS: 6,
-        FIGURE: 7,
-        PERSON: 8,
-        ROLE: 90,
-        PRODUCT: 99,
-        FRANCHISE: 100
+        GOODS: 5,
+        FIGURE: 6,
+    },
+    ENTITY: {
+        ITEM: 0,
+        ENTRY: 1,
+        PERSON: 2
     },
     LINK_TYPE: {
         OFFICIAL: 0,

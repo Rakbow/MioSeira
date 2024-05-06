@@ -74,7 +74,7 @@ const close = () => {
       </div>
       <div class="field col">
         <label>{{$const.Barcode}}</label>
-        <InputText id="barcode" v-model.trim="item.barcode" />
+        <InputText id="ean13" v-model.trim="item.ean13" />
       </div>
     </div>
     <div class="formgrid grid">

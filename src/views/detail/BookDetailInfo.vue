@@ -31,7 +31,7 @@ const props = defineProps({
         <strong>{{ $const.BookISBN13 }}</strong>
       </td>
       <td>
-        {{ item.isbn13 }}
+        {{ item.ean13 }}
       </td>
     </tr>
     <tr>
@@ -72,7 +72,7 @@ const props = defineProps({
         <strong>{{ $const.PublishDate }}</strong>
       </td>
       <td>
-        {{ item.publishDate }}
+        {{ item.releaseDate }}
       </td>
     </tr>
     <tr>

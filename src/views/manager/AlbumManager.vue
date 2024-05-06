@@ -8,6 +8,7 @@ import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import {useDialog} from "primevue/usedialog";
 import InfoEditor from "@/components/common/entityEditor/AlbumInfoEditor.vue";
+import {META} from "@/config/Web_Const.js";
 
 //region query
 const route = useRoute();
@@ -19,7 +20,7 @@ const initQueryParam = async () => {
   filters.value.nameZh.value = !_isUndefined(route.query.nameZh) ? route.query.nameZh : '';
   filters.value.nameEn.value = !_isUndefined(route.query.nameEn) ? route.query.nameEn : '';
   filters.value.catalogNo.value = !_isUndefined(route.query.catalogNo) ? route.query.catalogNo : '';
-  filters.value.barcode.value = !_isUndefined(route.query.barcode) ? route.query.barcode : '';
+  filters.value.ean13.value = !_isUndefined(route.query.ean13) ? route.query.ean13 : '';
   loading.value = true;
   queryParams.value = {
     first: (page - 1) * dt.value.rows,
@@ -47,8 +48,8 @@ const updateQueryParam = () => {
     currentQueryParams.nameEn = queryParams.value.filters.nameEn.value;
   if(!_isEmpty(queryParams.value.filters.catalogNo.value))
     currentQueryParams.catalogNo = queryParams.value.filters.catalogNo.value;
-  if(!_isEmpty(queryParams.value.filters.barcode.value))
-    currentQueryParams.barcode = queryParams.value.filters.barcode.value;
+  if(!_isEmpty(queryParams.value.filters.ean13.value))
+    currentQueryParams.ean13 = queryParams.value.filters.ean13.value;
 
   // 使用 router.push 更新 URL
   router.push({ path: route.path, query: currentQueryParams });
@@ -69,11 +70,12 @@ const items = ref([]);
 const itemAdd = ref({});
 const dt = ref();
 const filters = ref({
+  'itemType': {value: META.ITEM_TYPE.ALBUM},
   'name': {value: ''},
   'nameZh': {value: ''},
   'nameEn': {value: ''},
   'catalogNo': {value: ''},
-  'barcode': {value: ''},
+  'ean13': {value: ''},
   'hasBonus': {value: null},
   'albumFormat': {value: null},
   'publishFormat': {value: null},
@@ -121,7 +123,7 @@ const onToggle = (val) => {
 
 const getItems = async () => {
   loading.value = true;
-  const res = await axios.post($api.GET_ALBUMS, queryParams.value);
+  const res = await axios.post($api.GET_ITEM_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total
@@ -203,7 +205,7 @@ const exportCSV = () => {
     <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items.length !== 0"
                lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
-               filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn', 'catalogNo', 'barcode']"
+               filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn', 'catalogNo', 'ean13']"
                paginator :rows="10" :first="first" stripedRows columnResizeMode="fit"
                v-model:selection="selectedItems" dataKey="id" removableSort
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
@@ -247,7 +249,7 @@ const exportCSV = () => {
       <Column :header="$const.Name" field="name" :showFilterMenu="false"
               exportHeader="name" sortable style="flex: 0 0 5rem">
         <template #body="slotProps">
-          <a :href="$api.ALBUM_DETAIL + '/' + slotProps.data.id">
+          <a :href="$api.ITEM_DETAIL + '/' + slotProps.data.id">
             {{ slotProps.data.name }}
           </a>
         </template>
@@ -270,7 +272,7 @@ const exportCSV = () => {
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$const.Barcode" field="barcode" sortable :showFilterMenu="false">
+      <Column :header="$const.Barcode" field="ean13" sortable :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
@@ -360,7 +362,7 @@ const exportCSV = () => {
         </div>
         <div class="field col">
           <label>{{$const.Barcode}}</label>
-          <InputText id="barcode" v-model.trim="itemAdd.barcode" />
+          <InputText id="ean13" v-model.trim="itemAdd.ean13" />
         </div>
       </div>
       <div class="formgrid grid">

@@ -10,6 +10,7 @@ import {useDialog} from "primevue/usedialog";
 import InfoEditor from "@/components/common/entityEditor/BookInfoEditor.vue";
 import {API} from "@/config/Web_Helper_Strs.js";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
+import {META} from "@/config/Web_Const.js";
 
 //region query
 const route = useRoute();
@@ -17,12 +18,12 @@ const router = useRouter();
 const first = ref();
 const initQueryParam = async () => {
   let page = !_isUndefined(route.query.page) ? route.query.page : 1;
-  filters.value.title.value = !_isUndefined(route.query.title) ? route.query.title : '';
+  filters.value.name.value = !_isUndefined(route.query.name) ? route.query.name : '';
   filters.value.isbn10.value = !_isUndefined(route.query.isbn10) ? route.query.isbn10 : '';
-  filters.value.isbn13.value = !_isUndefined(route.query.isbn13) ? route.query.isbn13 : '';
+  filters.value.ean13.value = !_isUndefined(route.query.ean13) ? route.query.ean13 : '';
   filters.value.region.value = !_isUndefined(route.query.region) ? route.query.region : '';
   filters.value.lang.value = !_isUndefined(route.query.lang) ? route.query.lang : '';
-  filters.value.bookType.value = !_isUndefined(route.query.bookType) ? route.query.bookType : -1;
+  filters.value.bookType.value = !_isUndefined(route.query.bookType) ? route.query.bookType : null;
   filters.value.hasBonus.value = !_isUndefined(route.query.hasBonus) ? route.query.hasBonus : null;
   loading.value = true;
   queryParams.value = {
@@ -43,12 +44,12 @@ const updateQueryParam = () => {
   // 修改查询参数的值
   currentQueryParams.page = queryParams.value.first / dt.value.rows + 1;
   currentQueryParams.size = dt.value.rows;
-  if (!_isEmpty(queryParams.value.filters.title.value))
-    currentQueryParams.title = queryParams.value.filters.title.value;
+  if (!_isEmpty(queryParams.value.filters.name.value))
+    currentQueryParams.name = queryParams.value.filters.name.value;
   if (!_isEmpty(queryParams.value.filters.isbn10.value))
     currentQueryParams.isbn10 = queryParams.value.filters.isbn10.value;
-  if (!_isEmpty(queryParams.value.filters.isbn13.value))
-    currentQueryParams.isbn13 = queryParams.value.filters.isbn13.value;
+  if (!_isEmpty(queryParams.value.filters.ean13.value))
+    currentQueryParams.ean13 = queryParams.value.filters.ean13.value;
   if (!_isEmpty(queryParams.value.filters.region.value))
     currentQueryParams.region = queryParams.value.filters.region.value;
   if (!_isEmpty(queryParams.value.filters.lang.value))
@@ -77,9 +78,10 @@ const items = ref([]);
 const itemAdd = ref({});
 const dt = ref();
 const filters = ref({
-  'title': {value: ''},
+  'itemType': {value: META.ITEM_TYPE.BOOK},
+  'name': {value: ''},
   'isbn10': {value: ''},
-  'isbn13': {value: ''},
+  'ean13': {value: ''},
   'region': {value: ''},
   'lang': {value: ''},
   'bookType': {value: null},
@@ -91,8 +93,8 @@ const totalRecords = ref(0);
 const selectedItems = ref(null);
 const selectedColumns = ref(null);
 const columns = ref([
-  {field: 'titleZh', header: $const.BookChineseTitle},
-  {field: 'titleEn', header: $const.BookEnglishTitle},
+  {field: 'nameZh', header: $const.BookChineseTitle},
+  {field: 'nameEn', header: $const.BookEnglishTitle},
   {field: 'remark', header: $const.Remark},
   {field: 'addedTime', header: $const.AddedTime},
   {field: 'editedTime', header: $const.EditedTime},
@@ -127,7 +129,7 @@ const onToggle = (val) => {
 
 const getItems = async () => {
   loading.value = true;
-  const res = await axios.post($api.GET_BOOKS, queryParams.value);
+  const res = await axios.post($api.GET_ITEM_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total
@@ -213,8 +215,8 @@ const ISBNInterConvert = (label, isbn) => {
   axios.post(API.BOOK_GENERATE_ISBN, json)
       .then(res => {
         if (res.state === axios.SUCCESS) {
-          if (label === 'isbn13') {
-            item.value.isbn13 = res.data;
+          if (label === 'ean13') {
+            item.value.ean13 = res.data;
           }
           if (label === 'isbn10') {
             item.value.isbn10 = res.data;
@@ -275,11 +277,11 @@ const exportCSV = () => {
           <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
         </template>
       </Column>
-      <Column :header="$const.BookTitle" field="title" :showFilterMenu="false"
-              exportHeader="title" sortable style="flex: 0 0 5rem">
+      <Column :header="$const.BookTitle" field="name" :showFilterMenu="false"
+              exportHeader="name" sortable style="flex: 0 0 5rem">
         <template #body="slotProps">
-          <a :href="$api.BOOK_DETAIL + '/' + slotProps.data.id">
-            {{ slotProps.data.title }}
+          <a :href="$api.ITEM_DETAIL + '/' + slotProps.data.id">
+            {{ slotProps.data.name }}
           </a>
         </template>
         <template #filter="{filterModel,filterCallback}">
@@ -291,7 +293,7 @@ const exportCSV = () => {
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$const.BookISBN13" field="isbn13" sortable :showFilterMenu="false">
+      <Column :header="$const.BookISBN13" field="ean13" sortable :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
@@ -305,7 +307,7 @@ const exportCSV = () => {
                     :showClear="true" optionLabel="label" optionValue="value"/>
         </template>
       </Column>
-      <Column :header="$const.PublishDate" field="publishDate" sortable/>
+      <Column :header="$const.PublishDate" field="releaseDate" sortable/>
       <Column :header="$const.Price" field="price" sortable>
         <template #body="slotProps">
           {{ `${slotProps.data.price} ${slotProps.data.currency}` }}
@@ -367,31 +369,31 @@ const exportCSV = () => {
           <div class="p-inputgroup">
             <InputText v-model="itemAdd.isbn10"/>
             <Button icon="pi pi-sync" class="p-button-warning"
-                    @click="ISBNInterConvert('isbn10', itemAdd.isbn13)"
+                    @click="ISBNInterConvert('isbn10', itemAdd.ean13)"
                     v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN10, class: 'common-tooltip'}"/>
           </div>
         </div>
         <div class="field col">
           <label>{{ $const.BookISBN13 }}<span style="color: red">*</span></label>
           <div class="p-inputgroup">
-            <InputText v-model="itemAdd.isbn13"/>
+            <InputText v-model="itemAdd.ean13"/>
             <Button icon="pi pi-sync" class="p-button-warning"
-                    @click="ISBNInterConvert('isbn13', itemAdd.isbn10)"
+                    @click="ISBNInterConvert('ean13', itemAdd.isbn10)"
                     v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN13, class: 'common-tooltip'}"/>
           </div>
         </div>
       </div>
       <div class="field">
         <label>{{ $const.BookTitle }}<span style="color: red">*</span></label>
-        <InputText v-model="itemAdd.title"/>
+        <InputText v-model="itemAdd.name"/>
       </div>
       <div class="field">
         <label>{{ $const.BookChineseTitle }}</label>
-        <InputText v-model="itemAdd.titleZh"/>
+        <InputText v-model="itemAdd.nameZh"/>
       </div>
       <div class="field">
         <label>{{ $const.BookEnglishTitle }}</label>
-        <InputText v-model="itemAdd.titleEn"/>
+        <InputText v-model="itemAdd.nameEn"/>
       </div>
       <div class="formgrid grid">
         <div class="field col">
@@ -437,7 +439,7 @@ const exportCSV = () => {
       <div class="formgrid grid">
         <div class="field col-6">
           <label>{{ $const.PublishDate }}<span style="color: red">*</span></label>
-          <InputMask v-model="itemAdd.publishDate" mask="****/**/**"/>
+          <InputMask v-model="itemAdd.releaseDate" mask="****/**/**"/>
         </div>
         <div class="field col">
           <label>{{ $const.PublishPrice }}</label>

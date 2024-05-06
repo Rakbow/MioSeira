@@ -1,6 +1,14 @@
 //region entity common
 export const API = {
-    
+
+    //region
+
+    ITEM_DETAIL: '/db/item',
+    GET_ITEM_DETAIL: '/api/db/item/detail',
+    GET_ITEM_LIST: '/api/db/item/list',
+
+    //endregion
+
     //region
     DOMAIN: '/',
 

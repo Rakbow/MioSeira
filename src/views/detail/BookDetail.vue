@@ -7,15 +7,15 @@
           <div class="grid detail-item-header-title">
             <h4 class="col-11">
               <b class="detail-item-title">
-                {{ item.title }}
+                {{ item.name }}
               </b>
             </h4>
           </div>
         </template>
         <template #subtitle>
-          <h5 v-if="item.titleEn !== ''" class="detail-item-subtitle"><small>{{ item.titleEn }}</small></h5>
+          <h5 v-if="item.nameEn !== ''" class="detail-item-subtitle"><small>{{ item.nameEn }}</small></h5>
           <h5 v-else><small></small></h5>
-          <h5 v-if="item.titleZh !== ''" class="detail-item-subtitle"><small>{{ item.titleZh }}</small></h5>
+          <h5 v-if="item.nameZh !== ''" class="detail-item-subtitle"><small>{{ item.nameZh }}</small></h5>
           <h5 v-else><small></small></h5>
         </template>
         <template #content>
@@ -69,7 +69,7 @@ import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
-import {getCurrentInstance, onBeforeMount, ref} from "vue";
+import {defineProps, getCurrentInstance, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import {useUserStore} from "@/store/user";
@@ -91,6 +91,13 @@ const toast = useToast();
 const userStore = useUserStore();
 const dialog = useDialog();
 
+const props = defineProps({
+  info: {
+    type: Object,
+    required: true,
+  },
+});
+
 const item = ref({});
 const pageInfo = ref({});
 const itemImageInfo = ref({});
@@ -98,11 +105,11 @@ const option = ref({});
 const personnel = ref([]);
 
 onBeforeMount(() => {
-  item.value = router.currentRoute.value.meta.info.item;
-  pageInfo.value = router.currentRoute.value.meta.info.traffic;
-  itemImageInfo.value = router.currentRoute.value.meta.info.itemImageInfo;
-  option.value = router.currentRoute.value.meta.info.options;
-  personnel.value = router.currentRoute.value.meta.info.personnel;
+  item.value = props.info.item;
+  pageInfo.value = props.info.traffic;
+  itemImageInfo.value = props.info.itemImageInfo;
+  option.value = props.info.options;
+  personnel.value = props.info.personnel;
 });
 
 const openEditDialog = () => {

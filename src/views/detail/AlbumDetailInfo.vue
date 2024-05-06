@@ -29,7 +29,7 @@ const props = defineProps({
         <i class="pi pi-barcode" />
         <strong>{{ $const.Barcode }}</strong>
       </td>
-      <td>{{ item.barcode ? item.barcode : "N/A" }}
+      <td>{{ item.ean13 ? item.ean13 : "N/A" }}
       </td>
     </tr>
     <tr>
@@ -83,9 +83,7 @@ const props = defineProps({
         <strong>{{ $const.PublishFormat }}</strong>
       </td>
       <td v-for="format of item.publishFormat" style="display:inline">
-        <a :href="'/db/albums?publishFormat=' + format.value">
-          <Tag class="ml-1" :value="format.label"></Tag>
-        </a>
+        <Tag class="ml-1" :value="format.label"></Tag>
       </td>
     </tr>
     <tr>
@@ -94,9 +92,7 @@ const props = defineProps({
         <strong>{{ $const.MediaFormat }}</strong>
       </td>
       <td v-for="format of item.mediaFormat" style="display:inline">
-        <a :href="'/db/albums?mediaFormat=' + format.value">
-          <Tag class="ml-1" :value="format.label"></Tag>
-        </a>
+        <Tag class="ml-1" :value="format.label"></Tag>
       </td>
     </tr>
     <tr>
@@ -105,9 +101,7 @@ const props = defineProps({
         <strong>{{ $const.AlbumFormat }}</strong>
       </td>
       <td v-for="format of item.albumFormat" style="display:inline">
-        <a :href="'/db/albums?albumFormat=' + format.value">
-          <Tag class="ml-1" :value="format.label"></Tag>
-        </a>
+        <Tag class="ml-1" :value="format.label"></Tag>
       </td>
     </tr>
     </tbody>

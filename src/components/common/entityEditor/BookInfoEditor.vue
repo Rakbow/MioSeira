@@ -52,7 +52,7 @@ const ISBNInterConvert = (label, isbn) => {
       .then(res => {
         if(res.state === axios.SUCCESS) {
           if(label === 'isbn13') {
-            item.value.isbn13 = res.data;
+            item.value.ean13 = res.data;
           }
           if(label === 'isbn10') {
             item.value.isbn10 = res.data;
@@ -80,14 +80,14 @@ const close = () => {
         <div class="p-inputgroup">
           <InputText v-model="item.isbn10" />
           <Button icon="pi pi-sync" class="p-button-warning"
-                    @click="ISBNInterConvert('isbn10', item.isbn13)"
+                    @click="ISBNInterConvert('isbn10', item.ean13)"
                     v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN10, class: 'common-tooltip'}" />
         </div>
       </div>
       <div class="field col">
         <label>{{$const.BookISBN13}}<span style="color: red">*</span></label>
         <div class="p-inputgroup">
-          <InputText v-model="item.isbn13" />
+          <InputText v-model="item.ean13" />
           <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn13', item.isbn10)"
                     v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN13, class: 'common-tooltip'}" />
@@ -96,15 +96,15 @@ const close = () => {
     </div>
     <div class="field">
       <label>{{$const.BookTitle}}<span style="color: red">*</span></label>
-      <InputText v-model="item.title" />
+      <InputText v-model="item.name" />
     </div>
     <div class="field">
       <label>{{$const.BookChineseTitle}}</label>
-      <InputText v-model="item.titleZh" />
+      <InputText v-model="item.nameZh" />
     </div>
     <div class="field">
       <label>{{$const.BookEnglishTitle}}</label>
-      <InputText v-model="item.titleEn" />
+      <InputText v-model="item.nameEn" />
     </div>
     <div class="formgrid grid">
       <div class="field col">
@@ -150,7 +150,7 @@ const close = () => {
     <div class="formgrid grid">
       <div class="field col-6">
         <label>{{$const.PublishDate}}<span style="color: red">*</span></label>
-        <InputMask v-model="item.publishDate" mask="****/**/**" />
+        <InputMask v-model="item.releaseDate" mask="****/**/**" />
       </div>
       <div class="field col">
         <label>{{$const.PublishPrice}}</label>

@@ -30,16 +30,9 @@ export class PublicHelper {
     };
 
     static ENTITY = [
-        {id: 1, name: 'album'},
-        {id: 2, name: 'book'},
-        {id: 3, name: 'disc'},
-        {id: 4, name: 'game'},
-        {id: 5, name: 'music'},
-        {id: 6, name: 'goods'},
-        {id: 7, name: 'figure'},
-        {id: 8, name: 'person'},
-        {id: 99, name: 'product'},
-        {id: 100, name: 'franchise'},
+        {id: 0, name: 'item'},
+        {id: 1, name: 'entry'},
+        {id: 2, name: 'person'}
     ]
 
 }

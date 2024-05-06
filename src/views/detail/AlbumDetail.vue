@@ -7,15 +7,15 @@
           <div class="grid detail-item-header-title">
             <h4 class="col-11">
               <b class="detail-item-title">
-                {{ album.name }}
+                {{ item.name }}
               </b>
             </h4>
           </div>
         </template>
         <template #subtitle>
-          <h5 v-if="album.nameEn !== ''" class="detail-item-subtitle"><small>{{ album.nameEn }}</small></h5>
+          <h5 v-if="item.nameEn !== ''" class="detail-item-subtitle"><small>{{ item.nameEn }}</small></h5>
           <h5 v-else><small></small></h5>
-          <h5 v-if="album.nameZh !== ''" class="detail-item-subtitle"><small>{{ album.nameZh }}</small></h5>
+          <h5 v-if="item.nameZh !== ''" class="detail-item-subtitle"><small>{{ item.nameZh }}</small></h5>
           <h5 v-else><small></small></h5>
         </template>
         <template #content>
@@ -38,8 +38,8 @@
                         </template>
                       </Button>
                     </div>
-                    <Info :item="album" />
-                    <StatusEditor :status="album.status" />
+                    <Info :item="item" />
+                    <StatusEditor :status="item.status" />
                     <ItemLike :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
                   </div>
                 </template>
@@ -49,11 +49,11 @@
           <div class="detail-item-field">
             <PersonsInfo :personnel="personnel"/>
             <!-- tracks info -->
-            <TrackInfo :info="album.trackInfo" />
+            <TrackInfo />
             <!-- detail -->
-            <DetailPad :header="$const.Description" :text="album.detail" />
+            <DetailPad :header="$const.Description" :text="item.detail" />
             <!-- bonus -->
-            <BonusPad id="bonus" v-if="album.hasBonus" :text="album.bonus" />
+            <BonusPad id="bonus" v-if="item.hasBonus" :text="item.bonus" />
           </div>
         </template>
       </Card>
@@ -61,7 +61,7 @@
     <div class="col-2" style="min-width: 300px">
       <SideImages :images="itemImageInfo"/>
       <RelationInfo />
-      <TrafficInfo :info="pageInfo" :addedTime="album.addedTime" :editedTime="album.editedTime" />
+      <TrafficInfo :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime" />
     </div>
   </div>
 </template>
@@ -71,7 +71,7 @@ import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
-import {getCurrentInstance, onBeforeMount, ref} from "vue";
+import {defineProps, getCurrentInstance, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import {useUserStore} from "@/store/user";
@@ -94,7 +94,14 @@ const toast = useToast();
 const userStore = useUserStore();
 const dialog = useDialog();
 
-const album = ref({});
+const props = defineProps({
+  info: {
+    type: Object,
+    required: true,
+  },
+});
+
+const item = ref({});
 const pageInfo = ref({});
 const itemImageInfo = ref({});
 const option = ref({});
@@ -102,12 +109,12 @@ const audios = ref(null);
 const personnel = ref([]);
 
 onBeforeMount(() => {
-  album.value = router.currentRoute.value.meta.info.item;
-  pageInfo.value = router.currentRoute.value.meta.info.traffic;
-  itemImageInfo.value = router.currentRoute.value.meta.info.itemImageInfo;
-  option.value = router.currentRoute.value.meta.info.options;
-  audios.value = router.currentRoute.value.meta.info.audios;
-  personnel.value = router.currentRoute.value.meta.info.personnel;
+  item.value = props.info.item;
+  pageInfo.value = props.info.traffic;
+  itemImageInfo.value = props.info.itemImageInfo;
+  option.value = props.info.options;
+  audios.value = props.info.audios;
+  personnel.value = props.info.personnel;
 });
 
 const openEditDialog = () => {
@@ -125,7 +132,7 @@ const openEditDialog = () => {
       closable: false
     },
     data: {
-      item: album.value,
+      item: item.value,
       option: option.value,
     },
     onClose: (options) => {

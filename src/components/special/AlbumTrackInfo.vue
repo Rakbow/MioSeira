@@ -93,7 +93,7 @@ onMounted(() => {
 });
 
 onBeforeMount(() => {
-  info.value = props.info;
+  reloadTrackInfo();
 })
 
 const route = useRoute();
@@ -101,14 +101,8 @@ const dialog = useDialog();
 const userStore = useUserStore();
 const editBlock = ref(false);
 const loading = ref(false);
-const info = ref({});
-
-const props = defineProps({
-  info: {
-    type: Object,
-    required: true,
-    default: () => ({})
-  }
+const info = ref({
+  discs: []
 });
 
 const reloadTrackInfo = async () => {
