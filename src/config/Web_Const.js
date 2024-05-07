@@ -22,7 +22,9 @@ export const META = {
     ENTITY: {
         ITEM: 0,
         ENTRY: 1,
-        PERSON: 2
+        PERSON: 2,
+        PRODUCT: 99,
+        FRANCHISE: 100
     },
     LINK_TYPE: {
         OFFICIAL: 0,

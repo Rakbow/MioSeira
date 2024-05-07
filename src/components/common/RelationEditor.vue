@@ -112,7 +112,7 @@ const searchItem = async (event) => {
     param: {
       keyword: event.query,
       first: 0,
-      row: 100
+      row: 20
     }
   }
   const res = await axios.post($api.GENERAL_SEARCH, param);
@@ -180,8 +180,8 @@ const addItem = () => {
                         @complete="searchItem" inputStyle="min-width: 270px">
             <template #option="slotProps">
               <div class="flex align-options-center">
-                <img :src="slotProps.option.cover" style="width: 50px" alt="cover"/>
-                <div>{{ `${slotProps.option.name}/${slotProps.option.nameZh}(${slotProps.option.category.label})` }}</div>
+<!--                <img :src="slotProps.option.cover" style="width: 50px" alt="cover"/>-->
+                <div>{{ `${slotProps.option.name}/${slotProps.option.nameZh}(${slotProps.option.type.label})` }}</div>
               </div>
             </template>
           </AutoComplete>

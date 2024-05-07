@@ -29,10 +29,21 @@ export class PublicHelper {
         return 0;
     };
 
+    static getEntityPath = (id) => {
+        for (let item of this.ENTITY) {
+            if (id === item.id) {
+                return item.name;
+            }
+        }
+        return item;
+    };
+
     static ENTITY = [
         {id: 0, name: 'item'},
         {id: 1, name: 'entry'},
-        {id: 2, name: 'person'}
+        {id: 2, name: 'person'},
+        {id: 99, name: 'product'},
+        {id: 100, name: 'franchise'}
     ]
 
 }

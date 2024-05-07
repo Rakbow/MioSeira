@@ -1,5 +1,5 @@
 <script setup>
-import {defineAsyncComponent, defineProps, getCurrentInstance, onBeforeMount, onMounted, ref} from 'vue';
+import {defineAsyncComponent, getCurrentInstance, onBeforeMount, onMounted, ref} from 'vue';
 import {useUserStore} from "@/store/user";
 import {useDialog} from "primevue/usedialog";
 import {PublicHelper} from "@/utils/publicHelper";
@@ -103,7 +103,7 @@ const getEntityInfo = () => {
                    v-if="relatedItems.length !== 0"
                    v-for="item of relatedItems">
                   <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
-                      <a :href="'/db/' + item.entityTypeName + '/' + item.entityId">
+                      <a :href="'/db/' + PublicHelper.getEntityPath(item.entityType.value) + '/' + item.entityId">
                           <img class="sidebar-panel-image-small" :src="item.cover" alt=""
                                v-tooltip.bottom="item.name + '\n' + item.nameZh + '\n' + item.nameEn">
                       </a>
@@ -117,15 +117,15 @@ const getEntityInfo = () => {
                         </li>
                         <li>
                             <a class="small_font"
-                               :href="'/db/' + item.entityTypeName + '/' + item.entityId">
+                               :href="'/db/' + PublicHelper.getEntityPath(item.entityType.value) + '/' + item.entityId">
                                 <span class="text-truncate-2 mr-2">
-                                    {{ item.name }}
+                                    {{ `${item.name}(${item.label})` }}
                                 </span>
                             </a>
                         </li>
                         <li>
                           <span class="small_font col-6 related-item-catalog">
-                              {{ item.nameZh }}
+                              {{ `${item.nameZh}(${item.label})` }}
                           </span>
                         </li>
                       </ul>
