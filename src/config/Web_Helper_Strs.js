@@ -7,6 +7,8 @@ export const API = {
     GET_ITEM_DETAIL: '/api/db/item/detail',
     GET_ITEM_LIST: '/api/db/item/list',
 
+    BOOK_GENERATE_ISBN: '/api/db/item/get-isbn',
+
     //endregion
 
     //region
@@ -145,8 +147,6 @@ export const API = {
     ADD_BOOK: '/api/db/book/add',
     GET_BOOKS: '/api/db/book/list',
     GET_RELATED_BOOKS: '/api/db/book/get-related-books',
-
-    BOOK_GENERATE_ISBN: '/api/db/book/get-isbn',
 
     UPDATE_BOOK_AUTHORS: '/api/db/book/update-authors',
     //endregion
