@@ -29,7 +29,7 @@ const init = () => {
 
 const submit = () => {
   editBlock.value = true;
-  axios.post(API.UPDATE_BOOK, item.value)
+  axios.post(API.UPDATE_ITEM, item.value)
       .then(res => {
         if (res.state === axios.SUCCESS) {
           toast.add({severity: 'success', detail: res.message, life: 3000});

@@ -103,7 +103,7 @@ const queryParams = ref({});
 const option = ref({});
 
 const initOption = async () => {
-  const res = await axios.post($api.GET_ENTITY_OPTION, {entityType: 2});
+  const res = await axios.post($api.GET_ITEM_OPTION, {type: META.ITEM_TYPE.BOOK});
   option.value.bookTypeSet = res.data.bookTypeSet;
   option.value.regionSet = res.data.regionSet;
   option.value.languageSet = res.data.languageSet;
@@ -147,7 +147,13 @@ const displayAddDialog = ref(false);
 const displayDeleteDialog = ref(false);
 
 const openAddDialog = () => {
-  itemAdd.value = {};
+  itemAdd.value = {
+    type: META.ITEM_TYPE.BOOK,
+    bookType: 0,
+    lang: 'ja-JP',
+    region: 'jp',
+    currency: 'JPY',
+  };
   displayAddDialog.value = true;
 }
 
@@ -194,7 +200,7 @@ const confirmDeleteSelected = () => {
 
 const submitAddItem = async () => {
   loading.value = true;
-  const res = await axios.post($api.ADD_BOOK, itemAdd.value);
+  const res = await axios.post($api.ADD_ITEM, itemAdd.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeAddDialog();

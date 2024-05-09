@@ -97,7 +97,7 @@ const queryParams = ref({});
 const option = ref({});
 
 const initOption= async () => {
-  const res = await axios.post($api.GET_ENTITY_OPTION, {entityType: 1});
+  const res = await axios.post($api.GET_ITEM_OPTION, {type: META.ITEM_TYPE.ALBUM});
   option.value.albumFormatSet = res.data.albumFormatSet;
   option.value.publishFormatSet = res.data.publishFormatSet;
   option.value.mediaFormatSet = res.data.mediaFormatSet;
@@ -141,7 +141,9 @@ const displayAddDialog = ref(false);
 const displayDeleteDialog = ref(false);
 
 const openAddDialog = () => {
-  itemAdd.value = {};
+  itemAdd.value = {
+    type: META.ITEM_TYPE.ALBUM
+  };
   displayAddDialog.value = true;
 }
 
@@ -183,7 +185,7 @@ const confirmDeleteSelected = () => {
 
 const submitAddItem = async () => {
   loading.value = true;
-  const res = await axios.post($api.ADD_ALBUM, itemAdd.value);
+  const res = await axios.post($api.ADD_ITEM, itemAdd.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeAddDialog();

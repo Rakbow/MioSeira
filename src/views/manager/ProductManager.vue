@@ -82,7 +82,7 @@ const queryParams = ref({});
 const option = ref({});
 
 const initOption= async () => {
-  const res = await axios.post($api.GET_ENTITY_OPTION, {entityType: 99});
+  const res = await axios.post($api.GET_ENTITY_OPTION, {type: META.ENTITY.PRODUCT});
   option.value.productCategorySet = res.data.productCategorySet;
   option.value.franchiseSet = res.data.franchiseSet;
 }

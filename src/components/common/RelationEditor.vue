@@ -42,7 +42,7 @@ const editBlock = ref(false);
 
 const initOption = async () => {
   if (relationTypeOption.value.length !== 0) return;
-  const res = await axios.post($api.GET_ENTITY_OPTION, {entityType: -1});
+  const res = await axios.post($api.GET_ENTITY_OPTION, {type: -1});
   relationTypeOption.value = res.data.relationTypeSet;
   entityTypeOption.value = res.data.entityTypeSet;
 }

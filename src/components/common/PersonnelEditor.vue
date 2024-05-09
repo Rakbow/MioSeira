@@ -40,7 +40,7 @@ const editBlock = ref(false);
 
 const initOption= async () => {
   if(roleOption.value.length !== 0) return;
-  const res = await axios.post($api.GET_ENTITY_OPTION, {entityType: -1});
+  const res = await axios.post($api.GET_ENTITY_OPTION, {type: -1});
   roleOption.value = res.data.roleSet;
 }
 

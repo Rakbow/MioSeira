@@ -87,7 +87,7 @@ const queryParams = ref({});
 const option = ref({});
 
 const initOption= async () => {
-  const res = await axios.post($api.GET_ENTITY_OPTION, {entityType: 8});
+  const res = await axios.post($api.GET_ENTITY_OPTION, {type: META.ENTITY.PERSON});
   option.value.genderSet = res.data.genderSet;
   option.value.linkTypeSet = res.data.linkTypeSet;
 }

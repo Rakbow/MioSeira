@@ -6,6 +6,9 @@ export const API = {
     ITEM_DETAIL: '/db/item',
     GET_ITEM_DETAIL: '/api/db/item/detail',
     GET_ITEM_LIST: '/api/db/item/list',
+    ADD_ITEM: '/api/db/item/add',
+    UPDATE_ITEM: '/api/db/item/update',
+    GET_ITEM_OPTION: '/api/db/item/get-option',
 
     BOOK_GENERATE_ISBN: '/api/db/item/get-isbn',
 
@@ -92,12 +95,6 @@ export const API = {
     //endregion
 
     //region album
-    ALBUM_DETAIL: '/db/album',
-    DELETE_ALBUM: '/api/db/album/delete',
-    UPDATE_ALBUM: '/api/db/album/update',
-    ADD_ALBUM: '/api/db/album/add',
-    GET_ALBUMS: '/api/db/album/list',
-    GET_RELATED_ALBUMS: '/api/db/album/get-related-albums',
     UPDATE_ALBUM_TRACK_INFO: '/api/db/album/update-track-info',
     GET_ALBUM_TRACK_INFO: '/api/db/album/get-track-info',
     //endregion
@@ -137,13 +134,6 @@ export const API = {
     //endregion
 
     //region book
-    BOOK_DETAIL: '/db/book',
-    GET_BOOK_DETAIL: '/api/db/book/detail',
-    DELETE_BOOK: '/api/db/book/delete',
-    UPDATE_BOOK: '/api/db/book/update',
-    ADD_BOOK: '/api/db/book/add',
-    GET_BOOKS: '/api/db/book/list',
-    GET_RELATED_BOOKS: '/api/db/book/get-related-books',
 
     UPDATE_BOOK_AUTHORS: '/api/db/book/update-authors',
     //endregion
