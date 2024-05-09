@@ -59,13 +59,10 @@ export const API = {
 
     GET_ALBUM_DETAIL: '/api/db/album/detail',
 
-    UPDATE_ITEMS_STATUS: '/api/db/update-items-status',
+    UPDATE_ITEMS_STATUS: '/api/db/update-entry-status',
     LIKE_ITEM: '/api/db/like',
-    UPDATE_DETAIL: '/api/db/update-item-detail',
-    UPDATE_BONUS: '/api/db/update-item-bonus',
-    UPDATE_SPECS: '/api/db/update-item-specs',
-    UPDATE_COMPANIES: '/api/db/update-item-companies',
-    UPDATE_PERSONNEL: '/api/db/update-item-personnel',
+    UPDATE_DETAIL: '/api/db/update-entry-detail',
+    UPDATE_BONUS: '/api/db/update-entry-bonus',
 
     //endregion
 
