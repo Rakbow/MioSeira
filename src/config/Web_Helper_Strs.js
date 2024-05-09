@@ -9,6 +9,7 @@ export const API = {
     ADD_ITEM: '/api/db/item/add',
     UPDATE_ITEM: '/api/db/item/update',
     GET_ITEM_OPTION: '/api/db/item/get-option',
+    UPDATE_BONUS: '/api/db/item/update-bonus',
 
     BOOK_GENERATE_ISBN: '/api/db/item/get-isbn',
 
@@ -65,7 +66,6 @@ export const API = {
     UPDATE_ITEMS_STATUS: '/api/db/update-entry-status',
     LIKE_ITEM: '/api/db/like',
     UPDATE_DETAIL: '/api/db/update-entry-detail',
-    UPDATE_BONUS: '/api/db/update-entry-bonus',
 
     //endregion
 

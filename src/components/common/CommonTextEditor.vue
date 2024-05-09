@@ -81,15 +81,20 @@ const copyImageUrl = (url) => {
 const submit = () => {
   editBlock.value = true;
   let url;
-  let json = {
-    entityType: entityType.value,
-    entityId: entityId.value,
-    text: text.value
-  };
+  let json;
 
   if (type.value === META.TEXT_TYPE.DETAIL) {
+    json = {
+      entityType: entityType.value,
+      entityId: entityId.value,
+      text: text.value
+    };
     url = API.UPDATE_DETAIL;
   } else if (type.value === META.TEXT_TYPE.BONUS) {
+    json = {
+      id: entityId.value,
+      bonus: text.value
+    };
     url = API.UPDATE_BONUS;
   }
 
