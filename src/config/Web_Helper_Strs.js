@@ -13,6 +13,9 @@ export const API = {
 
     BOOK_GENERATE_ISBN: '/api/db/item/get-isbn',
 
+    UPDATE_ALBUM_TRACK_INFO: '/api/db/item/update-album-track-info',
+    GET_ALBUM_TRACK_INFO: '/api/db/item/get-album-track-info',
+
     //endregion
 
     //region
@@ -94,11 +97,6 @@ export const API = {
     ENTRY_REFRESH_REDIS_DATA: '/api/db/entry/refresh-redis-data',
     //endregion
 
-    //region album
-    UPDATE_ALBUM_TRACK_INFO: '/api/db/album/update-track-info',
-    GET_ALBUM_TRACK_INFO: '/api/db/album/get-track-info',
-    //endregion
-
     //region episode
     EPISODE_DETAIL: '/db/ep',
     //endregion
@@ -171,105 +169,4 @@ export const API = {
 
 
 
-//endregion
-
-//region header
-
-// const ENTITY = {
-//     ALBUM: 1,
-//     DISC: 2,
-//     BOOK: 3,
-//     MERCH: 4,
-//     GAME: 5,
-//     FRANCHISE: 6,
-//     PRODUCT: 7,
-//     MUSIC: 9,
-//     ENTRY: 10
-// };
-//
-// const ENTITY_TYPE = [
-//     {label: '专辑', labelEn: 'Album', value: '1', icon: 'pi iconfont icon-album'},
-//     {label: 'BD/DVD', labelEn: 'Disc', value: '2', icon: 'pi iconfont icon-Video-Disc'},
-//     {label: '书籍', labelEn: 'Book', value: '3', icon: 'pi iconfont icon-book'},
-//     {label: '周边', labelEn: 'Merch', value: '4', icon: 'pi iconfont icon-yinshuabaozhuang'},
-//     {label: '游戏', labelEn: 'Game', value: '5', icon: 'pi iconfont icon-youxi'},
-//     // {label: '系列', labelEn: 'Franchise', value: '6', icon: 'pi pi-bookmark'},
-//     // {label: '作品', labelEn: 'Product', value: '7', icon: 'pi pi-th-large'},
-//     // {label: '文章', labelEn: 'Article', value: '8', icon: 'pi pi-bars'},
-//     {label: '音乐', labelEn: 'Music', value: '9', icon: 'pi iconfont icon-music'}
-// ];
-//
-// const PRODUCT_ORGANIZATION_FORMAT = [
-//     {label: '名称(默认)', value: 0},
-//     {label: '名称/地区', value: 1},
-//     {label: '名称/地区/平台', value: 2}
-// ];
-//
-// const NOT_LOGIN_NAVBAR_ITEMS = [
-//     {
-//         label: '首页', icon: 'pi pi-fw pi-home', url: '/'
-//     },
-//     {
-//         label: '数据库',
-//         icon: 'pi pi-fw iconfont icon-database',
-//         items: [
-//             {
-//                 label: '数据库首页',
-//                 icon: 'pi pi-fw iconfont icon-database',
-//                 url: DATABASE_INDEX
-//             },
-//             {
-//                 label: '数据库(列表)',
-//                 icon: 'pi pi-fw iconfont icon-database',
-//                 url: DATABASE_LIST
-//             }
-//         ]
-//     },
-//     // {
-//     //     label: '博客', icon: 'pi pi-fw pi-book', url: BLOG_INDEX
-//     // },
-//     // {
-//     //     label: '应用', icon: 'pi iconfont icon-yingyong', url: APP_INDEX
-//     // },
-//     {
-//         label: '后台', icon: 'pi iconfont icon-login', url: LOGIN
-//     }
-// ];
-//
-// const LOGIN_NAVBAR_ITEMS = [
-//     {
-//         label: '首页',
-//         icon: 'pi pi-fw pi-home',
-//         url: '/'
-//     },
-//     {
-//         label: '数据库',
-//         icon: 'pi pi-fw iconfont icon-database',
-//         items: [
-//             {
-//                 label: '数据库首页',
-//                 icon: 'pi pi-fw iconfont icon-database',
-//                 url: DATABASE_INDEX
-//             },
-//             {
-//                 label: '数据库(列表)',
-//                 icon: 'pi pi-fw iconfont icon-database',
-//                 url: DATABASE_LIST
-//             }
-//         ]
-//     },
-//     // {
-//     //     label: '博客',
-//     //     icon: 'pi pi-fw pi-book',
-//     //     url: BLOG_INDEX
-//     // },
-//     // {
-//     //     label: '应用',
-//     //     icon: 'pi iconfont icon-yingyong',
-//     //     url: APP_INDEX
-//     // },
-//     {
-//         label: '登出', icon: 'pi iconfont icon-logout', url: LOGOUT
-//     }
-// ];
 //endregion
