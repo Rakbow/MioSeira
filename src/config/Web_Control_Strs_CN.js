@@ -337,9 +337,10 @@ export const CnText = {
     ImageNameZh: '图片名(中)',
     ImageNameEn: '图片名(英)',
     ImageTypes: [
-        {label: '展示', value: 0},
-        {label: '主要', value: 1},
-        {label: '其他', value: 2}
+        {label: '默认', value: 0},
+        {label: '缩略图', value: 1},
+        {label: '封面', value: 2},
+        {label: '其他', value: 99}
     ],
     //endregion
 

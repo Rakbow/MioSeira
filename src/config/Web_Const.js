@@ -11,6 +11,12 @@ export const META = {
         BONUS: 'bonus',
         DETAIL: 'detail'
     },
+    IMAGE_TYPE: {
+        DEFAULT: 0,
+        THUMB: 1,
+        MAIN: 2,
+        OTHER: 99
+    },
     ITEM_TYPE: {
         ALBUM: 1,
         BOOK: 2,

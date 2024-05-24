@@ -40,7 +40,7 @@
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-image"/>
                 </span>
-                <InputText v-model="imageInfo.nameEn" :placeholder="$const.ImageNameEn" />
+                <InputText v-model="imageInfo.name" :placeholder="$const.ImageNameEn" />
               </div>
             </div>
             <div class="field col-6">
@@ -57,7 +57,7 @@
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-bars"/>
                 </span>
-                <InputText v-model="imageInfo.description" :placeholder="$const.Description" />
+                <InputText v-model="imageInfo.detail" :placeholder="$const.Description" />
               </div>
             </div>
           </div>
@@ -103,7 +103,7 @@
           <Column :expander="true" headerStyle="width: 3%"></Column>
           <Column :header="$const.Image" header-style="width: 8%">
             <template #body="slotProps">
-              <img :src="slotProps.data.thumbUrl50" :alt="slotProps.data.nameEn"
+              <img :src="slotProps.data.thumbUrl50" :alt="slotProps.data.name"
                    class="edit-image"/>
             </template>
           </Column>
@@ -117,7 +117,7 @@
               <InputText v-model="data[field]" autofocus style="width: 240px"/>
             </template>
           </Column>
-          <Column field="nameEn" :header="$const.ImageNameEn" header-style="width: 25%">
+          <Column field="name" :header="$const.ImageNameEn" header-style="width: 25%">
             <template #editor="{ data, field }">
               <InputText v-model="data[field]" autofocus style="width: 240px"/>
             </template>
@@ -131,7 +131,7 @@
               {{ getImageTypeLabel(slotProps.data.type) }}
             </template>
           </Column>
-          <Column field="description" :header="$const.Description" header-style="width: 17%">
+          <Column field="detail" :header="$const.Description" header-style="width: 17%">
             <template #editor="{ data, field }">
               <InputText v-model="data[field]" autofocus style="width: 180px"/>
             </template>
@@ -225,10 +225,10 @@ const selectedImage = ref([]);
 const deleteImageDialog = ref(false);
 const imageInfo = ref({
   image: null,
+  name: '',
   nameZh: '',
-  nameEn: '',
-  description: '',
-  type: 1
+  detail: '',
+  type: META.IMAGE_TYPE.DEFAULT
 });
 const imageInfos = ref([]);
 const imageHtml = ref('');
@@ -258,10 +258,10 @@ const cancelDeleteSelectedImage = () => {
 const closeImageEditDialog = () => {
   imageInfo.value = {
     image: null,
+    name: '',
     nameZh: '',
-    nameEn: '',
-    description: '',
-    type: 0
+    detail: '',
+    type: META.IMAGE_TYPE.DEFAULT
   };
   imageInfos.value = [];
   document.getElementById("imgBox").innerHTML = "";
@@ -278,8 +278,8 @@ const showImage = () => {
     imageHtml.value += '<div class="col-6" style="max-height: 100px">';
     imageHtml.value += `<span>${$const.Type}: ${_find($const.ImageTypes, {value: img.type}).label}</span><br>`;
     imageHtml.value += `<span>${$const.ImageNameZh}: ${img.nameZh}</span><br>`;
-    imageHtml.value += `<span>${$const.ImageNameEn}: ${img.nameEn}</span><br>`;
-    imageHtml.value += `<span>${$const.Description}: ${img.description}</span><br>`;
+    imageHtml.value += `<span>${$const.ImageNameEn}: ${img.name}</span><br>`;
+    imageHtml.value += `<span>${$const.Description}: ${img.detail}</span><br>`;
     imageHtml.value += '</div>';
   }
   imageHtml.value += "</div>";
@@ -290,8 +290,8 @@ const selectFile = (ev) => {
   imageInfo.value.image = ev.files[0];
 };
 const checkImageInfo = () => {
-  if (_isEmpty(imageInfo.value.description)) {
-    imageInfo.value.description = "";
+  if (_isEmpty(imageInfo.value.detail)) {
+    imageInfo.value.detail = "";
   }
   if (_isEmpty(imageInfo.value.image)) {
     toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageSelected, life: 3000});
@@ -300,7 +300,7 @@ const checkImageInfo = () => {
     toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageNameZh, life: 3000});
     return false;
   }
-  if (_isEmpty(imageInfo.value.nameEn)) {
+  if (_isEmpty(imageInfo.value.name)) {
     toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageNameEn, life: 3000});
     return false;
   }
@@ -327,14 +327,14 @@ const submitImages = async () => {
   editBlock.value = true;
   const formData = new FormData();
   for (const img of imageInfos.value) {
-    formData.append("images", img.image);
+    formData.append("files", img.image);
   }
   formData.append("entityType", entityType.value);
   formData.append("entityId", entityId.value);
   for (const img of imageInfos.value) {
     delete img.image;
   }
-  formData.append("imageInfos", JSON.stringify(imageInfos.value));
+  formData.append("infos", imageInfos.value);
 
   const res = await axios.form(API.ADD_IMAGES, formData);
   if (res.state === axios.SUCCESS) {
