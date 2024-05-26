@@ -1,24 +1,39 @@
 <script setup>
-import {ref, defineProps, defineAsyncComponent, getCurrentInstance} from 'vue';
-import { useDialog } from 'primevue/usedialog';
+import {ref, defineAsyncComponent, getCurrentInstance, onMounted} from 'vue';
+import {useDialog} from 'primevue/usedialog';
+
 const imageManager = defineAsyncComponent(() => import('@/components/common/ImageManager.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 import {useUserStore} from "@/store/user";
+import {AxiosHelper as axios} from "@/utils/axiosHelper.js";
+import {API} from "@/config/Web_Helper_Strs.js";
+import {PublicHelper} from "@/utils/publicHelper.js";
+import {useRoute} from "vue-router";
+import {useToast} from "primevue/usetoast";
 
 const userStore = useUserStore();
+const route = useRoute();
 const dialog = useDialog();
-const props = defineProps({
-  images: {
-    type: Object,
-    required: true,
-    default: () => ({
-      images: [],
-      cover: {},
-      displayImages: [],
-      otherImages: []
-    })
-  }
+const toast = useToast();
+const editBlock = ref(false);
+const entityType = ref(0);
+const entityId = ref(0);
+const imageInfo = ref({
+  images: [],
+  displayImages: [],
+  otherImages: []
 });
+
+onMounted(() => {
+  getEntityInfo();
+  getImages();
+});
+
+const getEntityInfo = () => {
+  let typeName = route.path.split('/')[2];
+  entityType.value = PublicHelper.getEntityType(typeName);
+  entityId.value = route.params.id;
+}
 
 const activeIndex = ref(0)
 const displayCustom = ref(false)
@@ -46,6 +61,18 @@ const responsiveOptions = [
   }
 ];
 
+const getImages = async () => {
+  editBlock.value = true;
+  let param = {
+    entityType: entityType.value,
+    entityId: entityId.value
+  }
+  const res = await axios.post(API.GET_IMAGES, param);
+  if (res.state === axios.SUCCESS)
+    imageInfo.value = res.data;
+  editBlock.value = false;
+}
+
 const openEditDialog = () => {
   dialog.open(imageManager, {
     props: {
@@ -53,7 +80,7 @@ const openEditDialog = () => {
       style: {
         width: '80vw',
       },
-      breakpoints:{
+      breakpoints: {
         '960px': '80vw',
         '640px': '70vw'
       },
@@ -61,7 +88,7 @@ const openEditDialog = () => {
       closable: false
     },
     data: {
-      itemImageInfo: props.images
+      itemImageInfo: imageInfo.images
     }
     // onClose: (options) => {
     //   if(options.data !== undefined) {
@@ -80,21 +107,21 @@ const openEditDialog = () => {
   <Panel class="mt-2">
     <template #header>
       <span class="text-start side-panel-header">
-          <i class="pi pi-images" /><span><strong>{{ $const.Images }}</strong></span>
+          <i class="pi pi-images"/><span><strong>{{ $const.Images }}</strong></span>
       </span>
     </template>
     <template #icons>
       <div v-if="userStore.user">
         <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link mr-2"
-                @click="openEditDialog" v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
-          <span class="pi pi-cog" />
+                @click="openEditDialog" v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}">
+          <span class="pi pi-cog"/>
         </Button>
       </div>
     </template>
 
-    <i v-if="images.displayImages.length === 0" class="rkw-side-empty-info">{{ $const.NoImage }}</i>
+    <i v-if="imageInfo.displayImages.length === 0" class="rkw-side-empty-info">{{ $const.NoImage }}</i>
     <div class="card flex justify-content-center">
-      <Galleria v-if="images.displayImages" :value="images.displayImages"
+      <Galleria :value="imageInfo.displayImages"
                 v-model:activeIndex="activeIndex" :responsiveOptions="responsiveOptions"
                 :numVisible="7" containerStyle="max-width: 800px"
                 :circular="true" :fullScreen="true" :showItemNavigators="true"
@@ -106,15 +133,15 @@ const openEditDialog = () => {
         <template #caption="{item}">
           <div class="custom-galleria-footer">
             <div class="col-6">
-              <span v-if="images.displayImages" class="title-container">
-                <span>{{ `${activeIndex+1}/${images.displayImages.length}` }}</span>
+              <span v-if="imageInfo.displayImages" class="title-container">
+                <span>{{ `${activeIndex + 1}/${imageInfo.displayImages.length}` }}</span>
                 <span class="title">{{ item.nameZh }}</span>
                 <span style="font-size: 10px">{{ item.description }}</span>
             </span>
             </div>
             <div class="col-6 text-end">
-            <span v-if="images.displayImages">
-                <span>{{ $const.UploadIn + item.uploadTime }}</span>
+            <span v-if="imageInfo.displayImages">
+                <span>{{ $const.UploadIn + item.addedTime }}</span>
             </span>
             </div>
           </div>
@@ -122,19 +149,19 @@ const openEditDialog = () => {
       </Galleria>
     </div>
 
-    <ScrollPanel style="max-height: 300px;max-width: 265px">
-      <div v-if="images.displayImages" class="grid justify-content-evenly justify-content-start" style="width: 260px">
+    <ScrollPanel style="min-height: 100px;max-height: 300px;max-width: 265px">
+      <div class="grid justify-content-evenly justify-content-start" style="width: 260px">
         <div class="col-4 mt-2 mb-2" id="panel-image-div"
-             v-for="(image, index) of images.displayImages" :key="index">
+             v-for="(image, index) of imageInfo.displayImages" :key="index">
           <img class="sidebar-panel-image-middle" :src="image.thumbUrl70"
                draggable="false"
                oncontextmenu="return false"
-               v-tooltip.bottom="{value: $const.UploadIn + image.uploadTime, class: 'image-tooltip'}"
-               @click="imageClick(index)" alt="" />
+               v-tooltip.bottom="{value: $const.UploadIn + image.addedTime, class: 'image-tooltip'}"
+               @click="imageClick(index)" alt=""/>
         </div>
       </div>
       <ScrollTop target="parent" :threshold="100" class="search-scrolltop"
-                 icon="pi pi-arrow-up" />
+                 icon="pi pi-arrow-up"/>
     </ScrollPanel>
     <br>
     <b class="rbot"><b></b></b>

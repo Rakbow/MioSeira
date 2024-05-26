@@ -314,7 +314,13 @@ const save2imageInfos = () => {
   if (checkImageInfo()) {
     imageInfos.value.push(imageInfo.value);
     showImage();
-    imageInfo.value = {};
+    imageInfo.value = {
+      image: null,
+      name: '',
+      nameZh: '',
+      detail: '',
+      type: META.IMAGE_TYPE.DEFAULT
+    };
   }
 };
 const clearUploadedImage = () => {
@@ -334,10 +340,12 @@ const submitImages = async () => {
   for (const img of imageInfos.value) {
     delete img.image;
   }
-  formData.append("infos", imageInfos.value);
+  formData.append("infos", JSON.stringify(imageInfos.value));
 
   const res = await axios.form(API.ADD_IMAGES, formData);
   if (res.state === axios.SUCCESS) {
+    imageInfos.value = [];
+    document.getElementById("imgBox").innerHTML = '';
     // closeImageEditDialog();
     // location.reload();
     await refreshImages();

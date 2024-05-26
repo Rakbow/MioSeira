@@ -22,7 +22,7 @@
           <div class="grid">
             <div class="col-4" style="width: 205px">
               <div class="album-detail-cover">
-                <img :src="itemImageInfo.cover.url" :alt="itemImageInfo.cover.name"/>
+                <img :src="cover" alt="main"/>
               </div>
             </div>
             <div class="col detail-item-header-card">
@@ -59,7 +59,7 @@
       </Card>
     </div>
     <div class="col-2" style="min-width: 300px">
-      <SideImages :images="itemImageInfo"/>
+      <SideImages />
       <RelationInfo />
       <TrafficInfo :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime" />
     </div>
@@ -103,7 +103,7 @@ const props = defineProps({
 
 const item = ref({});
 const pageInfo = ref({});
-const itemImageInfo = ref({});
+const cover = ref({});
 const option = ref({});
 const audios = ref(null);
 const personnel = ref([]);
@@ -111,7 +111,7 @@ const personnel = ref([]);
 onBeforeMount(() => {
   item.value = props.info.item;
   pageInfo.value = props.info.traffic;
-  itemImageInfo.value = props.info.itemImageInfo;
+  cover.value = props.info.cover;
   option.value = props.info.options;
   audios.value = props.info.audios;
   personnel.value = props.info.personnel;
