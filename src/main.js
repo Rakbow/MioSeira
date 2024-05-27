@@ -1,7 +1,7 @@
 //region primevue样式相关
 import "primeflex/primeflex.css";
-import "primevue/resources/themes/bootstrap4-dark-blue/theme.css";
-import "primevue/resources/primevue.min.css"; /* Deprecated */
+// import "primevue/resources/themes/bootstrap4-dark-blue/theme.css";
+// import "primevue/resources/primevue.min.css"; /* Deprecated */
 import "primeicons/primeicons.css";
 
 import "@/assets/font.css";
@@ -28,6 +28,7 @@ import {AxiosHelper} from '@/utils/axiosHelper';
 
 //region primevue组件相关
 import PrimeVue from "primevue/config";
+import Aura from 'primevue/themes/aura';
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
@@ -54,7 +55,7 @@ import ConfirmationService from 'primevue/confirmationservice';
 import ContextMenu from 'primevue/contextmenu';
 import DataTable from 'primevue/datatable';
 import DataView from 'primevue/dataview';
-import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions';
+// import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions';
 import DeferredContent from 'primevue/deferredcontent';
 import Dialog from 'primevue/dialog';
 import DialogService from 'primevue/dialogservice'
@@ -83,7 +84,6 @@ import MeterGroup from 'primevue/metergroup';
 import MultiSelect from 'primevue/multiselect';
 import OrderList from 'primevue/orderlist';
 import OrganizationChart from 'primevue/organizationchart';
-import OverlayPanel from 'primevue/overlaypanel';
 import Paginator from 'primevue/paginator';
 import Panel from 'primevue/panel';
 import PanelMenu from 'primevue/panelmenu';
@@ -100,7 +100,6 @@ import ScrollPanel from 'primevue/scrollpanel';
 import ScrollTop from 'primevue/scrolltop';
 import Skeleton from 'primevue/skeleton';
 import Slider from 'primevue/slider';
-import Sidebar from 'primevue/sidebar';
 import SpeedDial from 'primevue/speeddial';
 import SplitButton from 'primevue/splitbutton';
 import Splitter from 'primevue/splitter';
@@ -123,8 +122,10 @@ import Tooltip from 'primevue/tooltip';
 import Tree from 'primevue/tree';
 import TreeSelect from 'primevue/treeselect';
 import TreeTable from 'primevue/treetable';
-import TriStateCheckbox from 'primevue/tristatecheckbox';
+// import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
 //endregion
 
 //region vue相关
@@ -140,7 +141,18 @@ const metaManager = createMetaManager();
 
 const app = createApp(App);
 
-app.use(PrimeVue, {ripple: true});
+app.use(PrimeVue, {
+    ripple: true,
+    // Default theme configuration
+    theme: {
+        preset: Aura,
+        options: {
+            prefix: 'p',
+            darkModeSelector: 'system',
+            cssLayer: false
+        }
+    }
+});
 app.use(ConfirmationService);
 app.use(ToastService);
 app.use(DialogService);
@@ -206,7 +218,7 @@ app.component('ConfirmPopup', ConfirmPopup);
 app.component('ContextMenu', ContextMenu);
 app.component('DataTable', DataTable);
 app.component('DataView', DataView);
-app.component('DataViewLayoutOptions', DataViewLayoutOptions);
+// app.component('DataViewLayoutOptions', DataViewLayoutOptions);
 app.component('DeferredContent', DeferredContent);
 app.component('Dialog', Dialog);
 app.component('Divider', Divider);
@@ -233,7 +245,6 @@ app.component('MeterGroup', MeterGroup);
 app.component('MultiSelect', MultiSelect);
 app.component('OrderList', OrderList);
 app.component('OrganizationChart', OrganizationChart);
-app.component('OverlayPanel', OverlayPanel);
 app.component('Paginator', Paginator);
 app.component('Panel', Panel);
 app.component('PanelMenu', PanelMenu);
@@ -248,7 +259,6 @@ app.component('SelectButton', SelectButton);
 app.component('ScrollPanel', ScrollPanel);
 app.component('ScrollTop', ScrollTop);
 app.component('Slider', Slider);
-app.component('Sidebar', Sidebar);
 app.component('Skeleton', Skeleton);
 app.component('SpeedDial', SpeedDial);
 app.component('SplitButton', SplitButton);
@@ -269,8 +279,10 @@ app.component('ToggleButton', ToggleButton);
 app.component('Tree', Tree);
 app.component('TreeSelect', TreeSelect);
 app.component('TreeTable', TreeTable);
-app.component('TriStateCheckbox', TriStateCheckbox);
+// app.component('TriStateCheckbox', TriStateCheckbox);
 app.component('VirtualScroller', VirtualScroller);
+app.component('InputGroup', InputGroup);
+app.component('InputGroupAddon', InputGroupAddon);
 //endregion
 
 app.mount("#app");

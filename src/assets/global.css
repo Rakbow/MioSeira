@@ -513,3 +513,11 @@ a {
     overflow: auto; /* 隐藏超出部分 */
     list-style-type: none; /* 去掉列表项的默认样式 */
 }
+
+.justify-content-center {
+    justify-content: center !important;
+}
+
+.flex {
+    display: flex !important;
+}
