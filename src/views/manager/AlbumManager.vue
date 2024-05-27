@@ -7,7 +7,7 @@ import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import {useDialog} from "primevue/usedialog";
-import InfoEditor from "@/components/common/entityEditor/AlbumInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/AlbumInfoEditor.vue";
 import {META} from "@/config/Web_Const.js";
 
 //region query
@@ -208,7 +208,7 @@ const exportCSV = () => {
                lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
                filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn', 'catalogNo', 'ean13']"
-               paginator :rows="10" :first="first" stripedRows columnResizeMode="fit"
+               paginator :rows="10" :first="first" columnResizeMode="fit"
                v-model:selection="selectedItems" dataKey="id" removableSort
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
@@ -313,7 +313,7 @@ const exportCSV = () => {
                          display="chip" :filter="true" />
         </template>
       </Column>
-      <Column :header="$const.mediaFormat" filter-field="mediaFormat" :showGilterMenu="false" style="flex: 0 0 8rem">
+      <Column :header="$const.MediaFormat" filter-field="mediaFormat" :showGilterMenu="false" style="flex: 0 0 8rem">
         <template #body="slotProps">
           <ul>
             <li v-for="data in slotProps.data.mediaFormat">
@@ -332,7 +332,7 @@ const exportCSV = () => {
           <i class="pi" :class="{'true-icon pi-check-circle': data.hasBonus, 'false-icon pi-times-circle': !data.hasBonus}"></i>
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <TriStateCheckbox v-model="filterModel.value" @change="filterCallback()" />
+          <Checkbox v-model="filterModel.value" indeterminate binary :filter="true" @change="filterCallback()" />
         </template>
       </Column>
       <Column v-for="(col, index) of selectedColumns" :field="col.field"

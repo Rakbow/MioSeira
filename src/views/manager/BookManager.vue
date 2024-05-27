@@ -7,7 +7,7 @@ import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import {useDialog} from "primevue/usedialog";
-import InfoEditor from "@/components/common/entityEditor/BookInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/BookInfoEditor.vue";
 import {API} from "@/config/Web_Helper_Strs.js";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import {META} from "@/config/Web_Const.js";
@@ -238,12 +238,12 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <div class="flex justify-content-center">
+  <div class="flex justify-content-start">
     <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items.length !== 0"
                lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
                filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn', 'catalogNo', 'barcode']"
-               paginator :rows="10" :first="first" stripedRows columnResizeMode="fit"
+               paginator :rows="10" :first="first" columnResizeMode="fit"
                v-model:selection="selectedItems" dataKey="id" removableSort
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
@@ -358,7 +358,7 @@ const exportCSV = () => {
              :class="{'true-icon pi-check-circle': data.hasBonus, 'false-icon pi-times-circle': !data.hasBonus}"></i>
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <TriStateCheckbox v-model="filterModel.value" @change="filterCallback()"/>
+          <Checkbox v-model="filterModel.value" indeterminate binary :filter="true" @change="filterCallback()"/>
         </template>
       </Column>
       <Column v-for="(col, index) of selectedColumns" :field="col.field"
@@ -372,21 +372,21 @@ const exportCSV = () => {
       <div class="formgrid grid">
         <div class="field col">
           <label>{{ $const.BookISBN10 }}<span style="color: red">*</span></label>
-          <div class="p-inputgroup">
+          <InputGroup>
             <InputText v-model="itemAdd.isbn10"/>
             <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn10', itemAdd.ean13)"
                     v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN10, class: 'common-tooltip'}"/>
-          </div>
+          </InputGroup>
         </div>
         <div class="field col">
           <label>{{ $const.BookISBN13 }}<span style="color: red">*</span></label>
-          <div class="p-inputgroup">
+          <InputGroup class="p-inputgroup">
             <InputText v-model="itemAdd.ean13"/>
             <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('ean13', itemAdd.isbn10)"
                     v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN13, class: 'common-tooltip'}"/>
-          </div>
+          </InputGroup>
         </div>
       </div>
       <div class="field">

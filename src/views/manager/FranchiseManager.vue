@@ -6,7 +6,7 @@ import {useToast} from "primevue/usetoast";
 import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
-import InfoEditor from "@/components/common/entityEditor/FranchiseInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/FranchiseInfoEditor.vue";
 import {useDialog} from "primevue/usedialog";
 
 //region query
