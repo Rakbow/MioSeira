@@ -32,7 +32,7 @@
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-image"/>
                 </span>
-                <InputText v-model="imageInfo.nameZh" :placeholder="$const.ImageNameZh" />
+                <InputText v-model="imageInfo.nameZh" :placeholder="$const.ImageNameZh"/>
               </div>
             </div>
             <div class="field col-6">
@@ -40,7 +40,7 @@
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-image"/>
                 </span>
-                <InputText v-model="imageInfo.name" :placeholder="$const.ImageNameEn" />
+                <InputText v-model="imageInfo.name" :placeholder="$const.ImageNameEn"/>
               </div>
             </div>
             <div class="field col-6">
@@ -49,7 +49,7 @@
                     <i class="pi pi-tag"/>
                 </span>
                 <Dropdown v-model="imageInfo.type" :options="$const.ImageTypes" optionLabel="label"
-                          optionValue="value" :placeholder="$const.PleaseSelectImageType" />
+                          optionValue="value" :placeholder="$const.PleaseSelectImageType"/>
               </div>
             </div>
             <div class="field col-6">
@@ -57,21 +57,21 @@
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-bars"/>
                 </span>
-                <InputText v-model="imageInfo.detail" :placeholder="$const.Description" />
+                <InputText v-model="imageInfo.detail" :placeholder="$const.Description"/>
               </div>
             </div>
           </div>
           <div class="formgrid grid mt-2">
             <div class="field col" style="text-align: left">
-              <Button :label="$const.Add" icon="pi pi-save" @click="save2imageInfos" />
+              <Button :label="$const.Add" icon="pi pi-save" @click="save2imageInfos"/>
             </div>
             <div class="field col" style="text-align: right">
-              <Button :label="$const.Commit" icon="pi pi-save" @click="submitImages" class="p-button-success" />
+              <Button :label="$const.Commit" icon="pi pi-save" @click="submitImages" class="p-button-success"/>
             </div>
           </div>
         </div>
         <div class="col-2">
-          <Divider layout="vertical" />
+          <Divider layout="vertical"/>
         </div>
         <div class="col-5">
           <div class="field">
@@ -218,8 +218,8 @@ const getEntityInfo = () => {
   entityId.value = route.params.id;
 }
 
-const itemImageInfo = ref();
 const editBlock = ref(false);
+const itemImageInfo = ref({});
 const editingImages = ref([]);
 const selectedImage = ref([]);
 const deleteImageDialog = ref(false);
@@ -373,7 +373,7 @@ const updateImage = async () => {
   }
 };
 const deleteImage = async () => {
-  if(selectedImage.value.length === 0) {
+  if (selectedImage.value.length === 0) {
     deleteImageDialog.value = false;
     toast.add({severity: 'error', summary: 'Error', detail: $const.NotImageSelected, life: 3000});
     return;
@@ -406,10 +406,10 @@ const refreshImages = async () => {
     entityId: entityId.value
   }
   const res = await axios.post(API.GET_IMAGES, param);
-  if(res.state === axios.SUCCESS) {
+  if (res.state === axios.SUCCESS) {
     itemImageInfo.value = res.data;
     editBlock.value = false;
-  }else {
+  } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
     editBlock.value = false;
   }

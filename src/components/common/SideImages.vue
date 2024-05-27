@@ -10,6 +10,7 @@ import {API} from "@/config/Web_Helper_Strs.js";
 import {PublicHelper} from "@/utils/publicHelper.js";
 import {useRoute} from "vue-router";
 import {useToast} from "primevue/usetoast";
+import {META} from "@/config/Web_Const.js";
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -68,8 +69,11 @@ const getImages = async () => {
     entityId: entityId.value
   }
   const res = await axios.post(API.GET_IMAGES, param);
-  if (res.state === axios.SUCCESS)
-    imageInfo.value = res.data;
+  if (res.state === axios.SUCCESS) {
+    imageInfo.value.images = res.data.data;
+    imageInfo.value.otherImages = res.data.data.filter(i => i.type === META.IMAGE_TYPE.OTHER);
+    imageInfo.value.displayImages = res.data.data.filter(i => i.type !== META.IMAGE_TYPE.OTHER);
+  }
   editBlock.value = false;
 }
 
@@ -88,7 +92,7 @@ const openEditDialog = () => {
       closable: false
     },
     data: {
-      itemImageInfo: imageInfo.images
+      itemImageInfo: imageInfo
     }
     // onClose: (options) => {
     //   if(options.data !== undefined) {
