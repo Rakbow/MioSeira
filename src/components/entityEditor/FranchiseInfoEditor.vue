@@ -1,9 +1,9 @@
 <script setup>
 import {onMounted, ref, inject, getCurrentInstance} from "vue";
-import {AxiosHelper as axios} from '@/utils/axiosHelper';
+import {AxiosHelper as axios} from '@/utils/axiosHelper.js';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
-import {API} from '@/config/Web_Helper_Strs';
+import {API} from '@/config/Web_Helper_Strs.js';
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 onMounted(() => {
@@ -21,13 +21,11 @@ const item = ref({});
 const option = ref({});
 
 const init = () => {
-  item.value.category = item.value.category.value;
-  item.value.franchise = item.value.franchise.value;
 }
 
 const submit = () => {
   editBlock.value = true;
-  axios.post(API.UPDATE_PRODUCT, item.value)
+  axios.post(API.UPDATE_FRANCHISE, item.value)
       .then(res => {
         if (res.state === axios.SUCCESS) {
           toast.add({severity: 'success', detail: res.message, life: 3000});
@@ -63,25 +61,6 @@ const close = () => {
     <div class="field col">
       <label>{{$const.NameZh}}<span style="color: red">*</span></label>
       <InputText id="nameZh" v-model="item.nameZh" />
-    </div>
-    <div class="formgrid grid">
-      <div class="field col-6">
-        <label>{{$const.ReleaseDate}}<span style="color: red">*</span></label>
-        <Calendar id="releaseDate" v-model="item.releaseDate" dateFormat="yy/mm/dd"
-                  :showButtonBar="true" :showIcon="true" />
-      </div>
-      <div class="field col-6">
-        <label>{{$const.Category}}</label>
-        <Dropdown v-model="item.category" :options="option.productCategorySet"
-                  optionLabel="label" optionValue="value" />
-      </div>
-    </div>
-    <div class="formgrid grid">
-      <div class="field col-6">
-        <label>{{$const.Franchise}}</label>
-        <Dropdown v-model="item.franchise" :options="option.franchiseSet"
-                  optionLabel="label" optionValue="value" />
-      </div>
     </div>
     <div class="field">
       <label>{{$const.Remark}}</label>

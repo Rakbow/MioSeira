@@ -1,9 +1,9 @@
 <script setup>
 import {onMounted, ref, inject, getCurrentInstance} from "vue";
-import {AxiosHelper as axios} from '@/utils/axiosHelper';
+import {AxiosHelper as axios} from '@/utils/axiosHelper.js';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
-import {API} from '@/config/Web_Helper_Strs';
+import {API} from '@/config/Web_Helper_Strs.js';
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
@@ -77,21 +77,21 @@ const close = () => {
     <div class="formgrid grid">
       <div class="field col">
         <label>{{$const.BookISBN10}}<span style="color: red">*</span></label>
-        <div class="p-inputgroup">
+        <InputGroup>
           <InputText v-model="item.isbn10" />
           <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn10', item.ean13)"
                     v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN10, class: 'common-tooltip'}" />
-        </div>
+        </InputGroup>
       </div>
       <div class="field col">
         <label>{{$const.BookISBN13}}<span style="color: red">*</span></label>
-        <div class="p-inputgroup">
+        <InputGroup>
           <InputText v-model="item.ean13" />
           <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn13', item.isbn10)"
                     v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN13, class: 'common-tooltip'}" />
-        </div>
+        </InputGroup>
       </div>
     </div>
     <div class="field">

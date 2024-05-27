@@ -10,7 +10,7 @@ import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
 import {useUserStore} from "@/store/user.js";
 import {useDialog} from "primevue/usedialog";
-import InfoEditor from "@/components/common/entityEditor/PersonInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/PersonInfoEditor.vue";
 import {META} from "@/config/Web_Const.js";
 
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;

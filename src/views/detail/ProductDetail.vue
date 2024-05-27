@@ -81,7 +81,7 @@ import DetailPad from "@/components/common/DetailPad.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
 import Info from "@/views/detail/ProductDetailInfo.vue";
-import InfoEditor from "@/components/common/entityEditor/ProductInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/ProductInfoEditor.vue";
 
 const router = useRouter();
 const toast = useToast();

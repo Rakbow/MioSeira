@@ -75,7 +75,7 @@ import DetailPad from "@/components/common/DetailPad.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
 import Info from "@/views/detail/FranchiseDetailInfo.vue";
-import InfoEditor from "@/components/common/entityEditor/FranchiseInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/FranchiseInfoEditor.vue";
 
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const router = useRouter();

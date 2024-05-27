@@ -7,7 +7,7 @@ import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import {useDialog} from "primevue/usedialog";
-import InfoEditor from "@/components/common/entityEditor/ProductInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/ProductInfoEditor.vue";
 
 //region query
 const route = useRoute();

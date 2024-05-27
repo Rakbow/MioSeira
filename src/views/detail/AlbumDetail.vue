@@ -87,7 +87,7 @@ import TrackInfo from "@/components/special/AlbumTrackInfo.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
 import Info from "@/views/detail/AlbumDetailInfo.vue";
-import InfoEditor from "@/components/common/entityEditor/AlbumInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/AlbumInfoEditor.vue";
 
 const router = useRouter();
 const toast = useToast();

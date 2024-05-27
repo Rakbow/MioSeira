@@ -84,7 +84,7 @@ import BonusPad from "@/components/common/BonusPad.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
 import Info from "@/views/detail/BookDetailInfo.vue";
-import InfoEditor from "@/components/common/entityEditor/BookInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/BookInfoEditor.vue";
 
 const router = useRouter();
 const toast = useToast();
