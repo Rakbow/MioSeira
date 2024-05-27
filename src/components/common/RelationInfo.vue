@@ -90,7 +90,7 @@ const getEntityInfo = () => {
     </template>
     <template #icons>
       <div v-if="userStore.user">
-        <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link mr-2"
+        <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link mr-2" text rounded
                 @click="openEditDialog" v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}">
           <span class="pi pi-cog"/>
         </Button>
