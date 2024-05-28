@@ -37,8 +37,9 @@ export const API = {
     //region image
 
     GET_IMAGES: '/api/db/get-images',
-    ADD_IMAGES: '/api/db/add-images',
-    UPDATE_IMAGES: '/api/db/update-images',
+    ADD_IMAGE: '/api/db/add-image',
+    UPDATE_IMAGE: '/api/db/update-image',
+    DELETE_IMAGE: '/api/db/delete-images',
 
     //endregion
 

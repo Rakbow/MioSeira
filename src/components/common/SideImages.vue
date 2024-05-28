@@ -63,18 +63,18 @@ const responsiveOptions = [
 ];
 
 const getImages = async () => {
-  editBlock.value = true;
-  let param = {
-    entityType: entityType.value,
-    entityId: entityId.value
-  }
-  const res = await axios.post(API.GET_IMAGES, param);
-  if (res.state === axios.SUCCESS) {
-    imageInfo.value.images = res.data.data;
-    imageInfo.value.otherImages = res.data.data.filter(i => i.type === META.IMAGE_TYPE.OTHER);
-    imageInfo.value.displayImages = res.data.data.filter(i => i.type !== META.IMAGE_TYPE.OTHER);
-  }
-  editBlock.value = false;
+  // editBlock.value = true;
+  // let param = {
+  //   entityType: entityType.value,
+  //   entityId: entityId.value
+  // }
+  // const res = await axios.post(API.GET_IMAGES, param);
+  // if (res.state === axios.SUCCESS) {
+  //   imageInfo.value.images = res.data.data;
+  //   imageInfo.value.otherImages = res.data.data.filter(i => i.type === META.IMAGE_TYPE.OTHER);
+  //   imageInfo.value.displayImages = res.data.data.filter(i => i.type !== META.IMAGE_TYPE.OTHER);
+  // }
+  // editBlock.value = false;
 }
 
 const openEditDialog = () => {
@@ -90,9 +90,6 @@ const openEditDialog = () => {
       },
       modal: true,
       closable: false
-    },
-    data: {
-      itemImageInfo: imageInfo
     }
     // onClose: (options) => {
     //   if(options.data !== undefined) {
