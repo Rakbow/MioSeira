@@ -4,7 +4,7 @@
     <DataTable ref="dt" :value="images" class="p-datatable-sm" :alwaysShowPaginator="images.length !== 0"
                lazy :totalRecords="totalRecords" :loading="loading"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
-               filterDisplay="row"
+               filterDisplay="row" v-model:filters="filters"
                paginator :rows="10" :first="first" columnResizeMode="fit"
                v-model:selection="selectedItems" dataKey="id" removableSort
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
@@ -46,15 +46,16 @@
       </Column>
       <Column :header="$const.Name" field="name" sortable style="flex: 0 0 5rem"/>
       <Column :header="$const.NameZh" field="nameZh" sortable/>
-      <Column :header="$const.Type" filterField="type" :showFilterMenu="false" style="flex: 0 0 8rem">
-        <template #body="slotProps">
-          {{ slotProps.data.type.value }}
-        </template>
-        <template #filter="{filterModel,filterCallback}">
-          <Dropdown v-model="filterModel.value" :options="$const.ImageTypes" :filter="true" @change="filterCallback()"
-                    :showClear="true" optionLabel="label" optionValue="value"/>
-        </template>
-      </Column>
+      <Column :header="$const.Type" field="type" style="flex: 0 0 8rem" sortable />
+<!--      <Column :header="$const.Type" filterField="type" :showFilterMenu="false" style="flex: 0 0 8rem">-->
+<!--        <template #body="slotProps">-->
+<!--          {{ slotProps.data.type.value }}-->
+<!--        </template>-->
+<!--        <template #filter="{filterModel,filterCallback}">-->
+<!--          <Dropdown v-model="filterModel.value" :options="$const.ImageTypes" :filter="true" @change="filterCallback()"-->
+<!--                    :showClear="true" optionLabel="label" optionValue="value"/>-->
+<!--        </template>-->
+<!--      </Column>-->
       <Column :header="$const.UploadTime" field="addedTime" sortable/>
       <Column :header="$const.EditedTime" field="editedTime" sortable/>
     </DataTable>
@@ -112,6 +113,8 @@ const confirmDeleteSelected = () => {
 
 onMounted(async () => {
   getEntityInfo();
+  filters.value.entityType.value = entityType.value;
+  filters.value.entityId.value = entityId.value;
   queryParams.value = {
     first: 0,
     rows: dt.value.rows,
@@ -119,16 +122,18 @@ onMounted(async () => {
     sortOrder: null,
     filters: filters.value
   };
-  await getItems();
+  await getImages();
 });
 
 const getEntityInfo = () => {
   let typeName = route.path.split('/')[2];
   entityType.value = PublicHelper.getEntityType(typeName);
-  entityId.value = route.params.id;
+  entityId.value = parseInt(route.params.id.toString());
 }
 
 const filters = ref({
+  'entityType': {value: entityType.value},
+  'entityId': {value: entityId.value},
   'type': {value: -1}
 });
 
