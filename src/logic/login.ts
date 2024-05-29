@@ -1,4 +1,4 @@
-import {AxiosHelper} from "@/utils/axiosHelper";
+import {AxiosHelper} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 const logout = async () => {
     // const res = await AxiosHelper.post(API.LOGOUT, null);

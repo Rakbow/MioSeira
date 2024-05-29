@@ -1,9 +1,9 @@
 <script setup>
 import {onMounted, ref, inject, getCurrentInstance} from "vue";
-import {AxiosHelper as axios} from '@/utils/axiosHelper.js';
+import {AxiosHelper as axios} from '@/toolkit/axiosHelper.ts';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
-import {API} from '@/config/Web_Helper_Strs.js';
+import {API} from '@/config/Web_Helper_Strs.ts';
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 onMounted(() => {

@@ -1,5 +1,5 @@
 export class PublicHelper {
-    static copyToClip = (content) => {
+    static copyToClip = (content: any) => {
         const aux = document.createElement("input");
         aux.setAttribute("value", content);
         document.body.appendChild(aux);
@@ -8,11 +8,11 @@ export class PublicHelper {
         document.body.removeChild(aux);
     }
 
-    static deepCopy = (object) => {
-        return JSON.parse(JSON.stringify(object))
+    static deepCopy = (data: any) => {
+        return JSON.parse(JSON.stringify(data))
     }
 
-    static value2Label = (value, xSet) => {
+    static value2Label = (value: any, xSet: any[]) => {
         for (let item of xSet) {
             if (value === item.value) {
                 return item.label;
@@ -20,7 +20,7 @@ export class PublicHelper {
         }
     };
 
-    static getEntityType = (name) => {
+    static getEntityType = (name: string) => {
         for (let item of this.ENTITY) {
             if (name === item.name) {
                 return item.id;
@@ -29,13 +29,13 @@ export class PublicHelper {
         return 0;
     };
 
-    static getEntityPath = (id) => {
+    static getEntityPath = (id: number): string => {
         for (let item of this.ENTITY) {
             if (id === item.id) {
                 return item.name;
             }
         }
-        return item;
+        return 'item';
     };
 
     static ENTITY = [

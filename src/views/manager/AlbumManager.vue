@@ -1,14 +1,14 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {getCurrentInstance} from "vue";
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {useToast} from "primevue/usetoast";
 import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import {useDialog} from "primevue/usedialog";
 import InfoEditor from "@/components/entityEditor/AlbumInfoEditor.vue";
-import {META} from "@/config/Web_Const.js";
+import {META} from "@/config/Web_Const.ts";
 
 //region query
 const route = useRoute();

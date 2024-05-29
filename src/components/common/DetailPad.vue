@@ -23,8 +23,8 @@
 
 <script setup>
 import {ref, onMounted, defineProps, defineAsyncComponent, getCurrentInstance } from "vue";
-import {useUserStore} from "@/store/user";
-import {META} from '@/config/Web_Const';
+import {useUserStore} from "@/store/user.js";
+import {META} from '@/config/Web_Const.ts';
 import {marked} from 'marked';
 import tingle from 'tingle.js';
 import { useDialog } from 'primevue/usedialog';

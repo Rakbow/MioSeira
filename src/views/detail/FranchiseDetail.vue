@@ -67,7 +67,7 @@ import '@/lib/bootstrap.bundle.min';
 import {getCurrentInstance, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/user.js";
 import {useDialog} from "primevue/usedialog";
 import SideImages from "@/components/common/SideImages.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";

@@ -1,10 +1,10 @@
 <script setup>
 import {onMounted, ref, inject, getCurrentInstance} from "vue";
-import {PublicHelper} from '@/utils/publicHelper';
-import {AxiosHelper as axios} from '@/utils/axiosHelper';
+import {PublicHelper} from '@/toolkit/publicHelper.ts';
+import {AxiosHelper as axios} from '@/toolkit/axiosHelper.ts';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
-import {META} from '@/config/Web_Const';
+import {META} from '@/config/Web_Const.ts';
 import { useRoute } from 'vue-router';
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";

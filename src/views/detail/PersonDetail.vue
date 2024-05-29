@@ -8,10 +8,10 @@ import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
-import {useUserStore} from "@/store/user.js";
+import {useUserStore} from "@/store/user.ts";
 import {useDialog} from "primevue/usedialog";
 import InfoEditor from "@/components/entityEditor/PersonInfoEditor.vue";
-import {META} from "@/config/Web_Const.js";
+import {META} from "@/config/Web_Const.ts";
 
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const router = useRouter();

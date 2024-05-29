@@ -1,16 +1,16 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {getCurrentInstance} from "vue";
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {useToast} from "primevue/usetoast";
 import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import {useDialog} from "primevue/usedialog";
 import InfoEditor from "@/components/entityEditor/BookInfoEditor.vue";
-import {API} from "@/config/Web_Helper_Strs.js";
+import {API} from "@/config/Web_Helper_Strs.ts";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
-import {META} from "@/config/Web_Const.js";
+import {META} from "@/config/Web_Const.ts";
 
 //region query
 const route = useRoute();

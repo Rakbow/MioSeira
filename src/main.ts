@@ -11,27 +11,21 @@ import "@/assets/topbar.css";
 //endregion
 
 //region 其他组件
-import {useLocalStorage, useMouse, usePreferredDark} from '@vueuse/core';
 
-import $ from 'jquery';
+// import $ from 'jquery';
 
 import {MdEditor} from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-
-import {tingle} from 'tingle.js';
 import 'tingle.js/src/tingle.css';
 
 import 'material-symbols';
 //endregion
-
-import {AxiosHelper} from '@/utils/axiosHelper';
 
 //region primevue组件相关
 import PrimeVue from "primevue/config";
 import Aura from 'primevue/themes/aura';
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
-import AccordionTab from 'primevue/accordiontab';
 import Avatar from 'primevue/avatar';
 import AvatarGroup from 'primevue/avatargroup';
 import Badge from 'primevue/badge';
@@ -39,13 +33,11 @@ import BadgeDirective from "primevue/badgedirective";
 import BlockUI from 'primevue/blockui';
 import Button from 'primevue/button';
 import Breadcrumb from 'primevue/breadcrumb';
-import Calendar from 'primevue/calendar';
 import Card from 'primevue/card';
 import CascadeSelect from 'primevue/cascadeselect';
 import Carousel from 'primevue/carousel';
 import Checkbox from 'primevue/checkbox';
 import Chip from 'primevue/chip';
-import Chips from 'primevue/chips';
 import ColorPicker from 'primevue/colorpicker';
 import Column from 'primevue/column';
 import ColumnGroup from 'primevue/columngroup';
@@ -55,7 +47,6 @@ import ConfirmationService from 'primevue/confirmationservice';
 import ContextMenu from 'primevue/contextmenu';
 import DataTable from 'primevue/datatable';
 import DataView from 'primevue/dataview';
-// import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions';
 import DeferredContent from 'primevue/deferredcontent';
 import Dialog from 'primevue/dialog';
 import DialogService from 'primevue/dialogservice'
@@ -112,7 +103,6 @@ import Textarea from 'primevue/textarea';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 import Toolbar from 'primevue/toolbar';
-import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Tag from 'primevue/tag';
 import Terminal from 'primevue/terminal';
@@ -122,7 +112,6 @@ import Tooltip from 'primevue/tooltip';
 import Tree from 'primevue/tree';
 import TreeSelect from 'primevue/treeselect';
 import TreeTable from 'primevue/treetable';
-// import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
@@ -130,11 +119,27 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 
 //region vue相关
 import App from "./App.vue";
-import {createMetaManager, useMeta} from "vue-meta";
-import {createApp, ref, onMounted} from "vue";
-import {useRoute, useRouter} from 'vue-router';
-import router from "./router";
+import {createMetaManager} from "vue-meta";
+import {createApp} from "vue";
+import router from "./router.js";
 import { createPinia } from 'pinia';
+
+//region i18n
+import { createI18n } from 'vue-i18n';
+// 导入语言文件
+import en from './locales/en.json';
+import zh from './locales/zh.json';
+
+// 创建 i18n 实例并配置语言文件
+const i18n = createI18n({
+    locale: 'zh', // 设置默认语言
+    fallbackLocale: 'en', // 设置回退语言
+    messages: {
+        en,
+        zh
+    }
+});
+//endregion
 
 const metaManager = createMetaManager();
 //endregion
@@ -156,12 +161,10 @@ app.use(PrimeVue, {
 app.use(ConfirmationService);
 app.use(ToastService);
 app.use(DialogService);
-
 app.use(router);
-
 app.use(MdEditor);
-
 app.use(metaManager);
+app.use(i18n);
 
 const pinia = createPinia();
 app.use(pinia);
@@ -195,7 +198,6 @@ app.directive('styleclass', StyleClass);
 app.directive('focustrap', FocusTrap);
 
 app.component('Accordion', Accordion);
-app.component('AccordionTab', AccordionTab);
 app.component('AutoComplete', AutoComplete);
 app.component('Avatar', Avatar);
 app.component('AvatarGroup', AvatarGroup);
@@ -203,13 +205,11 @@ app.component('Badge', Badge);
 app.component('BlockUI', BlockUI);
 app.component('Breadcrumb', Breadcrumb);
 app.component('Button', Button);
-app.component('Calendar', Calendar);
 app.component('Card', Card);
 app.component('Carousel', Carousel);
 app.component('CascadeSelect', CascadeSelect);
 app.component('Checkbox', Checkbox);
 app.component('Chip', Chip);
-app.component('Chips', Chips);
 app.component('ColorPicker', ColorPicker);
 app.component('Column', Column);
 app.component('ColumnGroup', ColumnGroup);
@@ -218,7 +218,6 @@ app.component('ConfirmPopup', ConfirmPopup);
 app.component('ContextMenu', ContextMenu);
 app.component('DataTable', DataTable);
 app.component('DataView', DataView);
-// app.component('DataViewLayoutOptions', DataViewLayoutOptions);
 app.component('DeferredContent', DeferredContent);
 app.component('Dialog', Dialog);
 app.component('Divider', Divider);
@@ -266,7 +265,6 @@ app.component('Splitter', Splitter);
 app.component('SplitterPanel', SplitterPanel);
 app.component('Steps', Steps);
 app.component('TabMenu', TabMenu);
-app.component('TabView', TabView);
 app.component('TabPanel', TabPanel);
 app.component('Tag', Tag);
 app.component('Textarea', Textarea);
@@ -279,7 +277,6 @@ app.component('ToggleButton', ToggleButton);
 app.component('Tree', Tree);
 app.component('TreeSelect', TreeSelect);
 app.component('TreeTable', TreeTable);
-// app.component('TriStateCheckbox', TriStateCheckbox);
 app.component('VirtualScroller', VirtualScroller);
 app.component('InputGroup', InputGroup);
 app.component('InputGroupAddon', InputGroupAddon);

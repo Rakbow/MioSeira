@@ -4,13 +4,13 @@ import {useDialog} from 'primevue/usedialog';
 
 const imageManager = defineAsyncComponent(() => import('@/components/common/ImageManager.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
-import {useUserStore} from "@/store/user";
-import {AxiosHelper as axios} from "@/utils/axiosHelper.js";
-import {API} from "@/config/Web_Helper_Strs.js";
-import {PublicHelper} from "@/utils/publicHelper.js";
+import {useUserStore} from "@/store/user.js";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
+import {API} from "@/config/Web_Helper_Strs.ts";
+import {PublicHelper} from "@/toolkit/publicHelper.ts";
 import {useRoute} from "vue-router";
 import {useToast} from "primevue/usetoast";
-import {META} from "@/config/Web_Const.js";
+import {META} from "@/config/Web_Const.ts";
 
 const userStore = useUserStore();
 const route = useRoute();

@@ -80,10 +80,10 @@
 
 <script setup>
 import {defineAsyncComponent, defineProps, getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/user.js";
 import {useRoute} from "vue-router";
 import {useDialog} from "primevue/usedialog";
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const $api = getCurrentInstance().appContext.config.globalProperties.$api;

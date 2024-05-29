@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {useRouter} from "vue-router";
 import {onBeforeMount, ref} from "vue";
 
@@ -6,7 +6,7 @@ const router = useRouter();
 const errorMessage = ref('');
 
 onBeforeMount(() => {
-  errorMessage.value = router.currentRoute.value.meta.errorMessage ?? '';
+  errorMessage.value = '';
 });
 
 //跳转首页
@@ -27,7 +27,7 @@ const goBack = () => {
 
     <div class="grid">
       <div class="col-12 lg:col-6 lg:col-offset-3 sm:col-10 sm:col-offset-1">
-        <div class="p-3 h-full" align="center">
+        <div class="p-3 h-full">
           <Card style="overflow: hidden">
             <template #header>
               <img alt="error" src="https://img.rakbow.com/common/error/404.jpg" />

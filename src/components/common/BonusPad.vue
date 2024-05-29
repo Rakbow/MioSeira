@@ -23,11 +23,11 @@
 
 <script setup>
 import {ref, onMounted, defineProps, defineAsyncComponent, getCurrentInstance } from "vue";
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/user.js";
 import {marked} from 'marked';
 import tingle from 'tingle.js';
 import { useDialog } from 'primevue/usedialog';
-import {META} from '@/config/Web_Const';
+import {META} from '@/config/Web_Const.ts';
 const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/CommonTextEditor.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 

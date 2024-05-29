@@ -2,9 +2,9 @@
 import {onMounted, ref} from "vue";
 import {getCurrentInstance} from "vue";
 import {FilterMatchMode} from 'primevue/api';
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {useToast} from "primevue/usetoast";
-import {PublicHelper} from "@/utils/publicHelper";
+import {PublicHelper} from "@/toolkit/publicHelper.ts";
 import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";

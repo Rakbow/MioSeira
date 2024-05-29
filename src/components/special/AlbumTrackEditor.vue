@@ -3,8 +3,8 @@ import {getCurrentInstance, inject, onMounted, ref} from "vue";
 import {useToast} from "primevue/usetoast";
 import {useDialog} from "primevue/usedialog";
 import {useRoute} from "vue-router";
-import {META} from '@/config/Web_Const';
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
+import {META} from '@/config/Web_Const.ts';
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const $api = getCurrentInstance().appContext.config.globalProperties.$api;

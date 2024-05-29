@@ -74,7 +74,7 @@ import '@/lib/bootstrap.bundle.min';
 import {defineProps, getCurrentInstance, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/user.js";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 import {useDialog} from "primevue/usedialog";
 import SideImages from "@/components/common/SideImages.vue";

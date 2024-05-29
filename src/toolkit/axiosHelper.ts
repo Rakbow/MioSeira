@@ -22,17 +22,18 @@ export class AxiosHelper {
     static SUCCESS = 1;
     static ERROR = 0;
 
-    static post(url, data=null) {
-        return axios({
-            method: 'post',
-            url: url,
-            data: data,
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-        }).then(res => {
-            if(res.data.state === this.SUCCESS) {
+    static async post(url: string, data: any = null) {
+        try {
+            let res = await axios({
+                method: 'post',
+                url: url,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+            });
+            if (res.data.state === this.SUCCESS) {
                 return res.data;
             }
             // else {
@@ -41,13 +42,13 @@ export class AxiosHelper {
             //     }
             // }
             return res.data;
-        }).catch(error => {
+        } catch (error) {
             // console.log(error);
-        });
+        }
     }
 
     //axios封装get请求
-    static get(url) {
+    static async get(url: string) {
         return axios({
             method: 'get',
             url: url,
@@ -65,13 +66,13 @@ export class AxiosHelper {
             //     }
             // }
             return res.data;
-        }).catch(error => {
+        }).catch(() => {
             // console.log(error);
         });
     }
 
     //axios封装delete请求
-    static delete(url, data) {
+    static async delete(url: string, data: any) {
         return axios({
             method: 'delete',
             url: url,
@@ -90,13 +91,13 @@ export class AxiosHelper {
             //     }
             // }
             return res.data;
-        }).catch(error => {
+        }).catch(() => {
             // console.log(error);
         });
     }
 
     //axios封装表单提交
-    static form(url, data) {
+    static async form(url: string, data: any) {
         return axios({
             method: 'post',
             url: url,
@@ -115,7 +116,7 @@ export class AxiosHelper {
             //     }
             // }
             return res.data;
-        }).catch(error => {
+        }).catch(() => {
             // console.log(error);
         });
     }

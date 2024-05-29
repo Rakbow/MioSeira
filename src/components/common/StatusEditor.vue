@@ -1,9 +1,9 @@
 <script setup>
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/user.js";
 import {defineProps, onMounted, ref} from "vue";
-import {API} from '@/config/Web_Helper_Strs';
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
-import {PublicHelper} from "@/utils/publicHelper";
+import {API} from '@/config/Web_Helper_Strs.ts';
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
+import {PublicHelper} from "@/toolkit/publicHelper.ts";
 import {useRoute} from "vue-router";
 import {useToast} from 'primevue/usetoast';
 

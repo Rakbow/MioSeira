@@ -1,9 +1,9 @@
 <script setup>
 import {useRoute} from "vue-router";
 import {defineAsyncComponent, ref} from "vue";
-import {AxiosHelper as axios} from "@/utils/axiosHelper.js";
-import {API} from "@/config/Web_Helper_Strs.js";
-import {META} from "@/config/Web_Const.js";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
+import {API} from "@/config/Web_Helper_Strs.ts";
+import {META} from "@/config/Web_Const.ts";
 
 const route = useRoute();
 const info = ref();

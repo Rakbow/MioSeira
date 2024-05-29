@@ -1,13 +1,13 @@
-<script setup>
-import {onMounted, ref, inject, getCurrentInstance} from "vue";
-import {AxiosHelper as axios} from '@/utils/axiosHelper.js';
+<script setup lang="ts">
+import {onMounted, ref, inject, Ref} from "vue";
+import {AxiosHelper as axios} from '@/toolkit/axiosHelper.ts';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
-import {API} from '@/config/Web_Helper_Strs.js';
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+import {API} from '@/config/Web_Helper_Strs.ts';
 
 onMounted(() => {
   item.value = JSON.parse(JSON.stringify(dialogRef.value.data.item));
+  console.log(item)
   option.value = dialogRef.value.data.option;
   init();
 });
@@ -17,7 +17,9 @@ const dialog = useDialog();
 const dialogRef = inject("dialogRef");
 const isUpdate = ref(false);
 const editBlock = ref(false);
-const item = ref({});
+//@ts-ignore
+const item = ref();
+
 const option = ref({});
 
 const init = () => {
@@ -55,82 +57,82 @@ const close = () => {
   <BlockUI :blocked="editBlock" class="p-fluid">
     <div class="formgrid grid">
       <div class="field col">
-        <label>{{$const.Name}}<span style="color: red">*</span></label>
-        <InputText id="name" v-model="item.name" />
+        <label>{{ $t('Name') }}<span style="color: red">*</span></label>
+        <InputText id="name" v-model="item.name"/>
       </div>
       <div class="field col">
-        <label>{{$const.NameEn}}</label>
-        <InputText id="nameEn" v-model="item.nameEn" />
+        <label>{{ $t('NameEn') }}</label>
+        <InputText id="nameEn" v-model="item.nameEn"/>
       </div>
       <div class="field col">
-        <label>{{$const.NameZh}}</label>
-        <InputText id="nameZh" v-model="item.nameZh" />
+        <label>{{ $t('NameZh') }}</label>
+        <InputText id="nameZh" v-model="item.nameZh"/>
       </div>
     </div>
     <div class="formgrid grid">
       <div class="field col">
-        <label>{{$const.AlbumCatalogNo}}</label>
-        <InputText id="catalogNo" v-model.trim="item.catalogNo" />
+        <label>{{ $t('AlbumCatalogNo') }}</label>
+        <InputText id="catalogNo" v-model.trim="item.catalogNo"/>
       </div>
       <div class="field col">
-        <label>{{$const.Barcode}}</label>
-        <InputText id="ean13" v-model.trim="item.ean13" />
+        <label>{{ $t('Barcode') }}</label>
+        <InputText id="ean13" v-model.trim="item.ean13"/>
       </div>
     </div>
     <div class="formgrid grid">
       <div class="field col-6">
-        <label>{{$const.ReleaseDate}}<span style="color: red">*</span></label>
-        <InputMask v-model="item.releaseDate" mask="****/**/**" />
+        <label>{{ $t('ReleaseDate') }}<span style="color: red">*</span></label>
+        <InputMask v-model="item.releaseDate" mask="****/**/**"/>
       </div>
       <div class="field col-3">
-        <label>{{$const.ReleasePrice}}</label>
-        <InputNumber id="price" v-model="item.price" />
+        <label>{{ $t('ReleasePrice') }}</label>
+        <InputNumber id="price" v-model="item.price"/>
       </div>
       <div class="field col-3">
-        <label>{{$const.CurrencyUnit}}</label>
+        <label>{{ $t('CurrencyUnit') }}</label>
         <Dropdown v-model="item.currency" :options="option.currencySet"
-                    optionLabel="label" optionValue="value" :placeholder="$const.PlaceholderCurrencyUnit" />
+                  optionLabel="label" optionValue="value" :placeholder="$t('PlaceholderCurrencyUnit')"/>
       </div>
     </div>
     <div class="formgrid grid">
       <div class="field col">
         <div class="col-12">
-          <label class="mb-3">{{$const.Bonus}}</label>
+          <label class="mb-3">{{ $t('Bonus') }}</label>
         </div>
         <div class="col-12 mt-4">
-          <InputSwitch v-model="item.hasBonus" :trueValue="true" :falseValue="false" />
+          <InputSwitch v-model="item.hasBonus" :trueValue="true" :falseValue="false"/>
         </div>
       </div>
     </div>
     <div class="formgrid grid">
       <div class="field col-4">
-        <label class="mb-3">{{$const.PublishFormat}}<span
+        <label class="mb-3">{{ $t('PublishFormat') }}<span
             style="color: red">*</span></label>
         <MultiSelect id="publishFormat" v-model="item.publishFormat" :options="option.publishFormatSet"
-                     optionLabel="label" optionValue="value" display="chip" />
+                     optionLabel="label" optionValue="value" display="chip"/>
       </div>
       <div class="field col-4">
-        <label class="mb-3">{{$const.AlbumFormat}}<span style="color: red">*</span></label>
+        <label class="mb-3">{{ $t('AlbumFormat') }}<span style="color: red">*</span></label>
         <MultiSelect id="albumFormat" v-model="item.albumFormat" :options="option.albumFormatSet"
-                     optionLabel="label" optionValue="value" display="chip" />
+                     optionLabel="label" optionValue="value" display="chip"/>
       </div>
       <div class="field col-4">
-        <label class="mb-3">{{$const.MediaFormat}}<span style="color: red">*</span></label>
+        <label class="mb-3">{{ $t('MediaFormat') }}<span style="color: red">*</span></label>
         <MultiSelect id="mediaFormat" v-model="item.mediaFormat" :options="option.mediaFormatSet"
-                     optionLabel="label" optionValue="value" display="chip" />
+                     optionLabel="label" optionValue="value" display="chip"/>
       </div>
     </div>
     <div class="field">
-      <label>{{$const.Remark}}</label>
-      <Textarea id="remark" v-model="item.remark" rows="3" cols="20" :autoResize="true" />
+      <label>{{ $t('Remark') }}</label>
+      <Textarea id="remark" v-model="item.remark" rows="3" cols="20" :autoResize="true"/>
     </div>
     <div class="grid text-end mt-3 mb-2">
       <div class="col-offset-6 col-3">
-        <Button icon="pi pi-times" :label="$const.Cancel" @click="close"
-                class="p-button-text" />
+        <Button icon="pi pi-times" :label="$t('Cancel')" @click="close"
+                class="p-button-text"/>
       </div>
       <div class="col-3">
-        <Button icon="pi pi-save" :label="$const.Save" @click="submit" />
+        <Button icon="pi pi-save" :label="$t('Save')" @click="submit"/>
       </div>
     </div>
   </BlockUI>

@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {getCurrentInstance} from "vue";
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {useToast} from "primevue/usetoast";
 import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";

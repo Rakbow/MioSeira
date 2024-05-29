@@ -1,7 +1,7 @@
 <script setup>
 import {defineProps, getCurrentInstance, onMounted, ref} from 'vue';
 import {useDialog} from "primevue/usedialog";
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {useRoute} from "vue-router";
 
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;

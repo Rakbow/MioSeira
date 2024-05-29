@@ -11,7 +11,7 @@
   <DynamicDialog />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {ref, onMounted, onBeforeUnmount} from "vue";
 import PageHeader from "@/components/page/PageHeader.vue";
 import PageFooter from "@/components/page/PageFooter.vue";
@@ -19,16 +19,25 @@ import { useDialog } from 'primevue/usedialog';
 
 const dialog = useDialog();
 
-const mainContent = ref(null);
+let mainContent: HTMLElement;
 
 const setMainContentHeight = () => {
-  const headerHeight = mainContent.value.previousElementSibling.offsetHeight;
-  const footerHeight = mainContent.value.nextElementSibling.offsetHeight;
-  const marginTop = getComputedStyle(mainContent.value).marginTop;
-  const marginBottom = getComputedStyle(mainContent.value).marginBottom;
+  if(mainContent) {
+    const header = mainContent.previousElementSibling as HTMLElement;
+    const footer = mainContent.nextElementSibling as HTMLElement;
 
-  mainContent.value.style.minHeight =
-      `calc(${window.innerHeight}px - ${headerHeight}px - ${footerHeight}px - ${marginTop} - ${marginBottom} )`;
+    if (header && footer) {
+      const headerHeight = header.offsetHeight;
+      const footerHeight = footer.offsetHeight;
+      const computedStyle = getComputedStyle(mainContent);
+      const marginTop = parseFloat(computedStyle.marginTop);
+      const marginBottom = parseFloat(computedStyle.marginBottom);
+
+      mainContent.style.minHeight =
+          `calc(${window.innerHeight}px - ${headerHeight}px - ${footerHeight}px - ${marginTop}px - ${marginBottom}px)`;
+    }
+  }
+
 };
 
 onMounted(() => {

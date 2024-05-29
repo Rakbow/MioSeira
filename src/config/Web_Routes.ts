@@ -1,9 +1,9 @@
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
+import { RouteRecordRaw } from 'vue-router';
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import "@/config/Web_Helper_Strs";
 import {API} from "@/config/Web_Helper_Strs";
-import {META} from "@/config/Web_Const.js";
 
-export const DATABASE_ROUTER = [
+export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
     {
         name: "Home",
         path: "/",
@@ -33,7 +33,7 @@ export const DATABASE_ROUTER = [
         name: "PersonDetail",
         path: API.PERSON_DETAIL + "/:id",
         component: () => import('@/views/detail/PersonDetail.vue'),
-        beforeEnter: async (to, from, next) => {
+        beforeEnter: async (to, _from, next) => {
             try {
                 const res = await axios.post(API.GET_PERSON_DETAIL, {id: to.params.id});
                 if (res.state === axios.SUCCESS) {
@@ -56,7 +56,7 @@ export const DATABASE_ROUTER = [
         name: "FranchiseDetail",
         path: API.FRANCHISE_DETAIL + "/:id",
         component: () => import('@/views/detail/FranchiseDetail.vue'),
-        beforeEnter: async (to, from, next) => {
+        beforeEnter: async (to, _from, next) => {
             try {
                 const res = await axios.post(API.GET_FRANCHISE_DETAIL, {id: to.params.id});
                 if (res.state === axios.SUCCESS) {
@@ -78,7 +78,7 @@ export const DATABASE_ROUTER = [
         name: "ProductDetail",
         path: API.PRODUCT_DETAIL + "/:id",
         component: () => import('@/views/detail/ProductDetail.vue'),
-        beforeEnter: async (to, from, next) => {
+        beforeEnter: async (to, _from, next) => {
             try {
                 const res = await axios.post(API.GET_PRODUCT_DETAIL, {id: to.params.id});
                 if (res.state === axios.SUCCESS) {
@@ -124,7 +124,7 @@ export const DATABASE_ROUTER = [
             {
                 path: '',
                 component: () => import('@/views/manager/ManagerIndex.vue'),
-                beforeEnter: async (to, from, next) => {
+                beforeEnter: async (to, _from, next) => {
                     try {
                         const res = await axios.post(API.GET_STATISTIC_INFO);
                         if (res.state === axios.SUCCESS) {

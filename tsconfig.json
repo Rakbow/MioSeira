@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@vitejs/plugin-vue": ["node_modules/@vitejs/plugin-vue"],
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts", "src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["node_modules"]
+}

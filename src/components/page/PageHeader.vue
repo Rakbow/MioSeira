@@ -29,7 +29,7 @@
 import {ref, onMounted, markRaw, defineAsyncComponent, getCurrentInstance, computed, watch, onBeforeMount} from "vue";
 import { useDialog } from 'primevue/usedialog';
 import { logout } from '@/logic/login';
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/user.js";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const Login = defineAsyncComponent(() => import('@/components/common/Login.vue'));
 

@@ -1,6 +1,6 @@
 <script setup>
 import {defineProps, getCurrentInstance} from "vue";
-import {META} from '@/config/Web_Const';
+import {META} from '@/config/Web_Const.ts';
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 
 const props = defineProps({

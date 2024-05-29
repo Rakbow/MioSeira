@@ -43,9 +43,9 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import $ from 'jquery';
-import {AxiosHelper as axios} from "@/utils/axiosHelper";
-import {useUserStore} from "@/store/user";
-import {API} from '@/config/Web_Helper_Strs';
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
+import {useUserStore} from "@/store/user.js";
+import {API} from '@/config/Web_Helper_Strs.ts';
 import {useToast} from "primevue/usetoast";
 
 const userStore = useUserStore();
