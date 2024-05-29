@@ -4,11 +4,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite --config vite.config.js",
+    "dev": "vite --config vite.config.ts",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^20.12.12",
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.9.0",
     "aplayer": "^1.10.1",
@@ -37,6 +38,7 @@
     "qrcode": "^1.5.3",
     "sortablejs": "^1.15.2",
     "tingle.js": "^0.16.0",
+    "typescript": "^5.4.5",
     "universal-cookie": "^7.1.4",
     "vue": "^3.4.21",
     "vue-meta": "^3.0.0-alpha.10",
