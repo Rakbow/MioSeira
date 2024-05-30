@@ -38,6 +38,7 @@ import CascadeSelect from 'primevue/cascadeselect';
 import Carousel from 'primevue/carousel';
 import Checkbox from 'primevue/checkbox';
 import Chip from 'primevue/chip';
+import InputChips from 'primevue/inputchips';
 import ColorPicker from 'primevue/colorpicker';
 import Column from 'primevue/column';
 import ColumnGroup from 'primevue/columngroup';
@@ -52,7 +53,6 @@ import Dialog from 'primevue/dialog';
 import DialogService from 'primevue/dialogservice'
 import Divider from 'primevue/divider';
 import Dock from 'primevue/dock';
-import Dropdown from 'primevue/dropdown';
 import DynamicDialog from 'primevue/dynamicdialog';
 import Fieldset from 'primevue/fieldset';
 import FileUpload from 'primevue/fileupload';
@@ -61,7 +61,6 @@ import Galleria from 'primevue/galleria';
 import Image from 'primevue/image';
 import InlineMessage from 'primevue/inlinemessage';
 import Inplace from 'primevue/inplace';
-import InputSwitch from 'primevue/inputswitch';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import InputNumber from 'primevue/inputnumber';
@@ -115,6 +114,9 @@ import TreeTable from 'primevue/treetable';
 import VirtualScroller from 'primevue/virtualscroller';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
+import Select from 'primevue/select';
+import ToggleSwitch from 'primevue/toggleswitch';
+import DatePicker from 'primevue/datepicker';
 //endregion
 
 //region vue相关
@@ -137,7 +139,8 @@ const i18n = createI18n({
     messages: {
         en,
         zh
-    }
+    },
+    legacy: false
 });
 //endregion
 
@@ -210,6 +213,7 @@ app.component('Carousel', Carousel);
 app.component('CascadeSelect', CascadeSelect);
 app.component('Checkbox', Checkbox);
 app.component('Chip', Chip);
+app.component('InputChips', InputChips);
 app.component('ColorPicker', ColorPicker);
 app.component('Column', Column);
 app.component('ColumnGroup', ColumnGroup);
@@ -222,7 +226,6 @@ app.component('DeferredContent', DeferredContent);
 app.component('Dialog', Dialog);
 app.component('Divider', Divider);
 app.component('Dock', Dock);
-app.component('Dropdown', Dropdown);
 app.component('DynamicDialog', DynamicDialog);
 app.component('Fieldset', Fieldset);
 app.component('FileUpload', FileUpload);
@@ -232,7 +235,6 @@ app.component('InlineMessage', InlineMessage);
 app.component('Inplace', Inplace);
 app.component('InputMask', InputMask);
 app.component('InputNumber', InputNumber);
-app.component('InputSwitch', InputSwitch);
 app.component('InputText', InputText);
 app.component('Knob', Knob);
 app.component('Listbox', Listbox);
@@ -280,6 +282,9 @@ app.component('TreeTable', TreeTable);
 app.component('VirtualScroller', VirtualScroller);
 app.component('InputGroup', InputGroup);
 app.component('InputGroupAddon', InputGroupAddon);
+app.component('Select', Select);
+app.component('ToggleSwitch', ToggleSwitch);
+app.component('DatePicker', DatePicker);
 //endregion
 
 app.mount("#app");
