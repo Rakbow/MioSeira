@@ -22,6 +22,7 @@ export class AxiosHelper {
     static SUCCESS = 1;
     static ERROR = 0;
 
+    // @ts-ignore
     static async post(url: string, data: any = null) {
         try {
             let res = await axios({
