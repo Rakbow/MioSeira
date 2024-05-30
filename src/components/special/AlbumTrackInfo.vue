@@ -80,7 +80,7 @@
 
 <script setup>
 import {defineAsyncComponent, defineProps, getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
-import {useUserStore} from "@/store/user.js";
+import {useUserStore} from "@/store/user.ts";
 import {useRoute} from "vue-router";
 import {useDialog} from "primevue/usedialog";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";

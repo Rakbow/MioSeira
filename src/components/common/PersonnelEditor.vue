@@ -147,7 +147,7 @@ const addItem = () => {
             <span class="p-inputgroup-addon">
                 <Checkbox v-model="item.main" :binary="true" :trueValue="1" :falseValue="0" />
             </span>
-            <Dropdown v-model="item.role" :options="roleOption" optionLabel="label" filter :placeholder="$const.Role" >
+            <Select v-model="item.role" :options="roleOption" optionLabel="label" filter :placeholder="$const.Role" >
               <template #option="slotProps">
                 <div class="flex align-options-center">
                   <div>{{ slotProps.option.label }}</div>

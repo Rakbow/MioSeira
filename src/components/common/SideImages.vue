@@ -4,7 +4,7 @@ import {useDialog} from 'primevue/usedialog';
 
 const imageManager = defineAsyncComponent(() => import('@/components/common/ImageManager.vue'));
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
-import {useUserStore} from "@/store/user.js";
+import {useUserStore} from "@/store/user.ts";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {API} from "@/config/Web_Helper_Strs.ts";
 import {PublicHelper} from "@/toolkit/publicHelper.ts";

@@ -17,50 +17,50 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
-import {getCurrentInstance} from "vue";
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+import {useI18n} from "vue-i18n";
+const {t} = useI18n();
 
 const toast = useToast();
 
 const items = ref([
   {
-    label: $const.Person,
+    label: t('Person'),
     items: [
       {
-        label: $const.Franchise,
+        label: t('Franchise'),
         icon: 'pi pi-tags',
         route: '/db/manager/franchise'
       },
       {
-        label: $const.Product,
+        label: t('Product'),
         icon: 'pi pi-th-large',
         route: '/db/manager/product'
       },
       {
-        label: $const.Album,
+        label: t('Album'),
         icon: 'pi pi-th-large',
         route: '/db/manager/album'
       },
       {
-        label: $const.Book,
+        label: t('Book'),
         icon: 'pi pi-book',
         route: '/db/manager/book'
       }
     ]
   },
   {
-    label: $const.Person,
+    label: t('Person'),
     items: [
       {
-        label: $const.Person,
+        label: t('Person'),
         icon: 'pi pi-users',
         route: '/db/manager/person'
       },
       {
-        label: $const.PersonRole,
+        label: t('PersonRole'),
         icon: 'pi pi-tags',
         route: '/db/manager/person-role'
       }

@@ -1,6 +1,6 @@
 <script setup>
 import {defineAsyncComponent, getCurrentInstance, onBeforeMount, onMounted, ref} from 'vue';
-import {useUserStore} from "@/store/user.js";
+import {useUserStore} from "@/store/user.ts";
 import {useDialog} from "primevue/usedialog";
 import {PublicHelper} from "@/toolkit/publicHelper.ts";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";

@@ -1,13 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {getCurrentInstance} from "vue";
-import {FilterMatchMode} from 'primevue/api';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {useToast} from "primevue/usetoast";
 import {PublicHelper} from "@/toolkit/publicHelper.ts";
 import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
+import {useI18n} from "vue-i18n";
+import {API} from "@/config/Web_Helper_Strs";
 
 //region query
 const route = useRoute();
@@ -32,7 +32,7 @@ const initQueryParam = async () => {
 
 const updateQueryParam = () => {
   // 获取当前查询参数对象
-  const currentQueryParams = {};
+  const currentQueryParams :any = {};
 
   // 修改查询参数的值
   currentQueryParams.page = queryParams.value.first/dt.value.rows + 1;
@@ -56,8 +56,7 @@ onMounted(() => {
 
 
 const toast = useToast();
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
-const $api = getCurrentInstance().appContext.config.globalProperties.$api;
+const {t} = useI18n();
 const items = ref([]);
 const itemAdd = ref({});
 const itemEdit = ref({});
@@ -70,8 +69,8 @@ const filters = ref({
 const loading = ref(false);
 const editBlock = ref(false);
 const totalRecords = ref(0);
-const selectedItems = ref(null);
-const selectedColumns = ref(null);
+const selectedItems = ref([]);
+const selectedColumns = ref([]);
 const columns = ref([]);
 const queryParams = ref({});
 const option = ref({});
@@ -89,13 +88,9 @@ const onFilter = () => {
   getItems();
 };
 
-const onToggle = (val) => {
-  selectedColumns.value = columns.value.filter(col => val.includes(col));
-};
-
 const getItems = async () => {
   loading.value = true;
-  const res = await axios.post($api.GET_PERSON_ROLE_LIST, queryParams.value);
+  const res = await axios.post(API.GET_PERSON_ROLE_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total
@@ -139,7 +134,7 @@ const confirmDeleteSelected = () => {
 
 const submitAddItem = async () => {
   loading.value = true;
-  const res = await axios.post($api.ADD_PERSON_ROLE, itemAdd.value);
+  const res = await axios.post(API.ADD_PERSON_ROLE, itemAdd.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeAddDialog();
@@ -152,7 +147,7 @@ const submitAddItem = async () => {
 
 const submitEditItem = async () => {
   loading.value = true;
-  const res = await axios.post($api.UPDATE_PERSON_ROLE, itemEdit.value);
+  const res = await axios.post(API.UPDATE_PERSON_ROLE, itemEdit.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeEditDialog();
@@ -165,7 +160,7 @@ const submitEditItem = async () => {
 
 const refreshItem = async () => {
   loading.value = true;
-  const res = await axios.post($api.REFRESH_PERSON_ROLE);
+  const res = await axios.post(API.REFRESH_PERSON_ROLE);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     await getItems();
@@ -186,40 +181,40 @@ const exportCSV = () => {
 
 <template>
   <div class="flex justify-content-center">
-    <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items !== 0"
+    <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items.length !== 0"
                lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
-               @page="onPage($event)" @sort="onSort($event)" @filter="onFilter($event)"
+               @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
                filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn']"
                paginator :rows="10" :first="first" stripedRows columnResizeMode="fit"
                v-model:selection="selectedItems" dataKey="id" removableSort
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               :currentPageReportTemplate="$const.DataTablePageTemplate"
+               :currentPageReportTemplate="$t('DataTablePageTemplate')"
                responsiveLayout="scroll">
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">
           <div class="col-8">
-            <Button :label="$const.Add" icon="pi pi-plus" severity="success" size="small" class="mr-2"
+            <Button :label="$t('Add')" icon="pi pi-plus" severity="success" size="small" class="mr-2"
                     @click="openAddDialog" style="width: 6em"/>
-            <Button :label="$const.Delete" icon="pi pi-trash" severity="danger" size="small" class="mr-2"
+            <Button :label="$t('Delete')" icon="pi pi-trash" severity="danger" size="small" class="mr-2"
                     @click="confirmDeleteSelected"
                     :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-            <Button :label="$const.ExportCSV" icon="pi pi-external-link" severity="help" size="small" class="ml-2"
+            <Button :label="$t('ExportCSV')" icon="pi pi-external-link" severity="help" size="small" class="ml-2"
                     @click="exportCSV()" style="width: 8em"/>
-            <Button :label="$const.Refresh" icon="pi pi-refresh" severity="info" size="small" class="ml-2"
+            <Button :label="$t('Refresh')" icon="pi pi-refresh" severity="info" size="small" class="ml-2"
                     @click="refreshItem()" style="width: 6em"/>
           </div>
         </BlockUI>
       </template>
       <template #empty>
         <span class="emptyInfo">
-            {{ $const.CommonDataTableEmptyInfo }}
+            {{ $t('CommonDataTableEmptyInfo') }}
         </span>
       </template>
       <template #loading>
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ $const.CommonDataTableLoadingInfo }}</span>
+        <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
       </template>
       <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
       <Column style="flex: 0 0 3rem">
@@ -227,18 +222,18 @@ const exportCSV = () => {
           <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)" />
         </template>
       </Column>
-      <Column :header="$const.Name" field="name" :showFilterMenu="false"
+      <Column :header="$t('Name')" field="name" :showFilterMenu="false"
               exportHeader="name" sortable style="flex: 0 0 5rem">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$const.NameZh" field="nameZh" sortable :showFilterMenu="false">
+      <Column :header="$t('NameZh')" field="nameZh" sortable :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$const.NameEn" field="nameEn" sortable :showFilterMenu="false">
+      <Column :header="$t('NameEn')" field="nameEn" sortable :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
@@ -247,50 +242,50 @@ const exportCSV = () => {
               :header="col.header" :key="col.field + '_' + index" sortable/>
     </DataTable>
   </div>
-  <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '400px'}" :header="$const.Add"
+  <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '400px'}" :header="$t('Add')"
           class="p-fluid">
     <BlockUI :blocked="editBlock">
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $const.Name }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ $t('Name') }}<span style="color: red">*</span></label>
         <InputText v-model.trim="itemAdd.name"/>
       </div>
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $const.NameZh }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ $t('NameZh') }}<span style="color: red">*</span></label>
         <InputText v-model.trim="itemAdd.nameZh"/>
       </div>
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $const.NameEn }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ $t('NameEn') }}<span style="color: red">*</span></label>
         <InputText v-model.trim="itemAdd.nameEn"/>
       </div>
     </BlockUI>
     <template #footer>
-      <Button :label="$const.Cancel" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
+      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
               :disabled="editBlock"/>
-      <Button :label="$const.Save" icon="pi pi-check" class="p-button-text" @click="submitAddItem"
+      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text" @click="submitAddItem"
               :disabled="editBlock"/>
     </template>
   </Dialog>
 
-  <Dialog :modal="true" v-model:visible="displayEditDialog" :style="{width: '400px'}" :header="$const.Edit"
+  <Dialog :modal="true" v-model:visible="displayEditDialog" :style="{width: '400px'}" :header="$t('Edit')"
           class="p-fluid">
     <BlockUI :blocked="editBlock">
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $const.Name }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ $t('Name') }}<span style="color: red">*</span></label>
         <InputText v-model.trim="itemEdit.name"/>
       </div>
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $const.NameZh }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ $t('NameZh') }}<span style="color: red">*</span></label>
         <InputText v-model.trim="itemEdit.nameZh"/>
       </div>
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $const.NameEn }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ $t('NameEn') }}<span style="color: red">*</span></label>
         <InputText v-model.trim="itemEdit.nameEn"/>
       </div>
     </BlockUI>
     <template #footer>
-      <Button :label="$const.Cancel" icon="pi pi-times" class="p-button-text" @click="closeEditDialog"
+      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeEditDialog"
               :disabled="editBlock"/>
-      <Button :label="$const.Save" icon="pi pi-check" class="p-button-text" @click="submitEditItem"
+      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text" @click="submitEditItem"
               :disabled="editBlock"/>
     </template>
   </Dialog>

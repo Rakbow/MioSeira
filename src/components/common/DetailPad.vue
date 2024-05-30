@@ -23,7 +23,7 @@
 
 <script setup>
 import {ref, onMounted, defineProps, defineAsyncComponent, getCurrentInstance } from "vue";
-import {useUserStore} from "@/store/user.js";
+import {useUserStore} from "@/store/user.ts";
 import {META} from '@/config/Web_Const.ts';
 import {marked} from 'marked';
 import tingle from 'tingle.js';

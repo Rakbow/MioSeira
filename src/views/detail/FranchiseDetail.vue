@@ -13,9 +13,9 @@
           </div>
         </template>
         <template #subtitle>
-          <h5 v-if="item.nameEn !== ''" class="detail-item-subtitle"><small>{{ item.nameEn }}</small></h5>
+          <h5 v-if="item.nameEn !== ''" class="detail-item-subtitle"><small>{{ item!.nameEn }}</small></h5>
           <h5 v-else><small></small></h5>
-          <h5 v-if="item.nameZh !== ''" class="detail-item-subtitle"><small>{{ item.nameZh }}</small></h5>
+          <h5 v-if="item.nameZh !== ''" class="detail-item-subtitle"><small>{{ item!.nameZh }}</small></h5>
           <h5 v-else><small></small></h5>
         </template>
         <template #content>
@@ -32,7 +32,7 @@
                     <div v-if="userStore.user">
                       <Button v-if="userStore.user.type === 0" class="p-button-link absolute top-0"
                               @click="openEditDialog" style="right: 25%"
-                              v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
+                              v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}" >
                         <template #icon>
                           <span class="material-symbols-outlined">edit_note</span>
                         </template>
@@ -48,7 +48,7 @@
           </div>
           <div class="detail-item-field">
             <!-- detail -->
-            <DetailPad :header="$const.Description" :text="item.detail" />
+            <DetailPad :header="$t('Description')" :text="item.detail" />
           </div>
         </template>
       </Card>
@@ -60,14 +60,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
-import {getCurrentInstance, onBeforeMount, ref} from "vue";
+import {onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
-import {useUserStore} from "@/store/user.js";
+import {useUserStore} from "@/store/user.ts";
 import {useDialog} from "primevue/usedialog";
 import SideImages from "@/components/common/SideImages.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
@@ -76,31 +76,33 @@ import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
 import Info from "@/views/detail/FranchiseDetailInfo.vue";
 import InfoEditor from "@/components/entityEditor/FranchiseInfoEditor.vue";
+import {useI18n} from "vue-i18n";
 
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+const {t} = useI18n();
 const router = useRouter();
 const toast = useToast();
 const userStore = useUserStore();
 const dialog = useDialog();
 
-const item = ref({});
+const item = ref<any>({});
 const pageInfo = ref({});
 const itemImageInfo = ref({});
 const option = ref({});
 const personnel = ref([]);
 
 onBeforeMount(() => {
-  item.value = router.currentRoute.value.meta.info.item;
-  pageInfo.value = router.currentRoute.value.meta.info.traffic;
-  itemImageInfo.value = router.currentRoute.value.meta.info.itemImageInfo;
-  option.value = router.currentRoute.value.meta.info.options;
-  personnel.value = router.currentRoute.value.meta.info.personnel;
+  const meta: any = router.currentRoute.value.meta;
+  item.value = meta.info.item;
+  pageInfo.value = meta.info.traffic;
+  itemImageInfo.value = meta.info.itemImageInfo;
+  option.value = meta.info.options;
+  personnel.value = meta.info.personnel;
 });
 
 const openEditDialog = () => {
   dialog.open(InfoEditor, {
     props: {
-      header: $const.Edit,
+      header: t('Edit'),
       style: {
         width: '400px',
       },

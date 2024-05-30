@@ -52,7 +52,7 @@
 <!--          {{ slotProps.data.type.value }}-->
 <!--        </template>-->
 <!--        <template #filter="{filterModel,filterCallback}">-->
-<!--          <Dropdown v-model="filterModel.value" :options="$const.ImageTypes" :filter="true" @change="filterCallback()"-->
+<!--          <Select v-model="filterModel.value" :options="$const.ImageTypes" :filter="true" @change="filterCallback()"-->
 <!--                    :showClear="true" optionLabel="label" optionValue="value"/>-->
 <!--        </template>-->
 <!--      </Column>-->

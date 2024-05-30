@@ -1,7 +1,5 @@
-<script setup>
+<script setup lang="ts">
 import ManagerMenu from "@/views/manager/ManagerMenu.vue";
-import {getCurrentInstance} from "vue";
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 </script>
 
 <template>

@@ -155,7 +155,7 @@ const addItem = () => {
             <span class="p-inputgroup-addon">
                 <i class="pi pi-tag"/>
             </span>
-            <Dropdown v-model="item.type" :options="relationTypeOption" optionLabel="label" filter
+            <Select v-model="item.type" :options="relationTypeOption" optionLabel="label" filter
                       :placeholder="$const.RelatedType">
               <template #option="slotProps">
                 <div class="flex align-options-center">
@@ -166,7 +166,7 @@ const addItem = () => {
           </div>
         </div>
         <div class="col-2">
-          <Dropdown v-model="item.entityType" :options="entityTypeOption" optionLabel="label" filter
+          <Select v-model="item.entityType" :options="entityTypeOption" optionLabel="label" filter
                     :placeholder="$const.Type">
             <template #option="slotProps">
               <div class="flex align-options-center">

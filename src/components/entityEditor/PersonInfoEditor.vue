@@ -1,10 +1,10 @@
-<script setup>
-import {onMounted, ref, inject, getCurrentInstance} from "vue";
+<script setup lang="ts">
+import {onMounted, ref, inject} from "vue";
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper.ts';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
 import {API} from '@/config/Web_Helper_Strs.ts';
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+import {useI18n} from "vue-i18n";
 
 onMounted(() => {
   item.value = JSON.parse(JSON.stringify(dialogRef.value.data.item));
@@ -17,8 +17,9 @@ const dialog = useDialog();
 const dialogRef = inject("dialogRef");
 const isUpdate = ref(false);
 const editBlock = ref(false);
-const item = ref({});
+const item = ref<any>({});
 const option = ref({});
+const {t} = useI18n();
 
 const init = () => {
   item.value.gender = item.value.gender.value;
@@ -53,48 +54,48 @@ const close = () => {
   <BlockUI :blocked="editBlock" class="p-fluid">
     <div class="formgrid grid">
       <div class="field col">
-        <label class="font-bold block mb-2">{{ $const.Name }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ $t('Name') }}<span style="color: red">*</span></label>
         <InputText v-model.trim="item.name"/>
       </div>
       <div class="field col">
-        <label class="font-bold block mb-2">{{ $const.NameZh }}</label>
+        <label class="font-bold block mb-2">{{ $t('NameZh') }}</label>
         <InputText v-model.trim="item.nameZh"/>
       </div>
       <div class="field col">
-        <label class="font-bold block mb-2">{{ $const.NameEn }}</label>
+        <label class="font-bold block mb-2">{{ $t('NameEn') }}</label>
         <InputText v-model.trim="item.nameEn"/>
       </div>
     </div>
 
     <div class="formgrid grid">
       <div class="field col">
-        <label class="font-bold block mb-2">{{ $const.Gender }}</label>
-        <Dropdown v-model="item.gender"
+        <label class="font-bold block mb-2">{{ $t('Gender')}}</label>
+        <Select v-model="item.gender"
                   :options="option.genderSet" optionLabel="label" optionValue="value"
-                  :placeholder="$const.Unknown" class="w-full md:w-14rem"/>
+                  :placeholder="$t('Unknown')" class="w-full md:w-14rem"/>
       </div>
       <div class="field col">
-        <label class="font-bold block mb-2">{{ $const.BirthDate }}</label>
-        <InputMask v-model.trim="item.birthDate" mask="****/**/**" />
+        <label class="font-bold block mb-2">{{ $t('BirthDate') }}</label>
+        <InputMask v-model.trim="item!.birthDate" mask="****/**/**" />
       </div>
     </div>
 
     <div class="p-fluid">
-      <label class="font-bold block mb-2">{{ $const.Aliases }}</label>
-      <Chips v-model="item.aliases" separator=","  />
+      <label class="font-bold block mb-2">{{ $t('Aliases') }}</label>
+      <InputChips v-model="item.aliases" separator=","  />
     </div>
 
     <div class="field">
-      <label>{{ $const.Remark }}</label>
-      <Textarea v-model="item.remark" rows="3" cols="20" autoResize/>
+      <label>{{ $t('Remark') }}</label>
+      <Textarea v-model="item!.remark" rows="3" cols="20" autoResize/>
     </div>
     <div class="grid text-end mt-3 mb-2">
       <div class="col-offset-6 col-3">
-        <Button icon="pi pi-times" :label="$const.Cancel" @click="close"
+        <Button icon="pi pi-times" :label="$t('Cancel')" @click="close"
                 class="p-button-text" />
       </div>
       <div class="col-3">
-        <Button icon="pi pi-save" :label="$const.Save" @click="submit" />
+        <Button icon="pi pi-save" :label="$t('Save')" @click="submit" />
       </div>
     </div>
   </BlockUI>

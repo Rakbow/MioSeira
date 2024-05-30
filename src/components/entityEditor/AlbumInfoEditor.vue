@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import {onMounted, ref, inject, Ref} from "vue";
+import {onMounted, ref, inject, onBeforeMount} from "vue";
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper.ts';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
 import {API} from '@/config/Web_Helper_Strs.ts';
 
-onMounted(() => {
+onBeforeMount(() => {
   item.value = JSON.parse(JSON.stringify(dialogRef.value.data.item));
-  console.log(item)
+})
+
+onMounted(() => {
   option.value = dialogRef.value.data.option;
   init();
 });
@@ -18,7 +20,7 @@ const dialogRef = inject("dialogRef");
 const isUpdate = ref(false);
 const editBlock = ref(false);
 //@ts-ignore
-const item = ref();
+let item = ref();
 
 const option = ref({});
 
@@ -82,15 +84,15 @@ const close = () => {
     <div class="formgrid grid">
       <div class="field col-6">
         <label>{{ $t('ReleaseDate') }}<span style="color: red">*</span></label>
-        <InputMask v-model="item.releaseDate" mask="****/**/**"/>
+        <InputMask v-model="item!.releaseDate" mask="****/**/**"/>
       </div>
       <div class="field col-3">
         <label>{{ $t('ReleasePrice') }}</label>
-        <InputNumber id="price" v-model="item.price"/>
+        <InputNumber id="price" v-model="item!.price"/>
       </div>
       <div class="field col-3">
         <label>{{ $t('CurrencyUnit') }}</label>
-        <Dropdown v-model="item.currency" :options="option.currencySet"
+        <Select v-model="item.currency" :options="option.currencySet"
                   optionLabel="label" optionValue="value" :placeholder="$t('PlaceholderCurrencyUnit')"/>
       </div>
     </div>
@@ -100,7 +102,7 @@ const close = () => {
           <label class="mb-3">{{ $t('Bonus') }}</label>
         </div>
         <div class="col-12 mt-4">
-          <InputSwitch v-model="item.hasBonus" :trueValue="true" :falseValue="false"/>
+          <ToggleSwitch v-model="item.hasBonus" />
         </div>
       </div>
     </div>
@@ -124,7 +126,7 @@ const close = () => {
     </div>
     <div class="field">
       <label>{{ $t('Remark') }}</label>
-      <Textarea id="remark" v-model="item.remark" rows="3" cols="20" :autoResize="true"/>
+      <Textarea id="remark" v-model="item!.remark" rows="3" cols="20" :autoResize="true"/>
     </div>
     <div class="grid text-end mt-3 mb-2">
       <div class="col-offset-6 col-3">

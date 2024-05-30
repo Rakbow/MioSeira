@@ -1,13 +1,15 @@
-<script setup>
-import {defineProps, getCurrentInstance} from "vue";
+<script setup lang="ts">
+import {defineProps} from "vue";
 import {META} from '@/config/Web_Const.ts';
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n();
 const props = defineProps({
   item: {
     type: Object,
-    required: true
-  }
+    required: true,
+    default: () => ({})
+  } as any
 });
 
 </script>
@@ -18,7 +20,7 @@ const props = defineProps({
     <tr>
       <td>
         <i class="pi pi-hashtag" />
-        <strong>{{ $const.AlbumCatalogNo }}</strong>
+        <strong>{{ $t('AlbumCatalogNo') }}</strong>
       </td>
       <td>
         {{ item.catalogNo ? item.catalogNo : "N/A" }}
@@ -27,7 +29,7 @@ const props = defineProps({
     <tr>
       <td>
         <i class="pi pi-barcode" />
-        <strong>{{ $const.Barcode }}</strong>
+        <strong>{{ $t('Barcode') }}</strong>
       </td>
       <td>{{ item.ean13 ? item.ean13 : "N/A" }}
       </td>
@@ -35,7 +37,7 @@ const props = defineProps({
     <tr>
       <td>
         <i class="pi pi-calendar"></i>
-        <strong>{{ $const.ReleaseDate }}</strong>
+        <strong>{{ $t('ReleaseDate') }}</strong>
       </td>
       <td>
         {{ item.releaseDate ? item.releaseDate : "N/A" }}
@@ -44,18 +46,18 @@ const props = defineProps({
     <tr>
       <td>
         <i class="pi pi-ticket"></i>
-        <strong>{{ $const.ReleasePrice }}</strong>
+        <strong>{{ $t('ReleasePrice') }}</strong>
       </td>
       <td>
         {{ item.price !== 0 ? item.price : "&nbsp;&nbsp;-" }}
         <span v-if="item.price !== 0">
           <span v-if="item.currency === 'JPY'" class="ml-1"
                 style="text-decoration-line: underline;text-decoration-style: dashed;"
-                v-tooltip.right="{value: $const.TaxInclusive, class: 'region-tooltip'}">JPY</span>
+                v-tooltip.right="{value: $t('TaxInclusive'), class: 'region-tooltip'}">JPY</span>
           <span v-else>{{ item.currency }}</span>
           <span class="ml-2 dropdown">
             <a href="#" class="dropdown-toggle"
-               data-bs-toggle="dropdown">{{ $const.OtherCurrencyUnit }}</a>
+               data-bs-toggle="dropdown">{{ $t('OtherCurrencyUnit') }}</a>
             <div class="dropdown-menu" style="background: black">
               <a v-for="(currency, code) in META.CURRENCIES" :key="code"
                  :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+${code}`"
@@ -68,7 +70,7 @@ const props = defineProps({
     <tr>
       <td>
         <i class="pi pi-verified" />
-        <strong>{{ $const.Bonus }}</strong>
+        <strong>{{ $t('Bonus') }}</strong>
       </td>
       <td>
         <a v-if="item.hasBonus" href="#bonus" class="ml-3">
@@ -80,7 +82,7 @@ const props = defineProps({
     <tr>
       <td>
         <i class="pi pi-print"></i>
-        <strong>{{ $const.PublishFormat }}</strong>
+        <strong>{{ $t('PublishFormat') }}</strong>
       </td>
       <td v-for="format of item.publishFormat" style="display:inline">
         <Tag class="ml-1" :value="format.label"></Tag>
@@ -89,7 +91,7 @@ const props = defineProps({
     <tr>
       <td>
         <i class="pi pi-video" />
-        <strong>{{ $const.MediaFormat }}</strong>
+        <strong>{{ $t('MediaFormat') }}</strong>
       </td>
       <td v-for="format of item.mediaFormat" style="display:inline">
         <Tag class="ml-1" :value="format.label"></Tag>
@@ -98,7 +100,7 @@ const props = defineProps({
     <tr>
       <td>
         <i class="pi pi-tag" />
-        <strong>{{ $const.AlbumFormat }}</strong>
+        <strong>{{ $t('AlbumFormat') }}</strong>
       </td>
       <td v-for="format of item.albumFormat" style="display:inline">
         <Tag class="ml-1" :value="format.label"></Tag>
@@ -109,8 +111,4 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.detail-list-icon {
-  margin-right: 0.25rem;
-  font-size: 1.3rem;
-}
 </style>

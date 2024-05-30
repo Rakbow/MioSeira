@@ -1,12 +1,14 @@
-<script setup>
-import {defineProps, getCurrentInstance} from "vue";
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+<script setup lang="ts">
+import {defineProps} from "vue";
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n();
 const props = defineProps({
   item: {
     type: Object,
-    required: true
-  }
+    required: true,
+    default: () => ({})
+  } as any
 });
 
 </script>
@@ -17,7 +19,7 @@ const props = defineProps({
       <tr>
         <td>
           <i class="pi material-symbols-outlined">tag</i>
-          <strong>{{ $const.Name }}</strong>
+          <strong>{{ $t('Name') }}</strong>
         </td>
         <td>
           {{ item.name }}
@@ -26,7 +28,7 @@ const props = defineProps({
       <tr>
         <td>
           <i class="pi material-symbols-outlined">tag</i>
-          <strong>{{ $const.NameZh }}</strong>
+          <strong>{{ $t('NameZh') }}</strong>
         </td>
         <td>
           {{ item.nameZh }}
@@ -35,7 +37,7 @@ const props = defineProps({
       <tr>
         <td>
           <i class="pi material-symbols-outlined">tag</i>
-          <strong>{{ $const.NameEn }}</strong>
+          <strong>{{ $t('NameEn') }}</strong>
         </td>
         <td>
           {{ item.nameEn }}

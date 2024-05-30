@@ -1,6 +1,5 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {getCurrentInstance} from "vue";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {useToast} from "primevue/usetoast";
 import {useRoute, useRouter} from "vue-router";
@@ -42,7 +41,7 @@ const updateQueryParam = () => {
   const currentQueryParams = {...route.query};
 
   // 修改查询参数的值
-  currentQueryParams.page = queryParams.value.first / dt.value.rows + 1;
+  currentQueryParams.page = (queryParams.value.first / dt.value.rows + 1).toString();
   currentQueryParams.size = dt.value.rows;
   if (!_isEmpty(queryParams.value.filters.name.value))
     currentQueryParams.name = queryParams.value.filters.name.value;
@@ -72,10 +71,10 @@ onMounted(() => {
 
 const dialog = useDialog();
 const toast = useToast();
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
-const $api = getCurrentInstance().appContext.config.globalProperties.$api;
+const {t} = useI18n();
+import {useI18n} from "vue-i18n";
 const items = ref([]);
-const itemAdd = ref({});
+const itemAdd = ref<any>({});
 const dt = ref();
 const filters = ref({
   'itemType': {value: META.ITEM_TYPE.BOOK},
@@ -90,20 +89,20 @@ const filters = ref({
 const loading = ref(false);
 const editBlock = ref(false);
 const totalRecords = ref(0);
-const selectedItems = ref(null);
-const selectedColumns = ref(null);
+const selectedItems = ref([]);
+const selectedColumns = ref([]);
 const columns = ref([
-  {field: 'nameZh', header: $const.BookChineseTitle},
-  {field: 'nameEn', header: $const.BookEnglishTitle},
-  {field: 'remark', header: $const.Remark},
-  {field: 'addedTime', header: $const.AddedTime},
-  {field: 'editedTime', header: $const.EditedTime},
+  {field: 'nameZh', header: t('BookChineseTitle')},
+  {field: 'nameEn', header: t('BookEnglishTitle')},
+  {field: 'remark', header: t('Remark')},
+  {field: 'addedTime', header: t('AddedTime')},
+  {field: 'editedTime', header: t('EditedTime')},
 ]);
 const queryParams = ref({});
 const option = ref({});
 
 const initOption = async () => {
-  const res = await axios.post($api.GET_ITEM_OPTION, {type: META.ITEM_TYPE.BOOK});
+  const res = await axios.post(API.GET_ITEM_OPTION, {type: META.ITEM_TYPE.BOOK});
   option.value.bookTypeSet = res.data.bookTypeSet;
   option.value.regionSet = res.data.regionSet;
   option.value.languageSet = res.data.languageSet;
@@ -129,7 +128,7 @@ const onToggle = (val) => {
 
 const getItems = async () => {
   loading.value = true;
-  const res = await axios.post($api.GET_ITEM_LIST, queryParams.value);
+  const res = await axios.post(API.GET_ITEM_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total
@@ -170,7 +169,7 @@ const closeAddDialog = () => {
 const openEditDialog = (data) => {
   dialog.open(InfoEditor, {
     props: {
-      header: $const.Edit,
+      header: t('Edit'),
       style: {
         width: '600px',
       },
@@ -200,7 +199,7 @@ const confirmDeleteSelected = () => {
 
 const submitAddItem = async () => {
   loading.value = true;
-  const res = await axios.post($api.ADD_ITEM, itemAdd.value);
+  const res = await axios.post(API.ADD_ITEM, itemAdd.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeAddDialog();
@@ -222,10 +221,10 @@ const ISBNInterConvert = (label, isbn) => {
       .then(res => {
         if (res.state === axios.SUCCESS) {
           if (label === 'ean13') {
-            item.value.ean13 = res.data;
+            itemAdd.value.ean13 = res.data;
           }
           if (label === 'isbn10') {
-            item.value.isbn10 = res.data;
+            itemAdd.value.isbn10 = res.data;
           }
         }
         editBlock.value = false;
@@ -248,14 +247,14 @@ const exportCSV = () => {
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               :currentPageReportTemplate="$const.DataTablePageTemplate"
+               :currentPageReportTemplate="$t('DataTablePageTemplate')"
                responsiveLayout="scroll">
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">
           <div class="col-8">
-            <Button :label="$const.Add" icon="pi pi-plus" class="p-button-success p-button-sm mr-2"
+            <Button :label="$t('Add')" icon="pi pi-plus" class="p-button-success p-button-sm mr-2"
                     @click="openAddDialog" style="width: 6em"/>
-            <Button :label="$const.Delete" icon="pi pi-trash" class="p-button-danger p-button-sm mr-2"
+            <Button :label="$t('Delete')" icon="pi pi-trash" class="p-button-danger p-button-sm mr-2"
                     @click="confirmDeleteSelected"
                     :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
             <Button label="导出(CSV)" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
@@ -264,18 +263,18 @@ const exportCSV = () => {
           <div class="col-4">
             <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
                          @update:modelValue="onToggle" class="text-end"
-                         :placeholder="$const.SelectedDisplayColumns" style="width: 20em"/>
+                         :placeholder="$t('SelectedDisplayColumns')" style="width: 20em"/>
           </div>
         </BlockUI>
       </template>
       <template #empty>
         <span class="emptyInfo">
-            {{ $const.CommonDataTableEmptyInfo }}
+            {{ $t('CommonDataTableEmptyInfo') }}
         </span>
       </template>
       <template #loading>
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ $const.CommonDataTableLoadingInfo }}</span>
+        <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
       </template>
       <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
       <Column style="flex: 0 0 3rem">
@@ -283,10 +282,10 @@ const exportCSV = () => {
           <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
         </template>
       </Column>
-      <Column :header="$const.BookTitle" field="name" :showFilterMenu="false"
+      <Column :header="$t('BookTitle')" field="name" :showFilterMenu="false"
               exportHeader="name" sortable style="flex: 0 0 5rem">
         <template #body="slotProps">
-          <a :href="$api.ITEM_DETAIL + '/' + slotProps.data.id">
+          <a :href="API.ITEM_DETAIL + '/' + slotProps.data.id">
             {{ slotProps.data.name }}
           </a>
         </template>
@@ -294,45 +293,45 @@ const exportCSV = () => {
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$const.BookISBN10" field="isbn10" sortable :showFilterMenu="false">
+      <Column :header="$t('BookISBN10')" field="isbn10" sortable :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$const.BookISBN13" field="ean13" sortable :showFilterMenu="false">
+      <Column :header="$t('BookISBN13')" field="ean13" sortable :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$const.BookType" filterField="bookType" :showFilterMenu="false" style="flex: 0 0 8rem">
+      <Column :header="$t('BookType')" filterField="bookType" :showFilterMenu="false" style="flex: 0 0 8rem">
         <template #body="slotProps">
           {{ slotProps.data.bookType.label }}
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <Dropdown v-model="filterModel.value" :options="option.bookTypeSet" :filter="true" @change="filterCallback()"
+          <Select v-model="filterModel.value" :options="option.bookTypeSet" :filter="true" @change="filterCallback()"
                     :showClear="true" optionLabel="label" optionValue="value"/>
         </template>
       </Column>
-      <Column :header="$const.PublishDate" field="releaseDate" sortable/>
-      <Column :header="$const.Price" field="price" sortable>
+      <Column :header="$t('PublishDate')" field="releaseDate" sortable/>
+      <Column :header="$t('Price')" field="price" sortable>
         <template #body="slotProps">
           {{ `${slotProps.data.price} ${slotProps.data.currency}` }}
         </template>
       </Column>
-      <Column :header="$const.Region" filterField="region" :showFilterMenu="false" style="flex: 0 0 9rem">
+      <Column :header="$t('Region')" filterField="region" :showFilterMenu="false" style="flex: 0 0 9rem">
         <template #body="slotProps">
           <span :class="'fi fi-' + slotProps.data.region.value" style="margin-left: 0.5rem"
                 v-tooltip.bottom="{value: slotProps.data.region.label, class: 'region-tooltip'}"></span>
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <Dropdown v-model="filterModel.value" :options="option.regionSet" :filter="true" @change="filterCallback()"
+          <Select v-model="filterModel.value" :options="option.regionSet" :filter="true" @change="filterCallback()"
                     :showClear="true" optionLabel="label" optionValue="value">
             <template #value="slotProps">
               <div class="country-item" v-if="slotProps.value">
                 <span :class="'fi fi-' + slotProps.value"></span>
-                <div class="ml-2">{{ slotProps.label }}</div>
+                <div class="ml-2">{{ slotProps.value.label }}</div>
               </div>
-              <span v-else>{{ $const.PlaceholderRegion }}</span>
+              <span v-else>{{ $t('PlaceholderRegion') }}</span>
             </template>
             <template #option="slotProps">
               <div class="country-item">
@@ -340,22 +339,22 @@ const exportCSV = () => {
                 <div class="ml-2">{{ slotProps.option.label }}</div>
               </div>
             </template>
-          </Dropdown>
+          </Select>
         </template>
       </Column>
-      <Column :header="$const.Language" filterField="lang" :showFilterMenu="false" style="flex: 0 0 8rem">
+      <Column :header="$t('Language')" filterField="lang" :showFilterMenu="false" style="flex: 0 0 8rem">
         <template #body="slotProps">
           {{ slotProps.data.lang.label }}
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <Dropdown v-model="filterModel.value" :options="option.languageSet" :filter="true" @change="filterCallback()"
+          <Select v-model="filterModel.value" :options="option.languageSet" :filter="true" @change="filterCallback()"
                     :showClear="true" optionLabel="label" optionValue="value"/>
         </template>
       </Column>
-      <Column :header="$const.Bonus" field="hasBonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
+      <Column :header="$t('Bonus')" field="hasBonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
         <template #body="{data}">
           <i class="pi"
-             :class="{'true-icon pi-check-circle': data.hasBonus, 'false-icon pi-times-circle': !data.hasBonus}"></i>
+             :class="{'true-icon pi-check-circle': data!.hasBonus, 'false-icon pi-times-circle': !data!.hasBonus}"></i>
         </template>
         <template #filter="{filterModel,filterCallback}">
           <Checkbox v-model="filterModel.value" indeterminate binary :filter="true" @change="filterCallback()"/>
@@ -367,56 +366,56 @@ const exportCSV = () => {
   </div>
 
   <Dialog modal v-model:visible="displayAddDialog"
-          style="width: 600px" :header="$const.Add" class="p-fluid">
+          style="width: 600px" :header="$t('Add')" class="p-fluid">
     <BlockUI :blocked="editBlock" class="p-fluid">
       <div class="formgrid grid">
         <div class="field col">
-          <label>{{ $const.BookISBN10 }}<span style="color: red">*</span></label>
+          <label>{{ $t('BookISBN10') }}<span style="color: red">*</span></label>
           <InputGroup>
             <InputText v-model="itemAdd.isbn10"/>
             <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn10', itemAdd.ean13)"
-                    v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN10, class: 'common-tooltip'}"/>
+                    v-tooltip.bottom="{value:$t('TooltipGenerateBookISBN10'), class: 'common-tooltip'}"/>
           </InputGroup>
         </div>
         <div class="field col">
-          <label>{{ $const.BookISBN13 }}<span style="color: red">*</span></label>
+          <label>{{ $t('BookISBN13') }}<span style="color: red">*</span></label>
           <InputGroup class="p-inputgroup">
             <InputText v-model="itemAdd.ean13"/>
             <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('ean13', itemAdd.isbn10)"
-                    v-tooltip.bottom="{value:$const.TooltipGenerateBookISBN13, class: 'common-tooltip'}"/>
+                    v-tooltip.bottom="{value:$t('TooltipGenerateBookISBN13'), class: 'common-tooltip'}"/>
           </InputGroup>
         </div>
       </div>
       <div class="field">
-        <label>{{ $const.BookTitle }}<span style="color: red">*</span></label>
+        <label>{{ $t('BookTitle') }}<span style="color: red">*</span></label>
         <InputText v-model="itemAdd.name"/>
       </div>
       <div class="field">
-        <label>{{ $const.BookChineseTitle }}</label>
+        <label>{{ $t('BookChineseTitle') }}</label>
         <InputText v-model="itemAdd.nameZh"/>
       </div>
       <div class="field">
-        <label>{{ $const.BookEnglishTitle }}</label>
+        <label>{{ $t('BookEnglishTitle') }}</label>
         <InputText v-model="itemAdd.nameEn"/>
       </div>
       <div class="formgrid grid">
         <div class="field col">
-          <label class="mb-3">{{ $const.BookType }}<span style="color: red">*</span></label>
-          <Dropdown v-model="itemAdd.bookType" :options="option.bookTypeSet"
+          <label class="mb-3">{{ $t('BookType') }}<span style="color: red">*</span></label>
+          <Select v-model="itemAdd.bookType" :options="option.bookTypeSet"
                     optionLabel="label" optionValue="value"/>
         </div>
         <div class="field col">
-          <label class="mb-3">{{ $const.Region }}<span style="color: red">*</span></label>
-          <Dropdown v-model="itemAdd.region" :options="option.regionSet" :filter="true"
+          <label class="mb-3">{{ $t('Region') }}<span style="color: red">*</span></label>
+          <Select v-model="itemAdd.region" :options="option.regionSet" :filter="true"
                     :showClear="true" optionLabel="label" optionValue="value">
             <template #value="slotProps">
               <div class="country-item" v-if="slotProps.value">
                 <span :class="'fi fi-' + slotProps.value"></span>
-                <div class="ml-2">{{ slotProps.label }}</div>
+                <div class="ml-2">{{ slotProps.value.label }}</div>
               </div>
-              <span v-else>{{ $const.PlaceholderRegion }}</span>
+              <span v-else>{{ $t('PlaceholderRegion') }}</span>
             </template>
             <template #option="slotProps">
               <div class="country-item">
@@ -424,52 +423,52 @@ const exportCSV = () => {
                 <div class="ml-2">{{ slotProps.option.label }}</div>
               </div>
             </template>
-          </Dropdown>
+          </Select>
         </div>
         <div class="field col">
-          <label class="mb-3">{{ $const.Language }}<span style="color: red">*</span></label>
-          <Dropdown v-model="itemAdd.lang" :options="option.languageSet"
+          <label class="mb-3">{{ $t('Language') }}<span style="color: red">*</span></label>
+          <Select v-model="itemAdd.lang" :options="option.languageSet"
                     optionLabel="label" optionValue="value"/>
         </div>
       </div>
       <div class="formgrid grid">
         <div class="field col">
           <div class="col-12">
-            <label class="mb-3">{{ $const.Bonus }}</label>
+            <label class="mb-3">{{ $t('Bonus') }}</label>
           </div>
           <div class="col-12 mt-4">
-            <InputSwitch v-model="itemAdd.hasBonus" :trueValue="true" :falseValue="false"/>
+            <ToggleSwitch v-model="itemAdd.hasBonus" />
           </div>
         </div>
       </div>
       <div class="formgrid grid">
         <div class="field col-6">
-          <label>{{ $const.PublishDate }}<span style="color: red">*</span></label>
-          <InputMask v-model="itemAdd.releaseDate" mask="****/**/**"/>
+          <label>{{ $t('PublishDate') }}<span style="color: red">*</span></label>
+          <InputMask v-model="itemAdd!.releaseDate" mask="****/**/**"/>
         </div>
         <div class="field col">
-          <label>{{ $const.PublishPrice }}</label>
-          <InputNumber v-model="itemAdd.price"/>
+          <label>{{ $t('PublishPrice') }}</label>
+          <InputNumber v-model="itemAdd!.price"/>
         </div>
         <div class="field col-3">
-          <label>{{ $const.CurrencyUnit }}</label>
-          <Dropdown v-model="itemAdd.currency" :options="option.currencySet"
-                    optionLabel="label" optionValue="value" :placeholder="$const.PlaceholderCurrencyUnit"/>
+          <label>{{ $t('CurrencyUnit') }}</label>
+          <Select v-model="itemAdd.currency" :options="option.currencySet"
+                    optionLabel="label" optionValue="value" :placeholder="$t('PlaceholderCurrencyUnit')"/>
         </div>
       </div>
       <div class="field">
-        <label>{{ $const.Summary }}</label>
+        <label>{{ $t('Summary') }}</label>
         <Textarea v-model="itemAdd.summary" rows="3" cols="20" :autoResize="true"/>
       </div>
       <div class="field">
-        <label>{{ $const.Remark }}</label>
-        <Textarea v-model="itemAdd.remark" rows="3" cols="20" :autoResize="true"/>
+        <label>{{ $t('Remark') }}</label>
+        <Textarea v-model="itemAdd!.remark" rows="3" cols="20" :autoResize="true"/>
       </div>
     </BlockUI>
     <template #footer>
-      <Button :label="$const.Cancel" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
+      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
               :disabled="editBlock"/>
-      <Button :label="$const.Save" icon="pi pi-check" class="p-button-text" @click="submitAddItem"
+      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text" @click="submitAddItem"
               :disabled="editBlock"/>
     </template>
   </Dialog>

@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, onBeforeUnmount} from "vue";
+import {onMounted, onBeforeUnmount} from "vue";
 import PageHeader from "@/components/page/PageHeader.vue";
 import PageFooter from "@/components/page/PageFooter.vue";
 import { useDialog } from 'primevue/usedialog';

@@ -1,5 +1,5 @@
 <script setup>
-import {useUserStore} from "@/store/user.js";
+import {useUserStore} from "@/store/user.ts";
 import {defineProps, onMounted, ref} from "vue";
 import {API} from '@/config/Web_Helper_Strs.ts';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
@@ -52,7 +52,7 @@ const updateStatus = async () => {
 <template>
   <div v-if="userStore.user">
     <div class="item_status_edit" v-if="userStore.user.type > 2 || userStore.user.type === 0">
-      <InputSwitch v-model="status" @click="updateStatus" />
+      <ToggleSwitch v-model="status" @click="updateStatus" />
     </div>
   </div>
 </template>
