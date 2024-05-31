@@ -2,16 +2,16 @@
   <BlockUI :blocked="editBlock">
     <MdEditor v-model="text" preview-theme="github"/>
     <div class="text-end mt-3 mb-2">
-      <Button icon="pi pi-times" :label="$const.Cancel" @click="close"
+      <Button icon="pi pi-times" :label="$t('Cancel')" @click="close"
               class="p-button-text"/>
-      <Button icon="pi pi-save" :label="$const.Save" @click="submit"/>
+      <Button icon="pi pi-save" :label="$t('Save')" @click="submit"/>
     </div>
     <Panel>
       <div v-if="images.length > 0">
         <DataTable :value="images" class="p-datatable-sm" striped-rows>
           <template #header>
             <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-              <span class="text-xl text-900 font-bold">{{ $const.Images }}</span>
+              <span class="text-xl text-900 font-bold">{{ $t('Images') }}</span>
             </div>
           </template>
           <Column header-style="width: 5%">
@@ -19,25 +19,25 @@
               <Button icon="pi pi-copy" @click="copyImageUrl(slotProps.data.url)"></Button>
             </template>
           </Column>
-          <Column :header="$const.Image" header-style="width: 8%">
+          <Column :header="$t('Image')" header-style="width: 8%">
             <template #body="slotProps">
               <img :src="slotProps.data.thumbUrl50" :alt="slotProps.data.nameEn"
                    class="edit-image"/>
             </template>
           </Column>
-          <Column field="nameZh" :header="$const.NameZh" header-style="width: 10%" />
-          <Column field="nameEn" :header="$const.NameEn" header-style="width: 10%" />
-          <Column field="description" :header="$const.Description" header-style="width: 20%" />
+          <Column field="nameZh" :header="$t('NameZh')" header-style="width: 10%" />
+          <Column field="nameEn" :header="$t('NameEn')" header-style="width: 10%" />
+          <Column field="description" :header="$t('Description')" header-style="width: 20%" />
         </DataTable>
       </div>
       <div v-else>
-        <span class="emptyInfo"><em>{{ $const.NoImage }}</em></span>
+        <span class="emptyInfo"><em>{{ $t('NoImage') }}</em></span>
       </div>
     </Panel>
   </BlockUI>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {MdEditor} from "md-editor-v3";
 import {onMounted, ref, inject} from "vue";
 import {PublicHelper} from '@/toolkit/publicHelper.ts';
@@ -47,7 +47,9 @@ import {useDialog} from 'primevue/usedialog';
 import {API} from '@/config/Web_Helper_Strs.ts';
 import {META} from '@/config/Web_Const.ts';
 import { useRoute } from 'vue-router';
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n();
 const toast = useToast();
 const dialog = useDialog();
 const dialogRef = inject("dialogRef");
