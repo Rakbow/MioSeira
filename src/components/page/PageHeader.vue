@@ -6,14 +6,15 @@
         <img alt="logo" src="https://img.rakbow.com/common/logo/logo.png" height="40" class="mr-2" />
       </template>
       <template #end>
+<!--        <Button label="Toggle Color Scheme" @click="toggleColorScheme()" />-->
         <Button v-if="!userStore.isAuthenticated" text rounded @click="openLogin"
-                v-tooltip.bottom="{value: $const.SignIn, class: 'short-tooltip'}">
+                v-tooltip.bottom="{value: $t('SignIn'), class: 'short-tooltip'}">
           <template #icon>
             <span class="material-symbols-outlined">login</span>
           </template>
         </Button>
         <Button v-if="userStore.isAuthenticated" text rounded @click="logout"
-                v-tooltip.bottom="{value: $const.SignOut, class: 'short-tooltip'}">
+                v-tooltip.bottom="{value: $t('SignOut'), class: 'short-tooltip'}">
           <template #icon>
             <span class="material-symbols-outlined">logout</span>
           </template>
@@ -25,19 +26,24 @@
   </div>
 </template>
 
-<script setup>
-import {ref, onMounted, markRaw, defineAsyncComponent, getCurrentInstance, computed, watch, onBeforeMount} from "vue";
+<script setup lang="ts">
+import {ref, onMounted, defineAsyncComponent, onBeforeMount} from "vue";
 import { useDialog } from 'primevue/usedialog';
 import { logout } from '@/logic/login';
 import {useUserStore} from "@/store/user.ts";
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+import {useI18n} from "vue-i18n";
+const {t} = useI18n();
 const Login = defineAsyncComponent(() => import('@/components/common/Login.vue'));
 
 onMounted(() => {
 
 })
 
-const userStore = useUserStore();
+const toggleColorScheme = () => {
+  document.body.classList.toggle("my-app-dark");
+}
+
+const userStore = useUserStore() as any;
 
 onBeforeMount(() => {
 })
@@ -47,7 +53,7 @@ const dialog = useDialog();
 const openLogin = () => {
   const dialogRef = dialog.open(Login, {
     props: {
-      header: $const.SignIn,
+      header: t('SignIn'),
       style: {
         width: '40vw',
       },
@@ -193,5 +199,8 @@ const openSearchPanel = () => {
 </script>
 
 <style scoped>
-
+.my-app-dark {
+  color: #FFFFFF;
+  background-color: #000000;
+}
 </style>

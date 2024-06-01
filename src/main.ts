@@ -1,9 +1,6 @@
-//region primevue样式相关
+//region 样式相关
 import "primeflex/primeflex.css";
-// import "primevue/resources/themes/bootstrap4-dark-blue/theme.css";
-// import "primevue/resources/primevue.min.css"; /* Deprecated */
 import "primeicons/primeicons.css";
-
 import "@/assets/font.css";
 import "@/assets/global.css";
 import "@/assets/search.css";
@@ -21,9 +18,11 @@ import 'tingle.js/src/tingle.css';
 import 'material-symbols';
 //endregion
 
-//region primevue组件相关
+//region PrimeVue组件相关
 import PrimeVue from "primevue/config";
 import Aura from 'primevue/themes/aura';
+import Lara from 'primevue/themes/lara';
+import Nora from 'primevue/themes/nora';
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import Avatar from 'primevue/avatar';
@@ -153,6 +152,7 @@ app.use(PrimeVue, {
     ripple: true,
     // Default theme configuration
     theme: {
+        // preset: Aura,
         preset: Aura,
         options: {
             prefix: 'p',

@@ -5,7 +5,7 @@ interface User {
     id: string;
     name: string;
     type: number;
-    headUrl: string;
+    headerUrl: string;
 }
 
 interface State {
@@ -16,7 +16,7 @@ interface State {
 export const useUserStore = defineStore('user', {
     state: (): State => ({
         user: JSON.parse(useLocalStorage('user', 'null').value) as User | null,
-        ticket: useLocalStorage('ticket', 'null').value,
+        ticket: useLocalStorage('ticket', 'null').value
     }),
     getters: {
         isAuthenticated(state: State): boolean {
