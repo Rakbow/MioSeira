@@ -122,7 +122,7 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         },
         children: [
             {
-                path: '',
+                path: '/',
                 component: () => import('@/views/manager/ManagerIndex.vue'),
                 beforeEnter: async (to, _from, next) => {
                     try {
