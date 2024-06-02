@@ -8,28 +8,29 @@
       <div v-if="userStore.user">
         <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
                 @click="openEditDialog" style="right: 5%"
-                v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
+                v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}" >
           <template #icon>
             <span class="material-symbols-outlined">edit_note</span>
           </template>
         </Button>
       </div>
       <Button v-if="!empty" class="p-button-link absolute top-0 right-0" icon="pi pi-external-link" @click="openTextTingle"
-                v-tooltip.bottom="{value: $const.FullScreen, class: 'short-tooltip'}" />
+                v-tooltip.bottom="{value: $t('FullScreen'), class: 'short-tooltip'}" />
       <article ref="html" class="markdown-body" />
     </div>
   </Fieldset>
 </template>
 
-<script setup>
-import {ref, onMounted, defineProps, defineAsyncComponent, getCurrentInstance } from "vue";
+<script setup lang="ts">
+import {ref, onMounted, defineProps, defineAsyncComponent } from "vue";
 import {useUserStore} from "@/store/user.ts";
 import {META} from '@/config/Web_Const.ts';
 import {marked} from 'marked';
 import tingle from 'tingle.js';
 import { useDialog } from 'primevue/usedialog';
+import {useI18n} from "vue-i18n";
 const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/CommonTextEditor.vue'));
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+const {t} = useI18n();
 
 const empty = ref(false);
 
@@ -45,7 +46,7 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  text.value = props.text;
+  text.value = <string>props.text;
   text2Markdown();
 })
 
@@ -57,7 +58,7 @@ const text = ref('');
 const openEditDialog = () => {
   dialog.open(CommonTextEditor, {
     props: {
-      header: $const.Description,
+      header: t('Description'),
       style: {
         width: '80vw',
       },
@@ -85,7 +86,7 @@ const openEditDialog = () => {
 
 const text2Markdown = () => {
   if (text.value == null || text.value === '') {
-    html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + $const.NoDescription + '</em></span>');
+    html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + t('NoDescription') + '</em></span>');
     empty.value = true;
   }else {
     empty.value = false;
@@ -103,7 +104,7 @@ const tingleModal = new tingle.modal({
   cssClass: ['tingle-markdown-body'],
   onOpen: function () {
     if (text.value != null && text.value !== "") {
-      tingleModal.setContent(marked.parse(text.value));
+      tingleModal.setContent(marked.parse(text.value).toString());
     }
   }
 });
