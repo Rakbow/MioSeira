@@ -88,17 +88,8 @@ const openEditDialog = () => {
         '960px': '80vw',
         '640px': '70vw'
       },
-      modal: true,
-      closable: false
+      modal: true
     }
-    // onClose: (options) => {
-    //   if(options.data !== undefined) {
-    //     if(options.data.isUpdate) {
-    //       text.value = options.data.text;
-    //       text2Markdown();
-    //     }
-    //   }
-    // }
   });
 }
 
