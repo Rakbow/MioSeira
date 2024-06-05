@@ -86,7 +86,8 @@ import TrackInfo from "@/components/special/AlbumTrackInfo.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
 import Info from "@/views/detail/AlbumDetailInfo.vue";
-import InfoEditor from "@/components/entityEditor/AlbumInfoEditor.vue";
+// import InfoEditor from "@/components/entityEditor/AlbumInfoEditor.vue";
+import InfoEditor from "@/components/entityEditor/ItemInfoEditor.vue";
 import {useI18n} from "vue-i18n";
 
 const router = useRouter();
@@ -119,6 +120,34 @@ onBeforeMount(() => {
   personnel.value = props.info.personnel;
 });
 
+// const openEditDialog = () => {
+//   dialog.open(InfoEditor, {
+//     props: {
+//       header: t('Edit'),
+//       style: {
+//         width: '800px',
+//       },
+//       breakpoints:{
+//         '960px': '80vw',
+//         '640px': '70vw'
+//       },
+//       modal: true,
+//       closable: false
+//     },
+//     data: {
+//       item: item.value,
+//       option: option.value,
+//     },
+//     onClose: (options) => {
+//       if(options.data !== undefined) {
+//         if(options.data.isUpdate) {
+//           location.reload();
+//         }
+//       }
+//     }
+//   });
+// }
+
 const openEditDialog = () => {
   dialog.open(InfoEditor, {
     props: {
@@ -134,8 +163,7 @@ const openEditDialog = () => {
       closable: false
     },
     data: {
-      item: item.value,
-      option: option.value,
+      item: item.value
     },
     onClose: (options) => {
       if(options.data !== undefined) {
