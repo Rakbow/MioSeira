@@ -1,3 +1,5 @@
+import {Attribute} from "@/config/Web_Const";
+
 export class PublicHelper {
     static copyToClip = (content: any) => {
         const aux = document.createElement("input");
@@ -45,5 +47,26 @@ export class PublicHelper {
         {id: 99, name: 'product'},
         {id: 100, name: 'franchise'}
     ]
+
+    static handleAttributes = (obj: Record<string, any>) => {
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                let value = obj[key];
+                if(Array.isArray(value)) {
+                    if (value.every(item => this.isAttribute(item))) {
+                        obj[key] = value.map(i => i.value);
+                    }
+                }else {
+                    if (PublicHelper.isAttribute(value)) {
+                        obj[key] = value['value'];
+                    }
+                }
+            }
+        }
+    }
+
+    static isAttribute = (item: any): item is Attribute => {
+        return item && typeof item === 'object' && 'label' in item && 'value' in item;
+    }
 
 }

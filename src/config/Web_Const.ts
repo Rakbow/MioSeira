@@ -47,3 +47,25 @@ export const META = {
         TWD: 'TWD'
     }
 }
+
+export interface ItemFormConfig {
+    type: number;
+    cells: [ItemFormCell];
+}
+
+export interface ItemFormCell {
+    type: number; // 0-InputText 1-InputNumber 2-InputMask 3-select 4-MultiSelect 5-ToggleSwitch 6-Textarea
+    options: string;
+    label: string;
+    model: string;
+    row: number;
+    col: number;
+    span: number;
+    placeholder: string;
+    required: boolean;
+}
+
+export interface Attribute {
+    label: string;
+    value: any;
+}
