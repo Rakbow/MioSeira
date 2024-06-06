@@ -31,7 +31,7 @@
                   <div class="relative">
                     <div v-if="userStore.user">
                       <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
-                              @click="openEditDialog" style="right: 25%"
+                              @click="loadEditor(dialog, item, option)" style="right: 25%"
                               v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}" >
                         <template #icon>
                           <span class="material-symbols-outlined">edit_note</span>
@@ -83,8 +83,8 @@ import BonusPad from "@/components/common/BonusPad.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import ItemLike from "@/components/common/ItemLike.vue";
 import Info from "@/views/detail/BookDetailInfo.vue";
-import InfoEditor from "@/components/entityEditor/BookInfoEditor.vue";
 import {useI18n} from "vue-i18n";
+import {loadEditor} from "@/logic/itemService";
 
 const {t} = useI18n();
 const router = useRouter();
@@ -113,34 +113,6 @@ onBeforeMount(() => {
   option.value = props.info.options;
   personnel.value = props.info.personnel;
 });
-
-const openEditDialog = () => {
-  dialog.open(InfoEditor, {
-    props: {
-      header: t('Edit'),
-      style: {
-        width: '800px',
-      },
-      breakpoints:{
-        '960px': '80vw',
-        '640px': '70vw'
-      },
-      modal: true,
-      closable: false
-    },
-    data: {
-      item: item.value,
-      option: option.value,
-    },
-    onClose: (options) => {
-      if(options.data !== undefined) {
-        if(options.data.isUpdate) {
-          location.reload();
-        }
-      }
-    }
-  });
-}
 
 </script>
 

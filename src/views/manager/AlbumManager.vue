@@ -6,10 +6,10 @@ import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import {useDialog} from "primevue/usedialog";
-import InfoEditor from "@/components/entityEditor/AlbumInfoEditor.vue";
 import {META} from "@/config/Web_Const.ts";
 import {API} from '@/config/Web_Helper_Strs.ts';
 import {useI18n} from "vue-i18n";
+import {loadEditor} from "@/logic/itemService";
 
 const route = useRoute();
 const router = useRouter();
@@ -151,33 +151,6 @@ const closeAddDialog = () => {
   displayAddDialog.value = false;
 }
 
-const openEditDialog = (data) => {
-  dialog.open(InfoEditor, {
-    props: {
-      header: t('Edit'),
-      style: {
-        width: '600px',
-      },
-      breakpoints: {
-        '960px': '70vw',
-        '640px': '60vw'
-      },
-      modal: true,
-      closable: false
-    },
-    data: {
-      item: data,
-      option: option.value,
-    },
-    onClose: async (options) => {
-      if (options.data !== undefined) {
-        if (options.data.isUpdate) {
-          await getItems();
-        }
-      }
-    }
-  });
-}
 const confirmDeleteSelected = () => {
   displayDeleteDialog.value = true;
 }
@@ -244,7 +217,7 @@ const exportCSV = () => {
       <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
       <Column style="flex: 0 0 3rem">
         <template #body="slotProps">
-          <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
+          <Button class="p-button-link" icon="pi pi-pencil" @click="loadEditor(dialog, slotProps.data, option)"/>
         </template>
       </Column>
       <Column :header="$t('Name')" field="name" :showFilterMenu="false"
