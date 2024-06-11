@@ -25,6 +25,7 @@ export const API = {
     GET_STATISTIC_INFO: '/api/db/statistic-info',
 
     GET_ENTITY_OPTION: '/api/db/get-option',
+    SEARCH_ENTRIES: '/api/db/search',
 
     //region user
     CHECK_USER_AUTHORITY: '/api/user/check-authority',
@@ -91,7 +92,6 @@ export const API = {
 
     //region entry
     ENTRY_DETAIL: '/db/entry/',
-    GET_ENTRIES: '/api/db/entry/get-entries',
     DELETE_ENTRY: '/api/db/entry/delete',
     UPDATE_ENTRY: '/api/db/entry/update',
     INSERT_ENTRY: '/api/db/entry/add',

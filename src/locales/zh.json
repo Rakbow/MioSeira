@@ -17,7 +17,10 @@
   "Whole": "全部",
   "ExportCSV": "导出(CSV)",
   "Action": "操作",
+  "ViewAll": "查看全部",
+  "Info": "详细信息",
 
+  "Releases": "发售信息",
   "BasicInfo": "基础信息",
   "Persons": "相关人员",
   "Companies": "相关企业",
@@ -134,7 +137,7 @@
   "GameName": "游戏名",
   "GameChineseName": "游戏名(中)",
   "GameEnglishName": "游戏名(英)",
-  "GameReleaseType": "发售类型",
+  "ReleaseType": "发售类型",
   "GamePlatform": "登陆平台",
 
   "MerchCategory": "分类",
@@ -298,7 +301,6 @@
     {"label": "封面", "value": 2},
     {"label": "其他", "value": 99}
   ],
-
   "CurrencyUnitSet": [
     {"label": "JPY", "value": "JPY"},
     {"label": "CNY", "value": "CNY"},

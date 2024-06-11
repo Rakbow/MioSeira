@@ -73,14 +73,14 @@ import {useToast} from "primevue/usetoast";
 import {useUserStore} from "@/store/user.ts";
 const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 import {useDialog} from "primevue/usedialog";
-import SideImages from "@/components/common/SideImages.vue";
+import SideImages from "@/components/image/SideImages.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
 import RelationInfo from "@/components/common/RelationInfo.vue";
 import PersonsInfo from "@/components/common/PersonInfo.vue";
 import DetailPad from "@/components/common/DetailPad.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
-import ItemLike from "@/components/common/ItemLike.vue";
-import Info from "@/views/detail/ProductDetailInfo.vue";
+import ItemLike from "@/components/common/EntityLike.vue";
+import Info from "@/views/detail/info/ProductDetailInfo.vue";
 import InfoEditor from "@/components/entityEditor/ProductInfoEditor.vue";
 
 const router = useRouter();

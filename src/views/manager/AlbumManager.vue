@@ -10,6 +10,7 @@ import {META} from "@/config/Web_Const.ts";
 import {API} from '@/config/Web_Helper_Strs.ts';
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/logic/itemService";
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 const route = useRoute();
 const router = useRouter();
@@ -26,10 +27,11 @@ const filters = ref({
   'nameZh': {value: ''},
   'nameEn': {value: ''},
   'catalogNo': {value: ''},
-  'ean13': {value: ''},
-  'hasBonus': {value: null},
+  'region': {value: ''},
+  'releaseType': {value: null},
+  'barcode': {value: ''},
+  'bonus': {value: null},
   'albumFormat': {value: null},
-  'publishFormat': {value: null},
   'mediaFormat': {value: null},
 });
 const loading = ref(false);
@@ -38,6 +40,8 @@ const totalRecords = ref(0);
 const selectedItems = ref([]);
 const selectedColumns = ref([]);
 const columns = ref([
+  {field: 'nameEn', header: t('NameEn')},
+  {field: 'nameZh', header: t('NameZh')},
   {field: 'remark', header: t('Remark')},
   {field: 'releaseDate', header: t('ReleaseDate')},
   {field: 'price', header: t('Price')},
@@ -45,7 +49,7 @@ const columns = ref([
   {field: 'editedTime', header: t('EditedTime')},
 ]);
 const queryParams = ref({});
-const option = ref({});
+const option = ref<any>({});
 
 const initQueryParam = async () => {
   let page = !_isUndefined(route.query.page) ? route.query.page : 1;
@@ -53,7 +57,9 @@ const initQueryParam = async () => {
   filters.value.nameZh.value = !_isUndefined(route.query.nameZh) ? route.query.nameZh : '';
   filters.value.nameEn.value = !_isUndefined(route.query.nameEn) ? route.query.nameEn : '';
   filters.value.catalogNo.value = !_isUndefined(route.query.catalogNo) ? route.query.catalogNo : '';
-  filters.value.ean13.value = !_isUndefined(route.query.ean13) ? route.query.ean13 : '';
+  filters.value.barcode.value = !_isUndefined(route.query.barcode) ? route.query.barcode : '';
+  filters.value.region.value = !_isUndefined(route.query.region) ? route.query.region : '';
+  filters.value.releaseType.value = !_isUndefined(route.query.releaseType) ? route.query.releaseType : null;
   loading.value = true;
   queryParams.value = {
     first: (page - 1) * dt.value.rows,
@@ -81,8 +87,14 @@ const updateQueryParam = () => {
     currentQueryParams.nameEn = queryParams.value.filters.nameEn.value;
   if (!_isEmpty(queryParams.value.filters.catalogNo.value))
     currentQueryParams.catalogNo = queryParams.value.filters.catalogNo.value;
-  if (!_isEmpty(queryParams.value.filters.ean13.value))
-    currentQueryParams.ean13 = queryParams.value.filters.ean13.value;
+  if (!_isEmpty(queryParams.value.filters.barcode.value))
+    currentQueryParams.barcode = queryParams.value.filters.barcode.value;
+  if (!_isEmpty(queryParams.value.filters.region.value))
+    currentQueryParams.region = queryParams.value.filters.region.value;
+  if (!_isEmpty(queryParams.value.filters.bonus.value))
+    currentQueryParams.bonus = queryParams.value.filters.bonus.value;
+  if (!_isEmpty(queryParams.value.filters.releaseType.value))
+    currentQueryParams.releaseType = queryParams.value.filters.releaseType.value;
 
   // 使用 router.push 更新 URL
   router.push({path: route.path, query: currentQueryParams});
@@ -98,9 +110,8 @@ onMounted(() => {
 const initOption = async () => {
   const res = await axios.post(API.GET_ITEM_OPTION, {type: META.ITEM_TYPE.ALBUM});
   option.value.albumFormatSet = res.data.albumFormatSet;
-  option.value.publishFormatSet = res.data.publishFormatSet;
+  option.value.releaseTypeSet = res.data.releaseTypeSet;
   option.value.mediaFormatSet = res.data.mediaFormatSet;
-  option.value.currencySet = res.data.currencySet;
 }
 
 const onPage = (ev) => {
@@ -185,7 +196,7 @@ const exportCSV = () => {
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               :currentPageReportTemplate="$t('DataTablePageTemplate')"
+               currentPageReportTemplate="{first} to {last} of {totalRecords}"
                responsiveLayout="scroll">
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">
@@ -221,7 +232,7 @@ const exportCSV = () => {
         </template>
       </Column>
       <Column :header="$t('Name')" field="name" :showFilterMenu="false"
-              exportHeader="name" sortable style="flex: 0 0 5rem">
+              exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
         <template #body="slotProps">
           <a :href="API.ITEM_DETAIL + '/' + slotProps.data.id">
             {{ slotProps.data.name }}
@@ -231,44 +242,45 @@ const exportCSV = () => {
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$t('NameZh')" field="nameZh" sortable :showFilterMenu="false">
+      <Column :header="$t('AlbumCatalogNo')" field="catalogNo" :sortable="true" :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$t('NameEn')" field="nameEn" sortable :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="$t('AlbumCatalogNo')" field="catalogNo" sortable :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="$t('Barcode')" field="ean13" sortable :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="$t('ReleaseDate')" field="releaseDate" sortable/>
-      <Column :header="$t('Price')" field="price" sortable>
+      <Column :header="$t('Region')" filterField="region" :showFilterMenu="false" style="flex: 0 0 9rem">
         <template #body="slotProps">
-          {{ slotProps.data.price }} {{ slotProps.data.currencyUnit }}
-        </template>
-      </Column>
-      <Column :header="$t('PublishFormat')" filterField="publishFormat" :showFilterMenu="false" style="flex: 0 0 9rem">
-        <template #body="slotProps">
-          <ul>
-            <li v-for="data in slotProps.data.publishFormat">
-              {{ data.label }}
-            </li>
-          </ul>
+          <span :class="`fi fi-${slotProps.data.region}`" style="margin-left: 0.5rem"/>
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <MultiSelect v-model="filterModel.value" @change="filterCallback()" style="width: 8rem"
-                       :options="option.publishFormatSet" optionLabel="label" optionValue="value"
-                       display="chip" :filter="true"/>
+          <Select v-model="filterModel.value" :options="META.RegionSet" @change="filterCallback()"
+                  :showClear="true" optionLabel="label" optionValue="value">
+            <template #value="slotProps">
+              <span :class="`fi fi-${slotProps.value}`"/>
+            </template>
+            <template #option="slotProps">
+              <span :class="`fi fi-${slotProps.option.value}`"/>
+            </template>
+          </Select>
+        </template>
+      </Column>
+      <Column :header="$t('Barcode')" field="barcode" :sortable="true" :showFilterMenu="false">
+        <template #filter="{filterModel,filterCallback}">
+          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
+        </template>
+      </Column>
+      <Column :header="$t('ReleaseDate')" field="releaseDate" :sortable="true"/>
+      <Column :header="$t('Price')" field="price" :sortable="true">
+        <template #body="slotProps">
+          {{ `${slotProps.data.price} ${slotProps.data.currency}` }}
+        </template>
+      </Column>
+      <Column :header="$t('ReleaseType')" filterField="releaseType" :showFilterMenu="false" style="flex: 0 0 9rem">
+        <template #body="slotProps">
+          {{ slotProps.data.releaseType.label }}
+        </template>
+        <template #filter="{filterModel,filterCallback}">
+          <Select v-model="filterModel.value" @change="filterCallback()" style="width: 8rem"
+                       :options="option.releaseTypeSet" optionLabel="label" optionValue="value"/>
         </template>
       </Column>
       <Column :header="$t('AlbumFormat')" filterField="albumFormat" :showFilterMenu="false" style="flex: 0 0 8rem">
@@ -299,95 +311,95 @@ const exportCSV = () => {
                        display="chip" :filter="true"/>
         </template>
       </Column>
-      <Column :header="$t('Bonus')" field="hasBonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
+      <Column :header="$t('Bonus')" field="bonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
         <template #body="{data}">
           <i class="pi"
-             :class="{'true-icon pi-check-circle': data!.hasBonus, 'false-icon pi-times-circle': !data!.hasBonus}"></i>
+             :class="{'true-icon pi-check-circle': data!.bonus, 'false-icon pi-times-circle': !data!.bonus}"></i>
         </template>
         <template #filter="{filterModel,filterCallback}">
           <Checkbox v-model="filterModel.value" indeterminate binary :filter="true" @change="filterCallback()"/>
         </template>
       </Column>
       <Column v-for="(col, index) of selectedColumns" :field="col.field"
-              :header="col.header" :key="col.field + '_' + index" sortable/>
+              :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
     </DataTable>
   </div>
 
   <Dialog modal v-model:visible="displayAddDialog"
           style="width: 600px" :header="$t('Add')" class="p-fluid">
-    <BlockUI :blocked="editBlock">
-      <div class="formgrid grid">
-        <div class="field col">
-          <label>{{ $t('Name') }}<span style="color: red">*</span></label>
-          <InputText id="name" v-model="itemAdd.name"/>
-        </div>
-        <div class="field col">
-          <label>{{ $t('NameEn') }}</label>
-          <InputText id="nameEn" v-model="itemAdd.nameEn"/>
-        </div>
-        <div class="field col">
-          <label>{{ $t('NameZh') }}</label>
-          <InputText id="nameZh" v-model="itemAdd.nameZh"/>
-        </div>
-      </div>
-      <div class="formgrid grid">
-        <div class="field col">
-          <label>{{ $t('AlbumCatalogNo') }}</label>
-          <InputText id="catalogNo" v-model.trim="itemAdd.catalogNo"/>
-        </div>
-        <div class="field col">
-          <label>{{ $t('Barcode') }}</label>
-          <InputText id="ean13" v-model.trim="itemAdd.ean13"/>
-        </div>
-      </div>
-      <div class="formgrid grid">
-        <div class="field col-6">
-          <label>{{ $t('ReleaseDate') }}<span style="color: red">*</span></label>
-          <InputMask v-model="itemAdd!.releaseDate" mask="****/**/**"/>
-        </div>
-        <div class="field col-3">
-          <label>{{ $t('ReleasePrice') }}</label>
-          <InputNumber id="price" v-model="itemAdd!.price"/>
-        </div>
-        <div class="field col-3">
-          <label>{{ $t('CurrencyUnit') }}</label>
-          <Select v-model="itemAdd.currency" :options="option.currencySet"
-                    optionLabel="label" optionValue="value" :placeholder="$t('PlaceholderCurrencyUnit')"/>
-        </div>
-      </div>
-      <div class="formgrid grid">
-        <div class="field col">
-          <div class="col-12">
-            <label class="mb-3">{{ $t('Bonus') }}</label>
-          </div>
-          <div class="col-12 mt-4">
-            <ToggleSwitch v-model="itemAdd.hasBonus" />
-          </div>
-        </div>
-      </div>
-      <div class="formgrid grid">
-        <div class="field col-4">
-          <label class="mb-3">{{ $t('PublishFormat') }}<span
-              style="color: red">*</span></label>
-          <MultiSelect id="publishFormat" v-model="itemAdd.publishFormat" :options="option.publishFormatSet"
-                       optionLabel="label" optionValue="value" display="chip"/>
-        </div>
-        <div class="field col-4">
-          <label class="mb-3">{{ $t('AlbumFormat') }}<span style="color: red">*</span></label>
-          <MultiSelect id="albumFormat" v-model="itemAdd.albumFormat" :options="option.albumFormatSet"
-                       optionLabel="label" optionValue="value" display="chip"/>
-        </div>
-        <div class="field col-4">
-          <label class="mb-3">{{ $t('MediaFormat') }}<span style="color: red">*</span></label>
-          <MultiSelect id="mediaFormat" v-model="itemAdd.mediaFormat" :options="option.mediaFormatSet"
-                       optionLabel="label" optionValue="value" display="chip"/>
-        </div>
-      </div>
-      <div class="field">
-        <label>{{ $t('Remark') }}</label>
-        <Textarea id="remark" v-model="itemAdd!.remark" rows="3" cols="20" :autoResize="true"/>
-      </div>
-    </BlockUI>
+<!--    <BlockUI :blocked="editBlock">-->
+<!--      <div class="formgrid grid">-->
+<!--        <div class="field col">-->
+<!--          <label>{{ $t('Name') }}<span style="color: red">*</span></label>-->
+<!--          <InputText id="name" v-model="itemAdd.name"/>-->
+<!--        </div>-->
+<!--        <div class="field col">-->
+<!--          <label>{{ $t('NameEn') }}</label>-->
+<!--          <InputText id="nameEn" v-model="itemAdd.nameEn"/>-->
+<!--        </div>-->
+<!--        <div class="field col">-->
+<!--          <label>{{ $t('NameZh') }}</label>-->
+<!--          <InputText id="nameZh" v-model="itemAdd.nameZh"/>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="formgrid grid">-->
+<!--        <div class="field col">-->
+<!--          <label>{{ $t('AlbumCatalogNo') }}</label>-->
+<!--          <InputText id="catalogNo" v-model.trim="itemAdd.catalogNo"/>-->
+<!--        </div>-->
+<!--        <div class="field col">-->
+<!--          <label>{{ $t('Barcode') }}</label>-->
+<!--          <InputText id="ean13" v-model.trim="itemAdd.ean13"/>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="formgrid grid">-->
+<!--        <div class="field col-6">-->
+<!--          <label>{{ $t('ReleaseDate') }}<span style="color: red">*</span></label>-->
+<!--          <InputMask v-model="itemAdd!.releaseDate" mask="****/**/**"/>-->
+<!--        </div>-->
+<!--        <div class="field col-3">-->
+<!--          <label>{{ $t('ReleasePrice') }}</label>-->
+<!--          <InputNumber id="price" v-model="itemAdd!.price"/>-->
+<!--        </div>-->
+<!--        <div class="field col-3">-->
+<!--          <label>{{ $t('CurrencyUnit') }}</label>-->
+<!--          <Select v-model="itemAdd.currency" :options="option.currencySet"-->
+<!--                    optionLabel="label" optionValue="value" :placeholder="$t('PlaceholderCurrencyUnit')"/>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="formgrid grid">-->
+<!--        <div class="field col">-->
+<!--          <div class="col-12">-->
+<!--            <label class="mb-3">{{ $t('Bonus') }}</label>-->
+<!--          </div>-->
+<!--          <div class="col-12 mt-4">-->
+<!--            <ToggleSwitch v-model="itemAdd.hasBonus" />-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="formgrid grid">-->
+<!--        <div class="field col-4">-->
+<!--          <label class="mb-3">{{ $t('PublishFormat') }}<span-->
+<!--              style="color: red">*</span></label>-->
+<!--          <MultiSelect id="publishFormat" v-model="itemAdd.publishFormat" :options="option.publishFormatSet"-->
+<!--                       optionLabel="label" optionValue="value" display="chip"/>-->
+<!--        </div>-->
+<!--        <div class="field col-4">-->
+<!--          <label class="mb-3">{{ $t('AlbumFormat') }}<span style="color: red">*</span></label>-->
+<!--          <MultiSelect id="albumFormat" v-model="itemAdd.albumFormat" :options="option.albumFormatSet"-->
+<!--                       optionLabel="label" optionValue="value" display="chip"/>-->
+<!--        </div>-->
+<!--        <div class="field col-4">-->
+<!--          <label class="mb-3">{{ $t('MediaFormat') }}<span style="color: red">*</span></label>-->
+<!--          <MultiSelect id="mediaFormat" v-model="itemAdd.mediaFormat" :options="option.mediaFormatSet"-->
+<!--                       optionLabel="label" optionValue="value" display="chip"/>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="field">-->
+<!--        <label>{{ $t('Remark') }}</label>-->
+<!--        <Textarea id="remark" v-model="itemAdd!.remark" rows="3" cols="20" :autoResize="true"/>-->
+<!--      </div>-->
+<!--    </BlockUI>-->
     <template #footer>
       <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
               :disabled="editBlock"/>

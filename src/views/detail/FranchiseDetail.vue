@@ -69,12 +69,12 @@ import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import {useUserStore} from "@/store/user.ts";
 import {useDialog} from "primevue/usedialog";
-import SideImages from "@/components/common/SideImages.vue";
+import SideImages from "@/components/image/SideImages.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
 import DetailPad from "@/components/common/DetailPad.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
-import ItemLike from "@/components/common/ItemLike.vue";
-import Info from "@/views/detail/FranchiseDetailInfo.vue";
+import ItemLike from "@/components/common/EntityLike.vue";
+import Info from "@/views/detail/info/FranchiseDetailInfo.vue";
 import InfoEditor from "@/components/entityEditor/FranchiseInfoEditor.vue";
 import {useI18n} from "vue-i18n";
 

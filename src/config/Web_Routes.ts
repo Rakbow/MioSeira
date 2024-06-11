@@ -99,8 +99,22 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
 
     {
         name: "ItemDetail",
-        path: `${API.ITEM_DETAIL}/:id`,
+        path: API.ITEM_DETAIL + "/:id",
         component: () => import('@/views/detail/ItemDetail.vue'),
+        beforeEnter: async (to, _from, next) => {
+            try {
+                const res = await axios.post(API.GET_ITEM_DETAIL, {id: to.params.id});
+                if (res.state === axios.SUCCESS) {
+                    to.meta.info = res.data;
+                    document.title = res.data.item.name;
+                    next();
+                }else {
+                    console.log(res.message);
+                }
+            }catch (e) {
+                console.error(e);
+            }
+        },
         meta: {
             title: "Item Detail"
         }

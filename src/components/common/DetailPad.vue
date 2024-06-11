@@ -1,37 +1,41 @@
 <template>
-  <Fieldset :toggleable="true">
-    <template #legend>
-      <span class="material-symbols-outlined fieldset-icon">article</span>
-      <b>{{ props.header }}</b>
-    </template>
-    <div class="relative">
-      <div v-if="userStore.user">
-        <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
-                @click="openEditDialog" style="right: 5%"
-                v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}" >
-          <template #icon>
-            <span class="material-symbols-outlined">edit_note</span>
-          </template>
-        </Button>
+  <BlockUI :blocked="editBlock" class="entity-fieldset">
+    <Fieldset :toggleable="true">
+      <template #legend>
+        <i class="pi pi-align-justify"/>
+        <b>{{ $t('Description') }}</b>
+      </template>
+      <div class="relative">
+        <div v-if="userStore.user">
+          <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
+                  @click="openEditDialog" style="right: 5%"
+                  v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
+            <template #icon>
+              <span class="material-symbols-outlined">edit_note</span>
+            </template>
+          </Button>
+        </div>
+        <Button v-if="!empty" class="p-button-link absolute top-0 right-0" icon="pi pi-external-link"
+                @click="openTextTingle"
+                v-tooltip.bottom="{value: $t('FullScreen'), class: 'short-tooltip'}"/>
+        <article ref="html" class="markdown-body"/>
       </div>
-      <Button v-if="!empty" class="p-button-link absolute top-0 right-0" icon="pi pi-external-link" @click="openTextTingle"
-                v-tooltip.bottom="{value: $t('FullScreen'), class: 'short-tooltip'}" />
-      <article ref="html" class="markdown-body" />
-    </div>
-  </Fieldset>
+    </Fieldset>
+  </BlockUI>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps, defineAsyncComponent } from "vue";
+import {ref, onMounted, defineProps, defineAsyncComponent} from "vue";
 import {useUserStore} from "@/store/user.ts";
 import {META} from '@/config/Web_Const.ts';
 import {marked} from 'marked';
 import tingle from 'tingle.js';
-import { useDialog } from 'primevue/usedialog';
+import {useDialog} from 'primevue/usedialog';
 import {useI18n} from "vue-i18n";
+
 const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/CommonTextEditor.vue'));
 const {t} = useI18n();
-
+const editBlock = ref(false);
 const empty = ref(false);
 
 const props = defineProps({
@@ -62,7 +66,7 @@ const openEditDialog = () => {
       style: {
         width: '80vw',
       },
-      breakpoints:{
+      breakpoints: {
         '960px': '80vw',
         '640px': '70vw'
       },
@@ -74,8 +78,8 @@ const openEditDialog = () => {
       type: META.TEXT_TYPE.DETAIL
     },
     onClose: (options) => {
-      if(options.data !== undefined) {
-        if(options.data.isUpdate) {
+      if (options.data !== undefined) {
+        if (options.data.isUpdate) {
           text.value = options.data.text;
           text2Markdown();
         }
@@ -88,7 +92,7 @@ const text2Markdown = () => {
   if (text.value == null || text.value === '') {
     html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + t('NoDescription') + '</em></span>');
     empty.value = true;
-  }else {
+  } else {
     empty.value = false;
     html.value.innerHTML = marked.parse(text.value);
   }
@@ -110,8 +114,8 @@ const tingleModal = new tingle.modal({
 });
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+@import "@/assets/entity-detail";
 @import 'tingle.js/src/tingle.css';
 
 article {

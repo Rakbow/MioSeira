@@ -1,29 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import {defineProps, onMounted, ref} from "vue";
 import {API} from '@/config/Web_Helper_Strs.ts';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {PublicHelper} from "@/toolkit/publicHelper.ts";
 import {useRoute} from "vue-router";
 import {useToast} from 'primevue/usetoast';
+import {useI18n} from "vue-i18n";
+import {EntityInfo} from "@/config/Web_Const";
 
+const entityInfo = ref<EntityInfo>();
+const {t} = useI18n();
 const route = useRoute();
 const toast = useToast();
 const editBlock = ref(false);
-const entityType = ref();
-const entityId = ref();
 const liked = ref(false);
 const likeCount = ref(0);
 onMounted(() => {
-  getEntityInfo();
+  entityInfo.value = PublicHelper.getEntityInfo(route);
   liked.value = props.liked;
   likeCount.value = props.likeCount;
 });
-
-const getEntityInfo = () => {
-  let typeName = route.path.split('/')[2];
-  entityType.value = PublicHelper.getEntityType(typeName);
-  entityId.value = route.params.id;
-}
 
 const props = defineProps({
   liked: {
@@ -39,11 +35,11 @@ const props = defineProps({
 
 const like = async () => {
   editBlock.value = true;
-  let json = {
-    entityType: entityType.value,
-    entityId: entityId.value
+  let param = {
+    entityType: entityInfo.value?.type,
+    entityId: entityInfo.value?.id
   };
-  const res = await axios.post(API.LIKE_ITEM, json);
+  const res = await axios.post(API.LIKE_ITEM, param);
   if (res.state === axios.SUCCESS) {
     likeCount.value++;
     liked.value = true;
@@ -57,7 +53,7 @@ const like = async () => {
 
 <template>
   <div class="item_statistic_info">
-    <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: $const.Like, class: 'short-tooltip'}">
+    <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: $t('Like'), class: 'short-tooltip'}">
       <i class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"></i>
     </Button>
     <span class="ml-1 mr-2">{{ likeCount }}</span>

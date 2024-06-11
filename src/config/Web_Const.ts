@@ -45,7 +45,16 @@ export const META = {
         USD: 'USD',
         EUR: 'EUR',
         TWD: 'TWD'
-    }
+    },
+    RegionSet: [
+        {label: "jp", value: "jp"},
+        {label: "cn", value: "cn"},
+        {label: "tw", value: "tw"},
+        {label: "hk", value: "hk"},
+        {label: "eu", value: "eu"},
+        {label: "us", value: "us"},
+        {label: "gb", value: "gb"}
+    ]
 }
 
 export interface ItemFormConfig {
@@ -68,4 +77,9 @@ export interface ItemFormCell {
 export interface Attribute {
     label: string;
     value: any;
+}
+
+export class EntityInfo {
+    type: number = 0;
+    id: number = 0;
 }

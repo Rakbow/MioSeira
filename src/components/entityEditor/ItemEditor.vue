@@ -13,7 +13,7 @@ const dialog = useDialog();
 const dialogRef = inject("dialogRef");
 const config: ref<ItemFormConfig> = ref();
 const item = ref<any>({});
-const option: ref<any> = ref({});
+const option = ref<any>({});
 const isUpdate = ref(false);
 const editBlock = ref(false);
 const toast = useToast();
@@ -63,7 +63,7 @@ const ISBNInterConvert = async (label, isbn) => {
 <template>
   <BlockUI :blocked="editBlock" class="p-fluid">
     <div class="field">
-      <label>{{ $t('Name') }}<i class="required-label pi pi-asterisk" /></label>
+      <label>{{ $t('Name') }}<i class="required-label pi pi-asterisk"/></label>
       <InputText v-model="item.name"/>
     </div>
     <div class="field">
@@ -75,18 +75,31 @@ const ISBNInterConvert = async (label, isbn) => {
       <InputText v-model="item.nameEn"/>
     </div>
     <div class="formgrid grid">
-      <div class="field col-6">
+      <div class="field col-3">
         <label>{{ $t('ReleaseDate') }}</label>
         <InputMask v-model="item!.releaseDate" mask="****/**/**"/>
       </div>
       <div class="field col-3">
-        <label>{{ $t('ReleasePrice') }}</label>
-        <InputNumber id="price" v-model="item!.price"/>
+        <label>{{ $t('ReleaseType') }}</label>
+        <Select v-model="item!.releaseType" :options="option!.releaseTypeSet as any[]"
+                optionLabel="label" optionValue="value"/>
       </div>
       <div class="field col-3">
-        <label>{{ $t('CurrencyUnit') }}</label>
-        <Select v-model="item.currency" :options="option.currencySet"
-                optionLabel="label" optionValue="value" :placeholder="$t('PlaceholderCurrencyUnit')"/>
+        <label>{{ $t('Region') }}</label>
+        <Select v-model="item.region" :options="META.RegionSet" optionLabel="label" optionValue="value">
+          <template #value="slotProps">
+            <span :class="`fi fi-${slotProps.value}`"/>
+          </template>
+          <template #option="slotProps">
+            <span :class="`fi fi-${slotProps.option.value}`"/>
+          </template>
+        </Select>
+      </div>
+      <div class="field col-3">
+        <label>{{ $t('ReleasePrice') }}</label>
+        <InputGroup>
+          <InputNumber v-model="item!.price"/>
+        </InputGroup>
       </div>
     </div>
 
@@ -98,22 +111,17 @@ const ISBNInterConvert = async (label, isbn) => {
         </div>
         <div class="field col">
           <label>{{ $t('Barcode') }}</label>
-          <InputText id="ean13" v-model.trim="item.ean13"/>
+          <InputText id="ean13" v-model.trim="item!.barcode"/>
         </div>
       </div>
       <div class="formgrid grid">
         <div class="field col-4">
-          <label>{{ $t('PublishFormat') }}<i class="required-label pi pi-asterisk" /></label>
-          <MultiSelect v-model="item.publishFormat" :options="option.publishFormatSet"
-                       optionLabel="label" optionValue="value" display="chip"/>
-        </div>
-        <div class="field col-4">
-          <label>{{ $t('AlbumFormat') }}<i class="required-label pi pi-asterisk" /></label>
+          <label>{{ $t('AlbumFormat') }}<i class="required-label pi pi-asterisk"/></label>
           <MultiSelect v-model="item.albumFormat" :options="option.albumFormatSet"
                        optionLabel="label" optionValue="value" display="chip"/>
         </div>
         <div class="field col-4">
-          <label>{{ $t('MediaFormat') }}<i class="required-label pi pi-asterisk" /></label>
+          <label>{{ $t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
           <MultiSelect v-model="item.mediaFormat" :options="option.mediaFormatSet"
                        optionLabel="label" optionValue="value" display="chip"/>
         </div>
@@ -125,56 +133,37 @@ const ISBNInterConvert = async (label, isbn) => {
         <div class="field col">
           <label>{{ $t('BookISBN10') }}</label>
           <InputGroup>
-            <InputText v-model="item.isbn10" />
+            <InputText v-model="item.isbn10"/>
             <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn10', item.ean13)"
-                    v-tooltip.bottom="{value:$t('TooltipGenerateBookISBN10'), class: 'common-tooltip'}" />
+                    v-tooltip.bottom="{value:$t('TooltipGenerateBookISBN10'), class: 'common-tooltip'}"/>
           </InputGroup>
         </div>
         <div class="field col">
           <label>{{ $t('BookISBN13') }}</label>
           <InputGroup>
-            <InputText v-model="item.ean13" />
+            <InputText v-model="item!.barcode"/>
             <Button icon="pi pi-sync" class="p-button-warning"
                     @click="ISBNInterConvert('isbn13', item.isbn10)"
-                    v-tooltip.bottom="{value:$t('TooltipGenerateBookISBN13'), class: 'common-tooltip'}" />
+                    v-tooltip.bottom="{value:$t('TooltipGenerateBookISBN13'), class: 'common-tooltip'}"/>
           </InputGroup>
         </div>
       </div>
       <div class="formgrid grid">
         <div class="field col">
-          <label class="mb-3">{{ $t('BookType') }}<i class="required-label pi pi-asterisk" /></label>
+          <label class="mb-3">{{ $t('BookType') }}<i class="required-label pi pi-asterisk"/></label>
           <Select v-model="item.bookType" :options="option.bookTypeSet"
-                  optionLabel="label" optionValue="value" />
+                  optionLabel="label" optionValue="value"/>
         </div>
         <div class="field col">
-          <label class="mb-3">{{ $t('Region') }}<i class="required-label pi pi-asterisk" /></label>
-          <Select v-model="item.region" :options="option.regionSet" :filter="true"
-                  :showClear="true" optionLabel="label" optionValue="value">
-            <template #value="slotProps">
-              <div class="country-item" v-if="slotProps.value">
-                <span :class="'fi fi-' + slotProps.value"></span>
-                <div class="ml-2">{{ (slotProps as any).label }}</div>
-              </div>
-              <span v-else>{{ $t('PlaceholderRegion') }}</span>
-            </template>
-            <template #option="slotProps">
-              <div class="country-item">
-                <span :class="'fi fi-' + slotProps.option.value"></span>
-                <div class="ml-2">{{slotProps.option.label}}</div>
-              </div>
-            </template>
-          </Select>
-        </div>
-        <div class="field col">
-          <label class="mb-3">{{ $t('Language') }}<i class="required-label pi pi-asterisk" /></label>
+          <label class="mb-3">{{ $t('Language') }}<i class="required-label pi pi-asterisk"/></label>
           <Select v-model="item.lang" :options="option.languageSet"
-                  optionLabel="label" optionValue="value" />
+                  optionLabel="label" optionValue="value"/>
         </div>
       </div>
       <div class="field">
         <label>{{ $t('Summary') }}</label>
-        <Textarea v-model="item.summary" rows="3" cols="20" :autoResize="true" />
+        <Textarea v-model="item.summary" rows="3" cols="20" :autoResize="true"/>
       </div>
     </div>
 
@@ -203,6 +192,6 @@ const ISBNInterConvert = async (label, isbn) => {
 .required-label {
   color: red;
   font-size: 0.8rem;
-  margin-left:.5rem !important
+  margin-left: .5rem !important
 }
 </style>

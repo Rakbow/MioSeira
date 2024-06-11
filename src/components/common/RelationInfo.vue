@@ -104,7 +104,7 @@ const getEntityInfo = () => {
                    v-for="item of relatedItems">
                   <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
                       <a :href="'/db/' + PublicHelper.getEntityPath(item.entityType.value) + '/' + item.entityId">
-                          <img class="sidebar-panel-image-small" :src="item.cover" alt=""
+                          <img class="sidebar-panel-image-small" :src="`https://${item.cover}`" alt=""
                                v-tooltip.bottom="item.name + '\n' + item.nameZh + '\n' + item.nameEn">
                       </a>
                   </div>

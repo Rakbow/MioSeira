@@ -1,4 +1,5 @@
-import {Attribute} from "@/config/Web_Const";
+import {Attribute, EntityInfo, META} from "@/config/Web_Const";
+import {RouteLocationNormalizedLoaded} from "vue-router";
 
 export class PublicHelper {
     static copyToClip = (content: any) => {
@@ -67,6 +68,14 @@ export class PublicHelper {
 
     static isAttribute = (item: any): item is Attribute => {
         return item && typeof item === 'object' && 'label' in item && 'value' in item;
+    }
+
+    static getEntityInfo = (route: RouteLocationNormalizedLoaded) => {
+        let typeName = route.path.split('/')[2];
+        let info = new EntityInfo();
+        info.type = this.getEntityType(typeName);
+        info.id = parseInt(route.params.id.toString());
+        return info;
     }
 
 }

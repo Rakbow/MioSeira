@@ -202,7 +202,7 @@ const exportCSV = () => {
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               :currentPageReportTemplate="t('DataTablePageTemplate')"
+               currentPageReportTemplate="{first} to {last} of {totalRecords}"
                responsiveLayout="scroll">
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">

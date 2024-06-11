@@ -2,6 +2,7 @@
 import {defineProps} from "vue";
 import {META} from '@/config/Web_Const.ts';
 import {useI18n} from "vue-i18n";
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 const {t} = useI18n();
 const props = defineProps({
@@ -23,7 +24,7 @@ const props = defineProps({
         <strong>{{ $t('AlbumCatalogNo') }}</strong>
       </td>
       <td>
-        {{ item.catalogNo ? item.catalogNo : "N/A" }}
+        {{ item.catalogNo }}
       </td>
     </tr>
     <tr>
@@ -31,33 +32,27 @@ const props = defineProps({
         <i class="pi pi-barcode" />
         <strong>{{ $t('Barcode') }}</strong>
       </td>
-      <td>{{ item.ean13 ? item.ean13 : "N/A" }}
+      <td>{{ item.barcode }}
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-calendar"></i>
-        <strong>{{ $t('ReleaseDate') }}</strong>
+        <i class="pi pi-info-circle"></i>
+        <strong>{{ $t('Releases') }}</strong>
       </td>
       <td>
-        {{ item.releaseDate ? item.releaseDate : "N/A" }}
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <i class="pi pi-ticket"></i>
-        <strong>{{ $t('ReleasePrice') }}</strong>
-      </td>
-      <td>
+        {{ item.releaseDate }}
+        <Tag class="ml-1" :value="item.releaseType.label" />
+        <span :class="'fi fi-' + item.region" style="margin-left: 0.5rem" />
         {{ item.price !== 0 ? item.price : "&nbsp;&nbsp;-" }}
         <span v-if="item.price !== 0">
-          <span v-if="item.currency === 'JPY'" class="ml-1"
-                style="text-decoration-line: underline;text-decoration-style: dashed;"
-                v-tooltip.right="{value: $t('TaxInclusive'), class: 'region-tooltip'}">JPY</span>
-          <span v-else>{{ item.currency }}</span>
-          <span class="ml-2 dropdown">
+          <span class="dropdown">
             <a href="#" class="dropdown-toggle"
-               data-bs-toggle="dropdown">{{ $t('OtherCurrencyUnit') }}</a>
+               data-bs-toggle="dropdown">
+              <span v-if="item.currency === 'JPY'"
+                    v-tooltip="{value: $t('TaxInclusive'), class: 'region-tooltip'}">JPY</span>
+              <span v-else>{{ item.currency }}</span>
+            </a>
             <div class="dropdown-menu" style="background: black">
               <a v-for="(currency, code) in META.CURRENCIES" :key="code"
                  :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+${code}`"
@@ -73,19 +68,10 @@ const props = defineProps({
         <strong>{{ $t('Bonus') }}</strong>
       </td>
       <td>
-        <a v-if="item.hasBonus" href="#bonus" class="ml-3">
+        <a v-if="item.bonus" class="ml-3">
           <i class="pi true-icon pi-check-circle" style="color: green" />
         </a>
         <i v-else class="pi false-icon pi-times-circle" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <i class="pi pi-print"></i>
-        <strong>{{ $t('PublishFormat') }}</strong>
-      </td>
-      <td v-for="format of item.publishFormat" style="display:inline">
-        <Tag class="ml-1" :value="format.label"></Tag>
       </td>
     </tr>
     <tr>
