@@ -90,7 +90,7 @@ const onFilter = () => {
 
 const getItems = async () => {
   loading.value = true;
-  const res = await axios.post(API.GET_PERSON_ROLE_LIST, queryParams.value);
+  const res = await axios.post(API.GET_ROLE_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total
@@ -134,7 +134,7 @@ const confirmDeleteSelected = () => {
 
 const submitAddItem = async () => {
   loading.value = true;
-  const res = await axios.post(API.ADD_PERSON_ROLE, itemAdd.value);
+  const res = await axios.post(API.ADD_ROLE, itemAdd.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeAddDialog();
@@ -147,7 +147,7 @@ const submitAddItem = async () => {
 
 const submitEditItem = async () => {
   loading.value = true;
-  const res = await axios.post(API.UPDATE_PERSON_ROLE, itemEdit.value);
+  const res = await axios.post(API.UPDATE_ROLE, itemEdit.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeEditDialog();
@@ -160,7 +160,7 @@ const submitEditItem = async () => {
 
 const refreshItem = async () => {
   loading.value = true;
-  const res = await axios.post(API.REFRESH_PERSON_ROLE);
+  const res = await axios.post(API.REFRESH_ROLE);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     await getItems();
@@ -200,9 +200,9 @@ const exportCSV = () => {
             <Button :label="$t('Delete')" icon="pi pi-trash" severity="danger" size="small" class="mr-2"
                     @click="confirmDeleteSelected"
                     :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-            <Button :label="$t('ExportCSV')" icon="pi pi-external-link" severity="help" size="small" class="ml-2"
-                    @click="exportCSV()" style="width: 8em"/>
-            <Button :label="$t('Refresh')" icon="pi pi-refresh" severity="info" size="small" class="ml-2"
+            <Button :label="$t('Export')" icon="pi pi-external-link" severity="help" size="small" class="mr-2"
+                    @click="exportCSV()" style="width: 6em"/>
+            <Button :label="$t('Refresh')" icon="pi pi-refresh" severity="info" size="small" class="mr-2"
                     @click="refreshItem()" style="width: 6em"/>
           </div>
         </BlockUI>
@@ -247,15 +247,15 @@ const exportCSV = () => {
     <BlockUI :blocked="editBlock">
       <div class="formgrid grid">
         <label class="font-bold block mb-2">{{ $t('Name') }}<span style="color: red">*</span></label>
-        <InputText v-model.trim="itemAdd.name"/>
+        <InputText v-model="itemAdd.name"/>
       </div>
       <div class="formgrid grid">
         <label class="font-bold block mb-2">{{ $t('NameZh') }}<span style="color: red">*</span></label>
-        <InputText v-model.trim="itemAdd.nameZh"/>
+        <InputText v-model="itemAdd.nameZh"/>
       </div>
       <div class="formgrid grid">
         <label class="font-bold block mb-2">{{ $t('NameEn') }}<span style="color: red">*</span></label>
-        <InputText v-model.trim="itemAdd.nameEn"/>
+        <InputText v-model="itemAdd.nameEn"/>
       </div>
     </BlockUI>
     <template #footer>
@@ -271,15 +271,15 @@ const exportCSV = () => {
     <BlockUI :blocked="editBlock">
       <div class="formgrid grid">
         <label class="font-bold block mb-2">{{ $t('Name') }}<span style="color: red">*</span></label>
-        <InputText v-model.trim="itemEdit.name"/>
+        <InputText v-model="itemEdit.name"/>
       </div>
       <div class="formgrid grid">
         <label class="font-bold block mb-2">{{ $t('NameZh') }}<span style="color: red">*</span></label>
-        <InputText v-model.trim="itemEdit.nameZh"/>
+        <InputText v-model="itemEdit.nameZh"/>
       </div>
       <div class="formgrid grid">
         <label class="font-bold block mb-2">{{ $t('NameEn') }}<span style="color: red">*</span></label>
-        <InputText v-model.trim="itemEdit.nameEn"/>
+        <InputText v-model="itemEdit.nameEn"/>
       </div>
     </BlockUI>
     <template #footer>

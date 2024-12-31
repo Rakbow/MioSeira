@@ -16,13 +16,29 @@
   "FullScreen": "全屏",
   "Whole": "全部",
   "ExportCSV": "导出(CSV)",
+  "Export": "导出",
   "Action": "操作",
   "ViewAll": "查看全部",
   "Info": "详细信息",
+  "Various": "参数",
+  "Dimensions": "参数",
+  "Weight": "重量",
+  "Pages": "页数",
+  "Size": "版型",
+  "Tracks": "音轨数",
+  "Discs": "碟片数",
+  "RunTime": "时长",
+  "Group": "分组",
+  "Date": "日期",
+  "Analysis": "解析",
+
+  "Character": "角色",
 
   "Releases": "发售信息",
   "BasicInfo": "基础信息",
   "Persons": "相关人员",
+  "PersonNameZh": "简体中文名",
+  "PersonNameEn": "英文名",
   "Companies": "相关企业",
   "OtherCurrencyUnit": "其他货币",
   "IsLimited": "限定版",
@@ -40,6 +56,7 @@
   "Remark": "备注",
   "Bonus": "特典",
   "PublishFormat": "出版形式",
+  "PublishLanguage": "出版语言",
   "MediaFormat": "媒体格式",
   "Region": "地区",
   "Language": "语言",
@@ -47,6 +64,7 @@
   "Spec": "规格",
   "Description": "描述",
   "Role": "职位",
+  "ReverseRole": "逆向职位",
   "Price": "价格",
 
   "Visit": "访问",
@@ -55,6 +73,8 @@
 
   "Index": "序号",
 
+  "Item": "Item",
+  "ItemType": "物品类型",
 
   "Type": "类型",
 
@@ -62,7 +82,7 @@
   "UploadIn": "上传于 ",
 
   "Unknown": "未知",
-  "Name": "名称(原)",
+  "Name": "名称",
   "NameZh": "名称(中)",
   "NameEn": "名称(英)",
   "Aliases": "别名",
@@ -92,17 +112,22 @@
   "Products": "所属作品",
 
   "Image": "图片",
+  "ImageSize": "大小",
   "Images": "图片",
 
+  "NoSearchResult": "暂无符合条件的结果",
   "NoImage": "暂无图片",
   "NoCompanies": "暂无相关企业信息",
   "NoPerson": "暂无相关人员信息",
+  "NoItem": "暂无相关Item",
   "NoInfo": "暂无数据",
   "NoDescription": "暂无描述",
   "NoBonus": "暂无特典信息",
+  "BonusInclusion": "包含特典",
+  "BonusExclusion": "不含特典",
 
   "Album": "专辑",
-  "AlbumCatalogNo": "专辑编号",
+  "CatalogId": "编号",
   "AlbumName": "专辑名称",
   "AlbumEnglishName": "专辑名称(英)",
   "AlbumChineseName": "专辑名称(中)",
@@ -311,7 +336,14 @@
   ],
 
   "RelatedType": "关联类型",
-  "Relation": "关联关系",
+  "Relation": "关联信息",
   "Entity": "实体",
-  "RelatedItem": "关联条目"
+  "RelatedEntity": "关联条目",
+  "RelatedProduct": "关联作品",
+  "RelatedItem": "关联物品",
+
+  "Material": "原材料",
+  "Event": "活动",
+  "Classification": "分类",
+  "Version": "版本"
 }

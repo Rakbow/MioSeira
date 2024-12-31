@@ -10,7 +10,7 @@ import {META} from "@/config/Web_Const.ts";
 import {API} from '@/config/Web_Helper_Strs.ts';
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/logic/itemService";
-import "/node_modules/flag-icons/css/flag-icons.min.css";
+import "flag-icons/css/flag-icons.min.css";
 
 const route = useRoute();
 const router = useRouter();
@@ -24,9 +24,7 @@ const dt = ref();
 const filters = ref({
   'itemType': {value: META.ITEM_TYPE.ALBUM},
   'name': {value: ''},
-  'nameZh': {value: ''},
-  'nameEn': {value: ''},
-  'catalogNo': {value: ''},
+  'catalogId': {value: ''},
   'region': {value: ''},
   'releaseType': {value: null},
   'barcode': {value: ''},
@@ -40,8 +38,6 @@ const totalRecords = ref(0);
 const selectedItems = ref([]);
 const selectedColumns = ref([]);
 const columns = ref([
-  {field: 'nameEn', header: t('NameEn')},
-  {field: 'nameZh', header: t('NameZh')},
   {field: 'remark', header: t('Remark')},
   {field: 'releaseDate', header: t('ReleaseDate')},
   {field: 'price', header: t('Price')},
@@ -54,9 +50,7 @@ const option = ref<any>({});
 const initQueryParam = async () => {
   let page = !_isUndefined(route.query.page) ? route.query.page : 1;
   filters.value.name.value = !_isUndefined(route.query.name) ? route.query.name : '';
-  filters.value.nameZh.value = !_isUndefined(route.query.nameZh) ? route.query.nameZh : '';
-  filters.value.nameEn.value = !_isUndefined(route.query.nameEn) ? route.query.nameEn : '';
-  filters.value.catalogNo.value = !_isUndefined(route.query.catalogNo) ? route.query.catalogNo : '';
+  filters.value.catalogId.value = !_isUndefined(route.query.catalogId) ? route.query.catalogId : '';
   filters.value.barcode.value = !_isUndefined(route.query.barcode) ? route.query.barcode : '';
   filters.value.region.value = !_isUndefined(route.query.region) ? route.query.region : '';
   filters.value.releaseType.value = !_isUndefined(route.query.releaseType) ? route.query.releaseType : null;
@@ -81,12 +75,8 @@ const updateQueryParam = () => {
   currentQueryParams.size = dt.value.rows;
   if (!_isEmpty(queryParams.value.filters.name.value))
     currentQueryParams.name = queryParams.value.filters.name.value;
-  if (!_isEmpty(queryParams.value.filters.nameZh.value))
-    currentQueryParams.nameZh = queryParams.value.filters.nameZh.value;
-  if (!_isEmpty(queryParams.value.filters.nameEn.value))
-    currentQueryParams.nameEn = queryParams.value.filters.nameEn.value;
-  if (!_isEmpty(queryParams.value.filters.catalogNo.value))
-    currentQueryParams.catalogNo = queryParams.value.filters.catalogNo.value;
+  if (!_isEmpty(queryParams.value.filters.catalogId.value))
+    currentQueryParams.catalogId = queryParams.value.filters.catalogId.value;
   if (!_isEmpty(queryParams.value.filters.barcode.value))
     currentQueryParams.barcode = queryParams.value.filters.barcode.value;
   if (!_isEmpty(queryParams.value.filters.region.value))
@@ -186,220 +176,145 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <div class="flex justify-content-center">
-    <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items.length !== 0"
-               lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
-               @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
-               filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn', 'catalogNo', 'ean13']"
-               paginator :rows="10" :first="first" columnResizeMode="fit"
-               v-model:selection="selectedItems" dataKey="id" removableSort
-               scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
-               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
+  <DataTable ref="dt" :value="items" class="p-datatable-sm small-font" :alwaysShowPaginator="items.length !== 0"
+             lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
+             @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
+             paginator :rows="10" :first="first" stripedRows size="small"
+             v-model:selection="selectedItems" dataKey="id" removableSort
+             scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
+             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               currentPageReportTemplate="{first} to {last} of {totalRecords}"
-               responsiveLayout="scroll">
-      <template #header>
-        <BlockUI :blocked="editBlock" class="grid">
-          <div class="col-8">
-            <Button :label="$t('Add')" icon="pi pi-plus" class="p-button-success p-button-sm mr-2"
-                    @click="openAddDialog" style="width: 6em"/>
-            <Button :label="$t('Delete')" icon="pi pi-trash" class="p-button-danger p-button-sm mr-2"
-                    @click="confirmDeleteSelected"
-                    :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-            <Button label="导出(CSV)" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
-                    @click="exportCSV()" style="width: 8em"/>
-          </div>
-          <div class="col-4">
-            <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
-                         @update:modelValue="onToggle" class="text-end"
-                         :placeholder="$t('SelectedDisplayColumns')" style="width: 20em"/>
-          </div>
-        </BlockUI>
-      </template>
-      <template #empty>
+             currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
+    <template #header>
+      <BlockUI :blocked="editBlock" class="grid">
+        <div class="col-8">
+          <Button :label="$t('Add')" icon="pi pi-plus" class="p-button-success p-button-sm mr-2"
+                  @click="openAddDialog" style="width: 6em"/>
+          <Button :label="$t('Delete')" icon="pi pi-trash" class="p-button-danger p-button-sm mr-2"
+                  @click="confirmDeleteSelected"
+                  :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
+          <Button :label="$t('Export')" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
+                  @click="exportCSV()" style="width: 6em"/>
+        </div>
+        <div class="col-4">
+          <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
+                       @update:modelValue="onToggle" class="text-end"
+                       :placeholder="$t('SelectedDisplayColumns')" style="width: 20em"/>
+        </div>
+      </BlockUI>
+    </template>
+    <template #empty>
         <span class="emptyInfo">
             {{ $t('CommonDataTableEmptyInfo') }}
         </span>
+    </template>
+    <template #loading>
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+    </template>
+    <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
+    <Column style="flex: 0 0 3rem">
+      <template #body="slotProps">
+        <Button class="p-button-link" size="small" icon="pi pi-pencil" @click="loadEditor(dialog, slotProps.data, option)"/>
       </template>
-      <template #loading>
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
-      </template>
-      <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
-      <Column style="flex: 0 0 3rem">
-        <template #body="slotProps">
-          <Button class="p-button-link" icon="pi pi-pencil" @click="loadEditor(dialog, slotProps.data, option)"/>
-        </template>
-      </Column>
-      <Column :header="$t('Name')" field="name" :showFilterMenu="false"
-              exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
-        <template #body="slotProps">
-          <a :href="API.ITEM_DETAIL + '/' + slotProps.data.id">
+    </Column>
+    <Column :header="$t('Name')" field="name" :showFilterMenu="false"
+            exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
+      <template #body="slotProps">
+        <a :href="`${API.ITEM_DETAIL}/${slotProps.data.id}`">
+          <div class="text-container" :title="slotProps.data.name">
             {{ slotProps.data.name }}
-          </a>
-        </template>
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="$t('AlbumCatalogNo')" field="catalogNo" :sortable="true" :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="$t('Region')" filterField="region" :showFilterMenu="false" style="flex: 0 0 9rem">
-        <template #body="slotProps">
-          <span :class="`fi fi-${slotProps.data.region}`" style="margin-left: 0.5rem"/>
-        </template>
-        <template #filter="{filterModel,filterCallback}">
-          <Select v-model="filterModel.value" :options="META.RegionSet" @change="filterCallback()"
-                  :showClear="true" optionLabel="label" optionValue="value">
-            <template #value="slotProps">
-              <span :class="`fi fi-${slotProps.value}`"/>
-            </template>
-            <template #option="slotProps">
-              <span :class="`fi fi-${slotProps.option.value}`"/>
-            </template>
-          </Select>
-        </template>
-      </Column>
-      <Column :header="$t('Barcode')" field="barcode" :sortable="true" :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="$t('ReleaseDate')" field="releaseDate" :sortable="true"/>
-      <Column :header="$t('Price')" field="price" :sortable="true">
-        <template #body="slotProps">
-          {{ `${slotProps.data.price} ${slotProps.data.currency}` }}
-        </template>
-      </Column>
-      <Column :header="$t('ReleaseType')" filterField="releaseType" :showFilterMenu="false" style="flex: 0 0 9rem">
-        <template #body="slotProps">
-          {{ slotProps.data.releaseType.label }}
-        </template>
-        <template #filter="{filterModel,filterCallback}">
-          <Select v-model="filterModel.value" @change="filterCallback()" style="width: 8rem"
-                       :options="option.releaseTypeSet" optionLabel="label" optionValue="value"/>
-        </template>
-      </Column>
-      <Column :header="$t('AlbumFormat')" filterField="albumFormat" :showFilterMenu="false" style="flex: 0 0 8rem">
-        <template #body="slotProps">
-          <ul>
-            <li v-for="data in slotProps.data.albumFormat">
-              {{ data.label }}
-            </li>
-          </ul>
-        </template>
-        <template #filter="{filterModel,filterCallback}">
-          <MultiSelect v-model="filterModel.value" @change="filterCallback()" style="width: 7rem"
-                       :options="option.albumFormatSet" optionLabel="label" optionValue="value"
-                       display="chip" :filter="true"/>
-        </template>
-      </Column>
-      <Column :header="$t('MediaFormat')" filter-field="mediaFormat" :showGilterMenu="false" style="flex: 0 0 8rem">
-        <template #body="slotProps">
-          <ul>
-            <li v-for="data in slotProps.data.mediaFormat">
-              {{ data.label }}
-            </li>
-          </ul>
-        </template>
-        <template #filter="{filterModel,filterCallback}">
-          <MultiSelect v-model="filterModel.value" @change="filterCallback()" style="width: 7rem"
-                       :options="option.mediaFormatSet" optionLabel="label" optionValue="value"
-                       display="chip" :filter="true"/>
-        </template>
-      </Column>
-      <Column :header="$t('Bonus')" field="bonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
-        <template #body="{data}">
-          <i class="pi"
-             :class="{'true-icon pi-check-circle': data!.bonus, 'false-icon pi-times-circle': !data!.bonus}"></i>
-        </template>
-        <template #filter="{filterModel,filterCallback}">
-          <Checkbox v-model="filterModel.value" indeterminate binary :filter="true" @change="filterCallback()"/>
-        </template>
-      </Column>
-      <Column v-for="(col, index) of selectedColumns" :field="col.field"
-              :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
-    </DataTable>
-  </div>
+          </div>
+        </a>
+      </template>
+      <template #filter="{filterModel,filterCallback}">
+        <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
+      </template>
+    </Column>
+    <Column :header="$t('CatalogId')" field="catalogId" :sortable="true" :showFilterMenu="false">
+      <template #filter="{filterModel,filterCallback}">
+        <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 120px"/>
+      </template>
+    </Column>
+    <Column :header="$t('Region')" filterField="region" :showFilterMenu="false" style="flex: 0 0 9rem">
+      <template #body="slotProps">
+        <span :class="`fi fi-${slotProps.data.region}`" style="margin-left: 0.5rem"/>
+      </template>
+      <template #filter="{filterModel,filterCallback}">
+        <Select v-model="filterModel.value" :options="META.RegionSet" @change="filterCallback()"
+                :showClear="true" optionLabel="label" optionValue="value">
+          <template #value="slotProps">
+            <span :class="`fi fi-${slotProps.value}`"/>
+          </template>
+          <template #option="slotProps">
+            <span :class="`fi fi-${slotProps.option.value}`"/>
+          </template>
+        </Select>
+      </template>
+    </Column>
+    <Column :header="$t('Barcode')" field="barcode" :sortable="true" :showFilterMenu="false">
+      <template #filter="{filterModel,filterCallback}">
+        <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 130px"/>
+      </template>
+    </Column>
+    <Column :header="$t('ReleaseDate')" field="releaseDate" :sortable="true"/>
+    <Column :header="$t('Price')" field="price" :sortable="true">
+      <template #body="slotProps">
+        {{ `${slotProps.data.price} ${slotProps.data.currency}` }}
+      </template>
+    </Column>
+    <Column :header="$t('ReleaseType')" filterField="releaseType" :showFilterMenu="false" style="flex: 0 0 9rem">
+      <template #body="slotProps">
+        {{ slotProps.data.releaseType.label }}
+      </template>
+      <template #filter="{filterModel,filterCallback}">
+        <Select v-model="filterModel.value" @change="filterCallback()" style="width: 8rem"
+                :options="option.releaseTypeSet" optionLabel="label" optionValue="value"/>
+      </template>
+    </Column>
+    <Column :header="$t('AlbumFormat')" filterField="albumFormat" :showFilterMenu="false" style="flex: 0 0 8rem">
+      <template #body="slotProps">
+        <ul>
+          <li v-for="data in slotProps.data.albumFormat">
+            {{ data.label }}
+          </li>
+        </ul>
+      </template>
+      <template #filter="{filterModel,filterCallback}">
+        <MultiSelect v-model="filterModel.value" @change="filterCallback()" style="width: 7rem"
+                     :options="option.albumFormatSet" optionLabel="label" optionValue="value"
+                     display="chip" :filter="true"/>
+      </template>
+    </Column>
+    <Column :header="$t('MediaFormat')" filter-field="mediaFormat" :showGilterMenu="false" style="flex: 0 0 8rem">
+      <template #body="slotProps">
+        <ul>
+          <li v-for="data in slotProps.data.mediaFormat">
+            {{ data.label }}
+          </li>
+        </ul>
+      </template>
+      <template #filter="{filterModel,filterCallback}">
+        <MultiSelect v-model="filterModel.value" @change="filterCallback()" style="width: 7rem"
+                     :options="option.mediaFormatSet" optionLabel="label" optionValue="value"
+                     display="chip" :filter="true"/>
+      </template>
+    </Column>
+    <Column :header="$t('Bonus')" field="bonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
+      <template #body="{data}">
+        <i class="pi"
+           :class="{'true-icon pi-check-circle': data!.bonus, 'false-icon pi-times-circle': !data!.bonus}"></i>
+      </template>
+      <template #filter="{filterModel,filterCallback}">
+        <Checkbox v-model="filterModel.value" indeterminate binary :filter="true" @change="filterCallback()"/>
+      </template>
+    </Column>
+    <Column v-for="(col, index) of selectedColumns" :field="col.field"
+            :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
+  </DataTable>
 
   <Dialog modal v-model:visible="displayAddDialog"
           style="width: 600px" :header="$t('Add')" class="p-fluid">
-<!--    <BlockUI :blocked="editBlock">-->
-<!--      <div class="formgrid grid">-->
-<!--        <div class="field col">-->
-<!--          <label>{{ $t('Name') }}<span style="color: red">*</span></label>-->
-<!--          <InputText id="name" v-model="itemAdd.name"/>-->
-<!--        </div>-->
-<!--        <div class="field col">-->
-<!--          <label>{{ $t('NameEn') }}</label>-->
-<!--          <InputText id="nameEn" v-model="itemAdd.nameEn"/>-->
-<!--        </div>-->
-<!--        <div class="field col">-->
-<!--          <label>{{ $t('NameZh') }}</label>-->
-<!--          <InputText id="nameZh" v-model="itemAdd.nameZh"/>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="formgrid grid">-->
-<!--        <div class="field col">-->
-<!--          <label>{{ $t('AlbumCatalogNo') }}</label>-->
-<!--          <InputText id="catalogNo" v-model.trim="itemAdd.catalogNo"/>-->
-<!--        </div>-->
-<!--        <div class="field col">-->
-<!--          <label>{{ $t('Barcode') }}</label>-->
-<!--          <InputText id="ean13" v-model.trim="itemAdd.ean13"/>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="formgrid grid">-->
-<!--        <div class="field col-6">-->
-<!--          <label>{{ $t('ReleaseDate') }}<span style="color: red">*</span></label>-->
-<!--          <InputMask v-model="itemAdd!.releaseDate" mask="****/**/**"/>-->
-<!--        </div>-->
-<!--        <div class="field col-3">-->
-<!--          <label>{{ $t('ReleasePrice') }}</label>-->
-<!--          <InputNumber id="price" v-model="itemAdd!.price"/>-->
-<!--        </div>-->
-<!--        <div class="field col-3">-->
-<!--          <label>{{ $t('CurrencyUnit') }}</label>-->
-<!--          <Select v-model="itemAdd.currency" :options="option.currencySet"-->
-<!--                    optionLabel="label" optionValue="value" :placeholder="$t('PlaceholderCurrencyUnit')"/>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="formgrid grid">-->
-<!--        <div class="field col">-->
-<!--          <div class="col-12">-->
-<!--            <label class="mb-3">{{ $t('Bonus') }}</label>-->
-<!--          </div>-->
-<!--          <div class="col-12 mt-4">-->
-<!--            <ToggleSwitch v-model="itemAdd.hasBonus" />-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="formgrid grid">-->
-<!--        <div class="field col-4">-->
-<!--          <label class="mb-3">{{ $t('PublishFormat') }}<span-->
-<!--              style="color: red">*</span></label>-->
-<!--          <MultiSelect id="publishFormat" v-model="itemAdd.publishFormat" :options="option.publishFormatSet"-->
-<!--                       optionLabel="label" optionValue="value" display="chip"/>-->
-<!--        </div>-->
-<!--        <div class="field col-4">-->
-<!--          <label class="mb-3">{{ $t('AlbumFormat') }}<span style="color: red">*</span></label>-->
-<!--          <MultiSelect id="albumFormat" v-model="itemAdd.albumFormat" :options="option.albumFormatSet"-->
-<!--                       optionLabel="label" optionValue="value" display="chip"/>-->
-<!--        </div>-->
-<!--        <div class="field col-4">-->
-<!--          <label class="mb-3">{{ $t('MediaFormat') }}<span style="color: red">*</span></label>-->
-<!--          <MultiSelect id="mediaFormat" v-model="itemAdd.mediaFormat" :options="option.mediaFormatSet"-->
-<!--                       optionLabel="label" optionValue="value" display="chip"/>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="field">-->
-<!--        <label>{{ $t('Remark') }}</label>-->
-<!--        <Textarea id="remark" v-model="itemAdd!.remark" rows="3" cols="20" :autoResize="true"/>-->
-<!--      </div>-->
-<!--    </BlockUI>-->
     <template #footer>
       <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
               :disabled="editBlock"/>
@@ -410,6 +325,6 @@ const exportCSV = () => {
 
 </template>
 
-<style scoped>
-
+<style lang="scss" scoped>
+@use "@/assets/entity-manager";
 </style>

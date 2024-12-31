@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {defineProps} from "vue";
-import "/node_modules/flag-icons/css/flag-icons.min.css";
+import "flag-icons/css/flag-icons.min.css";
 import {META} from '@/config/Web_Const.ts';
 import {useI18n} from "vue-i18n";
 
@@ -17,33 +17,40 @@ const props = defineProps({
 
 <template>
   <table class="table-borderless table-sm ml-2">
-    <tbody class="detail-item-header-table">
+    <tbody class="entity-info-table">
     <tr>
       <td>
-        <i class="pi pi-barcode"/>
-        <strong>{{ $t('BookISBN10') }}</strong>
+        <b>{{ $t('BookType') }}</b>
       </td>
       <td>
-        {{ item.isbn10 }}
+        <a :href="'/db/manager/book?bookType=' + item.subType.value">
+          <Tag class="ml-1" :value="item.subType.label"/>
+        </a>
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-barcode"/>
-        <strong>{{ $t('BookISBN13') }}</strong>
+        <b>{{ $t('PublishLanguage') }}</b>
       </td>
       <td>
-        {{ item.barcode }}
+        <a :href="'/db/manager/book?lang=' + item.lang.value">
+          <Tag class="ml-1" :value="item.lang.label"></Tag>
+        </a>
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-info-circle"></i>
-        <strong>{{ $t('Releases') }}</strong>
+        <b>{{ $t('Releases') }}</b>
       </td>
       <td>
         {{ item.releaseDate }}
         <Tag class="ml-1" :value="item.releaseType.label" />
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        {{ item.barcode }}
         <span :class="'fi fi-' + item.region" style="margin-left: 0.5rem" />
         {{ item.price !== 0 ? item.price : "&nbsp;&nbsp;-" }}
         <span v-if="item.price !== 0">
@@ -60,41 +67,29 @@ const props = defineProps({
                  class="dropdown-item">{{ currency }}</a>
             </div>
           </span>
-      </span>
+        </span>
+        <i v-if="item.bonus" v-tooltip.bottom="{value: $t('Bonus'), class: 'short-tooltip'}"
+           class="ml-1 pi pi-star-fill" style="color: #b7b71e"/>
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-tag"></i>
-        <strong>{{ $t('BookType') }}</strong>
+        <b>{{ $t('Spec') }}</b>
       </td>
       <td>
-        <a :href="'/db/manager/book?bookType=' + item.bookType.value">
-          <Tag class="ml-1" :value="item.bookType.label"></Tag>
-        </a>
+        <span v-if="item.size">{{ item.size }},&nbsp;</span>
+        <span v-if="item.pages">{{ item.pages }}&nbsp;pages</span>
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-language"></i>
-        <strong>{{ $t('Language') }}</strong>
+        <b>{{ $t('Dimensions') }}</b>
       </td>
       <td>
-        <a :href="'/db/manager/book?lang=' + item.lang.value">
-          <Tag class="ml-1" :value="item.lang.label"></Tag>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <i class="pi pi-verified"/>
-        <strong>{{ $t('Bonus') }}</strong>
-      </td>
-      <td>
-        <a v-if="item.bonus" class="ml-3">
-          <i class="pi true-icon pi-check-circle" style="color: green"/>
-        </a>
-        <i v-else class="pi false-icon pi-times-circle"/>
+        <span v-if="item.width">W={{ item.width }}mm&nbsp;</span>
+        <span v-if="item.length">L={{ item.length }}mm&nbsp;</span>
+        <span v-if="item.height">H={{ item.height }}mm&nbsp;</span>
+        <span v-if="item.weight">{{ item.weight }}g</span>
       </td>
     </tr>
     </tbody>

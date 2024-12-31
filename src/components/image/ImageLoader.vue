@@ -6,7 +6,7 @@
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
                filterDisplay="row" v-model:filters="filters"
                paginator :rows="5" :first="first"
-               scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
+               scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="{first} to {last} of {totalRecords}">
@@ -23,14 +23,16 @@
         <template #body="slotProps">
           <div class="edit-img-box">
             <img :src="slotProps.data.thumbUrl70" :alt="slotProps.data.name"
-                 class="edit-image"/>
+                 class="entry-thumb"/>
           </div>
         </template>
       </Column>
       <Column :header="$t('Type')" field="type" filterField="type"
-              :showFilterMenu="false" :sortable="true" style="width: 5rem">
+              :showFilterMenu="false" :sortable="true" style="width: 5rem;">
         <template #body="slotProps">
-          <Tag :value="PublicHelper.value2Label(slotProps.data.type, imageTypeSet)"/>
+          <div style="display: flex;justify-content: center;">
+            <Tag :value="PublicHelper.value2Label(slotProps.data.type, imageTypeSet)"/>
+          </div>
         </template>
         <template #filter="{filterModel,filterCallback}">
           <Select v-model="filterModel.value" :options="imageTypeSet" @change="filterCallback()"
@@ -74,7 +76,8 @@ const imageTypeSet = ref(
     [
       {label: '默认', value: 0},
       {label: '缩略图', value: 1},
-      {label: '封面', value: 2}
+      {label: '封面', value: 2},
+      {label: '其他', value: 99}
     ]
 );
 

@@ -2,8 +2,8 @@
   <BlockUI :blocked="editBlock" class="entity-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
-        <i class="pi pi-align-justify"/>
-        <b>{{ $t('Description') }}</b>
+        <i class="pi pi-align-left"/>
+        <b>{{ props.header }}</b>
       </template>
       <div class="relative">
         <div v-if="userStore.user">
@@ -18,7 +18,7 @@
         <Button v-if="!empty" class="p-button-link absolute top-0 right-0" icon="pi pi-external-link"
                 @click="openTextTingle"
                 v-tooltip.bottom="{value: $t('FullScreen'), class: 'short-tooltip'}"/>
-        <article ref="html" class="markdown-body"/>
+        <article ref="html" class="entity-detail-markdown"/>
       </div>
     </Fieldset>
   </BlockUI>
@@ -90,11 +90,11 @@ const openEditDialog = () => {
 
 const text2Markdown = () => {
   if (text.value == null || text.value === '') {
-    html.value.innerHTML = marked.parse('<span class="emptyInfo"><em>' + t('NoDescription') + '</em></span>');
+    html.value.innerHTML = marked('<span class="emptyInfo"><em>' + t('NoDescription') + '</em></span>');
     empty.value = true;
   } else {
     empty.value = false;
-    html.value.innerHTML = marked.parse(text.value);
+    html.value.innerHTML = marked(text.value);
   }
 }
 
@@ -115,11 +115,5 @@ const tingleModal = new tingle.modal({
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/entity-detail";
-@import 'tingle.js/src/tingle.css';
-
-article {
-  width: 100%;
-  font-size: 13px;
-}
+@use 'tingle.js/src/tingle.css';
 </style>

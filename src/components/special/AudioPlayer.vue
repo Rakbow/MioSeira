@@ -74,7 +74,7 @@ const createAplayer = () => {
 </template>
 
 <style scoped>
-@import 'APlayer/dist/APlayer.min.css';
+@use 'APlayer/dist/APlayer.min.css';
 
 
 .aplayer .aplayer-list ol li {

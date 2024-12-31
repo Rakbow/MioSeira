@@ -3,8 +3,9 @@
     <Toast></Toast>
     <div class="entity-detail-main-col card">
       <div class="entity-header-title">
-        <h1>{{ item.name }}</h1>
-        <div v-for="alias in item.aliases">
+        <h1 style="display: inline;">{{ item.name }}</h1><span style="display: inline;">({{ item.type.label }})</span>
+        <div style="padding: 0 5px"><span>{{ item!.nameEn }}</span><br></div>
+        <div v-for="alias in item.aliases" style="padding: 0 5px">
           <span>{{ alias }}</span><br>
         </div>
       </div>
@@ -16,90 +17,130 @@
           <div class="relative">
             <div v-if="userStore.user">
               <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
-                      @click="loadEditor(item, dialog)" style="right: 10%"
+                      @click="openEditDialog" style="right: 10%"
                       v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}" >
                 <template #icon>
                   <span class="material-symbols-outlined">edit_note</span>
                 </template>
               </Button>
             </div>
-            <AlbumInfo v-if="itemType === META.ITEM_TYPE.ALBUM" :item="item" />
-            <BookInfo v-if="itemType === META.ITEM_TYPE.BOOK" :item="item" />
-            <GoodsInfo v-if="itemType === META.ITEM_TYPE.GOODS" :item="item" />
-            <FigureInfo v-if="itemType === META.ITEM_TYPE.FIGURE" :item="item" />
+            <table class="table-borderless table-sm ml-2">
+              <tbody class="entity-info-table">
+              <tr>
+                <td>
+                  <i class="pi pi-tag"></i>
+                  <strong>{{ $t('Type') }}</strong>
+                </td>
+                <td style="display:inline">
+                  <Tag class="ml-1" :value="item.type.label"/>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <i class="pi pi-calendar"></i>
+                  <strong>{{ $t('Date') }}</strong>
+                </td>
+                <td>
+                  {{ item!.date ? item!.date : "N/A" }}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+<!--            <Info :item="item" />-->
             <StatusEditor :status="item.status" />
             <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
           </div>
         </div>
       </div>
       <div class="m-3">
-        <DetailPad v-if="itemType === META.ITEM_TYPE.BOOK" :header="$t('Summary')" :text="item.summary" />
-        <RelatedCharacters v-if="itemType == META.ITEM_TYPE.GOODS || itemType == META.ITEM_TYPE.FIGURE" />
-        <PersonsInfo />
+<!--        <PersonsInfo />-->
         <DetailPad :header="$t('Description')" :text="item.detail" />
-        <TrackInfo v-if="itemType === META.ITEM_TYPE.ALBUM" />
       </div>
     </div>
     <div class="entity-detail-side-col">
-      <SideImages :images="meta.info.images" :count="meta.info.imageCount" />
-      <RelationInfo />
+<!--      <SideImages v-if="item.type.value !== META.PRODUCT_TYPE.MAIN_SERIES"-->
+<!--                  :images="meta.info.images" :count="meta.info.imageCount" />-->
       <TrafficInfo :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import "@/assets/entity-detail.scss"
 import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
-import {defineAsyncComponent, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import {useUserStore} from "@/store/user.ts";
+const {t} = useI18n();
 import {useDialog} from "primevue/usedialog";
-import SideImages from "@/components/image/SideImages.vue";
-import RelationInfo from "@/components/common/RelationInfo.vue";
+import TrafficInfo from "@/components/common/PageTraffic.vue";
 import PersonsInfo from "@/components/common/PersonInfo.vue";
 import DetailPad from "@/components/common/DetailPad.vue";
-import TrackInfo from "@/components/special/AlbumTrackInfo.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
+import InfoEditor from "@/components/entityEditor/ProductInfoEditor.vue";
 import Like from "@/components/common/EntityLike.vue";
 import {useI18n} from "vue-i18n";
-import {loadEditor} from "@/logic/itemService";
-import {META} from "@/config/Web_Const";
+import {onBeforeMount, ref} from "vue";
 
-const AlbumInfo = defineAsyncComponent(() => import('@/views/detail/info/AlbumDetailInfo.vue'));
-const BookInfo = defineAsyncComponent(() => import('@/views/detail/info/BookDetailInfo.vue'));
-const GoodsInfo = defineAsyncComponent(() => import('@/views/detail/info/GoodsDetailInfo.vue'));
-const FigureInfo = defineAsyncComponent(() => import('@/views/detail/info/FigureDetailInfo.vue'));
-const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
-const RelatedCharacters = defineAsyncComponent(() => import('@/components/common/RelatedCharacters.vue'));
-
+const meta = ref<any>();
 const router = useRouter();
 const toast = useToast();
 const userStore = useUserStore();
 const dialog = useDialog();
-const itemType = ref(0);
-const {t} = useI18n();
 
 const item = ref<any>({});
 const pageInfo = ref({});
 const cover = ref({});
 const option = ref({});
-const meta = ref<any>();
 
 onBeforeMount(() => {
   meta.value = router.currentRoute.value.meta;
   item.value = meta.value.info.item;
-  itemType.value = meta.value.info.type;
   pageInfo.value = meta.value.info.traffic;
   cover.value = meta.value.info.cover;
   option.value = meta.value.info.options;
 });
 
+const openEditDialog = () => {
+  dialog.open(InfoEditor, {
+    props: {
+      header: t('Edit'),
+      style: {
+        width: '800px',
+      },
+      breakpoints:{
+        '960px': '80vw',
+        '640px': '70vw'
+      },
+      modal: true,
+      closable: false
+    },
+    data: {
+      item: item.value,
+      option: option.value,
+    },
+    onClose: (options) => {
+      if(options.data !== undefined) {
+        if(options.data.isUpdate) {
+          location.reload();
+        }
+      }
+    }
+  });
+}
+
 </script>
 
 <style lang="scss" scoped>
+@use "@/assets/entity-detail";
+
+.item-detail-header h5 {
+  /*font-family: "Comic Sans MS", "serif";*/
+  text-align: left !important;
+  margin-top: 0.2em;
+  margin-bottom: 0;
+  color: #788990;
+}
 </style>

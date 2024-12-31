@@ -24,7 +24,6 @@ import ColumnGroup from "primevue/columngroup";
 import ConfirmDialog from "primevue/confirmdialog";
 import ConfirmPopup from "primevue/confirmpopup";
 import ContextMenu from "primevue/contextmenu";
-import Dropdown from "primevue/dropdown";
 import DataTable from "primevue/datatable";
 import DataView from "primevue/dataview";
 import DeferredContent from "primevue/deferredcontent";
@@ -32,11 +31,12 @@ import Dialog from "primevue/dialog";
 import Divider from "primevue/divider";
 import Dock from "primevue/dock";
 import DynamicDialog from "primevue/dynamicdialog";
+import FloatLabel from 'primevue/floatlabel';
 import Fieldset from "primevue/fieldset";
 import FileUpload from "primevue/fileupload";
 import Galleria from "primevue/galleria";
+import IftaLabel from 'primevue/iftalabel';
 import Image from "primevue/image";
-import InlineMessage from "primevue/inlinemessage";
 import Inplace from "primevue/inplace";
 import InputMask from "primevue/inputmask";
 import InputNumber from "primevue/inputnumber";
@@ -93,23 +93,20 @@ import DatePicker from "primevue/datepicker";
 import ConfirmationService from "primevue/confirmationservice";
 import ToastService from "primevue/toastservice";
 import DialogService from "primevue/dialogservice";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
+import Popover from "primevue/popover";
 import PrimeVue from "primevue/config";
-import Aura from "primevue/themes/aura";
+import Aura from '@primevue/themes/aura';
+
+
+import {MyPreset} from '@/config/primeVueStyleThemeConfig';
 
 export const registerPrimeVue = (app: App) => {
     app.use(PrimeVue, {
         ripple: true,
-        // Default theme configuration
-        theme: {
-            // preset: Aura,
-            preset: Aura,
-            options: {
-                prefix: 'p',
-                darkModeSelector: 'system',
-                cssLayer: false
-            }
-        }
-    });
+        theme: {preset: MyPreset}
+    } as any);
     app.directive('tooltip', Tooltip);
     app.directive('badge', BadgeDirective);
     app.directive('ripple', Ripple);
@@ -128,14 +125,12 @@ export const registerPrimeVue = (app: App) => {
     app.component('CascadeSelect', CascadeSelect);
     app.component('Checkbox', Checkbox);
     app.component('Chip', Chip);
-    app.component('InputChips', InputChips);
     app.component('ColorPicker', ColorPicker);
     app.component('Column', Column);
     app.component('ColumnGroup', ColumnGroup);
     app.component('ConfirmDialog', ConfirmDialog);
     app.component('ConfirmPopup', ConfirmPopup);
     app.component('ContextMenu', ContextMenu);
-    app.component('Dropdown', Dropdown);
     app.component('DataTable', DataTable);
     app.component('DataView', DataView);
     app.component('DeferredContent', DeferredContent);
@@ -143,11 +138,13 @@ export const registerPrimeVue = (app: App) => {
     app.component('Divider', Divider);
     app.component('Dock', Dock);
     app.component('DynamicDialog', DynamicDialog);
+    app.component('FloatLabel', FloatLabel);
     app.component('Fieldset', Fieldset);
     app.component('FileUpload', FileUpload);
     app.component('Galleria', Galleria);
+    app.component('IftaLabel', IftaLabel);
+    app.component('InputChips', InputChips);
     app.component('Image', Image);
-    app.component('InlineMessage', InlineMessage);
     app.component('Inplace', Inplace);
     app.component('InputMask', InputMask);
     app.component('InputNumber', InputNumber);
@@ -201,6 +198,9 @@ export const registerPrimeVue = (app: App) => {
     app.component('Select', Select);
     app.component('ToggleSwitch', ToggleSwitch);
     app.component('DatePicker', DatePicker);
+    app.component('IconField', IconField);
+    app.component('InputIcon', InputIcon);
+    app.component('Popover', Popover);
     app.use(ConfirmationService);
     app.use(ToastService);
     app.use(DialogService);

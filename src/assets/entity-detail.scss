@@ -1,12 +1,49 @@
-$golden-text: #beb993;
-$common-background: #2F364F;
-$common-link: #ceffff;
+@use '@/assets/general' as general;
+
+.entity-detail {
+  &-main-col {
+    margin-top: .5rem !important;
+    width: 900px;
+    background: general.$common-root-background;
+    border-radius: 10px;
+  }
+  &-side-col {
+    width: 300px;
+  }
+}
+
+.entity-header-title {
+
+  margin: 1rem;
+
+  span {
+    color: general.$label;
+    display:inline;
+    font: 12px general.$small-font-family;
+    margin-left: .5rem;
+  }
+
+  h1 {
+    font-family: Arial, Helvetica, Meiryo, sans-serif;
+    font-size: 20px;
+    margin: 0;
+    font-weight: bold;
+    color: general.$golden-text;
+    text-align: left;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
 
 .entity-fieldset {
 
+  .p-dataview-content {
+    background: general.$common-background !important;
+  }
+
   .p-fieldset {
-    margin-top: .5rem;
-    background-color: $common-background;
+    margin-bottom: .5rem;
+    background-color: general.$common-background;
 
     &-content {
       padding: 5px;
@@ -14,15 +51,17 @@ $common-link: #ceffff;
 
     &-legend {
 
-      background: #0a53be !important;
+      background: general.$common-root-background !important;
+      border: 1px solid general.$golden-text;
+
 
       i, b {
-        font-size: 1rem;
-        color: $golden-text;
+        font-size: 11px;
+        color: general.$golden-text;
       }
 
       i {
-        margin: .5rem;
+        margin: .3rem;
       }
 
       span {
@@ -30,37 +69,87 @@ $common-link: #ceffff;
       }
 
       b {
-        margin: .5rem .5rem .5rem 0;
+        margin: .3rem .3rem .3rem 0;
       }
     }
   }
 }
 
-.entity-panel {
+.entity-info-table {
 
-  .p-panel {
-    .p-panel {
-      &-header {
-        /* border: 1px solid #dee2e6; */
-        padding: 0.5rem !important;
-        background: #1B273D !important;
-        color: $golden-text !important;
-        border-top-right-radius: 3px !important;
-        border-top-left-radius: 3px !important;
-      }
+  font: 12px general.$small-font-family;
 
-      &-content {
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-        background: #2f364f !important;
-      }
+  td {
+    padding-bottom: 0;
+    padding-top: 1px;
+  }
+
+  i {
+    color: general.$label;
+    margin-right: .25rem;
+    //font-size: 1.3rem;
+    transform: translateY(10%);
+  }
+
+  b {
+    color: general.$label;
+  }
+
+  .p-tag {
+    &-label {
+      font: 10px general.$small-font-family;
     }
+  }
 
-    a {
-      &:visited,
-      &:link {
-        color: $common-link !important;
+}
+
+.entity-detail-markdown {
+  box-sizing: border-box;
+  padding: 5px;
+  font-size: 12px;
+
+  article {
+    width: 750px;
+    font-size: 13px;
+  }
+
+  p {
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.entity-detail-side-panel {
+  .p-panel {
+    border-radius: general.$common-border-radius;
+    &-header {
+      padding: 0 0 0 1rem;
+      background: general.$common-header-background;
+      color: general.$golden-text;
+      border-top-left-radius: general.$common-border-radius;
+      border-top-right-radius: general.$common-border-radius;
+
+      i {
+        margin-right: 0.5rem;
+        font-size: 14px;
+        vertical-align: middle;
+        line-height: inherit;
+        transform: translateY(-10%);
       }
+      span {
+        font-size: 1.1rem;
+      }
+      .p-button-sm {
+        padding: 0 0.5rem;
+      }
+
+    }
+    &-content {
+      padding-left: 10px;
+      padding-right: 10px;
+      background: general.$common-background;
+      border-bottom-left-radius: general.$common-border-radius;
+      border-bottom-right-radius: general.$common-border-radius;
     }
   }
 }

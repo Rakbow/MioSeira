@@ -2,7 +2,8 @@
 import {defineProps} from "vue";
 import {META} from '@/config/Web_Const.ts';
 import {useI18n} from "vue-i18n";
-import "/node_modules/flag-icons/css/flag-icons.min.css";
+import "flag-icons/css/flag-icons.min.css";
+import {PublicHelper} from "@/toolkit/publicHelper";
 
 const {t} = useI18n();
 const props = defineProps({
@@ -17,34 +18,36 @@ const props = defineProps({
 
 <template>
   <table class="table-borderless table-sm ml-2">
-    <tbody class="detail-item-header-table">
+    <tbody class="entity-info-table">
     <tr>
       <td>
-        <i class="pi pi-hashtag" />
-        <strong>{{ $t('AlbumCatalogNo') }}</strong>
+        <b>{{ $t('MediaFormat') }}</b>
       </td>
-      <td>
-        {{ item.catalogNo }}
+      <td v-for="format of item.mediaFormat" style="display:inline">
+        <Tag class="ml-1" :value="format.label"/>
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-barcode" />
-        <strong>{{ $t('Barcode') }}</strong>
+        <b>{{ $t('AlbumFormat') }}</b>
       </td>
-      <td>{{ item.barcode }}
+      <td v-for="format of item.albumFormat" style="display:inline">
+        <Tag class="ml-1" :value="format.label"/>
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-info-circle"></i>
-        <strong>{{ $t('Releases') }}</strong>
+        <b>{{ $t('Releases') }}</b>
       </td>
       <td>
         {{ item.releaseDate }}
-        <Tag class="ml-1" :value="item.releaseType.label" />
-        <span :class="'fi fi-' + item.region" style="margin-left: 0.5rem" />
-        {{ item.price !== 0 ? item.price : "&nbsp;&nbsp;-" }}
+        <span :class="'ml-1 mr-1 fi fi-' + item.region"/>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        {{ item.price !== 0 ? item.price : "&nbsp;&nbsp;" }}
         <span v-if="item.price !== 0">
           <span class="dropdown">
             <a href="#" class="dropdown-toggle"
@@ -59,42 +62,42 @@ const props = defineProps({
                  class="dropdown-item">{{ currency }}</a>
             </div>
           </span>
-      </span>
+        </span>
+        <Tag class="ml-1" :value="item.releaseType.label"/>
+        <i v-if="item.bonus" v-tooltip.bottom="{value: $t('Bonus'), class: 'short-tooltip'}"
+           class="ml-1 pi pi-star-fill" style="color: #b7b71e"/>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        {{ item.catalogId }}&nbsp;•&nbsp;{{ item.barcode }}
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-verified" />
-        <strong>{{ $t('Bonus') }}</strong>
+        <b>{{ $t('Spec') }}</b>
       </td>
       <td>
-        <a v-if="item.bonus" class="ml-3">
-          <i class="pi true-icon pi-check-circle" style="color: green" />
-        </a>
-        <i v-else class="pi false-icon pi-times-circle" />
+        <span v-if="item.discs">{{ item.discs }}&nbsp;discs,&nbsp;</span>
+        <span v-if="item.tracks">{{ item.tracks }}&nbsp;tracks,&nbsp;</span>
+        <span v-if="item.runTime">{{ PublicHelper.secondsToTimeFormat(item.runTime) }}</span>
       </td>
     </tr>
     <tr>
       <td>
-        <i class="pi pi-video" />
-        <strong>{{ $t('MediaFormat') }}</strong>
+        <b>{{ $t('Dimensions') }}</b>
       </td>
-      <td v-for="format of item.mediaFormat" style="display:inline">
-        <Tag class="ml-1" :value="format.label"></Tag>
-      </td>
-    </tr>
-    <tr>
       <td>
-        <i class="pi pi-tag" />
-        <strong>{{ $t('AlbumFormat') }}</strong>
-      </td>
-      <td v-for="format of item.albumFormat" style="display:inline">
-        <Tag class="ml-1" :value="format.label"></Tag>
+        <span v-if="item.width">W={{ item.width }}mm&nbsp;</span>
+        <span v-if="item.length">L={{ item.length }}mm&nbsp;</span>
+        <span v-if="item.height">H={{ item.height }}mm&nbsp;</span>
+        <span v-if="item.weight">{{ item.weight }}g</span>
       </td>
     </tr>
     </tbody>
   </table>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 </style>

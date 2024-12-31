@@ -41,7 +41,7 @@
       <Column :header="$t('Image')" style="flex: 0 0 5rem">
         <template #body="slotProps">
           <img :src="slotProps.data.thumbUrl50" :alt="slotProps.data.name"
-               class="edit-image"/>
+               class="entry-thumb"/>
         </template>
       </Column>
       <Column :header="$t('Name')" field="name" sortable style="flex: 0 0 5rem"/>
@@ -272,7 +272,6 @@ const closeAddDialog = () => {
 }
 
 const openEditDialog = (data) => {
-  console.log(data)
   imageEdit.value = {
     id: data.id,
     url: data.url,

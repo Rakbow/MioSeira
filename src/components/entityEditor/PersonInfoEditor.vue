@@ -55,15 +55,15 @@ const close = () => {
     <div class="formgrid grid">
       <div class="field col">
         <label class="font-bold block mb-2">{{ $t('Name') }}<span style="color: red">*</span></label>
-        <InputText v-model.trim="item.name"/>
+        <InputText v-model="item.name"/>
       </div>
       <div class="field col">
         <label class="font-bold block mb-2">{{ $t('NameZh') }}</label>
-        <InputText v-model.trim="item.nameZh"/>
+        <InputText v-model="item.nameZh"/>
       </div>
       <div class="field col">
         <label class="font-bold block mb-2">{{ $t('NameEn') }}</label>
-        <InputText v-model.trim="item.nameEn"/>
+        <InputText v-model="item.nameEn"/>
       </div>
     </div>
 
@@ -76,13 +76,13 @@ const close = () => {
       </div>
       <div class="field col">
         <label class="font-bold block mb-2">{{ $t('BirthDate') }}</label>
-        <InputMask v-model.trim="item!.birthDate" mask="****/**/**" />
+        <InputMask v-model="item!.birthDate" mask="****/**/**" />
       </div>
     </div>
 
     <div class="p-fluid">
       <label class="font-bold block mb-2">{{ $t('Aliases') }}</label>
-      <InputChips v-model="item.aliases" separator=","  />
+      <AutoComplete v-model="item.aliases" separator="," multiple :typeahead="false"/>
     </div>
 
     <div class="field">

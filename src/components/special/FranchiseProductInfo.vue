@@ -40,7 +40,7 @@ const getProducts = async () => {
       <div v-if="products.length > 0" class="grid justify-content-evenly justify-content-start" style="width: 700px">
         <div class="col-4 mt-2 mb-2 info_bit_small" id="product-image-div"
              v-for="(item, index) of products" :key="index">
-          <div class="sidebar-panel-image-small-div product_info_bit_thumb">
+          <div class="sidebar-panel-image-small-div entry_info_bit_thumb">
             <a :href="'/db/product/' + item.id">
               <img class="sidebar-panel-image-small" :src="item.cover" alt=""
                    draggable="false" oncontextmenu="return false"
@@ -55,7 +55,7 @@ const getProducts = async () => {
               <div class="info_bit_small small_font grid m-0 p-0"
                    v-if="products.length !== 0"
                    v-for="item of products">
-                  <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
+                  <div class="sidebar-panel-image-small-div item_info_bit_thumb mt-2">
                       <a :href="'/db/product/' + item.id">
                           <img class="sidebar-panel-image-small" :src="item.cover" alt=""
                                v-tooltip.bottom="item.name + '/' + item.nameZh">

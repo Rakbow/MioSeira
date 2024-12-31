@@ -33,7 +33,6 @@ const props = defineProps({
 
 onMounted(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
-  console.log(props.count)
 });
 
 const activeIndex = ref(0)
@@ -87,43 +86,46 @@ const openEditDialog = () => {
 
 </script>
 
-<template class="entity-panel">
-  <Panel class="mt-2">
-    <template #header>
+<template>
+  <div class="mt-2 entity-detail-side-panel">
+    <Panel>
+      <template #header>
       <span class="text-start side-panel-header">
         <i class="pi pi-images"/><span><strong>{{ $t('Images') }}</strong></span>
         <Button :label="props.count.toString()" severity="success" size="small" outlined class="ml-2"
                 @click="openLoader" :disabled="props.count === 0"
                 v-tooltip.bottom="{value: $t('ViewAll'), class: 'common-tooltip'}" />
       </span>
-    </template>
-    <template #icons>
-      <div v-if="userStore.user">
-        <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link mr-2" text rounded
-                @click="openEditDialog" v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
-          <span class="pi pi-cog"/>
-        </Button>
-      </div>
-    </template>
-
-    <div class="flex" v-if="props.images.length === 0">
-      <i class="mt-3 ml-4 rkw-side-empty-info">{{ $t('NoImage') }}</i>
-    </div>
-    <ScrollPanel v-else style="max-height: 300px;max-width: 265px">
-      <div v-if="props.images" class="grid justify-content-evenly justify-content-start" style="width: 260px">
-        <div class="col-4 mt-2 mb-2" id="panel-image-div"
-             v-for="(image, index) of props.images" :key="index">
-          <img class="sidebar-panel-image-middle" :src="image.thumbUrl70"
-               draggable="false"
-               oncontextmenu="return false"
-               v-tooltip.bottom="{value: $t('UploadIn') + image.addedTime, class: 'image-tooltip'}"
-               @click="imageClick(index)" alt="" />
+      </template>
+      <template #icons>
+        <div v-if="userStore.user">
+          <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link mr-2" text rounded
+                  @click="openEditDialog" v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
+            <span class="pi pi-cog"/>
+          </Button>
         </div>
+      </template>
+
+      <div class="flex" v-if="props.images.length === 0">
+        <i class="mt-3 ml-4 rkw-side-empty-info">{{ $t('NoImage') }}</i>
       </div>
-      <ScrollTop target="parent" :threshold="100" class="search-scrolltop"
-                 icon="pi pi-arrow-up" />
-    </ScrollPanel>
-  </Panel>
+      <ScrollPanel v-else style="max-height: 300px;max-width: 265px">
+        <div v-if="props.images" class="grid justify-content-evenly justify-content-start" style="width: 260px">
+          <div class="col-4 mt-2 mb-2" id="panel-image-div"
+               v-for="(image, index) of props.images" :key="index">
+            <img class="sidebar-panel-image-middle" :src="image.thumbUrl70"
+                 draggable="false"
+                 oncontextmenu="return false"
+                 v-tooltip.bottom="{value: $t('UploadIn') + image.addedTime, class: 'image-tooltip'}"
+                 @click="imageClick(index)" alt="" />
+          </div>
+        </div>
+        <ScrollTop target="parent" :threshold="100" class="search-scrolltop"
+                   icon="pi pi-arrow-up" />
+      </ScrollPanel>
+    </Panel>
+  </div>
+
   <Galleria :value="props.images"
             v-model:activeIndex="activeIndex" :responsiveOptions="responsiveOptions"
             :numVisible="7" containerStyle="max-width: 800px"
@@ -154,8 +156,8 @@ const openEditDialog = () => {
 
 <style lang="scss" scoped>
 
-@import '@/assets/bootstrap/myBootstrap.min.css';
-@import '@/assets/entity-detail';
+@use '@/assets/bootstrap/myBootstrap.min.css';
+@use '@/assets/entity-detail';
 
 .responsive-image {
   max-width: 70vw; /* 60% of viewport width */

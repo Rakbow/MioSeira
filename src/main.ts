@@ -4,15 +4,16 @@ import "@/assets/font.css";
 import "@/assets/global.css";
 import "@/assets/search.css";
 import "@/assets/topbar.css";
+import "@/assets/general.scss";
 
 import App from "./App.vue";
 import {createMetaManager} from "vue-meta";
 import {createApp} from "vue";
-import router from "./router.js";
+import router from "./router.js";// vue-router
 import {createPinia} from 'pinia';
+import piniaPersistedState from 'pinia-plugin-persistedstate';
 import 'material-symbols';
-
-import i18n from '@/config/i18n';
+import i18n from '@/config/i18n';// vue-i18n
 import {registerPrimeVue} from '@/config/primeVueConfig';
 
 import {MdEditor} from 'md-editor-v3';
@@ -27,6 +28,7 @@ import {API} from "@/config/Web_Helper_Strs";
 const app = createApp(App);
 const metaManager = createMetaManager();
 const pinia = createPinia();
+pinia.use(piniaPersistedState); // 使用持久化插件
 const cookie = useCookies();
 const locale = cookie.get('locale') || 'zh';
 

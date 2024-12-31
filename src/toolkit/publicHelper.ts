@@ -1,7 +1,8 @@
-import {Attribute, EntityInfo, META} from "@/config/Web_Const";
+import {Attribute, EntityInfo} from "@/config/Web_Const";
 import {RouteLocationNormalizedLoaded} from "vue-router";
 
 export class PublicHelper {
+
     static copyToClip = (content: any) => {
         const aux = document.createElement("input");
         aux.setAttribute("value", content);
@@ -45,6 +46,7 @@ export class PublicHelper {
         {id: 0, name: 'item'},
         {id: 1, name: 'entry'},
         {id: 2, name: 'person'},
+        {id: 5, name: 'character'},
         {id: 99, name: 'product'},
         {id: 100, name: 'franchise'}
     ]
@@ -76,6 +78,17 @@ export class PublicHelper {
         info.type = this.getEntityType(typeName);
         info.id = parseInt(route.params.id.toString());
         return info;
+    }
+
+
+    static secondsToTimeFormat = (seconds: number): string => {
+        const pad = (num: number): string => num.toString().padStart(2, '0');
+
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
     }
 
 }

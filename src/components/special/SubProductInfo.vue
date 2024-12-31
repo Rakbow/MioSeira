@@ -6,7 +6,6 @@ import {PublicHelper} from "@/toolkit/publicHelper.ts";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntityInfo, META} from "@/config/Web_Const";
-import {groupPersonnel, PersonnelGroup} from "@/logic/relationService";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 
@@ -16,12 +15,12 @@ const entityInfo = ref<EntityInfo>();
 const route = useRoute();
 const dialog = useDialog();
 const userStore = useUserStore();
-const personnel = ref<PersonnelGroup[]>([]);
+const subProducts = ref<any>([]);
 const editBlock = ref(false);
 
 onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
-  getPersonnel()
+  getSubProduct()
 });
 
 onMounted(() => {
@@ -39,39 +38,24 @@ const openEditDialog = () => {
       closable: true
     },
     data: {
-      relatedGroup: META.RELATION_RELATED_GROUP.RELATED_PERSON,
-      direction: META.RELATION_RELATED_DIRECTION.POSITIVE
+      direction: META.RELATION_RELATED_DIRECTION.NEGATIVE
     },
     onClose: (options) => {
       if (options.data !== undefined) {
         if (options.data.isUpdate) {
-          getPersonnel();
+          getSubProduct();
         }
       }
     }
   });
 }
 
-const getPersonnel = async () => {
+const getSubProduct = async () => {
   editBlock.value = true;
-  let param = {
-    direction: META.RELATION_RELATED_DIRECTION.POSITIVE,
-    relatedGroup: META.RELATION_RELATED_GROUP.RELATED_PERSON,
-    entityType: entityInfo.value?.type,
-    entityId: entityInfo.value?.id
-  }
-  const res = await axios.post(API.GET_RELATED_ENTITY, param);
+  const res = await axios.post(API.GET_SUB_PRODUCTS, {id: entityInfo.value?.id});
   if (res.state === axios.SUCCESS)
-    personnel.value = groupPersonnel(res.data);
+    subProducts.value = res.data;
   editBlock.value = false;
-}
-
-const chunkArray = (array, chunkSize) => {
-  const result = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    result.push(array.slice(i, i + chunkSize));
-  }
-  return result;
 }
 
 </script>
@@ -80,8 +64,8 @@ const chunkArray = (array, chunkSize) => {
   <BlockUI :blocked="editBlock" class="entity-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
-        <i class="pi pi-users"/>
-        <b>{{ $t('Persons') }}</b>
+        <i class="pi pi-th-large"/>
+        <b>{{ $t('Product') }}</b>
       </template>
       <div class="relative">
         <div v-if="userStore.user">
@@ -94,23 +78,20 @@ const chunkArray = (array, chunkSize) => {
           </Button>
         </div>
 
-        <div class="ml-2 mt-1" v-if="personnel.length !== 0">
+        <div class="ml-2 mt-1" v-if="subProducts.length !== 0">
           <table class="table-borderless">
             <tbody class="person-table">
-            <tr v-for="item in personnel" :key="item.role.label">
-              <td><span class="small-font" style="color: #788990;">{{ item.role.label }}</span></td>
+            <tr>
+              <td><h4>{{ $t('Date') }}</h4></td>
+              <td><h4>{{ $t('Product') }}</h4></td>
+            </tr>
+            <tr v-for="item in subProducts">
+              <td style="color: #788990;">{{ (item as any).date }}</td>
               <td class="a_with_underline">
-                <template v-for="(chunk, chunkIndex) in chunkArray(item.entities, 9)" :key="chunkIndex">
-                  <div style="display: block;">
-                    <template v-for="(person, index) in chunk" :key="person.value">
-                      <router-link :to="'/db/person/' + person.value">
-                        <span style="white-space: nowrap;">{{ person.label }}</span>
-                      </router-link>
-                      <span v-if="person.remark">&nbsp;({{ (person as any).remark }})</span>
-                      <span v-if="index < chunk.length - 1">, </span>
-                    </template>
-                  </div>
-                </template>
+                <a :href="`${API.PRODUCT_DETAIL}/${item.id}`" :key="item.id">
+                  <span style="white-space: nowrap;" :class="'product-type-' + item.type.value">{{ item.name }}</span>
+                </a>
+                <small>&nbsp;({{ (item as any).type.label }})</small>
               </td>
             </tr>
             </tbody>
@@ -132,7 +113,25 @@ const chunkArray = (array, chunkSize) => {
   font-size: 9pt;
 }
 
-.person-table strong {
-  color: #788990;
+.person-table h4 {
+  font-size: 9pt;
+  color: #beb993;
+  margin: 5px 0;
+}
+
+$product-colors: (
+    0: yellowgreen,
+    1: #00BFFF,
+    2: violet,
+    3: orange,
+    4: #0FFFFF,
+    5: #FFFFFF,
+    99: silver
+);
+
+@each $key, $value in $product-colors {
+  .product-type-#{$key} {
+    color: $value;
+  }
 }
 </style>

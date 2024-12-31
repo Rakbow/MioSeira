@@ -1,57 +1,44 @@
-<script setup>
-import {defineProps, getCurrentInstance} from "vue";
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
+<script setup lang="ts">
+import {defineProps} from "vue";
+import {useI18n} from "vue-i18n";
+const {t} = useI18n();
 
 const props = defineProps({
   item: {
     type: Object,
-    required: true
-  }
+    required: true,
+    default: () => ({})
+  } as any
 });
 
 </script>
 
 <template>
   <table class="table-borderless table-sm ml-2">
-    <tbody class="detail-item-header-table">
-    <tr>
-      <td>
-        <i class="pi pi-th-large"></i>
-        <strong>{{ $const.Franchise }}</strong>
-      </td>
-      <td>
-        <router-link :to="'/db/franchise/' + item.franchise.value">
-          {{ item.franchise.label }}
-        </router-link>
-      </td>
-    </tr>
+    <tbody class="entity-info-table">
     <tr>
       <td>
         <i class="pi pi-tag"></i>
-        <strong>{{ $const.Category }}</strong>
+        <strong>{{ $t('Category') }}</strong>
       </td>
       <td style="display:inline">
-        <a :href="'/db/manager/product?category=' + item.category.value">
-          <Tag class="ml-1" :value="item.category.label"></Tag>
+        <a :href="'/db/manager/product?type=' + item.type.value">
+          <Tag class="ml-1" :value="item.type.label"></Tag>
         </a>
       </td>
     </tr>
     <tr>
       <td>
         <i class="pi pi-calendar"></i>
-        <strong>{{ $const.ReleaseDate }}</strong>
+        <strong>{{ $t('ReleaseDate') }}</strong>
       </td>
       <td>
-        {{ item.releaseDate ? item.releaseDate : "N/A" }}
+        {{ item.date ? item.date : "N/A" }}
       </td>
     </tr>
     </tbody>
   </table>
 </template>
 
-<style scoped>
-.detail-list-icon {
-  margin-right: 0.25rem;
-  font-size: 1.3rem;
-}
+<style lang="scss" scoped>
 </style>

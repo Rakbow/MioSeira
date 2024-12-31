@@ -49,7 +49,7 @@ const props = defineProps({
 
 <style scoped>
 
-@import '@/assets/bootstrap/myBootstrap.min.css';
+@use '@/assets/bootstrap/myBootstrap.min.css';
 
 /* rakbow page info */
 

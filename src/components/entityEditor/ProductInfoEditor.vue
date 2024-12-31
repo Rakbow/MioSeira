@@ -22,8 +22,7 @@ const item = ref<any>({});
 const option = ref({});
 
 const init = () => {
-  item.value.category = item.value.category.value;
-  item.value.franchise = item.value.franchise.value;
+  item.value.type = item.value.type.value;
 }
 
 const submit = () => {
@@ -65,22 +64,18 @@ const close = () => {
       <label>{{$t('NameZh')}}<span style="color: red">*</span></label>
       <InputText id="nameZh" v-model="item.nameZh" />
     </div>
-    <div class="formgrid grid">
-      <div class="field col-6">
-        <label>{{$t('ReleaseDate')}}<span style="color: red">*</span></label>
-        <DatePicker id="releaseDate" v-model="item!.releaseDate" dateFormat="yy/mm/dd"
-                  :showButtonBar="true" :showIcon="true" />
-      </div>
-      <div class="field col-6">
-        <label>{{$t('Category')}}</label>
-        <Select v-model="item.category" :options="option.productCategorySet"
-                  optionLabel="label" optionValue="value" />
-      </div>
+    <div class="field">
+      <label>{{ $t('Aliases') }}</label>
+      <AutoComplete v-model="item.aliases" separator="," multiple :typeahead="false"/>
     </div>
     <div class="formgrid grid">
       <div class="field col-6">
-        <label>{{$t('Franchise')}}</label>
-        <Select v-model="item.franchise" :options="option.franchiseSet"
+        <label>{{$t('ReleaseDate')}}<span style="color: red">*</span></label>
+        <InputMask v-model="item.date" mask="****/**/**"/>
+      </div>
+      <div class="field col-6">
+        <label>{{$t('Type')}}</label>
+        <Select v-model="item.type" :options="option.productTypeSet"
                   optionLabel="label" optionValue="value" />
       </div>
     </div>

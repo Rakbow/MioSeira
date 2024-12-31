@@ -1,4 +1,19 @@
 export const META = {
+    STATIC_DOMAIN: 'https://static.rakbow.com/',
+    RELATION_RELATED_DIRECTION: {
+        POSITIVE: 1,
+        NEGATIVE: -1
+    },
+    RELATION_RELATED_GROUP: {
+        DEFAULT: 0,
+        RELATED_PERSON: 1,
+        RELATED_ENTRY: 2,
+        RELATED_ITEM: 3,
+        RELATED_CHAR: 4,
+        RELATED_PRODUCT: 5,
+        MATERIAL: 6,
+        EVENT: 7
+    },
     ACTION: {
         NO_ACTION: 0,
         INSERT: 1,
@@ -25,12 +40,31 @@ export const META = {
         GOODS: 5,
         FIGURE: 6,
     },
+    PRODUCT_TYPE: {
+        ANIME: 0,
+        NOVEL: 1,
+        COMIC: 2,
+        GAME: 3,
+        MOVIE: 4,
+        TV_SERIES: 5,
+        OTHER: 99,
+        MAIN_SERIES: 100,
+    },
     ENTITY: {
         ITEM: 0,
         ENTRY: 1,
         PERSON: 2,
+        CHARACTER: 5,
         PRODUCT: 99,
         FRANCHISE: 100
+    },
+    ENTRY_SEARCH_TYPE: {
+        PRODUCT: 0,
+        PERSON: 1,
+        CHARACTER: 2,
+        CLASSIFICATION: 3,
+        MATERIAL: 4,
+        EVENT: 5,
     },
     LINK_TYPE: {
         OFFICIAL: 0,
@@ -54,6 +88,19 @@ export const META = {
         {label: "eu", value: "eu"},
         {label: "us", value: "us"},
         {label: "gb", value: "gb"}
+    ],
+    ENTITY_ICON_SET: [
+        { icon: 'pi pi-bars', value: '1', disabled: false },
+        { icon: 'pi pi-users', value: '2', disabled: false },
+        { icon: 'pi pi-th-large', value: '99', disabled: false },
+    ],
+    ITEM_TYPE_SET: [
+        { icon: 'music_note', value: '1', disabled: false },
+        { icon: 'menu_book', value: '2', disabled: false },
+        { icon: 'album', value: '3', disabled: true },
+        { icon: 'stadia_controller', value: '4', disabled: true },
+        { icon: 'package_2', value: '5', disabled: true },
+        { icon: 'package_2', value: '6', disabled: true }
     ]
 }
 

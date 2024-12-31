@@ -18,8 +18,6 @@ const first = ref();
 const initQueryParam = async () => {
   let page = !_isUndefined(route.query.page) ? route.query.page : 1;
   filters.value.name.value = !_isUndefined(route.query.name) ? route.query.name : '';
-  filters.value.nameZh.value = !_isUndefined(route.query.nameZh) ? route.query.nameZh : '';
-  filters.value.nameEn.value = !_isUndefined(route.query.nameEn) ? route.query.nameEn : '';
   loading.value = true;
   queryParams.value = {
     first: (page - 1) * dt.value.rows,
@@ -34,20 +32,16 @@ const initQueryParam = async () => {
 
 const updateQueryParam = () => {
   // 获取当前查询参数对象
-  const currentQueryParams = { ...route.query };
+  const currentQueryParams = {...route.query};
 
   // 修改查询参数的值
-  currentQueryParams.page = (queryParams.value.first/dt.value.rows + 1).toString();
+  currentQueryParams.page = (queryParams.value.first / dt.value.rows + 1).toString();
   currentQueryParams.size = dt.value.rows;
-  if(!_isEmpty(queryParams.value.filters.name.value))
+  if (!_isEmpty(queryParams.value.filters.name.value))
     currentQueryParams.name = queryParams.value.filters.name.value;
-  if(!_isEmpty(queryParams.value.filters.nameZh.value))
-    currentQueryParams.nameZh = queryParams.value.filters.nameZh.value;
-  if(!_isEmpty(queryParams.value.filters.nameEn.value))
-    currentQueryParams.nameEn = queryParams.value.filters.nameEn.value;
 
   // 使用 router.push 更新 URL
-  router.push({ path: route.path, query: currentQueryParams });
+  router.push({path: route.path, query: currentQueryParams});
 };
 //endregion
 
@@ -65,9 +59,7 @@ const itemAdd = ref<any>({});
 const dt = ref();
 const filters = ref({
   'name': {value: ''},
-  'nameZh': {value: ''},
-  'nameEn': {value: ''},
-  'category': {value: null},
+  'type': {value: null},
 });
 const loading = ref(false);
 const editBlock = ref(false);
@@ -82,10 +74,9 @@ const columns = ref([
 const queryParams = ref({});
 const option = ref({});
 
-const initOption= async () => {
+const initOption = async () => {
   const res = await axios.post(API.GET_ENTITY_OPTION, {type: META.ENTITY.PRODUCT});
-  option.value.productCategorySet = res.data.productCategorySet;
-  option.value.franchiseSet = res.data.franchiseSet;
+  option.value.productTypeSet = res.data.productTypeSet;
 }
 
 const onPage = (ev) => {
@@ -143,7 +134,7 @@ const openEditDialog = (data) => {
       style: {
         width: '600px',
       },
-      breakpoints:{
+      breakpoints: {
         '960px': '70vw',
         '640px': '60vw'
       },
@@ -188,17 +179,15 @@ const exportCSV = () => {
 
 <template>
   <div class="flex justify-content-center">
-    <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items.length !== 0"
+    <DataTable ref="dt" :value="items" class="p-datatable-sm small-font" :alwaysShowPaginator="items.length !== 0"
                lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
-               @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
-               filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn']"
-               paginator :rows="10" :first="first" stripedRows columnResizeMode="fit"
+               @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
+               paginator :rows="10" :first="first" stripedRows size="small"
                v-model:selection="selectedItems" dataKey="id" removableSort
-               scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
+               scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               currentPageReportTemplate="{first} to {last} of {totalRecords}"
-               responsiveLayout="scroll">
+               currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">
           <div class="col-8">
@@ -207,8 +196,8 @@ const exportCSV = () => {
             <Button :label="$t('Delete')" icon="pi pi-trash" class="p-button-danger p-button-sm mr-2"
                     @click="confirmDeleteSelected"
                     :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-            <Button label="导出(CSV)" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
-                    @click="exportCSV()" style="width: 8em"/>
+            <Button :label="$t('Export')" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
+                    @click="exportCSV()" style="width: 6em"/>
           </div>
           <div class="col-4">
             <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
@@ -229,49 +218,38 @@ const exportCSV = () => {
       <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
       <Column style="flex: 0 0 3rem">
         <template #body="slotProps">
-          <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)" />
+          <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
         </template>
       </Column>
       <Column :header="$t('Name')" field="name" :showFilterMenu="false"
-              exportHeader="name" sortable style="flex: 0 0 5rem">
+              exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
         <template #body="slotProps">
           <a :href="API.PRODUCT_DETAIL + '/' + slotProps.data.id">
-            {{ slotProps.data.name }}
+            <div class="text-container">
+              {{ slotProps.data.name }}
+            </div>
           </a>
         </template>
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$t('NameZh')" field="nameZh" sortable :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="$t('NameEn')" field="nameEn" sortable :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="$t('ReleaseDate')" field="releaseDate" sortable />
-      <Column :header="$t('Franchise')" field="franchise" sortable >
+      <Column :header="$t('NameZh')" field="nameZh" class="text-container" :sortable="true"/>
+      <Column :header="$t('NameEn')" field="nameEn" class="text-container" :sortable="true"/>
+      <Column :header="$t('ReleaseDate')" field="date" :sortable="true"/>
+      <Column :header="$t('Category')" field="type" :sortable="true" :showFilterMenu="false">
         <template #body="slotProps">
-          {{ slotProps.data.franchise.label }}
-        </template>
-      </Column>
-      <Column :header="$t('Category')" field="category" sortable :showFilterMenu="false">
-        <template #body="slotProps">
-          {{ slotProps.data.category.label }}
+          {{ slotProps.data.type.label }}
         </template>
         <template #filter="{filterModel,filterCallback}">
           <MultiSelect v-model="filterModel.value" @change="filterCallback()"
-                       :options="option.productCategorySet" :placeholder="$t('Whole')"
+                       :options="option.productTypeSet" :placeholder="$t('Whole')"
                        optionLabel="label" optionValue="value" display="chip" filter
                        style="width: 9rem"/>
         </template>
       </Column>
       <Column v-for="(col, index) of selectedColumns" :field="col.field"
-              :header="col.header" :key="col.field + '_' + index" sortable/>
+              :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
     </DataTable>
   </div>
 
@@ -279,38 +257,35 @@ const exportCSV = () => {
           style="width: 600px" :header="$t('Add')" class="p-fluid">
     <BlockUI :blocked="editBlock">
       <div class="field col">
-        <label>{{$t('Name')}}<span style="color: red">*</span></label>
-        <InputText id="name" v-model="itemAdd.name" />
+        <label>{{ $t('Name') }}<span style="color: red">*</span></label>
+        <InputText id="name" v-model="itemAdd.name"/>
       </div>
       <div class="field col">
-        <label>{{$t('NameEn')}}<span style="color: red">*</span></label>
-        <InputText id="nameEn" v-model="itemAdd.nameEn" />
+        <label>{{ $t('NameEn') }}<span style="color: red">*</span></label>
+        <InputText id="nameEn" v-model="itemAdd.nameEn"/>
       </div>
       <div class="field col">
-        <label>{{$t('NameZh')}}<span style="color: red">*</span></label>
-        <InputText id="nameZh" v-model="itemAdd.nameZh" />
+        <label>{{ $t('NameZh') }}<span style="color: red">*</span></label>
+        <InputText id="nameZh" v-model="itemAdd.nameZh"/>
+      </div>
+      <div class="field">
+        <label>{{ $t('Aliases') }}</label>
+        <AutoComplete v-model="itemAdd.aliases" separator="," multiple :typeahead="false"/>
       </div>
       <div class="formgrid grid">
         <div class="field col-6">
-          <label>{{$t('ReleaseDate')}}<span style="color: red">*</span></label>
-          <InputMask v-model="itemAdd!.releaseDate" mask="****/**/**" />
+          <label>{{ $t('ReleaseDate') }}<span style="color: red">*</span></label>
+          <InputMask v-model="itemAdd.date" mask="****/**/**"/>
         </div>
         <div class="field col-6">
-          <label>{{$t('Category')}}</label>
-          <Select v-model="itemAdd.category" :options="option.productCategorySet"
-                    optionLabel="label" optionValue="value" />
-        </div>
-      </div>
-      <div class="formgrid grid">
-        <div class="field col-6">
-          <label>{{$t('Franchise')}}</label>
-          <Select v-model="itemAdd.franchise" :options="option.franchiseSet"
-                    optionLabel="label" optionValue="value" />
+          <label>{{ $t('Category') }}</label>
+          <Select v-model="itemAdd.type" :options="option.productTypeSet"
+                  optionLabel="label" optionValue="value"/>
         </div>
       </div>
       <div class="field">
-        <label>{{$t('Remark')}}</label>
-        <Textarea id="remark" v-model="itemAdd!.remark" rows="3" cols="20" :autoResize="true" />
+        <label>{{ $t('Remark') }}</label>
+        <Textarea id="remark" v-model="itemAdd!.remark" rows="3" cols="20" :autoResize="true"/>
       </div>
     </BlockUI>
     <template #footer>
@@ -323,6 +298,6 @@ const exportCSV = () => {
 
 </template>
 
-<style scoped>
-
+<style lang="scss" scoped>
+@use "@/assets/entity-manager";
 </style>

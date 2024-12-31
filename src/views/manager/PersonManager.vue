@@ -212,8 +212,8 @@ const exportCSV = () => {
             <Button :label="$t('Delete')" icon="pi pi-trash" class="p-button-danger p-button-sm mr-2"
                     @click="confirmDeleteSelected"
                     :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-            <Button label="导出(CSV)" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
-                    @click="exportCSV()" style="width: 8em"/>
+            <Button :label="$t('Export')" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
+                    @click="exportCSV()" style="width: 6em"/>
           </div>
           <div class="col-4">
             <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
@@ -314,7 +314,7 @@ const exportCSV = () => {
         </div>
         <div class="field col">
           <label class="font-bold block mb-2">{{ $t('BirthDate') }}</label>
-          <InputMask v-model.trim="itemAdd!.birthDate" mask="****/**/**" />
+          <InputMask v-model="itemAdd!.birthDate" mask="****/**/**" />
         </div>
       </div>
 

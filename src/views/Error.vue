@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import {onBeforeMount, ref} from "vue";
+import {META} from "@/config/Web_Const";
 
 const router = useRouter();
 const errorMessage = ref('');
@@ -30,7 +31,7 @@ const goBack = () => {
         <div class="p-3 h-full">
           <Card style="overflow: hidden">
             <template #header>
-              <img alt="error" src="https://img.rakbow.com/common/error/404.jpg" />
+              <img alt="error" :src="`${META.STATIC_DOMAIN}common/404.jpg`" />
             </template>
             <template #title>系统消息</template>
             <template #subtitle>错误</template>

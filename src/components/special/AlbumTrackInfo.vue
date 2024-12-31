@@ -2,7 +2,7 @@
   <BlockUI :blocked="editBlock" class="entity-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
-        <span class="material-symbols-outlined fieldset-icon">queue_music</span>
+        <i class="pi pi-align-justify"/>
         <b>{{ $t('TrackInfo') }}</b>
       </template>
 
@@ -23,34 +23,33 @@
           </div>
           <div v-else>
             <p class="text-start mt-2">
-              {{ $t('TotalDiscNum') }}: <b>{{ info!.discs.length }} </b>
-              {{ $t('TotalTrackNum') }}: <b>{{ info!.totalTracks }} </b>
-              {{ $t('TotalLength') }}: <b>{{ info!.totalDuration }}</b>
+              {{ $t('TotalDiscNum') }}: <b>{{ info.discs.length }} </b>
+              {{ $t('TotalTrackNum') }}: <b>{{ info.totalTracks }} </b>
+              {{ $t('TotalLength') }}: <b>{{ info.totalDuration }}</b>
             </p>
             <div v-for="disc in info.discs">
-              <h5>
+              <b class="ml-2 small-font">
                 {{ `Disc ${disc!.serial}   ${disc.code}` }}
-              </h5>
-              <table class="table table-sm table-hover">
-                <thead />
-                <tbody class="detail-item-track-table">
-                <tr v-for="track in disc.tracks">
-                  <th>{{ track.serial }}</th>
-                  <td nowrap="nowrap">
-                    <router-link :to="'/db/ep/' + track.id">
-                      {{ track.title }}
-                    </router-link>
-                  </td>
-                  <td class="text-end" style="color: #b0c4de">
-                    {{ track.duration }}
-                  </td>
-                </tr>
+              </b>
+              <table class="pb-0 table table-sm table-hover detail-item-track-table">
+                <tbody>
+                  <tr v-for="track in disc.tracks">
+                    <th class="small-font" style="width: 20px;">{{ track.serial }}</th>
+                    <td nowrap="nowrap">
+                      <router-link :to="'/db/ep/' + track.id">
+                        <span>{{ track.title }}</span>
+                      </router-link>
+                    </td>
+                    <td class="text-end" style="color: #b0c4de">
+                      <span>{{ track.duration }}</span>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
-              <p class="text-end">
-                {{ t('TrackNum') }}: <b>{{ disc!.tracks.length }}</b>
-                <span>&nbsp;{{ $t('DiscLength') }}: <b>{{ disc.duration }}</b></span>
-              </p>
+              <span class="small-font" style="float: right; margin: 1px;">
+                <span style="color: gray">&nbsp;{{ $t('TrackNum') }}: </span>{{ disc!.tracks.length }}
+                <span style="color: gray">&nbsp;{{ $t('DiscLength') }}: </span>{{ disc.duration }}
+              </span>
             </div>
           </div>
         </div>
@@ -103,8 +102,10 @@ const dialog = useDialog();
 const userStore = useUserStore();
 const editBlock = ref(false);
 const loading = ref(false);
-const info = ref<any>({
-  discs: <any[]>[]
+const info = ref({
+  discs: [],
+  totalTracks: 0,
+  totalDuration: 0,
 });
 
 const reloadTrackInfo = async () => {
@@ -122,11 +123,11 @@ const openEditDialog = () => {
     props: {
       header: t('TrackInfo'),
       style: {
-        width: '60vw',
-        minWidth: '60vw'
+        width: '40vw',
+        minWidth: '40vw'
       },
       breakpoints: {
-        '960px': '60vw',
+        '960px': '40vw',
         '640px': '40vw'
       },
       modal: true,
@@ -148,5 +149,30 @@ const openEditDialog = () => {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/entity-detail";
+
+.detail-item-track-table {
+
+  .track-time {
+    font-size: 13px;
+    color: #B0C4DE;
+  }
+
+  td {
+    padding-bottom: 0;
+    padding-top: 0;
+    border-bottom: 1px solid #3C405C;
+
+    span {
+      font-size: 11px;
+    }
+
+  }
+  th {
+    width: 50px;
+    padding-bottom: 0;
+    padding-top: 4px;
+    color: #788990;
+    border-bottom: 1px solid #3C405C;
+  }
+}
 </style>

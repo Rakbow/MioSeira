@@ -1,55 +1,42 @@
-<script setup>
-import {defineAsyncComponent, getCurrentInstance, onBeforeMount, onMounted, ref} from 'vue';
+<script setup lang="ts">
+import '@/assets/entity-detail.scss';
+import {defineAsyncComponent, onBeforeMount, ref} from 'vue';
 import {useUserStore} from "@/store/user.ts";
 import {useDialog} from "primevue/usedialog";
 import {PublicHelper} from "@/toolkit/publicHelper.ts";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
 import {useRoute} from "vue-router";
-
-
+import {useI18n} from "vue-i18n";
+import {API} from "@/config/Web_Helper_Strs";
+import {EntityInfo, META} from "@/config/Web_Const";
 const editor = defineAsyncComponent(() => import('@/components/common/RelationEditor.vue'));
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
-const $api = getCurrentInstance().appContext.config.globalProperties.$api;
 
+const {t} = useI18n();
+const entityInfo = ref<EntityInfo>();
 onBeforeMount(() => {
-  // relatedItems.value = props.relations;
-});
-
-onMounted(() => {
-  getEntityInfo();
+  entityInfo.value = PublicHelper.getEntityInfo(route);
   getRelations();
 });
-// const props = defineProps({
-//   relations: {
-//     type: Array,
-//     required: true,
-//   },
-// });
 
 const route = useRoute();
 const dialog = useDialog();
 const userStore = useUserStore();
-const entityType = ref();
-const entityId = ref();
-const relatedItems = ref({});
+const relatedEntities = ref({});
 const editBlock = ref(false);
 
 const openEditDialog = () => {
   dialog.open(editor, {
     props: {
-      header: $const.Relation,
+      header: `${t('RelatedEntity')}-${t('Edit')}`,
       style: {
-        width: '60vw',
-      },
-      breakpoints: {
-        '960px': '60vw',
-        '640px': '40vw'
+        width: '900px',
       },
       modal: true,
-      closable: false
+      closable: true
     },
     data: {
-      relatedItems: relatedItems.value
+      relatedGroup: META.RELATION_RELATED_GROUP.RELATED_PRODUCT,
+      direction: META.RELATION_RELATED_DIRECTION.POSITIVE
     },
     onClose: (options) => {
       if (options.data !== undefined) {
@@ -64,82 +51,79 @@ const openEditDialog = () => {
 const getRelations = async () => {
   editBlock.value = true;
   let param = {
-    entityType: entityType.value,
-    entityId: entityId.value
+    relatedGroup: META.RELATION_RELATED_GROUP.RELATED_PRODUCT,
+    entityType: entityInfo.value?.type,
+    entityId: entityInfo.value?.id,
+    direction: META.RELATION_RELATED_DIRECTION.POSITIVE,
   }
-  const res = await axios.post($api.GET_RELATION, param);
+  const res = await axios.post(API.GET_RELATED_ENTITY, param);
   if (res.state === axios.SUCCESS)
-    relatedItems.value = res.data;
+    relatedEntities.value = res.data;
   editBlock.value = false;
 }
 
-const getEntityInfo = () => {
-  let typeName = route.path.split('/')[2];
-  entityType.value = PublicHelper.getEntityType(typeName);
-  entityId.value = route.params.id;
-}
+const relatedEntitiesTotal = 0;
 
 </script>
 
 <template>
-  <Panel class="mt-2">
-    <template #header>
-      <span class="text-start side-panel-header">
-          <i class="pi pi-list"/><span><strong>{{ $const.RelatedItem }}</strong></span>
-      </span>
-    </template>
-    <template #icons>
-      <div v-if="userStore.user">
-        <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link mr-2" text rounded
-                @click="openEditDialog" v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}">
+  <div class="mt-2 entity-detail-side-panel">
+    <Panel>
+      <template #header>
+        <span>
+            <i class="pi pi-list"/><span><strong>{{ $t('RelatedProduct') }}</strong></span>
+        </span>
+      </template>
+      <template #icons>
+        <Button v-if="userStore.user && userStore.user.type > 1" class="p-panel-header-icon p-link ml-2" text rounded
+                @click="openEditDialog" v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
           <span class="pi pi-cog"/>
         </Button>
-      </div>
-    </template>
-    <BlockUI :blocked="editBlock">
-      <div class="grid" v-if="relatedItems.length > 0">
-          <span class="small_font">
-              <div class="info_bit_small small_font grid m-0 p-0"
-                   v-if="relatedItems.length !== 0"
-                   v-for="item of relatedItems">
-                  <div class="sidebar-panel-image-small-div album_info_bit_thumb mt-2">
-                      <a :href="'/db/' + PublicHelper.getEntityPath(item.entityType.value) + '/' + item.entityId">
-                          <img class="sidebar-panel-image-small" :src="`https://${item.cover}`" alt=""
-                               v-tooltip.bottom="item.name + '\n' + item.nameZh + '\n' + item.nameEn">
-                      </a>
-                  </div>
-                  <div class="col p-0" style="height: 80px">
-                      <ul class="info_bit_small_other">
-                        <li>
-                          <span class="small_font col-6 related-item-date">
-                              {{ item.relationType.label }}
-                          </span>
-                        </li>
-                        <li>
-                            <a class="small_font"
-                               :href="'/db/' + PublicHelper.getEntityPath(item.entityType.value) + '/' + item.entityId">
-                                <span class="text-truncate-2 mr-2">
-                                    {{ `${item.name}(${item.label})` }}
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                          <span class="small_font col-6 related-item-catalog">
-                              {{ `${item.nameZh}(${item.label})` }}
-                          </span>
-                        </li>
-                      </ul>
-                  </div>
-              </div>
-          </span>
-      </div>
-      <div v-else>
-        <span class="emptyInfo"><em>{{ $const.NoInfo }}</em></span>
-      </div>
-    </BlockUI>
-  </Panel>
+        <Button :label="relatedEntitiesTotal.toString()" severity="success" size="small" outlined class="mr-2"
+                @click="" :disabled="!relatedEntities.length"
+                v-tooltip.bottom="{value: $t('ViewAll'), class: 'common-tooltip'}" />
+      </template>
+      <BlockUI :blocked="editBlock">
+        <div class="grid" v-if="relatedEntities.length > 0">
+            <span class="small_font">
+                <div class="info_bit_small small_font grid m-0 p-0"
+                     v-if="relatedEntities.length !== 0"
+                     v-for="entity of relatedEntities">
+                    <div class="sidebar-panel-image-small-div item_info_bit_thumb mt-2">
+                        <a :href="`/db/${(entity as any).relatedTypeName}/${entity.target.value}`">
+                            <img class="sidebar-panel-image-small" :src="entity.cover" alt="">
+                        </a>
+                    </div>
+                    <div class="col p-0" style="height: 80px">
+                        <ul class="info_bit_small_other">
+                          <li>
+                              <a class="small_font"
+                                 :href="`/db/${(entity as any).relatedTypeName}/${entity.target.value}`">
+                                  <span class="text-truncate-2 mr-2">
+                                      {{ `${entity.target.label}(${(entity as any).remark})` }}
+                                  </span>
+                              </a>
+                          </li>
+                          <li>
+                            <Tag class="small-font" :value="entity.role.label" />
+                          </li>
+                          <!--                        <li>-->
+                          <!--                          <span class="small_font col-6 related-item-catalog">-->
+                          <!--                              {{ `${entity.nameZh}(${entity.label})` }}-->
+                          <!--                          </span>-->
+                          <!--                        </li>-->
+                        </ul>
+                    </div>
+                </div>
+            </span>
+        </div>
+        <div class="pt-2" v-else>
+          <span class="empty-search-result">{{ $t('NoInfo') }}</span>
+        </div>
+      </BlockUI>
+    </Panel>
+  </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
 </style>

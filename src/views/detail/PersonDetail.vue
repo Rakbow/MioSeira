@@ -1,6 +1,11 @@
-<script setup>
+<script setup lang="ts">
+import '@/assets/entity-detail.scss';
 import '@/assets/item-detail.css';
+import "@/assets/entity-global.scss";
+import "@/assets/entry-detail.scss";
 import '@/assets/bootstrap/myBootstrap.min.css';
+import '@/lib/bootstrap.bundle.min';
+
 import DetailPad from "@/components/common/DetailPad.vue";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
 import {getCurrentInstance, onBeforeMount, ref} from "vue";
@@ -12,51 +17,57 @@ import {useUserStore} from "@/store/user.ts";
 import {useDialog} from "primevue/usedialog";
 import InfoEditor from "@/components/entityEditor/PersonInfoEditor.vue";
 import {META} from "@/config/Web_Const.ts";
+import RelatedItems from "@/components/common/RelatedItems.vue";
+import PersonsInfo from "@/components/common/PersonInfo.vue";
+import SubProductInfo from "@/components/special/SubProductInfo.vue";
+import SideImages from "@/components/image/SideImages.vue";
 
-const $const = getCurrentInstance().appContext.config.globalProperties.$const;
 const router = useRouter();
 const toast = useToast();
 const userStore = useUserStore();
 const dialog = useDialog();
 
-const item = ref({});
+const item = ref();
+const cover = ref();
 const pageTraffic = ref({});
 const detailInfo = ref({});
 const option = ref({});
 
 onBeforeMount(() => {
-  item.value = router.currentRoute.value.meta.info.item;
-  pageTraffic.value = router.currentRoute.value.meta.info.traffic;
-  detailInfo.value = router.currentRoute.value.meta.info.detailInfo;
-  option.value = router.currentRoute.value.meta.info.options;
+  let info: any = router.currentRoute.value.meta.info;
+  item.value = info.item;
+  pageTraffic.value = info.traffic;
+  detailInfo.value = info.detailInfo;
+  option.value = info.options;
+  cover.value = info.cover;
 });
 
 const openEditDialog = () => {
-  dialog.open(InfoEditor, {
-    props: {
-      header: $const.Edit,
-      style: {
-        width: '600px',
-      },
-      breakpoints:{
-        '960px': '70vw',
-        '640px': '60vw'
-      },
-      modal: true,
-      closable: false
-    },
-    data: {
-      item: item.value,
-      option: option.value,
-    },
-    onClose: async (options) => {
-      if (options.data !== undefined) {
-        if (options.data.isUpdate) {
-          await getItems();
-        }
-      }
-    }
-  });
+  // dialog.open(InfoEditor, {
+  //   props: {
+  //     header: $const.Edit,
+  //     style: {
+  //       width: '600px',
+  //     },
+  //     breakpoints:{
+  //       '960px': '70vw',
+  //       '640px': '60vw'
+  //     },
+  //     modal: true,
+  //     closable: false
+  //   },
+  //   data: {
+  //     item: item.value,
+  //     option: option.value,
+  //   },
+  //   onClose: async (options) => {
+  //     if (options.data !== undefined) {
+  //       if (options.data.isUpdate) {
+  //         await getItems();
+  //       }
+  //     }
+  //   }
+  // });
 }
 
 const getGenderIcon = (value) => ({
@@ -68,134 +79,64 @@ const getGenderIcon = (value) => ({
 </script>
 
 <template>
-  <div id="main" class="grid mt-2">
-    <Toast />
-    <div class="detail-card col-8 lg:col-offset-1">
-      <Card>
-        <template #title>
-          <div class="grid detail-item-header-title">
-            <h4 class="col-11">
-              <b class="detail-item-title">
-                {{ item.name }}
-              </b>
-            </h4>
+  <Toast/>
+  <div class="flex flex-wrap justify-content-center gap-3">
+    <div class="entity-detail-main-col">
+      <div class="entity-header-title">
+        <h1 style="display: inline;">{{ item.name }}</h1>
+      </div>
+      <div class="grid mx-2">
+        <div class="col-4" style="width: 210px">
+          <div class="entity-image-cover-200">
+            <img :src="cover" alt="main"/>
           </div>
-        </template>
-        <template #subtitle>
-          <h5 v-if="item.nameEn !== ''" class="detail-item-subtitle"><small>{{ item.nameEn }}</small></h5>
-          <h5 v-else><small></small></h5>
-          <h5 v-if="item.nameZh !== ''" class="detail-item-subtitle"><small>{{ item.nameZh }}</small></h5>
-          <h5 v-else><small></small></h5>
-        </template>
-        <template #content>
-          <div class="grid">
-            <div class="col-4" style="width: 205px">
-              <div class="person-detail-cover">
-                <img v-if="item.cover" :src="'https://' + item.cover" :alt="item.name" style="width: 160px" />
-                <img v-else src="https://img.rakbow.com/common/error/404.jpg" :alt="item.name" style="width: 160px" />
-              </div>
-            </div>
-            <div class="col detail-item-header-card">
-              <Card>
-                <template #content>
-                  <div class="relative">
-                    <div v-if="userStore.user">
-                      <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
-                              @click="openEditDialog" style="right: 25%"
-                              v-tooltip.bottom="{value: $const.Edit, class: 'short-tooltip'}" >
-                        <template #icon>
-                          <span class="material-symbols-outlined">edit_note</span>
-                        </template>
-                      </Button>
-                    </div>
-                    <table class="table-borderless table-sm ml-2">
-                      <tbody class="detail-item-header-table">
-                      <tr>
-                        <td>
-                          <i class="pi pi-calendar"></i>
-                          <strong>{{ $const.BirthDate }}</strong>
-                        </td>
-                        <td>
-                          {{ item.birthDate }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi pi-user" />
-                          <strong>{{ $const.Gender }}</strong>
-                        </td>
-                        <td style="display:inline">
-                          <i :class="'ml-1 mt-2 pi pi-' + getGenderIcon(item.gender.value)"
-                             v-tooltip.right="{value: item.gender.label, class: 'short-tooltip'}" />
-<!--                          <Tag class="ml-1" :value="item.gender.label" />-->
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi pi-tags" />
-                          <strong>{{ $const.Aliases }}</strong>
-                        </td>
-                        <td v-if="item.aliases" style="display:inline">
-                          <ul class="px-4">
-                            <li v-for="alias in item.aliases">
-                              {{ alias }}
-                            </li>
-                          </ul>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <i class="pi pi-link" />
-                          <strong>{{ $const.Link }}</strong>
-                        </td>
-                        <td v-if="item.links" style="display:inline">
-                          <ul class="px-4">
-                            <li v-for="link in item.links">
-                              <a v-if="link.type === META.LINK_TYPE.TWITTER" target="_blank"
-                                 :href="link.url">
-                                <span class="text-truncate-2 mr-2">
-                                  <i class="pi pi-twitter" />
-                                  <i>{{ link.name }}</i>
-                                </span>
-                              </a>
-                              <a v-else target="_blank"
-                                 :href="link.url">
-                                <span class="text-truncate-2 mr-2">
-                                  <i class="pi pi-at" />
-                                  <i>{{ link.name }}</i>
-                                </span>
-                              </a>
-                            </li>
-                          </ul>
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                    <StatusEditor :status="item.status" />
-                    <ItemLike :likeCount="pageTraffic.likeCount" :liked="pageTraffic.liked" />
-                  </div>
-                </template>
-              </Card>
-            </div>
+          <div class="infobox_container">
+            <ul id="infobox">
+              <li v-if="item.nameZh">
+                <span class="tip">{{ $t('PersonNameZh') }}:&nbsp;</span>{{ item!.nameZh }}
+              </li>
+              <li v-if="item.nameEn">
+                <span class="tip">{{ $t('PersonNameEn') }}:&nbsp;</span>{{ item!.nameEn }}
+              </li>
+              <li v-if="item.aliases.length" class="sub_container">
+                <ul>
+                  <li v-for="(alias, index) in item.aliases" :key="index" :class="{ 'sub_section': index === 0, sub: index > 0 }">
+                    <span v-if="index === 0" class="tip">{{ $t('Aliases') }}:&nbsp;</span>{{ alias }}
+                  </li>
+                </ul>
+              </li>
+              <li v-if="item!.birthDate">
+                <span class="tip">{{ $t('BirthDate') }}:&nbsp;</span>{{ item!.birthDate }}
+              </li>
+              <li v-if="item.gender.value">
+                <span class="tip">{{ $t('Gender') }}:&nbsp;</span>
+                <i :class="'mt-2 pi pi-' + getGenderIcon(item.gender.value)" style="font-size: 12px"
+                   v-tooltip.right="{value: item.gender.label, class: 'short-tooltip'}" />
+              </li>
+
+              <li v-for="(link, index) in item.links" :key="index" :class="{ 'sub_section': index === 0, sub: index > 0 }">
+                <span v-if="index === 0" class="tip">{{ $t('Link') }}:&nbsp;</span>
+                <a :href="link.url" target="_blank">
+                <span style="display: inline;" class="text-truncate-2 mr-2">
+                  <i :class="link.type === META.LINK_TYPE.TWITTER ? 'pi pi-twitter' : 'pi pi-at'" style="font-size: 11px" />
+                  <i>{{ link.name }}</i>
+                </span>
+                </a>
+              </li>
+            </ul>
           </div>
-          <div class="detail-item-field">
-            <!-- description -->
-            <DetailPad :header="$const.Detail" :text="item.detail" />
-            <!-- bonus -->
-          </div>
-        </template>
-      </Card>
+        </div>
+        <div class="col py-0">
+          <DetailPad :header="$t('Description')" :text="item.detail"/>
+          <RelatedItems />
+        </div>
+      </div>
     </div>
-    <div class="col-2" style="min-width: 300px">
-      <TrafficInfo :info="pageTraffic" :addedTime="item.addedTime" :editedTime="item.editedTime" />
+    <div class="entity-detail-side-col">
+      <TrafficInfo :info="pageTraffic" :addedTime="item.addedTime" :editedTime="item.editedTime"/>
     </div>
   </div>
 </template>
 
-<style scoped>
-.person-detail-cover {
-  transform:translateY(7px);
-  width: 150px;
-  //height: 200px;
-}
+<style scoped lang="scss">
 </style>

@@ -1,28 +1,32 @@
 <template>
   <header>
-    <PageHeader />
+    <PageHeader/>
   </header>
   <main ref="mainContent">
-    <router-view></router-view>
+    <router-view/>
   </main>
   <footer>
-    <PageFooter />
+    <PageFooter/>
   </footer>
-  <DynamicDialog />
+  <DynamicDialog @scroll="handleScroll"/>
 </template>
 
 <script setup lang="ts">
 import {onMounted, onBeforeUnmount} from "vue";
 import PageHeader from "@/components/page/PageHeader.vue";
 import PageFooter from "@/components/page/PageFooter.vue";
-import { useDialog } from 'primevue/usedialog';
+import {useDialog} from 'primevue/usedialog';
 
 const dialog = useDialog();
 
 let mainContent: HTMLElement;
 
+const handleScroll = (event) => {
+  event.stopPropagation();
+}
+
 const setMainContentHeight = () => {
-  if(mainContent) {
+  if (mainContent) {
     const header = mainContent.previousElementSibling as HTMLElement;
     const footer = mainContent.nextElementSibling as HTMLElement;
 

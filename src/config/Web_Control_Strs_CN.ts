@@ -108,7 +108,7 @@ export const CnText = {
 
     //region 专属名词
     Album: '专辑',
-    AlbumCatalogNo: '专辑编号',
+    CatalogId: '专辑编号',
     AlbumName: '专辑名称',
     AlbumEnglishName: '专辑名称(英)',
     AlbumChineseName: '专辑名称(中)',

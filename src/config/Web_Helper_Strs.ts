@@ -1,4 +1,3 @@
-//region entity common
 export const API = {
 
     //region
@@ -8,11 +7,13 @@ export const API = {
     GET_ITEM_LIST: '/api/db/item/list',
     ADD_ITEM: '/api/db/item/add',
     UPDATE_ITEM: '/api/db/item/update',
-    GET_ITEM_OPTION: '/api/db/item/get-option',
     UPDATE_BONUS: '/api/db/item/update-bonus',
+    GET_EXC_RELATED_ENTRIES: '/api/db/item/get-exc-related-entries',
+    GET_RELATED_ITEMS: '/api/db/item/related-items',
 
     BOOK_GENERATE_ISBN: '/api/db/item/get-isbn',
 
+    QUICK_ADD_ALBUM_DISC: '/api/db/item/quick-add-album-disc',
     UPDATE_ALBUM_TRACK_INFO: '/api/db/item/update-album-track-info',
     GET_ALBUM_TRACK_INFO: '/api/db/item/get-album-track-info',
 
@@ -24,7 +25,7 @@ export const API = {
     GENERAL_SEARCH: '/api/db/search',
     GET_STATISTIC_INFO: '/api/db/statistic-info',
 
-    GET_ENTITY_OPTION: '/api/db/get-option',
+    GET_ENTITY_OPTION: '/api/db/get-options',
     SEARCH_ENTRIES: '/api/db/search',
 
     //region user
@@ -53,20 +54,19 @@ export const API = {
     GET_PERSON_DETAIL: '/api/db/person/detail',
     SEARCH_PERSON: '/api/db/person/search',
 
-    GET_PERSON_ROLE_LIST: '/api/db/person/get-roles',
-    ADD_PERSON_ROLE: '/api/db/person/add-role',
-    UPDATE_PERSON_ROLE: '/api/db/person/update-role',
-    DELETE_PERSON_ROLE: '/api/db/person/delete-role',
-    REFRESH_PERSON_ROLE: '/api/db/refresh-person-role',
-
-    GET_PERSONNEL: '/api/db/person/get-personnel',
-    MANAGE_PERSONNEL: '/api/db/person/manage-personnel',
+    GET_ROLE_LIST: '/api/db/relation/get-roles',
+    ADD_ROLE: '/api/db/relation/add-role',
+    UPDATE_ROLE: '/api/db/relation/update-role',
+    DELETE_ROLE: '/api/db/relation/delete-role',
+    REFRESH_ROLE: '/api/db/refresh-role',
 
     GET_RELATION: '/api/db/relation/get-relations',
-    MANAGE_RELATION: '/api/db/relation/manage-relation',
-    //endregion
+    ADD_RELATION: '/api/db/relation/add-relations',
+    UPDATE_RELATION: '/api/db/relation/update-relation',
+    DELETE_RELATION: '/api/db/relation/delete-relations',
 
-    GET_ALBUM_DETAIL: '/api/db/album/detail',
+    GET_RELATED_ENTITY: '/api/db/relation/get-related-entity',
+    //endregion
 
     UPDATE_ITEMS_STATUS: '/api/db/update-entry-status',
     LIKE_ITEM: '/api/db/like',
@@ -91,12 +91,19 @@ export const API = {
     //endregion
 
     //region entry
-    ENTRY_DETAIL: '/db/entry/',
+    ENTRY_DETAIL: '/db/entry',
+    GET_ENTRY_DETAIL: '/api/db/entry/detail',
     DELETE_ENTRY: '/api/db/entry/delete',
     UPDATE_ENTRY: '/api/db/entry/update',
     INSERT_ENTRY: '/api/db/entry/add',
     ENTRY_REFRESH_REDIS_DATA: '/api/db/entry/refresh-redis-data',
     //endregion
+
+    //region character
+    CHARACTER_DETAIL: '/db/character',
+    GET_CHARACTER_DETAIL: '/api/db/character/detail',
+    //endregion
+
 
     //region episode
     EPISODE_DETAIL: '/db/ep',
@@ -121,53 +128,7 @@ export const API = {
     UPDATE_PRODUCT_ORGANIZATIONS: '/api/db/product/update-organizations',
     UPDATE_PRODUCT_STAFF: '/api/db/product/update-staffs',
     GET_RELATED_PRODUCTS: '/api/db/product/get-related-products',
-    //endregion
 
-    //region disc
-    DISC_DETAIL: '/db/disc',
-    DELETE_DISC: '/api/db/disc/delete',
-    UPDATE_DISC: '/api/db/disc/update',
-    INSERT_DISC: '/api/db/disc/add',
-    GET_DISCS: '/api/db/disc/get-discs',
-    GET_RELATED_DISCS: '/api/db/disc/get-related-discs',
-    //endregion
-
-    //region book
-
-    UPDATE_BOOK_AUTHORS: '/api/db/book/update-authors',
-    //endregion
-
-    //region merch
-    MERCH_DETAIL: '/db/merch',
-    DELETE_MERCH: '/api/db/merch/delete',
-    UPDATE_MERCH: '/api/db/merch/update',
-    INSERT_MERCH: '/api/db/merch/add',
-    GET_MERCHS: '/api/db/merch/get-merchs',
-    GET_RELATED_MERCHS: '/api/db/merch/get-related-merchs',
-    //endregion
-
-    //region game
-    GAME_DETAIL: '/api/db/game',
-    DELETE_GAME: '/api/db/game/delete',
-    UPDATE_GAME: '/api/db/game/update',
-    INSERT_GAME: '/api/db/game/add',
-    GET_GAMES: '/api/db/game/get-games',
-    GET_RELATED_GAMES: '/api/db/game/get-related-games',
-    UPDATE_GAME_ORGANIZATIONS: '/api/db/game/update-organizations',
-    UPDATE_GAME_STAFFS: '/api/db/game/update-staffs',
-    //endregion
-
-    //region franchise
-    FRANCHISE_DETAIL: '/db/franchise',
-    GET_FRANCHISE_DETAIL: '/api/db/franchise/detail',
-    DELETE_FRANCHISE: '/api/db/franchise/delete',
-    UPDATE_FRANCHISE: '/api/db/franchise/update',
-    ADD_FRANCHISE: '/api/db/franchise/add',
-    GET_FRANCHISE_LIST: '/api/db/franchise/list'
+    GET_SUB_PRODUCTS: '/api/db/product/get-sub-product'
     //endregion
 }
-
-
-
-
-//endregion

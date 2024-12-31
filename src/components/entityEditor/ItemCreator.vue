@@ -1,40 +1,52 @@
 <script setup lang="ts">
-import {inject, onBeforeMount, onMounted, ref} from "vue";
+import {inject, onBeforeMount, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {useDialog} from "primevue/usedialog";
 import {ItemFormConfig, META} from "@/config/Web_Const";
-import {PublicHelper} from "@/toolkit/publicHelper";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 import {useToast} from "primevue/usetoast";
 import {useOptionsStore} from "@/store/entityOptions";
 import {ItemSpecParams, parseItemSpecParams} from "@/logic/itemService";
 
+const itemSpec = ref('');
+const itemType = ref();
 const {t} = useI18n();
 const dialog = useDialog();
 const dialogRef = inject("dialogRef");
 const config: ref<ItemFormConfig> = ref();
-const item = ref<any>({});
+const item = ref<any>({
+
+  releaseType: 0,
+  price: 0,
+  region: 'jp',
+
+  pages: 0,
+  discs: 0,
+  tracks: 0,
+  runTime: 0,
+
+  albumFormat: [1],
+  mediaFormat: [1],
+  bookType: 0,
+  lang: 'ja-JP',
+});
 const option = ref<any>({});
 const isUpdate = ref(false);
 const editBlock = ref(false);
 const toast = useToast();
 const optionsStore = useOptionsStore();
-const itemSpec = ref('');
 
 onBeforeMount(async () => {
   await optionsStore.fetchOptions();
   option.value = optionsStore.options;
-  item.value = PublicHelper.deepCopy(dialogRef.value.data.item);
-  PublicHelper.handleAttributes(item.value);
-})
-
-onMounted(() => {
+  item.value.type = optionsStore.current;
+  itemType.value = META.ITEM_TYPE_SET[item.value.type-1];
 })
 
 const submit = async () => {
   editBlock.value = true;
-  const res = await axios.post(API.UPDATE_ITEM, item.value);
+  const res = await axios.post(API.ADD_ITEM, item.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     isUpdate.value = true;
@@ -57,11 +69,15 @@ const ISBNInterConvert = async (label, isbn) => {
   editBlock.value = true;
   const res = await axios.post(API.BOOK_GENERATE_ISBN, {label: label, isbn: isbn})
   if (res.state === axios.SUCCESS) {
-    if (label === 'isbn13') item.value.ean13 = res.data;
+    if (label === 'isbn13') item.value.barcode = res.data;
     if (label === 'isbn10') item.value.isbn10 = res.data;
   }
   editBlock.value = false;
 };
+
+const switchItemType = (ev) => {
+  item.value.type = parseInt(itemType.value.value);
+}
 
 const parseItemSpec = () => {
   let res: ItemSpecParams = parseItemSpecParams(itemSpec.value);
@@ -75,6 +91,12 @@ const parseItemSpec = () => {
 
 <template>
   <BlockUI :blocked="editBlock" class="form-container">
+    <SelectButton size="small" v-model="itemType" :options="META.ITEM_TYPE_SET" @change="switchItemType($event)"
+                  optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
+      <template #option="slotProps">
+        <span class="material-symbols-outlined">{{ slotProps.option.icon }}</span>
+      </template>
+    </SelectButton>
     <Divider align="center"><b>{{ $t('BasicInfo') }}</b></Divider>
     <div class="field">
       <FloatLabel variant="on">
@@ -273,6 +295,10 @@ const parseItemSpec = () => {
   </BlockUI>
 </template>
 
-<style scoped lang="scss">
-@use "@/assets/entity-manager";
+<style scoped>
+.required-label {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: .5rem !important
+}
 </style>

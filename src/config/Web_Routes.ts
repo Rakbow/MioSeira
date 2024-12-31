@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import {RouteRecordRaw} from 'vue-router';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import "@/config/Web_Helper_Strs";
 import {API} from "@/config/Web_Helper_Strs";
@@ -13,14 +13,6 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         }
     },
     {
-        name: "Home",
-        path: "/db/entry/:id",
-        component: () => import('@/views/Index.vue'),
-        meta: {
-            title: "Home",
-        }
-    },
-    {
         path: '/error',
         component: () => import('@/views/Error.vue'),
         props: true,
@@ -28,7 +20,6 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             title: "Error"
         }
     },
-
     {
         name: "PersonDetail",
         path: API.PERSON_DETAIL + "/:id",
@@ -37,14 +28,13 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             try {
                 const res = await axios.post(API.GET_PERSON_DETAIL, {id: to.params.id});
                 if (res.state === axios.SUCCESS) {
-                    to.meta.info = res.data;
-
+                    (to.meta as any).info = res.data;
                     document.title = res.data.item.name;
                     next();
-                }else {
+                } else {
                     console.log(res.message);
                 }
-            }catch (e) {
+            } catch (e) {
                 console.error(e);
             }
         },
@@ -53,25 +43,25 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         }
     },
     {
-        name: "FranchiseDetail",
-        path: API.FRANCHISE_DETAIL + "/:id",
-        component: () => import('@/views/detail/FranchiseDetail.vue'),
+        name: "EntryDetail",
+        path: API.ENTRY_DETAIL + "/:id",
+        component: () => import('@/views/detail/EntryDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(API.GET_FRANCHISE_DETAIL, {id: to.params.id});
+                const res = await axios.post(API.GET_ENTRY_DETAIL, {id: to.params.id});
                 if (res.state === axios.SUCCESS) {
-                    to.meta.info = res.data;
+                    (to.meta as any).info = res.data;
                     document.title = res.data.item.name;
                     next();
-                }else {
+                } else {
                     console.log(res.message);
                 }
-            }catch (e) {
+            } catch (e) {
                 console.error(e);
             }
         },
         meta: {
-            title: "Franchise Detail"
+            title: "Entry Detail"
         }
     },
     {
@@ -82,13 +72,13 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             try {
                 const res = await axios.post(API.GET_PRODUCT_DETAIL, {id: to.params.id});
                 if (res.state === axios.SUCCESS) {
-                    to.meta.info = res.data;
+                    (to.meta as any).info = res.data;
                     document.title = res.data.item.name;
                     next();
-                }else {
+                } else {
                     console.log(res.message);
                 }
-            }catch (e) {
+            } catch (e) {
                 console.error(e);
             }
         },
@@ -96,7 +86,6 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             title: "Product Detail"
         }
     },
-
     {
         name: "ItemDetail",
         path: API.ITEM_DETAIL + "/:id",
@@ -105,18 +94,40 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             try {
                 const res = await axios.post(API.GET_ITEM_DETAIL, {id: to.params.id});
                 if (res.state === axios.SUCCESS) {
-                    to.meta.info = res.data;
+                    (to.meta as any).info = res.data;
                     document.title = res.data.item.name;
                     next();
-                }else {
+                } else {
                     console.log(res.message);
                 }
-            }catch (e) {
+            } catch (e) {
                 console.error(e);
             }
         },
         meta: {
             title: "Item Detail"
+        }
+    },
+    {
+        name: "CharacterDetail",
+        path: API.CHARACTER_DETAIL + "/:id",
+        component: () => import('@/views/detail/CharacterDetail.vue'),
+        beforeEnter: async (to, _from, next) => {
+            try {
+                const res = await axios.post(API.GET_CHARACTER_DETAIL, {id: to.params.id});
+                if (res.state === axios.SUCCESS) {
+                    (to.meta as any).info = res.data;
+                    document.title = res.data.target.name;
+                    next();
+                } else {
+                    console.log(res.message);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        },
+        meta: {
+            title: "Character Detail"
         }
     },
     {
@@ -138,30 +149,34 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             {
                 path: '/',
                 component: () => import('@/views/manager/ManagerIndex.vue'),
-                beforeEnter: async (to, _from, next) => {
-                    try {
-                        const res = await axios.post(API.GET_STATISTIC_INFO);
-                        if (res.state === axios.SUCCESS) {
-                            to.meta.items = res.data;
-                            next();
-                        }else {
-                            console.log(res.message);
-                        }
-                    }catch (e) {
-                        console.error(e);
-                    }
-                },
+                // beforeEnter: async (to, _from, next) => {
+                //     try {
+                //         const res = await axios.post(API.GET_STATISTIC_INFO);
+                //         if (res.state === axios.SUCCESS) {
+                //             to.meta.items = res.data;
+                //             next();
+                //         } else {
+                //             console.log(res.message);
+                //         }
+                //     } catch (e) {
+                //         console.error(e);
+                //     }
+                // },
                 meta: {
                     title: "Manager"
                 }
             },
             {
-                path: 'franchise',
-                component: () => import('@/views/manager/FranchiseManager.vue'),
-            },
-            {
                 path: 'product',
                 component: () => import('@/views/manager/ProductManager.vue'),
+            },
+            {
+                path: 'item',
+                component: () => import('@/views/manager/ItemManager.vue'),
+            },
+            {
+                path: 'item/add',
+                component: () => import('@/views/manager/ItemDetailedCreator.vue')
             },
             {
                 path: 'album',
@@ -176,8 +191,8 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
                 component: () => import('@/views/manager/PersonManager.vue'),
             },
             {
-                path: 'person-role',
-                component: () => import('@/views/manager/PersonRoleManager.vue'),
+                path: 'role',
+                component: () => import('@/views/manager/RoleManager.vue'),
             }
         ],
     }

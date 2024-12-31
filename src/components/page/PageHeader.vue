@@ -3,10 +3,11 @@
 <!--    <Menubar :model="items">-->
     <Menubar>
       <template #start>
-        <img alt="logo" src="https://img.rakbow.com/common/logo/logo.png" height="40" class="mr-2" />
+        <img alt="logo" :src="`${META.STATIC_DOMAIN}common/logo.png`" height="40" class="mr-2" />
       </template>
       <template #end>
-<!--        <Button label="Toggle Color Scheme" @click="toggleColorScheme()" />-->
+        <Avatar v-if="userStore.isAuthenticated" :image="userStore.user.headerUrl" class="mr-2" shape="circle" />
+        <!--        <Button label="Toggle Color Scheme" @click="toggleColorScheme()" />-->
         <Button v-if="!userStore.isAuthenticated" text rounded @click="openLogin"
                 v-tooltip.bottom="{value: $t('SignIn'), class: 'short-tooltip'}">
           <template #icon>
@@ -19,8 +20,7 @@
             <span class="material-symbols-outlined">logout</span>
           </template>
         </Button>
-        <InputText placeholder="Search" type="text" class="mr-2" />
-        <Avatar v-if="userStore.isAuthenticated" :image="userStore.user.headerUrl" class="mr-2" size="large" shape="circle" />
+        <!--        <InputText placeholder="Search" type="text" class="mr-2" />-->
       </template>
     </Menubar>
   </div>
@@ -32,6 +32,7 @@ import { useDialog } from 'primevue/usedialog';
 import { logout } from '@/logic/login';
 import {useUserStore} from "@/store/user.ts";
 import {useI18n} from "vue-i18n";
+import {META} from "@/config/Web_Const";
 const {t} = useI18n();
 const Login = defineAsyncComponent(() => import('@/components/common/Login.vue'));
 
@@ -199,8 +200,4 @@ const openSearchPanel = () => {
 </script>
 
 <style scoped>
-.my-app-dark {
-  color: #FFFFFF;
-  background-color: #000000;
-}
 </style>

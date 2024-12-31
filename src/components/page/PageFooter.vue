@@ -1,11 +1,12 @@
-<script setup>
+<script setup lang="ts">
 
+import {META} from "@/config/Web_Const.ts";
 </script>
 
 <template>
   <div class="grid grid-nogutter surface-section px-4 py-4 md:px-6 lg:px-8 border-top-1 surface-border">
     <div class="col-12 lg:col-6 lg:border-right-1 surface-border">
-      <img src="https://img.rakbow.com/common/logo/logo.png" class="w-9rem mx-auto lg:mx-0" alt="logo">
+      <img :src="`${META.STATIC_DOMAIN}common/logo.png`" class="w-9rem mx-auto lg:mx-0" alt="logo">
 <!--      <span class="text-600 block mt-4"><i class="pi pi-at mr-2"></i>rakbow@163.com</span>-->
 <!--      <a tabindex="0"-->
 <!--         class="text-600 block mt-4 cursor-pointer hover:text-900 transition-duration-150 select-none w-30rem">-->
