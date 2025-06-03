@@ -1,0 +1,190 @@
+@use '@/assets/general' as general;
+@use '@/assets/entity-global' as e-general;
+
+.entity-search {
+  &-main-col {
+    margin-top: .5rem !important;
+    width: 840px;
+    background: general.$common-root-background !important;
+    border-radius: general.$common-border-radius;
+  }
+
+  &-side-col {
+    margin-top: .5rem !important;
+    width: 360px;
+
+    .p-divider {
+      margin-bottom: .5rem;
+
+      i, b {
+        color: general.$gray;
+      }
+
+      b {
+        margin-left: .5rem;
+      }
+    }
+
+  }
+
+}
+
+.p-paginator {
+  .p-paginator {
+    &-content-start {
+      margin-inline-end: 0;
+      color: general.$gray;
+      font-size: 12px;
+    }
+
+    &-content-end {
+      margin-inline-start: 0;
+      color: general.$gray;
+      font-size: 12px;
+    }
+  }
+}
+
+.p-dataview {
+  margin: 0 1rem;
+
+  .p-dataview {
+    &-content {
+      margin: 1rem;
+    }
+  }
+}
+
+.p-panel {
+  border: 0 !important;
+  border-radius: general.$common-border-radius !important;
+}
+
+.item-search-related-entry {
+  border-radius: general.$common-border-radius;
+  background-color: general.$common-background;
+
+  > div {
+    padding: .5rem;
+  }
+}
+
+.item-search-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+
+  > div {
+    padding: .5rem !important
+  }
+}
+
+.item-search-list {
+  a {
+    font-size: 12px;
+  }
+
+  > div {
+    border-radius: general.$common-border-radius !important;
+    background-color: general.$common-background !important;
+    margin: .5rem !important;
+  }
+
+  &-thumb {
+    padding: .5rem;
+
+  }
+
+  &-info {
+    padding-left: 0.25rem !important;
+    padding-top: 1rem !important;
+    padding-right: 1.5rem !important;
+
+    &-time {
+      color: general.$time;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    &-sub {
+      color: gray;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    i {
+      font-size: 10px;
+    }
+
+    .p-tag {
+      padding: 0 .5rem;
+    }
+
+    .p-tag-label {
+      font-size: 11px;
+      font-weight: normal;
+    }
+  }
+}
+
+.entry-search-list {
+  a {
+    font-size: 12px;
+  }
+
+  > div {
+    border-radius: general.$common-border-radius !important;
+    background-color: general.$common-background !important;
+    margin: .5rem !important;
+  }
+
+  &-thumb {
+    padding: .5rem;
+
+  }
+
+  &-info {
+    color: gray;
+    padding-left: 0.25rem !important;
+    padding-right: 1.5rem !important;
+
+    &-time {
+      color: general.$time;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    &-sub {
+      color: gray;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    i {
+      font-size: 10px;
+    }
+
+    .p-tag {
+      padding: 0 .5rem;
+    }
+
+    .p-tag-label {
+      font-size: 11px;
+      font-weight: normal;
+    }
+  }
+}
+
+.search-entities {
+  > div {
+    padding: 1rem;
+  }
+  &-block {
+    width: 300px;
+    margin: .25rem .5rem;
+    border-radius: 5px;
+    background: general.$common-background;
+    > div {
+      padding: .25rem;
+    }
+  }
+}
