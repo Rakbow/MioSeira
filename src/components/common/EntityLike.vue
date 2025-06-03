@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {defineProps, onMounted, ref} from "vue";
+import {defineProps, onBeforeMount, onMounted, ref} from "vue";
 import {API} from '@/config/Web_Helper_Strs.ts';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
-import {PublicHelper} from "@/toolkit/publicHelper.ts";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useToast} from 'primevue/usetoast';
 import {useI18n} from "vue-i18n";
@@ -15,8 +15,12 @@ const toast = useToast();
 const editBlock = ref(false);
 const liked = ref(false);
 const likeCount = ref(0);
-onMounted(() => {
+
+onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
+});
+
+onMounted(() => {
   liked.value = props.liked;
   likeCount.value = props.likeCount;
 });
@@ -52,12 +56,10 @@ const like = async () => {
 </script>
 
 <template>
-  <div class="item_statistic_info">
-    <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: $t('Like'), class: 'short-tooltip'}">
-      <i class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"></i>
-    </Button>
-    <span class="ml-1 mr-2">{{ likeCount }}</span>
-  </div>
+  <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: $t('Like'), class: 'short-tooltip'}">
+    <i class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"></i>
+  </Button>
+  <span class="ml-1 mr-2">{{ likeCount }}</span>
 </template>
 
 <style scoped>

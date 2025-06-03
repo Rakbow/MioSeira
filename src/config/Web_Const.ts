@@ -52,8 +52,10 @@ export const META = {
     },
     ENTITY: {
         ITEM: 0,
-        ENTRY: 1,
+        SUBJECT: 1,
         PERSON: 2,
+        ROLE: 3,
+        EPISODE: 4,
         CHARACTER: 5,
         PRODUCT: 99,
         FRANCHISE: 100
@@ -89,10 +91,19 @@ export const META = {
         {label: "us", value: "us"},
         {label: "gb", value: "gb"}
     ],
-    ENTITY_ICON_SET: [
-        { icon: 'pi pi-bars', value: '1', disabled: false },
-        { icon: 'pi pi-users', value: '2', disabled: false },
+    ENTRY_TYPE_SET: [
         { icon: 'pi pi-th-large', value: '99', disabled: false },
+        { icon: 'pi pi-users', value: '2', disabled: false },
+        { icon: 'pi pi-users', value: '5', disabled: false },
+        { icon: 'pi pi-bars', value: '1', disabled: false },
+    ],
+    ENTRY_SEARCH_TYPE_SET: [
+        {icon: 'list', value: '0'},
+        {icon: 'group', value: '1'},
+        {icon: 'mood', value: '2'},
+        {icon: 'folder', value: '3'},
+        {icon: 'diamond', value: '4'},
+        {icon: 'home', value: '5'}
     ],
     ITEM_TYPE_SET: [
         { icon: 'music_note', value: '1', disabled: false },
@@ -124,6 +135,15 @@ export interface ItemFormCell {
 export interface Attribute {
     label: string;
     value: any;
+}
+
+export class RelatedEntry {
+    products: any[] = [];
+    persons: any[] = [];
+    characters: any[] = [];
+    classifications: any[] = [];
+    materials: any[] = [];
+    events: any[] = [];
 }
 
 export class EntityInfo {

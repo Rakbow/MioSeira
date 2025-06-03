@@ -2,6 +2,7 @@ import {RouteRecordRaw} from 'vue-router';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import "@/config/Web_Helper_Strs";
 import {API} from "@/config/Web_Helper_Strs";
+import {META} from "@/config/Web_Const";
 
 export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
     {
@@ -21,15 +22,32 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         }
     },
     {
+        name: "ItemSearch",
+        path: API.ITEM_SEARCH_PATH,
+        component: () => import('@/views/search/ItemSearch.vue'),
+        meta: {
+            title: "Items"
+        }
+    },
+    {
+        name: "EntrySearch",
+        path: API.ENTRY_SEARCH_PATH,
+        component: () => import('@/views/search/EntrySearch.vue'),
+        meta: {
+            title: "Entries"
+        }
+    },
+    {
         name: "PersonDetail",
         path: API.PERSON_DETAIL + "/:id",
-        component: () => import('@/views/detail/PersonDetail.vue'),
+        component: () => import('@/views/detail/EntryDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(API.GET_PERSON_DETAIL, {id: to.params.id});
+                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${META.ENTITY.PERSON}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
-                    document.title = res.data.item.name;
+                    (to.meta as any).info.type = META.ENTITY.PERSON;
+                    document.title = res.data.entry.name;
                     next();
                 } else {
                     console.log(res.message);
@@ -43,15 +61,16 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         }
     },
     {
-        name: "EntryDetail",
-        path: API.ENTRY_DETAIL + "/:id",
+        name: "SubjectDetail",
+        path: API.SUBJECT_DETAIL + "/:id",
         component: () => import('@/views/detail/EntryDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(API.GET_ENTRY_DETAIL, {id: to.params.id});
+                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${META.ENTITY.SUBJECT}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
-                    document.title = res.data.item.name;
+                    (to.meta as any).info.type = META.ENTITY.SUBJECT;
+                    document.title = res.data.entry.name;
                     next();
                 } else {
                     console.log(res.message);
@@ -61,19 +80,20 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             }
         },
         meta: {
-            title: "Entry Detail"
+            title: "Subject Detail"
         }
     },
     {
         name: "ProductDetail",
         path: API.PRODUCT_DETAIL + "/:id",
-        component: () => import('@/views/detail/ProductDetail.vue'),
+        component: () => import('@/views/detail/EntryDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(API.GET_PRODUCT_DETAIL, {id: to.params.id});
+                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${META.ENTITY.PRODUCT}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
-                    document.title = res.data.item.name;
+                    (to.meta as any).info.type = META.ENTITY.PRODUCT;
+                    document.title = res.data.entry.name;
                     next();
                 } else {
                     console.log(res.message);
@@ -92,7 +112,7 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         component: () => import('@/views/detail/ItemDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(API.GET_ITEM_DETAIL, {id: to.params.id});
+                const res = await axios.post(`${API.GET_ITEM_DETAIL}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
                     document.title = res.data.item.name;
@@ -111,13 +131,14 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
     {
         name: "CharacterDetail",
         path: API.CHARACTER_DETAIL + "/:id",
-        component: () => import('@/views/detail/CharacterDetail.vue'),
+        component: () => import('@/views/detail/EntryDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(API.GET_CHARACTER_DETAIL, {id: to.params.id});
+                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${META.ENTITY.CHARACTER}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
-                    document.title = res.data.target.name;
+                    (to.meta as any).info.type = META.ENTITY.CHARACTER;
+                    document.title = res.data.entry.name;
                     next();
                 } else {
                     console.log(res.message);
@@ -134,6 +155,20 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         name: "EpisodeDetail",
         path: API.EPISODE_DETAIL + "/:id",
         component: () => import('@/views/detail/EpisodeDetail.vue'),
+        beforeEnter: async (to, _from, next) => {
+            try {
+                const res = await axios.post(`${API.GET_EPISODE_DETAIL}/${to.params.id}`);
+                if (res.state === axios.SUCCESS) {
+                    (to.meta as any).info = res.data;
+                    document.title = res.data.title;
+                    next();
+                } else {
+                    console.log(res.message);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        },
         meta: {
             title: "Episode Detail"
         }
@@ -149,50 +184,31 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             {
                 path: '/',
                 component: () => import('@/views/manager/ManagerIndex.vue'),
-                // beforeEnter: async (to, _from, next) => {
-                //     try {
-                //         const res = await axios.post(API.GET_STATISTIC_INFO);
-                //         if (res.state === axios.SUCCESS) {
-                //             to.meta.items = res.data;
-                //             next();
-                //         } else {
-                //             console.log(res.message);
-                //         }
-                //     } catch (e) {
-                //         console.error(e);
-                //     }
-                // },
                 meta: {
                     title: "Manager"
                 }
             },
             {
-                path: 'product',
-                component: () => import('@/views/manager/ProductManager.vue'),
+                path: 'entry',
+                component: () => import('@/views/manager/EntryManager.vue'),
             },
             {
                 path: 'item',
                 component: () => import('@/views/manager/ItemManager.vue'),
             },
             {
-                path: 'item/add',
-                component: () => import('@/views/manager/ItemDetailedCreator.vue')
-            },
-            {
-                path: 'album',
-                component: () => import('@/views/manager/AlbumManager.vue'),
-            },
-            {
-                path: 'book',
-                component: () => import('@/views/manager/BookManager.vue'),
-            },
-            {
-                path: 'person',
-                component: () => import('@/views/manager/PersonManager.vue'),
+                path: 'ep',
+                component: () => import('@/views/manager/EpisodeManager.vue'),
             },
             {
                 path: 'role',
                 component: () => import('@/views/manager/RoleManager.vue'),
+            },
+
+
+            {
+                path: 'item/add',
+                component: () => import('@/views/manager/ItemAdvanceCreator.vue')
             }
         ],
     }

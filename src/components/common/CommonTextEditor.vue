@@ -21,7 +21,7 @@
 <!--          </Column>-->
 <!--          <Column :header="$t('Image')" header-style="width: 8%">-->
 <!--            <template #body="slotProps">-->
-<!--              <img :src="slotProps.data.thumbUrl50" :alt="slotProps.data.nameEn"-->
+<!--              <img :src="slotProps.data.thumb50" :alt="slotProps.data.nameEn"-->
 <!--                   class="entry-thumb"/>-->
 <!--            </template>-->
 <!--          </Column>-->
@@ -39,13 +39,13 @@
 
 <script setup lang="ts">
 import {MdEditor} from "md-editor-v3";
-import {onMounted, ref, inject} from "vue";
+import {onMounted, ref, inject, onBeforeMount} from "vue";
 import {PublicHelper} from '@/toolkit/publicHelper.ts';
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper.ts';
 import {useToast} from "primevue/usetoast";
 import {useDialog} from 'primevue/usedialog';
 import {API} from '@/config/Web_Helper_Strs.ts';
-import {META} from '@/config/Web_Const.ts';
+import {EntityInfo, META} from '@/config/Web_Const.ts';
 import { useRoute } from 'vue-router';
 import {useI18n} from "vue-i18n";
 
@@ -59,21 +59,17 @@ const images = ref([]);
 // const emit = defineEmits(['update']);
 const isUpdate = ref(false);
 const route = useRoute();
+const entityInfo = ref<EntityInfo>();
+
+onBeforeMount(() => {
+  entityInfo.value = PublicHelper.getEntityInfo(route);
+})
 
 onMounted(() => {
   text.value = dialogRef.value.data.text;
   type.value = dialogRef.value.data.type;
-  getEntityInfo();
   // loadImages();
 });
-
-const entityType = ref();
-const entityId = ref();
-const getEntityInfo = () => {
-  let typeName = route.path.split('/')[2];
-  entityType.value = PublicHelper.getEntityType(typeName);
-  entityId.value = route.params.id;
-}
 
 const editBlock = ref(false);
 const copyImageUrl = (url) => {
@@ -82,25 +78,12 @@ const copyImageUrl = (url) => {
 
 const submit = () => {
   editBlock.value = true;
-  let url;
-  let json;
-
-  if (type.value === META.TEXT_TYPE.DETAIL) {
-    json = {
-      entityType: entityType.value,
-      entityId: entityId.value,
-      text: text.value
-    };
-    url = API.UPDATE_DETAIL;
-  } else if (type.value === META.TEXT_TYPE.BONUS) {
-    json = {
-      id: entityId.value,
-      bonus: text.value
-    };
-    url = API.UPDATE_BONUS;
-  }
-
-  axios.post(url, json)
+  let json = {
+    entityType: entityInfo.value?.type,
+    entityId: entityInfo.value?.id,
+    text: text.value
+  };
+  axios.post(API.UPDATE_DETAIL, json)
       .then(res => {
         if (res.state === axios.SUCCESS) {
           toast.add({severity: 'success', detail: res.message, life: 3000});
@@ -126,8 +109,8 @@ const close = () => {
 const loadImages = async () => {
   editBlock.value = true;
   let param = {
-    entityType: entityType.value,
-    entityId: entityId.value
+    entityType: entityInfo.value?.type,
+    entityId: entityInfo.value?.id
   }
   const res = await axios.post(API.GET_IMAGES, param);
   if(res.state === axios.SUCCESS) {

@@ -1,32 +1,53 @@
 export const API = {
 
-    //region
+    ITEM_SEARCH_PATH: '/db/items',
+    ITEM_SEARCH: '/api/db/item/search',
+    ENTRY_SEARCH_PATH: '/db/entries',
+
+    //region item
 
     ITEM_DETAIL: '/db/item',
     GET_ITEM_DETAIL: '/api/db/item/detail',
     GET_ITEM_LIST: '/api/db/item/list',
     ADD_ITEM: '/api/db/item/add',
+    ADVANCE_CREATE_ITEM: '/api/db/item/advance-create',
     UPDATE_ITEM: '/api/db/item/update',
     UPDATE_BONUS: '/api/db/item/update-bonus',
     GET_EXC_RELATED_ENTRIES: '/api/db/item/get-exc-related-entries',
-    GET_RELATED_ITEMS: '/api/db/item/related-items',
 
     BOOK_GENERATE_ISBN: '/api/db/item/get-isbn',
 
     QUICK_ADD_ALBUM_DISC: '/api/db/item/quick-add-album-disc',
     UPDATE_ALBUM_TRACK_INFO: '/api/db/item/update-album-track-info',
     GET_ALBUM_TRACK_INFO: '/api/db/item/get-album-track-info',
+    UPLOAD_ALBUM_TRACK_FILES: '/api/db/item/upload-album-track-files',
+
+    //endregion
+
+    //region entry
+    GET_MINI_ENTRY: '/api/db/entry/mini',
+    GET_ENTRY_DETAIL: '/api/db/entry/detail',
+    UPDATE_ENTRY: '/api/db/entry/update',
+    ENTRY_SEARCH: '/api/db/entry/search',
+    UPLOAD_ENTRY_IMAGE: '/api/db/entry/upload-image',
+    GET_ENTRY_LIST: '/api/db/entry/list',
+
+    //endregion
+
+    //region entry
+    GET_EPISODE_LIST: '/api/db/ep/list',
+    GET_EPISODE_DETAIL: '/api/db/ep/detail',
+    EPISODE_DETAIL: '/db/ep',
+    GET_EPISODE_RELATED: '/api/db/ep/get-related',
 
     //endregion
 
     //region
     DOMAIN: '/',
 
-    GENERAL_SEARCH: '/api/db/search',
     GET_STATISTIC_INFO: '/api/db/statistic-info',
 
     GET_ENTITY_OPTION: '/api/db/get-options',
-    SEARCH_ENTRIES: '/api/db/search',
 
     //region user
     CHECK_USER_AUTHORITY: '/api/user/check-authority',
@@ -38,6 +59,7 @@ export const API = {
 
     //region image
 
+    GET_DISPLAY_IMAGES: '/api/db/get-display-images',
     GET_IMAGES: '/api/db/get-images',
     ADD_IMAGE: '/api/db/add-image',
     UPDATE_IMAGE: '/api/db/update-image',
@@ -66,9 +88,10 @@ export const API = {
     DELETE_RELATION: '/api/db/relation/delete-relations',
 
     GET_RELATED_ENTITY: '/api/db/relation/get-related-entity',
+    GET_RELATED_ENTITIES: '/api/db/relation/get-related-entities',
     //endregion
 
-    UPDATE_ITEMS_STATUS: '/api/db/update-entry-status',
+    UPDATE_ITEMS_STATUS: '/api/db/update-entity-status',
     LIKE_ITEM: '/api/db/like',
     UPDATE_DETAIL: '/api/db/update-entry-detail',
 
@@ -90,23 +113,18 @@ export const API = {
 
     //endregion
 
-    //region entry
-    ENTRY_DETAIL: '/db/entry',
-    GET_ENTRY_DETAIL: '/api/db/entry/detail',
-    DELETE_ENTRY: '/api/db/entry/delete',
-    UPDATE_ENTRY: '/api/db/entry/update',
-    INSERT_ENTRY: '/api/db/entry/add',
-    ENTRY_REFRESH_REDIS_DATA: '/api/db/entry/refresh-redis-data',
+    //region subject
+    SUBJECT_DETAIL: '/db/subject',
+    GET_SUBJECT_DETAIL: '/api/db/subject/detail',
+    DELETE_SUBJECT: '/api/db/subject/delete',
+    UPDATE_SUBJECT: '/api/db/subject/update',
+    INSERT_SUBJECT: '/api/db/subject/add',
+    SUBJECT_REFRESH_REDIS_DATA: '/api/db/subject/refresh-redis-data',
     //endregion
 
     //region character
     CHARACTER_DETAIL: '/db/character',
     GET_CHARACTER_DETAIL: '/api/db/character/detail',
-    //endregion
-
-
-    //region episode
-    EPISODE_DETAIL: '/db/ep',
     //endregion
 
     //region music
@@ -129,6 +147,9 @@ export const API = {
     UPDATE_PRODUCT_STAFF: '/api/db/product/update-staffs',
     GET_RELATED_PRODUCTS: '/api/db/product/get-related-products',
 
-    GET_SUB_PRODUCTS: '/api/db/product/get-sub-product'
+    GET_SUB_PRODUCTS: '/api/db/product/get-sub-product',
     //endregion
+
+    COMMON_EMPTY_COVER_IMAGE: 'https://static.rakbow.com/common/404.jpg?imageMogr2/auto-orient/thumbnail/160x160',
+    COMMON_EMPTY_THUMB_IMAGE: 'https://static.rakbow.com/common/404.jpg?imageMogr2/auto-orient/thumbnail/60x60'
 }

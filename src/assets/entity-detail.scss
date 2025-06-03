@@ -4,7 +4,7 @@
   &-main-col {
     margin-top: .5rem !important;
     width: 900px;
-    background: general.$common-root-background;
+    background: general.$common-root-background !important;
     border-radius: 10px;
   }
   &-side-col {
@@ -32,6 +32,12 @@
     text-align: left;
     padding-top: 0;
     padding-bottom: 0;
+
+    display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
+    -webkit-box-orient: vertical; /* 设置为纵向排列 */
+    -webkit-line-clamp: 3; /* 限制显示的行数 */
+    overflow: hidden; /* 超出部分隐藏 */
+    text-overflow: ellipsis; /* 显示 "..." */
   }
 }
 
@@ -54,6 +60,9 @@
       background: general.$common-root-background !important;
       border: 1px solid general.$golden-text;
 
+      span {
+        transform: translateY(30%);
+      }
 
       i, b {
         font-size: 11px;
@@ -62,10 +71,6 @@
 
       i {
         margin: .3rem;
-      }
-
-      span {
-        transform: translateY(30%);
       }
 
       b {
@@ -123,7 +128,7 @@
   .p-panel {
     border-radius: general.$common-border-radius;
     &-header {
-      padding: 0 0 0 1rem;
+      padding: 0 0 .5rem 1rem;
       background: general.$common-header-background;
       color: general.$golden-text;
       border-top-left-radius: general.$common-border-radius;
@@ -145,11 +150,30 @@
 
     }
     &-content {
-      padding-left: 10px;
-      padding-right: 10px;
+      padding: 10px;
       background: general.$common-background;
       border-bottom-left-radius: general.$common-border-radius;
       border-bottom-right-radius: general.$common-border-radius;
     }
+  }
+}
+
+.page-info {
+  margin-top: .5rem;
+  .p-card {
+    &-body {
+      font-size: 11px;
+      border-radius: general.$common-border-radius;
+      padding: 6px 10px 6px 10px;
+      background: #2f364f;
+    }
+    &-card-content {
+      padding: 0;
+    }
+  }
+  i {
+    font-size: 11px;
+    margin-right: .5rem;
+    margin-left: .25rem;
   }
 }

@@ -99,10 +99,24 @@ export class AxiosHelper {
 
     //axios封装表单提交
     static async form(url: string, data: any) {
+        const formData = new FormData();
+
+        // 遍历 data，智能填充字段
+        Object.keys(data).forEach(key => {
+            const value = data[key];
+
+            if (Array.isArray(value)) {
+                // 如果是数组，逐个 append（适用于 files: File[]）
+                value.forEach(v => formData.append(key, v));
+            } else {
+                // 其他字段直接 append
+                formData.append(key, value);
+            }
+        });
         return axios({
             method: 'post',
             url: url,
-            data: data,
+            data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'X-Requested-With': 'XMLHttpRequest'

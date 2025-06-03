@@ -30,7 +30,7 @@
 import {ref, onMounted, defineAsyncComponent, onBeforeMount} from "vue";
 import { useDialog } from 'primevue/usedialog';
 import { logout } from '@/logic/login';
-import {useUserStore} from "@/store/user.ts";
+import {useUserStore} from "@/store/user";
 import {useI18n} from "vue-i18n";
 import {META} from "@/config/Web_Const";
 const {t} = useI18n();

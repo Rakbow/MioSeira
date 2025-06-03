@@ -5,6 +5,24 @@ import {DynamicDialogInstance, DynamicDialogOptions} from "primevue/dynamicdialo
 
 const {t} = i18n.global;
 
+export class ItemQueryParams {
+    entries: Array;
+    entityType: number | null | undefined;
+    entityId: number | null;
+    keyword: string | null;
+    type: number | null;
+    subType: number | null;
+    releaseType: number | null;
+    barcode: string | null;
+    catalogId: string | null;
+    region: string | null;
+    bonus: number | null;
+    page: number | null = 1;
+    size: number | null = 60;
+    sortField: string | null;
+    sortOrder: number | null;
+}
+
 // 定义商品参数接口
 export interface ItemSpecParams {
     length: number; // 长度（单位 mm）

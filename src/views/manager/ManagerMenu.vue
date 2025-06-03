@@ -26,38 +26,18 @@ const toast = useToast();
 const items = ref([
   {
     label: 'Item',
-    items: [
-      {
-        label: t('Album'),
-        icon: 'pi pi-th-large',
-        route: '/db/manager/album'
-      },
-      {
-        label: t('Book'),
-        icon: 'pi pi-book',
-        route: '/db/manager/book'
-      }
-    ]
+    icon: 'pi pi-th-large',
+    route: '/db/manager/item'
   },
   {
     label: 'Entry',
-    items: [
-      {
-        label: t('Product'),
-        icon: 'pi pi-th-large',
-        route: '/db/manager/product'
-      },
-      {
-        label: t('Person'),
-        icon: 'pi pi-users',
-        route: '/db/manager/person'
-      },
-      {
-        label: t('Role'),
-        icon: 'pi pi-tags',
-        route: '/db/manager/role'
-      }
-    ]
+    icon: 'pi pi-list',
+    route: '/db/manager/entry'
+  },
+  {
+    label: t('Role'),
+    icon: 'pi pi-tags',
+    route: '/db/manager/role'
   }
 ]);
 </script>

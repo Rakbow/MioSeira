@@ -1,0 +1,226 @@
+@use '@/assets/general' as general;
+@import 'primeflex/primeflex';
+
+$item-color-1-0: #3d9395;
+$item-color-2-0: #999;
+$item-color-3-0: #a44;
+$item-color-4-0: #faf;
+$item-color-5-1: #338979;
+$item-color-5-2: #f84;
+$item-color-5-3: #0af;
+$item-color-5-4: #ddd;
+$item-color-5-5: #a44;
+$item-color-5-6: #f4f;
+$item-color-5-7: #a4a;
+$item-color-5-8: #00a000;
+$item-color-6-9: green;
+$item-color-6-10: #0080ff;
+$item-color-6-11: #f84;
+$item-color-6-12: #888;
+$item-color-6-13: #a44;
+$item-color-6-14: #a4a;
+
+@mixin common-entity-image-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+@mixin common-entity-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.entity-image-cover-200 {
+  width: 200px;
+  @include common-entity-image;
+  border-radius: 10px;
+
+  img {
+    @include common-entity-image-img;
+  }
+
+}
+
+.image-thumb-50 {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  @include common-entity-image;
+
+  img {
+    @include common-entity-image-img;
+  }
+
+}
+
+.entry-thumb {
+  border: 2px solid general.$golden-text;
+  border-radius: 10px;
+  @include common-entity-image;
+
+  img {
+    @include common-entity-image-img;
+  }
+
+}
+
+.entry-thumb-50 {
+  width: 50px;
+  height: 50px;
+  border: 2px solid general.$golden-text;
+  border-radius: 10px;
+  @include common-entity-image;
+
+  img {
+    @include common-entity-image-img;
+  }
+
+}
+
+.entry-thumb-35 {
+  width: 35px;
+  height: 35px;
+  border: 2px solid general.$golden-text;
+  border-radius: 10px;
+  @include common-entity-image;
+
+  img {
+    @include common-entity-image-img;
+  }
+
+}
+
+.item-thumb-loading {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  @include common-entity-image;
+
+  img {
+    @include common-entity-image-img;
+  }
+}
+
+.item-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  @include common-entity-image;
+
+  img {
+    border-radius: 10px;
+    padding: 0.5px;
+    @include common-entity-image-img;
+  }
+  border: 2px solid;
+
+  &-1-0 {
+    border-color: $item-color-1-0;
+  }
+  &-2-0 {
+    border-color: $item-color-2-0;
+  }
+  &-3-0 {
+    border-color: $item-color-3-0;
+  }
+  &-4-0 {
+    border-color: $item-color-4-0;
+  }
+  &-5 {
+    &-1 {
+      border-color: $item-color-5-1;
+    }
+    &-2 {
+      border-color: $item-color-5-2;
+    }
+    &-3 {
+      border-color: $item-color-5-3;
+    }
+    &-4 {
+      border-color: $item-color-5-4;
+    }
+    &-5 {
+      border-color: $item-color-5-5;
+    }
+    &-6 {
+      border-color: $item-color-5-6;
+    }
+    &-7 {
+      border-color: $item-color-5-7;
+    }
+    &-8 {
+      border-color: $item-color-5-8;
+    }
+  }
+  &-6 {
+    &-9 {
+      border-color: $item-color-6-9;
+    }
+    &-10 {
+      border-color: $item-color-6-10;
+    }
+    &-11 {
+      border-color: $item-color-6-11;
+    }
+    &-12 {
+      border-color: $item-color-6-12;
+    }
+    &-13 {
+      border-color: $item-color-6-13;
+    }
+    &-14 {
+      border-color: $item-color-6-14;
+    }
+  }
+
+}
+
+.entity-search-result-block {
+  margin: .5rem .5rem .5rem .25rem;
+  border-radius: 7px;
+  background-color: #2F364F;
+}
+
+.empty-search-result {
+  color: gray;
+  font-style: italic;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 0.5rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+  display: flex;
+}
+
+.data-table-field-text-overflow-hidden {
+  display: block !important;
+  @include styleclass('white-space-nowrap overflow-hidden text-overflow-ellipsis');
+}
+
+.text-overflow-hidden-one {
+  display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
+  -webkit-box-orient: vertical; /* 设置为纵向排列 */
+  -webkit-line-clamp: 1; /* 限制显示的行数 */
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示 "..." */
+}
+
+.text-overflow-hidden-two {
+  display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
+  -webkit-box-orient: vertical; /* 设置为纵向排列 */
+  -webkit-line-clamp: 2; /* 限制显示的行数 */
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示 "..." */
+}
+
+.p-select {
+  font-size: 10px;
+  .p-select-option {
+    font-size: 10px;
+    .p-select-option-label {
+      font-size: 10px;
+    }
+  }
+}

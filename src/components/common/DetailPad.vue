@@ -5,20 +5,14 @@
         <i class="pi pi-align-left"/>
         <b>{{ props.header }}</b>
       </template>
+      <article ref="html" class="entity-detail-markdown"/>
       <div class="relative">
-        <div v-if="userStore.user">
-          <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
-                  @click="openEditDialog" style="right: 5%"
-                  v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
-            <template #icon>
-              <span class="material-symbols-outlined">edit_note</span>
-            </template>
-          </Button>
-        </div>
-        <Button v-if="!empty" class="p-button-link absolute top-0 right-0" icon="pi pi-external-link"
-                @click="openTextTingle"
+        <Button v-if="userStore.user && userStore.user.type > 1" class="p-button-link absolute bottom-0"
+                @click="openEditDialog" style="right: 5%" icon="pi pi-pen-to-square"
+                v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}"/>
+        <Button v-if="!empty" class="p-button-link absolute bottom-0"
+                @click="openTextTingle" style="right: 0" icon="pi pi-external-link"
                 v-tooltip.bottom="{value: $t('FullScreen'), class: 'short-tooltip'}"/>
-        <article ref="html" class="entity-detail-markdown"/>
       </div>
     </Fieldset>
   </BlockUI>
@@ -26,10 +20,15 @@
 
 <script setup lang="ts">
 import {ref, onMounted, defineProps, defineAsyncComponent} from "vue";
-import {useUserStore} from "@/store/user.ts";
+import {useUserStore} from "@/store/user";
 import {META} from '@/config/Web_Const.ts';
-import {marked} from 'marked';
+
 import tingle from 'tingle.js';
+import 'tingle.js/src/tingle.css';
+
+import {marked} from 'marked';
+import 'md-editor-v3/lib/style.css';
+
 import {useDialog} from 'primevue/usedialog';
 import {useI18n} from "vue-i18n";
 
@@ -116,4 +115,11 @@ const tingleModal = new tingle.modal({
 
 <style lang="scss" scoped>
 @use 'tingle.js/src/tingle.css';
+
+//.edit-btn {
+//  @apply p-button-link
+//  position: absolute
+//  bottom: 0
+//}
+
 </style>

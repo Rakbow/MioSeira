@@ -12,32 +12,32 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, onBeforeUnmount} from "vue";
+import {onMounted, onBeforeUnmount, ref} from "vue";
 import PageHeader from "@/components/page/PageHeader.vue";
 import PageFooter from "@/components/page/PageFooter.vue";
 import {useDialog} from 'primevue/usedialog';
 
 const dialog = useDialog();
 
-let mainContent: HTMLElement;
+const mainContent = ref();
 
 const handleScroll = (event) => {
   event.stopPropagation();
 }
 
 const setMainContentHeight = () => {
-  if (mainContent) {
-    const header = mainContent.previousElementSibling as HTMLElement;
-    const footer = mainContent.nextElementSibling as HTMLElement;
+  if (mainContent.value) {
+    const header = mainContent.value.previousElementSibling as HTMLElement;
+    const footer = mainContent.value.nextElementSibling as HTMLElement;
 
     if (header && footer) {
       const headerHeight = header.offsetHeight;
       const footerHeight = footer.offsetHeight;
-      const computedStyle = getComputedStyle(mainContent);
+      const computedStyle = getComputedStyle(mainContent.value);
       const marginTop = parseFloat(computedStyle.marginTop);
       const marginBottom = parseFloat(computedStyle.marginBottom);
 
-      mainContent.style.minHeight =
+      mainContent.value.style.minHeight =
           `calc(${window.innerHeight}px - ${headerHeight}px - ${footerHeight}px - ${marginTop}px - ${marginBottom}px)`;
     }
   }

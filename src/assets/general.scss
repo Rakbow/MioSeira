@@ -1,0 +1,75 @@
+@import 'primeflex/primeflex';
+
+$golden-text: #beb993;
+$common-background: #2F364F;
+$common-root-background: #18181b;
+$common-header-background: #1B273D;
+$common-link: #ceffff;
+$label: #788990;
+$time: #68b;
+$gray: #bbb;
+
+$small-font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, Meiryo, sans-serif;
+
+$common-border-radius: 10px;
+$common-border-down-radius: 0 0 10px 10px;
+$common-border-up-radius: 10px 10px 0 0;
+
+html {
+  font-size: 14px;
+}
+
+body {
+  background-color: #001122;
+  min-width: 1250px;
+
+  font-family: var(--font-family);
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0.25rem;
+}
+
+img {
+  user-drag: none; /* 禁用拖动 */
+  -webkit-user-drag: none; /* 兼容 Webkit 浏览器 */
+}
+
+.card {
+  background: var(--surface-card);
+  border-radius: 10px;
+}
+
+
+
+a:link {
+  color: $common-link !important;
+  @include styleclass('no-underline hover:underline');
+}
+
+a:visited, a:hover {
+  color: $common-link !important;
+}
+
+.small-font {
+  font: 11px $small-font-family;
+}
+
+.label-title {
+  color: $label;
+}
+
+
+.p-popover {
+  border-radius: 6px !important;
+  .p-popover-content {
+    padding: 0 !important;
+    border-radius: 6px !important;
+  }
+}
+
+
+
+.image-click {
+  cursor: url("https://static.rakbow.com/common/zoomin.cur"), pointer;
+}

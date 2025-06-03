@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import {useRoute, useRouter} from "vue-router";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import {useDialog} from "primevue/usedialog";
-import {META} from "@/config/Web_Const.ts";
-import {API} from '@/config/Web_Helper_Strs.ts';
+import {META} from "@/config/Web_Const";
+import {API} from '@/config/Web_Helper_Strs';
 import {useI18n} from "vue-i18n";
 import {loadCreator, loadEditor} from "@/logic/itemService";
 import "flag-icons/css/flag-icons.min.css";
@@ -24,7 +24,7 @@ const {t} = useI18n();
 const items = ref([]);
 const dt = ref();
 const filters = ref({
-  'itemType': {value: optionsStore.current},
+  'itemType': {value: optionsStore.itemCurrent},
   'name': {value: ''},
   'catalogId': {value: ''},
   'region': {value: ''},
@@ -49,12 +49,15 @@ const option = ref<any>({});
 const itemType = ref();
 const switchItemType = (ev) => {
   if(ev.value === null)
-    itemType.value = META.ITEM_TYPE_SET[optionsStore.current-1];
-  optionsStore.current = parseInt(itemType.value.value);
-  queryParams.value.filters.itemType.value = optionsStore.current;
+    itemType.value = META.ITEM_TYPE_SET[optionsStore.itemCurrent-1];
+  optionsStore.itemCurrent = parseInt(itemType.value.value);
+  queryParams.value.filters.itemType.value = optionsStore.itemCurrent;
   getItems();
 }
-
+const initPageSize = () => {
+  queryParams.value.first = 0;
+  queryParams.value.rows = dt.value.rows;
+}
 const initQueryParam = async () => {
   let page = !_isUndefined(route.query.page) ? route.query.page : 1;
   filters.value.name.value = !_isUndefined(route.query.name) ? route.query.name : '';
@@ -111,7 +114,7 @@ onBeforeMount(() => {
 const initOption = async () => {
   await optionsStore.fetchOptions();
   option.value = optionsStore.options;
-  itemType.value = META.ITEM_TYPE_SET[optionsStore.current-1];
+  itemType.value = META.ITEM_TYPE_SET[optionsStore.itemCurrent-1];
 }
 
 const onPage = (ev) => {
@@ -120,10 +123,12 @@ const onPage = (ev) => {
 };
 const onSort = (ev) => {
   queryParams.value = ev;
+  initPageSize();
   getItems();
 };
 const onFilter = () => {
   queryParams.value.filters = filters.value;
+  initPageSize();
   getItems();
 };
 
@@ -187,7 +192,7 @@ const exportCSV = () => {
         </div>
         <div class="col-4">
           <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
-                       @update:modelValue="onToggle" class="text-end"
+                       @update:modelValue="onToggle" class="text-end" size="small"
                        :placeholder="$t('SelectedDisplayColumns')" style="width: 20em"/>
         </div>
       </BlockUI>
@@ -209,7 +214,7 @@ const exportCSV = () => {
         <Column :header="$t('BasicInfo')" :colspan="7" />
       </Row>
       <Row>
-        <Column :header="$t('CatalogId')" :sortable="true" field="catalogId" v-if="optionsStore.current !== META.ITEM_TYPE.BOOK" />
+        <Column :header="$t('CatalogId')" :sortable="true" field="catalogId" v-if="optionsStore.itemCurrent !== META.ITEM_TYPE.BOOK" />
         <Column :header="$t('Barcode')" :sortable="true" field="barcode" />
         <Column :header="$t('ReleaseDate')" :sortable="true" field="releaseDate" />
         <Column :header="$t('Price')" :sortable="true" field="price" />
@@ -236,19 +241,18 @@ const exportCSV = () => {
         </a>
       </template>
       <template #filter="{filterModel,filterCallback}">
-        <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
+        <InputText size="small" type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-
     <Column :header="$t('CatalogId')" field="catalogId" :showFilterMenu="false"
-            v-if="optionsStore.current !== META.ITEM_TYPE.BOOK">
+            v-if="optionsStore.itemCurrent !== META.ITEM_TYPE.BOOK">
       <template #filter="{filterModel,filterCallback}">
-        <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 120px"/>
+        <InputText size="small" type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 120px"/>
       </template>
     </Column>
     <Column :header="$t('Barcode')" field="barcode" :showFilterMenu="false">
       <template #filter="{filterModel,filterCallback}">
-        <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 130px"/>
+        <InputText size="small" type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 130px"/>
       </template>
     </Column>
     <Column :header="$t('ReleaseDate')" field="releaseDate" />
@@ -262,7 +266,7 @@ const exportCSV = () => {
         <span :class="`fi fi-${slotProps.data.region}`" style="margin-left: 0.5rem"/>
       </template>
       <template #filter="{filterModel,filterCallback}">
-        <Select v-model="filterModel.value" :options="META.RegionSet" @change="filterCallback()"
+        <Select size="small" v-model="filterModel.value" :options="META.RegionSet" @change="filterCallback()"
                 :showClear="true" optionLabel="label" optionValue="value">
           <template #value="slotProps">
             <span :class="`fi fi-${slotProps.value}`"/>
@@ -278,7 +282,7 @@ const exportCSV = () => {
         {{ slotProps.data.releaseType.label }}
       </template>
       <template #filter="{filterModel,filterCallback}">
-        <Select v-model="filterModel.value" @change="filterCallback()" style="width: 8rem"
+        <Select size="small" v-model="filterModel.value" @change="filterCallback()" style="width: 8rem"
                 :options="option.releaseTypeSet" optionLabel="label" optionValue="value"/>
       </template>
     </Column>

@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import {ref, defineAsyncComponent, onMounted, defineProps} from 'vue';
+import {ref, defineAsyncComponent, onMounted, onBeforeMount} from 'vue';
 import {useDialog} from 'primevue/usedialog';
 
 const manager = defineAsyncComponent(() => import('@/components/image/ImageManager.vue'));
 const loader = defineAsyncComponent(() => import('@/components/image/ImageLoader.vue'));
-import {useUserStore} from "@/store/user.ts";
-import {PublicHelper} from "@/toolkit/publicHelper.ts";
+const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
+import {useUserStore} from "@/store/user";
+import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import {useI18n} from "vue-i18n";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import {API} from "@/config/Web_Helper_Strs";
+import {EntityInfo} from "@/config/Web_Const";
 
 const {t} = useI18n();
 const userStore = useUserStore();
@@ -16,23 +20,17 @@ const route = useRoute();
 const dialog = useDialog();
 const toast = useToast();
 const editBlock = ref(false);
-const entityInfo = ref();
+const loading = ref(false);
+const entityInfo = ref<EntityInfo>();
+const images = ref([]);
+const count = ref(0);
 
-const props = defineProps({
-  count: {
-    type: Number,
-    required: false,
-    default: () => (0)
-  },
-  images: {
-    type: Array,
-    required: true,
-    default: () => ([])
-  },
+onBeforeMount(() => {
+  entityInfo.value = PublicHelper.getEntityInfo(route);
 });
 
 onMounted(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
+  getDisplayImages();
 });
 
 const activeIndex = ref(0)
@@ -55,6 +53,22 @@ const responsiveOptions = [
     numVisible: 1
   }
 ];
+
+const getDisplayImages = async () => {
+  loading.value = true;
+  let param = {
+  entityType: entityInfo.value?.type,
+  entityId: entityInfo.value?.id
+  }
+  const res = await axios.post(API.GET_DISPLAY_IMAGES, param);
+  if (res.state === axios.SUCCESS) {
+    images.value = res.data.images;
+    count.value = res.data.count;
+  } else {
+    toast.add({severity: 'error', detail: res.message, life: 3000});
+  }
+  loading.value = false;
+}
 
 const openLoader = () => {
   dialog.open(loader, {
@@ -92,28 +106,28 @@ const openEditDialog = () => {
       <template #header>
       <span class="text-start side-panel-header">
         <i class="pi pi-images"/><span><strong>{{ $t('Images') }}</strong></span>
-        <Button :label="props.count.toString()" severity="success" size="small" outlined class="ml-2"
-                @click="openLoader" :disabled="props.count === 0"
-                v-tooltip.bottom="{value: $t('ViewAll'), class: 'common-tooltip'}" />
       </span>
       </template>
       <template #icons>
         <div v-if="userStore.user">
-          <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link mr-2" text rounded
+          <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link ml-2" text rounded
                   @click="openEditDialog" v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
             <span class="pi pi-cog"/>
           </Button>
+          <Button :label="count.toString()" severity="success" size="small" outlined class="mr-2"
+                  @click="openLoader" :disabled="!count"
+                  v-tooltip.bottom="{value: $t('ViewAll'), class: 'common-tooltip', disabled: !count}" />
         </div>
       </template>
 
-      <div class="flex" v-if="props.images.length === 0">
-        <i class="mt-3 ml-4 rkw-side-empty-info">{{ $t('NoImage') }}</i>
+      <div v-if="!images.length">
+        <span class="empty-search-result">{{ $t('NoImage') }}</span>
       </div>
       <ScrollPanel v-else style="max-height: 300px;max-width: 265px">
-        <div v-if="props.images" class="grid justify-content-evenly justify-content-start" style="width: 260px">
+        <div v-if="images" class="grid justify-content-evenly justify-content-start" style="width: 260px">
           <div class="col-4 mt-2 mb-2" id="panel-image-div"
-               v-for="(image, index) of props.images" :key="index">
-            <img class="sidebar-panel-image-middle" :src="image.thumbUrl70"
+               v-for="(image, index) of images" :key="index">
+            <img class="sidebar-panel-image-middle" :src="image.thumb70"
                  draggable="false"
                  oncontextmenu="return false"
                  v-tooltip.bottom="{value: $t('UploadIn') + image.addedTime, class: 'image-tooltip'}"
@@ -125,86 +139,10 @@ const openEditDialog = () => {
       </ScrollPanel>
     </Panel>
   </div>
-
-  <Galleria :value="props.images"
-            v-model:activeIndex="activeIndex" :responsiveOptions="responsiveOptions"
-            :numVisible="7" containerStyle="max-width: 800px"
-            :circular="true" :fullScreen="true" :showItemNavigators="true"
-            :showThumbnails="false" v-model:visible="displayCustom">
-    <template #item="{item}">
-      <img class="responsive-image" :src="item!.url" :alt="item!.name"
-           oncontextmenu="return false"/>
-    </template>
-    <template #caption="{item}">
-      <div class="custom-galleria-footer">
-        <div class="col-6">
-              <span v-if="props.images" class="title-container">
-                <span>{{ `${activeIndex + 1}/${props.images.length}` }}</span>
-                <span class="title">{{ item!.nameZh }}</span>
-                <span style="font-size: 10px">{{ item!.description }}</span>
-            </span>
-        </div>
-        <div class="col-6 text-end">
-            <span v-if="props.images">
-                <span>{{ $t('UploadIn') + item!.addedTime }}</span>
-            </span>
-        </div>
-      </div>
-    </template>
-  </Galleria>
+  <ImageGalleria :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
 
 <style lang="scss" scoped>
-
 @use '@/assets/bootstrap/myBootstrap.min.css';
 @use '@/assets/entity-detail';
-
-.responsive-image {
-  max-width: 70vw; /* 60% of viewport width */
-  max-height: 70vh; /* 60% of viewport height */
-  width: auto; /* Maintain aspect ratio */
-  height: auto; /* Maintain aspect ratio */
-  object-fit: contain; /* Ensure the image fits within the container */
-}
-
-.custom-galleria-footer {
-  display: flex;
-  align-items: center;
-  /*background-color: rgba(0, 0, 0, 0.9);*/
-  color: #ffffff;
-}
-
-.custom-galleria-footer > button {
-  background-color: transparent;
-  color: #ffffff;
-  border: 0 none;
-  border-radius: 0;
-  margin: .2rem 0;
-}
-
-.custom-galleria-footer > button.fullscreen-button {
-  margin-left: auto;
-}
-
-.custom-galleria-footer > button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.title-container > span {
-  font-size: .9rem;
-  padding-left: .829rem;
-}
-
-.title-container > span.title {
-  font-weight: bold;
-}
-
-.p-galleria-content {
-  position: relative;
-}
-
-.p-galleria-thumbnail-content {
-  height: 100px;
-  width: 100px;
-}
 </style>

@@ -1,43 +1,51 @@
 <script setup lang="ts">
-import {defineProps} from "vue";
+import {defineProps, onBeforeMount, ref} from "vue";
 import {useI18n} from "vue-i18n";
+import {PublicHelper} from "@/toolkit/publicHelper";
 const {t} = useI18n();
+const entry = ref();
 
 const props = defineProps({
-  item: {
+  entry: {
     type: Object,
     required: true,
     default: () => ({})
   } as any
 });
 
+onBeforeMount(() => {
+  entry.value = props.entry;
+});
+
 </script>
 
 <template>
-  <table class="table-borderless table-sm ml-2">
-    <tbody class="entity-info-table">
-    <tr>
-      <td>
-        <i class="pi pi-tag"></i>
-        <strong>{{ $t('Category') }}</strong>
-      </td>
-      <td style="display:inline">
-        <a :href="'/db/manager/product?type=' + item.type.value">
-          <Tag class="ml-1" :value="item.type.label"></Tag>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <i class="pi pi-calendar"></i>
-        <strong>{{ $t('ReleaseDate') }}</strong>
-      </td>
-      <td>
-        {{ item.date ? item.date : "N/A" }}
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <ul id="infobox">
+    <li v-if="entry.aliases.length" class="sub_container">
+      <ul>
+        <li v-for="(alias, index) in entry.aliases" :key="index" :class="{ 'sub_section': index === 0, sub: index > 0 }">
+          <span v-if="index === 0" class="tip">{{ $t('Aliases') }}:&nbsp;</span>{{ alias }}
+        </li>
+      </ul>
+    </li>
+    <li>
+      <span class="tip">{{ $t('Category') }}:&nbsp;</span>
+      <Tag class="ml-1" :value="entry.type.label"/>
+    </li>
+    <li v-if="entry.date">
+      <span class="tip">{{ $t('ReleaseDate') }}:&nbsp;</span>{{ entry.date }}
+    </li>
+    <li v-if="entry.links.length" class="sub_container">
+      <ul>
+        <li v-for="(link, index) in entry.links" :key="index" :class="{ 'sub_section': index === 0, sub: index > 0 }">
+                    <span v-if="index === 0" class="tip">
+                      {{ $t('Link') }}:&nbsp;
+                    </span><a :href="link">
+          <i class="pi pi-link" style="font-size: 11px"/>{{ PublicHelper.getDomain(link) }}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
 </template>
 
 <style lang="scss" scoped>

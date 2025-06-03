@@ -40,8 +40,8 @@
       </Column>
       <Column :header="$t('Image')" style="flex: 0 0 5rem">
         <template #body="slotProps">
-          <img :src="slotProps.data.thumbUrl50" :alt="slotProps.data.name"
-               class="entry-thumb"/>
+          <img :src="slotProps.data.thumb50" :alt="slotProps.data.name"
+               class="entry-thumb image-click" @click="imageClick(slotProps.index)" />
         </template>
       </Column>
       <Column :header="$t('Name')" field="name" sortable style="flex: 0 0 5rem"/>
@@ -76,62 +76,13 @@
   <Dialog :modal="true" v-model:visible="displayAddDialog" :header="$t('Add')"
           :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
     <BlockUI :blocked="editBlock">
-      <div class="card">
-        <FileUpload :customUpload="true"
-                    accept="image/*"
-                    :auto="true"
-                    :chooseLabel="$t('UploadImage')"
-                    chooseIcon="pi pi-image"
-                    :cancelLabel="$t('Clear')"
-                    cancelIcon="pi pi-trash"
-                    :maxFileSize="2000000" :previewWidth="100"
-                    :invalidFileSizeMessage="$t('ImageInvalidFileSizeMessage')"
-                    @uploader="onUpload"
-                    @select="selectFile">
-          <template #content v-if="imageAdd.image !== null">
-            <div class="flex flex-wrap gap-4">
-              <div>
-                <img role="presentation" :alt="imageAdd.image.name" :src="imageAdd.image.objectURL" width="100"
-                     height="50"/>
-              </div>
-              <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{
-                  imageAdd.image.name
-                }}</span>
-              <div>{{ formatSize(imageAdd.image.size) }}</div>
-            </div>
-            <div class="p-fluid">
-              <div class="formgrid grid">
-                <div class="field col">
-                  <label>{{ $t('Name') }}<span style="color: red">*</span></label>
-                  <InputText id="name" v-model="imageAdd.name"/>
-                </div>
-                <div class="field col">
-                  <label>{{ $t('NameZh') }}</label>
-                  <InputText id="nameEn" v-model="imageAdd.nameZh"/>
-                </div>
-                <div class="field col">
-                  <label>{{ $t('Type') }}<span style="color: red">*</span></label>
-                  <Select v-model="imageAdd.type" :options="imageTypeSet"
-                          optionLabel="label" optionValue="value"/>
-                </div>
-              </div>
-              <div class="field">
-                <label>{{ $t('Description') }}</label>
-                <Textarea v-model="imageAdd.detail" rows="3" cols="20" :autoResize="true"/>
-              </div>
-            </div>
-          </template>
-          <template #empty v-else>
-            <span>Drag and drop files to here to upload.</span>
-          </template>
-        </FileUpload>
-      </div>
+      <ImageUploader v-model:images="addImages"/>
     </BlockUI>
     <template #footer>
       <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text"
               @click="displayAddDialog = false" :disabled="editBlock"/>
       <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text"
-              @click="addImage" :disabled="editBlock || imageAdd.image === null"/>
+              @click="addImage" :disabled="editBlock || addImages.length === 0"/>
     </template>
   </Dialog>
   <Dialog :modal="true" v-model:visible="displayEditDialog" :header="$t('Edit')"
@@ -169,27 +120,27 @@
               @click="updateImage" :disabled="editBlock"/>
     </template>
   </Dialog>
+  <ImageGalleria :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
 
 <script setup lang="ts">
 import {useToast} from 'primevue/usetoast';
-import {ref, inject, onMounted} from "vue";
+import {ref, inject, onMounted, defineAsyncComponent, onBeforeMount} from "vue";
 import {API} from '@/config/Web_Helper_Strs.ts';
-import {META} from '@/config/Web_Const.ts';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
-import {PublicHelper} from "@/toolkit/publicHelper.ts";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {usePrimeVue} from "primevue/config";
+import {EntityInfo} from "@/config/Web_Const";
+const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
+const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 
+const addImages = ref([]);
 const dialogRef = inject("dialogRef");
 const route = useRoute();
 const {t} = useI18n();
 const toast = useToast();
-const entityType = ref();
-const entityId = ref();
 const editBlock = ref(false);
-const imageAdd = ref<any>();
 const imageEdit = ref<any>({});
 const images = ref<any>([]);
 const totalRecords = ref(0);
@@ -201,7 +152,25 @@ const displayAddDialog = ref(false);
 const displayEditDialog = ref(false);
 const displayDeleteDialog = ref(false);
 const dt = ref();
-const $primevue = usePrimeVue();
+
+const entityInfo = ref<EntityInfo>();
+onBeforeMount(() => {
+  entityInfo.value = PublicHelper.getEntityInfo(route);
+});
+
+onMounted(async () => {
+  filters.value.entityType.value = entityInfo.value?.type;
+  filters.value.entityId.value = entityInfo.value?.id;
+  queryParams.value = {
+    first: 0,
+    rows: dt.value.rows,
+    sortField: null,
+    sortOrder: null,
+    filters: filters.value
+  };
+  await getImages();
+});
+
 const confirmDeleteSelected = () => {
   displayDeleteDialog.value = true;
 }
@@ -215,29 +184,9 @@ const imageTypeSet = ref(
     ]
 );
 
-onMounted(async () => {
-  getEntityInfo();
-  filters.value.entityType.value = entityType.value;
-  filters.value.entityId.value = entityId.value;
-  queryParams.value = {
-    first: 0,
-    rows: dt.value.rows,
-    sortField: null,
-    sortOrder: null,
-    filters: filters.value
-  };
-  await getImages();
-});
-
-const getEntityInfo = () => {
-  let typeName = route.path.split('/')[2];
-  entityType.value = PublicHelper.getEntityType(typeName);
-  entityId.value = parseInt(route.params.id.toString());
-}
-
 const filters = ref({
-  'entityType': {value: entityType.value},
-  'entityId': {value: entityId.value},
+  'entityType': {value: entityInfo.value?.type},
+  'entityId': {value: entityInfo.value?.id},
   'type': {value: -1}
 });
 
@@ -255,20 +204,8 @@ const onFilter = () => {
 };
 
 const openAddDialog = () => {
-  imageAdd.value = {
-    image: null,
-    type: META.IMAGE_TYPE.DEFAULT,
-    entityType: entityType.value,
-    entityId: entityId.value,
-    name: '',
-    nameZh: '',
-    detail: '',
-  };
+  addImages.value = [];
   displayAddDialog.value = true;
-}
-
-const closeAddDialog = () => {
-  displayAddDialog.value = false;
 }
 
 const openEditDialog = (data) => {
@@ -302,18 +239,18 @@ const getImages = async () => {
 
 const addImage = async () => {
   editBlock.value = true;
-  const formData = new FormData();
-  let uploadInfo = JSON.parse(JSON.stringify(imageAdd.value));
-  delete uploadInfo.image;
-  formData.append("files", imageAdd.value.image);
-  formData.append("entityType", entityType.value);
-  formData.append("entityId", entityId.value);
-  formData.append("infos", JSON.stringify([uploadInfo]));
-  const res = await axios.form(API.ADD_IMAGE, formData);
+  const res = await axios.post(
+      API.ADD_IMAGE,
+      {
+        entityType: entityInfo.value?.type,
+        entityId: entityInfo.value?.id,
+        images: addImages.value
+      }
+  );
   if (res.state === axios.SUCCESS) {
-    closeAddDialog();
-    await getImages();
     toast.add({severity: 'success', detail: res.message, life: 3000});
+    displayAddDialog.value = false;
+    await getImages();
   } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
   }
@@ -353,30 +290,12 @@ const deleteImages = async () => {
   }
   editBlock.value = false;
 }
-
-const selectFile = (ev) => {
-  imageAdd.value.image = ev.files[0];
+const activeIndex = ref(0)
+const displayCustom = ref(false)
+const imageClick = (index) => {
+  activeIndex.value = index;
+  displayCustom.value = true;
 };
-
-const onUpload = () => {
-  toast.add({severity: 'info', summary: 'Success', detail: t('ImageUploadSuccess'), life: 3000});
-}
-
-const formatSize = (bytes) => {
-  const k = 1024;
-  const dm = 3;
-  const sizes = $primevue.config.locale!.fileSizeTypes;
-
-  if (bytes === 0) {
-    return `0 ${sizes[0]}`;
-  }
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-  return `${formattedSize} ${sizes[i]}`;
-};
-
 </script>
 
 <style scoped>

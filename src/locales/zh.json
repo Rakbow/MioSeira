@@ -11,6 +11,8 @@
   "Commit": "提交",
   "Clear": "清空",
   "Refresh": "刷新",
+  "Expand": "展开",
+  "Collapse": "收起",
   "ExpandAll": "全部展开",
   "CollapseAll": "全部折叠",
   "FullScreen": "全屏",
@@ -31,11 +33,14 @@
   "Group": "分组",
   "Date": "日期",
   "Analysis": "解析",
+  "Upload": "上传",
+  "Keyword": "关键词",
 
   "Character": "角色",
 
   "Releases": "发售信息",
   "BasicInfo": "基础信息",
+  "AdvanceInfo": "进阶信息",
   "Persons": "相关人员",
   "PersonNameZh": "简体中文名",
   "PersonNameEn": "英文名",
@@ -309,6 +314,7 @@
   "CommonDataTableLoadingInfo": "加载中",
   "RequiredInfo": "请完善必填项",
 
+  "DragImage": "拖动或选择图片上传",
   "ImageUploadSuccess": "图片已上传！",
   "ConfirmDeleteImage": "确定删除所选的图片？",
   "PleaseSelectImageType": "选择图片类型",
@@ -318,6 +324,7 @@
   "NotImageNameEn": "未填写图片名(英)",
   "UploadImage": "上传图片",
   "ImageInvalidFileSizeMessage": "{0}大小已超过{1}",
+  "ImageGenerateThumb": "生成缩略图",
   "ImageNameZh": "图片名(中)",
   "ImageNameEn": "图片名(英)",
   "ImageTypes": [
@@ -340,10 +347,15 @@
   "Entity": "实体",
   "RelatedEntity": "关联条目",
   "RelatedProduct": "关联作品",
+  "RelatedCharacter": "关联角色",
   "RelatedItem": "关联物品",
 
   "Material": "原材料",
   "Event": "活动",
   "Classification": "分类",
-  "Version": "版本"
+  "Version": "版本",
+
+  "PremiereDate": "首播时间",
+  "EpisodeType0": "音轨",
+  "EpisodeType1": "剧集"
 }

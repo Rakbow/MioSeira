@@ -1,20 +1,21 @@
 <template>
   <div class="card">
-    <!--      <SelectButton v-model="selectEntityType" :options="META.ENTITY_ICON_SET" @change="switchEntityType($event)"-->
-    <!--                    optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">-->
-    <!--        <template #option="slotProps">-->
-    <!--          <i :class="slotProps.option.icon"/>-->
-    <!--        </template>-->
-    <!--      </SelectButton>-->
     <BlockUI :blocked="loading">
-      <IconField>
-        <InputIcon class="pi pi-search" v-if="!queryParam.param.keyword"/>
-        <InputText class="w-full" v-model="queryParam.param.keyword" @keyup.enter="search"/>
-        <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="queryParam.param.keyword"/>
+      <SelectButton v-if="props.all" class="w-full" size="small" v-model="selectEntityType"
+                    :options="META.ENTRY_SEARCH_TYPE_SET" @change="switchEntrySearchType($event)"
+                    optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
+        <template #option="slotProps">
+          <span class="material-symbols-outlined">{{ slotProps.option.icon }}</span>
+        </template>
+      </SelectButton>
+      <IconField class="mt-2">
+        <InputIcon class="pi pi-search" v-if="!queryParam.keyword"/>
+        <InputText class="w-full" v-model="queryParam.keyword" @keyup.enter="search"/>
+        <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="queryParam.keyword"/>
       </IconField>
     </BlockUI>
-    <DataView class="mt-2" :value="entries" lazy paginator @page="page($event)"
-              :rows="queryParam.param.row" :first="queryParam.param.first" :totalRecords="totalRecords">
+    <DataView class="mt-2" :value="searchResult.data" lazy paginator @page="page($event)"
+              :rows="queryParam.size" :totalRecords="searchResult.total">
       <template #empty>
         <span class="empty-search-result">
             {{ $t('NoSearchResult') }}
@@ -23,25 +24,31 @@
       <template #list="slotProps">
         <div v-if="!loading" v-for="(entry, index) in slotProps.items" :key="index">
           <div class="grid entity-search-result-block">
-            <div class="col ml-1">
-              <div class="entry-thumb-50">
-                <img role="presentation" :alt="entry.name" :src="entry.cover"/>
+            <div class="col-fixed p-1" style="width: 45px">
+              <div class="entry-thumb">
+                <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
               </div>
             </div>
-            <div class="col-9">
-              <div class="mt-1">{{ entry.name }}</div>
-              <small style="color: gray" class="text-xs">
+            <div class="col p-1">
+              <a :href="`/db/${entry.tableName}/${entry.id}`" class="text-overflow-hidden-one"
+                 :title="entry.name">{{ entry.name }}</a>
+              <!--              <div>{{ entry.name }}</div>-->
+              <small style="color: gray" class="text-xs text-overflow-hidden-one" :title="(entry as any).subName">
                 <span v-if="entry.info">({{ entry.info }})&nbsp;</span>
-                <span>{{ entry.subName }}</span>
+                <span>{{ (entry as any).subName }}</span>
               </small>
             </div>
-            <div class="col flex align-items-center justify-content-center">
+            <div class="col-1 flex align-items-center justify-content-center" style="width: 35px">
               <Button v-if="!entry.isPicked" text @click="select(entry)">
                 <template #icon>
                   <span class="material-symbols-outlined">add_box</span>
                 </template>
               </Button>
-              <span v-else class="material-symbols-outlined">check_box</span>
+              <Button v-else text disabled severity="info">
+                <template #icon>
+                  <span class="material-symbols-outlined">check_box</span>
+                </template>
+              </Button>
             </div>
           </div>
         </div>
@@ -63,11 +70,15 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps} from "vue";
+import {ref, onMounted, defineProps, onBeforeMount} from "vue";
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
 import {META} from "@/config/Web_Const";
 import {API} from "@/config/Web_Helper_Strs";
 import {inject} from "vue";
+import {PublicHelper} from "@/toolkit/publicHelper";
+
+onBeforeMount(() => {
+});
 
 onMounted(() => {
   pickedEntries.value = props.entries;
@@ -75,14 +86,25 @@ onMounted(() => {
 });
 
 const props = defineProps({
+  all: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
   type: {
     type: Number,
-    required: true
+    required: false,
+    default: META.ENTRY_SEARCH_TYPE.PRODUCT
   },
   entries: {
     type: Array,
     required: true,
     default: () => ([])
+  },
+  multiSelect: {
+    type: Boolean,
+    required: false,
+    default: true
   },
 });
 const emit = defineEmits(['pick']);
@@ -90,67 +112,67 @@ const emit = defineEmits(['pick']);
 const pickedEntries = ref([]);
 const dialogRef = inject('dialogRef');
 const selectEntityType = ref();
-const entries = ref();
-const totalRecords = ref(0);
 const loading = ref(false);
 const queryParam = ref({
-  entrySearchType: props.type,
-  param: {
-    keyword: "",
-    first: 0,
-    row: 5
-  }
+  searchType: props.type,
+  keyword: "",
+  keywords: [],
+  page: 0,
+  size: 7
 })
-const switchEntityType = (ev) => {
+const searchResult = ref({
+  total: 0,
+  time: 0,
+  data: []
+});
+
+const switchEntrySearchType = (ev) => {
   if (ev.value === null)
-    selectEntityType.value = META.ENTITY_ICON_SET[0];
-  queryParam.value.entrySearchType = parseInt(selectEntityType.value.value);
+    selectEntityType.value = META.ENTRY_TYPE_SET[0];
+  queryParam.value.searchType = parseInt(selectEntityType.value.value);
   getEntries();
 }
 
-const select = (item) => {
-  item.isPicked = true;
-  pickedEntries.value.push(item);
-  emit('pick', item);
-}
-
-const first = (value) => {
-  queryParam.value.param.first = value;
-  getEntries();
+const select = (entry) => {
+  entry.isPicked = true;
+  pickedEntries.value.push(entry);
+  emit('pick', entry);
+  // if (!props.multiSelect) close()
 }
 
 const page = (ev) => {
-  queryParam.value.param.first = ev.first;
-  queryParam.value.param.row = ev.rows;
+  queryParam.value.page = ev.page + 1;
   getEntries();
 }
 
 const search = (ev) => {
-  queryParam.value.param.first = 0;
+  queryParam.value.page = 1;
   getEntries();
 }
 const clearSearch = () => {
-  queryParam.value.param.first = 0;
-  queryParam.value.param.keyword = '';
+  queryParam.value.page = 1;
+  queryParam.value.keyword = '';
   getEntries();
 }
 
 const getEntries = async () => {
   loading.value = true;
-  entries.value = Array.from({length: 5});
-  const res = await axios.post(API.SEARCH_ENTRIES, queryParam.value);
+  searchResult.value.data = Array.from({length: 7});
+  queryParam.value.keywords = PublicHelper.splitAndTrim(queryParam.value.keyword);
+  const res = await axios.post(API.ENTRY_SEARCH, queryParam.value);
   if (res.state === axios.SUCCESS) {
-    totalRecords.value = res.data.total;
-    entries.value = res.data.data;
+    searchResult.value.total = res.data.total;
+    searchResult.value.data = res.data.data;
+    searchResult.value.time = res.data.searchTime;
   } else {
-    entries.value = [];
+    searchResult.value.data = [];
   }
-  entries.value = markPickedEntries();
+  searchResult.value.data = markPickedEntries();
   loading.value = false;
 };
 
 const markPickedEntries = () => {
-  return entries.value.map(entry => {
+  return searchResult.value.data.map(entry => {
     const picked = pickedEntries.value
         .some(pickedEntry => pickedEntry.id === entry.id && pickedEntry.type === entry.type);
     if (picked) {
@@ -163,4 +185,10 @@ const markPickedEntries = () => {
 
 <style lang="scss" scoped>
 @use "@/assets/entity-global";
+
+.p-button {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 </style>

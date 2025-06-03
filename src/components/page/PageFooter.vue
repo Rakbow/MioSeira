@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {META} from "@/config/Web_Const.ts";
+import {META} from "@/config/Web_Const";
 </script>
 
 <template>

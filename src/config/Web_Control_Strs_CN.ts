@@ -61,7 +61,7 @@ export const CnText = {
 
 
     Type: '类型',
-
+    Upload: '上传',
     UploadTime: '上传时间',
     UploadIn: '上传于 ',
 

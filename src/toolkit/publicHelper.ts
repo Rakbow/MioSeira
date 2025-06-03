@@ -1,5 +1,6 @@
 import {Attribute, EntityInfo} from "@/config/Web_Const";
 import {RouteLocationNormalizedLoaded} from "vue-router";
+import {usePrimeVue} from "primevue/config";
 
 export class PublicHelper {
 
@@ -44,7 +45,7 @@ export class PublicHelper {
 
     static ENTITY = [
         {id: 0, name: 'item'},
-        {id: 1, name: 'entry'},
+        {id: 1, name: 'subject'},
         {id: 2, name: 'person'},
         {id: 5, name: 'character'},
         {id: 99, name: 'product'},
@@ -89,6 +90,67 @@ export class PublicHelper {
         const secs = seconds % 60;
 
         return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+    }
+
+    static fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64String = reader.result as string; // 读取结果是 Base64 字符串
+                resolve(base64String);
+            };
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file); // 将文件读取为 Base64 数据URL
+        });
+    }
+
+    static isValidDateFormat = (dateString: string): boolean => {
+        // 可以根据实际需求调整正则
+        const datePattern = /^[A-Za-z]+ \d{1,2}, \d{4}$/;
+        return datePattern.test(dateString);
+    }
+    // 将日期字符串转为 "yyyy/MM/dd" 格式
+    static convertToDateFormat = (dateString: string): string => {
+        const datePattern = /^[A-Za-z]+ \d{1,2}, \d{4}$/;
+        if (!datePattern.test(dateString)) return dateString;
+        const date = new Date(dateString); // 将字符串转换为 Date 对象
+        const year = date.getFullYear(); // 获取年份
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 获取月份
+        const day = date.getDate().toString().padStart(2, '0'); // 获取日期
+        return `${year}/${month}/${day}`; // 返回 "yyyy/MM/dd" 格式
+    }
+
+    static getGenderIcon = (value) => ({
+        0: "question",
+        1: "mars",
+        2: "venus",
+    }[value]);
+
+    static getDomain = (url: string): string => {
+        try {
+            const urlObj = new URL(url);
+            return urlObj.hostname; // 提取主域名部分
+        } catch (error) {
+            console.error('Invalid URL:', url);
+            return url; // 如果 URL 无效，直接返回原始值
+        }
+    };
+
+    static splitAndTrim = (input: string, separator: string = ","): string[] => {
+        if(input === undefined || input === null) return [];
+        return input
+            .trim() // 去掉字符串首尾的空格
+            .replace(/,+/g, ',') // 将连续多个逗号替换为一个逗号
+            .replace(/(^,|,$)/g, '') // 去掉字符串开头和结尾的多余逗号
+            .split(separator) // 按逗号分割
+            .map(item => item.trim()) // 去掉每个子字符串的首尾空格
+            .filter(item => item !== ""); // 移除空字符串
+    }
+
+    static formatSize = (bytes: number, decimals: number = 2): string => {
+        if (bytes < 0) throw new Error("Bytes cannot be negative");
+        const mb = bytes / (1024 * 1024);
+        return `${parseFloat(mb.toFixed(decimals))} MB`;
     }
 
 }

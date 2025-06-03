@@ -22,8 +22,8 @@
       <Column style="width: 100px">
         <template #body="slotProps">
           <div class="edit-img-box">
-            <img :src="slotProps.data.thumbUrl70" :alt="slotProps.data.name"
-                 class="entry-thumb"/>
+            <img :src="slotProps.data.thumb70" :alt="slotProps.data.name"
+                 class="entry-thumb image-click" @click="imageClick(slotProps.index)" />
           </div>
         </template>
       </Column>
@@ -47,23 +47,24 @@
       </Column>
     </DataTable>
   </BlockUI>
+  <ImageGalleria :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
 
 <script setup lang="ts">
 import {useToast} from 'primevue/usetoast';
-import {inject, onMounted, ref} from "vue";
+import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
 import {API} from '@/config/Web_Helper_Strs.ts';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper.ts";
-import {PublicHelper} from "@/toolkit/publicHelper.ts";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
+import {EntityInfo} from "@/config/Web_Const";
+const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 
 const dialogRef = inject("dialogRef");
 const route = useRoute();
 const {t} = useI18n();
 const toast = useToast();
-const entityType = ref();
-const entityId = ref();
 const editBlock = ref(false);
 const images = ref<any>([]);
 const totalRecords = ref(0);
@@ -71,6 +72,7 @@ const loading = ref(false);
 const queryParams = ref({});
 const first = ref(0);
 const dt = ref();
+const entityInfo = ref<EntityInfo>();
 
 const imageTypeSet = ref(
     [
@@ -81,10 +83,13 @@ const imageTypeSet = ref(
     ]
 );
 
+onBeforeMount(() => {
+  entityInfo.value = PublicHelper.getEntityInfo(route);
+})
+
 onMounted(async () => {
-  getEntityInfo();
-  filters.value.entityType.value = entityType.value;
-  filters.value.entityId.value = entityId.value;
+  filters.value.entityType.value = entityInfo.value?.type;
+  filters.value.entityId.value = entityInfo.value?.id;
   queryParams.value = {
     first: 0,
     rows: dt.value.rows,
@@ -95,15 +100,9 @@ onMounted(async () => {
   await getImages();
 });
 
-const getEntityInfo = () => {
-  let typeName = route.path.split('/')[2];
-  entityType.value = PublicHelper.getEntityType(typeName);
-  entityId.value = parseInt(route.params.id.toString());
-}
-
 const filters = ref({
-  'entityType': {value: entityType.value},
-  'entityId': {value: entityId.value},
+  'entityType': {value: entityInfo.value?.type},
+  'entityId': {value: entityInfo.value?.id},
   'type': {value: -2}
 });
 
@@ -135,6 +134,12 @@ const getImages = async () => {
   first.value = queryParams.value.first;
 }
 
+const activeIndex = ref(0)
+const displayCustom = ref(false)
+const imageClick = (index) => {
+  activeIndex.value = index;
+  displayCustom.value = true;
+};
 </script>
 
 <style lang="scss" scoped>

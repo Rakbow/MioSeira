@@ -1,9 +1,9 @@
 <template>
   <div id="main" class="flex flex-wrap justify-content-center gap-3">
-    <Toast></Toast>
-    <div class="entity-detail-main-col card">
+    <Toast/>
+    <div class="entity-detail-main-col">
       <div class="entity-header-title">
-        <h1>{{ item.name }}</h1>
+        <h1 :title="item.name">{{ item.name }}</h1>
         <div v-for="alias in item.aliases">
           <span>{{ alias }}</span><br>
         </div>
@@ -23,26 +23,28 @@
                 </template>
               </Button>
             </div>
-            <AlbumInfo v-if="itemType === META.ITEM_TYPE.ALBUM" :item="item" />
-            <BookInfo v-if="itemType === META.ITEM_TYPE.BOOK" :item="item" />
-            <GoodsInfo v-if="itemType === META.ITEM_TYPE.GOODS" :item="item" />
-            <FigureInfo v-if="itemType === META.ITEM_TYPE.FIGURE" :item="item" />
+            <ItemInfo :item="item" />
             <StatusEditor :status="item.status" />
-            <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
+
+            <div class="item_statistic_info">
+              <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked" />
+            </div>
           </div>
         </div>
       </div>
       <div class="m-3">
         <DetailPad v-if="itemType === META.ITEM_TYPE.BOOK" :header="$t('Summary')" :text="item.summary" />
-        <RelatedCharacters v-if="itemType == META.ITEM_TYPE.GOODS || itemType == META.ITEM_TYPE.FIGURE" />
-        <PersonsInfo />
+<!--        <RelatedCharacters v-if="itemType == META.ITEM_TYPE.GOODS || itemType == META.ITEM_TYPE.FIGURE" />-->
+        <RelatedPersons />
         <DetailPad :header="$t('Description')" :text="item.detail" />
-        <TrackInfo v-if="itemType === META.ITEM_TYPE.ALBUM" />
+        <AlbumTrack v-if="itemType === META.ITEM_TYPE.ALBUM" />
       </div>
     </div>
     <div class="entity-detail-side-col">
-      <SideImages :images="meta.info.images" :count="meta.info.imageCount" />
-      <RelationInfo />
+      <SideImages />
+      <RelationEntities :header="$t('RelatedProduct')" :relatedGroup="META.RELATION_RELATED_GROUP.RELATED_PRODUCT" />
+      <RelationEntities v-if="itemType === META.ITEM_TYPE.GOODS || itemType === META.ITEM_TYPE.FIGURE"
+                        :header="$t('RelatedCharacter')" :relatedGroup="META.RELATION_RELATED_GROUP.RELATED_CHAR" />
       <TrafficInfo :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime" />
     </div>
   </div>
@@ -54,28 +56,23 @@ import '@/assets/item-detail.css';
 import '@/assets/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
-import {defineAsyncComponent, onBeforeMount, ref} from "vue";
+import {defineAsyncComponent, onBeforeMount, ref, shallowRef} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
-import {useUserStore} from "@/store/user.ts";
+import {useUserStore} from "@/store/user";
 import {useDialog} from "primevue/usedialog";
 import SideImages from "@/components/image/SideImages.vue";
-import RelationInfo from "@/components/common/RelationInfo.vue";
-import PersonsInfo from "@/components/common/PersonInfo.vue";
+import RelationEntities from "@/components/related/RelatedEntities.vue";
+import RelatedPersons from "@/components/related/RelatedPersons.vue";
 import DetailPad from "@/components/common/DetailPad.vue";
-import TrackInfo from "@/components/special/AlbumTrackInfo.vue";
+import AlbumTrack from "@/components/item/AlbumTrackInfo.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
 import Like from "@/components/common/EntityLike.vue";
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/logic/itemService";
 import {META} from "@/config/Web_Const";
-
-const AlbumInfo = defineAsyncComponent(() => import('@/views/detail/info/AlbumDetailInfo.vue'));
-const BookInfo = defineAsyncComponent(() => import('@/views/detail/info/BookDetailInfo.vue'));
-const GoodsInfo = defineAsyncComponent(() => import('@/views/detail/info/GoodsDetailInfo.vue'));
-const FigureInfo = defineAsyncComponent(() => import('@/views/detail/info/FigureDetailInfo.vue'));
+const ItemInfo = shallowRef();
 const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
-const RelatedCharacters = defineAsyncComponent(() => import('@/components/common/RelatedCharacters.vue'));
 
 const router = useRouter();
 const toast = useToast();
@@ -90,6 +87,18 @@ const cover = ref({});
 const option = ref({});
 const meta = ref<any>();
 
+const getItemInfo = () => {
+  if(itemType.value === META.ITEM_TYPE.ALBUM) {
+    ItemInfo.value = defineAsyncComponent(() => import('@/views/detail/info/AlbumDetailInfo.vue'));
+  }else if(itemType.value === META.ITEM_TYPE.BOOK) {
+    ItemInfo.value = defineAsyncComponent(() => import('@/views/detail/info/BookDetailInfo.vue'));
+  }else if(itemType.value === META.ITEM_TYPE.GOODS) {
+    ItemInfo.value = defineAsyncComponent(() => import('@/views/detail/info/GoodsDetailInfo.vue'));
+  }else if(itemType.value === META.ITEM_TYPE.FIGURE) {
+    ItemInfo.value = defineAsyncComponent(() => import('@/views/detail/info/FigureDetailInfo.vue'));
+  }
+}
+
 onBeforeMount(() => {
   meta.value = router.currentRoute.value.meta;
   item.value = meta.value.info.item;
@@ -97,6 +106,8 @@ onBeforeMount(() => {
   pageInfo.value = meta.value.info.traffic;
   cover.value = meta.value.info.cover;
   option.value = meta.value.info.options;
+
+  getItemInfo();
 });
 
 </script>

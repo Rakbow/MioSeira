@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import {defineAsyncComponent, onBeforeMount, onMounted, ref} from 'vue';
-import {useUserStore} from "@/store/user.ts";
+import {useUserStore} from "@/store/user";
 import {useDialog} from "primevue/usedialog";
-import {PublicHelper} from "@/toolkit/publicHelper.ts";
+import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntityInfo, META} from "@/config/Web_Const";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 
-const editor = defineAsyncComponent(() => import('@/components/common/RelationEditor.vue'));
+const editor = defineAsyncComponent(() => import('@/components/related/RelationEditor.vue'));
 const {t} = useI18n();
 const entityInfo = ref<EntityInfo>();
 const route = useRoute();
