@@ -43,8 +43,7 @@ const selectFile = async (ev) => {
       name: file.name.replace(/\.[^/.]+$/, ''),
       detail: '',
       size: PublicHelper.formatSize(file.size),
-      file: file,
-      base64Code: await PublicHelper.fileToBase64(file)
+      file: file
     }
     images.value.push(image)
   }
@@ -85,8 +84,8 @@ const changeGenerateThumb = () => {
   <FileUpload ref="dt" accept="image/*" auto multiple :customUpload="true"
               :showUploadButton="false"
               :showCancelButton="false"
-              chooseIcon="pi pi-image" @select="selectFile"
-              :maxFileSize="10000000" :previewWidth="100"
+              chooseIcon="pi pi-image" @select="selectFile($event)"
+              :maxFileSize="30000000" :previewWidth="100"
               :invalidFileSizeMessage="$t('ImageInvalidFileSizeMessage')">
     <template #header="{ chooseCallback }">
       <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined/>
@@ -99,7 +98,7 @@ const changeGenerateThumb = () => {
       <span class="empty-search-result">{{ $t('DragImage') }}</span>
     </template>
     <template #content="{ files, removeUploadedFileCallback, removeFileCallback }">
-      <DataTable v-if="images.length > 0" ref="dt" :value="images" class="p-datatable-sm"
+      <DataTable v-if="images.length > 0" :value="images" class="p-datatable-sm"
                  :alwaysShowPaginator="images.length !== 0"
                  filterDisplay="row" paginator :rows="5"
                  editMode="cell" @cellEditComplete="onImageCellEdite"

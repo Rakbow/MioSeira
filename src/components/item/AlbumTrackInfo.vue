@@ -210,11 +210,11 @@ const removeFile = (index: number) => {
   fileInfos.value.splice(index, 1);
 };
 const uploadAudioFile = async () => {
+  const fd = new FormData();
+  fd.append('albumId', route.params.id);
+  fileInfos.value.forEach(f => fd.append('files', f.file));
   editBlock.value = true;
-  const res = await axios.form(API.UPLOAD_ALBUM_TRACK_FILES, {
-    files: fileInfos.value.map(f => f.file),
-    albumId: route.params.id
-  });
+  const res = await axios.form(API.UPLOAD_ALBUM_TRACK_FILES, fd);
   if (res.state === axios.SUCCESS)
     toast.add({severity: 'success', detail: res.message, life: 3000});
     audioUploadDisplay.value = false;

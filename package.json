@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@primevue/themes": "^4.3.4",
+    "@primevue/themes": "^4.3.5",
     "@types/node": "^22.15.17",
     "@types/tingle.js": "^0.13.5",
     "@vueuse/core": "^13.1.0",
@@ -37,7 +37,7 @@
     "pinia-plugin-persistedstate": "^4.3.0",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
-    "primevue": "^4.3.4",
+    "primevue": "^4.3.5",
     "qrcode": "^1.5.4",
     "sass": "^1.87.0",
     "sortablejs": "^1.15.3",

@@ -115,11 +115,19 @@ const handleRelatedEntry = () => {
   dto.value.relatedEntities.push(...entities);
 }
 
+const handleImage = async () => {
+  for (const i of dto.value.images) {
+    i.base64Code = await PublicHelper.fileToBase64(i.file);
+    i.file = null;
+  }
+}
+
 //endregion
 
 const submit = async () => {
   editBlock.value = true;
   handleRelatedEntry();
+  await handleImage();
   const res = await axios.post(API.ADVANCE_CREATE_ITEM, dto.value);
   if (res.state === axios.SUCCESS)
     await router.push(`${API.ITEM_DETAIL}/${res.data}`);

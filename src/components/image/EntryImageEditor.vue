@@ -44,7 +44,6 @@ const select = async (ev) => {
   if (!ev.files) return;
   for (let file of ev.files) {
     image.value.file = file;
-    image.value.base64Code = await PublicHelper.fileToBase64(file);
   }
 };
 
@@ -55,12 +54,12 @@ const clear = () => {
 
 const upload = async () => {
   loading.value = true;
-  let param = {
-    entityType: entityInfo.value?.type,
-    entityId: entityInfo.value?.id,
-    images: [image.value]
-  }
-  const res = await axios.post(API.UPLOAD_ENTRY_IMAGE, param);
+  const formData = new FormData();
+  formData.append('entityType', entityInfo.value?.type);
+  formData.append('entityId', entityInfo.value?.id);
+  formData.append('file', image.value.file);
+  formData.append('imageType', image.value.type);
+  const res = await axios.form(API.UPLOAD_ENTRY_IMAGE, formData);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     if (image.value.type === META.IMAGE_TYPE.MAIN) cover.value = res.data;

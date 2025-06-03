@@ -61,7 +61,7 @@ export const API = {
 
     GET_DISPLAY_IMAGES: '/api/db/get-display-images',
     GET_IMAGES: '/api/db/get-images',
-    ADD_IMAGE: '/api/db/add-image',
+    UPLOAD_IMAGE: '/api/db/upload-image',
     UPDATE_IMAGE: '/api/db/update-image',
     DELETE_IMAGE: '/api/db/delete-images',
 
@@ -93,7 +93,7 @@ export const API = {
 
     UPDATE_ITEMS_STATUS: '/api/db/update-entity-status',
     LIKE_ITEM: '/api/db/like',
-    UPDATE_DETAIL: '/api/db/update-entry-detail',
+    UPDATE_DETAIL: '/api/db/update-entity-detail',
 
     //endregion
 

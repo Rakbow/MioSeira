@@ -76,7 +76,7 @@
   <Dialog :modal="true" v-model:visible="displayAddDialog" :header="$t('Add')"
           :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
     <BlockUI :blocked="editBlock">
-      <ImageUploader v-model:images="addImages"/>
+      <ImageUploader v-model:images="addImages" v-model:generateThumb="generateThumb" />
     </BlockUI>
     <template #footer>
       <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text"
@@ -152,6 +152,7 @@ const displayAddDialog = ref(false);
 const displayEditDialog = ref(false);
 const displayDeleteDialog = ref(false);
 const dt = ref();
+const generateThumb = ref(false);
 
 const entityInfo = ref<EntityInfo>();
 onBeforeMount(() => {
@@ -238,15 +239,22 @@ const getImages = async () => {
 }
 
 const addImage = async () => {
+  const fd = new FormData();
+  fd.append('entityType', entityInfo.value?.type);
+  fd.append('entityId', entityInfo.value?.id);
+  let infos: any[] = [];
+  addImages.value.forEach(i => {
+    infos.push({
+      name: i.name,
+      type: i.type,
+      detail: i.detail
+    });
+    fd.append('files', i.file)
+  })
+  fd.append('infos', JSON.stringify(infos));
+  fd.append('generateThumb', generateThumb.value);
   editBlock.value = true;
-  const res = await axios.post(
-      API.ADD_IMAGE,
-      {
-        entityType: entityInfo.value?.type,
-        entityId: entityInfo.value?.id,
-        images: addImages.value
-      }
-  );
+  const res = await axios.form(API.UPLOAD_IMAGE, fd);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     displayAddDialog.value = false;
