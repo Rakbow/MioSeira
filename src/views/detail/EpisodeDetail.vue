@@ -26,13 +26,14 @@
         </div>
         <div class="col py-0">
           <DetailPad :header="$t('Description')" :text="episode.detail"/>
+          <RelatedFiles />
         </div>
       </div>
     </div>
     <div class="entity-detail-side-col">
-      <TrafficInfo :info="episode.traffic" :addedTime="episode.addedTime" :editedTime="episode.editedTime"/>
       <RelatedEpisodes :relatedType="episode.relatedType" :relatedId="episode.relatedId"
                        :id="episode.id" :discNo="episode.discNo" />
+      <TrafficInfo :info="episode.traffic" :addedTime="episode.addedTime" :editedTime="episode.editedTime"/>
     </div>
   </div>
 </template>
@@ -59,7 +60,7 @@ import Like from "@/components/common/EntityLike.vue";
 
 const {t} = useI18n();
 
-const entryImageEditor = defineAsyncComponent(() => import('@/components/image/EntryImageEditor.vue'));
+import RelatedFiles from "@/components/related/RelatedFiles.vue";
 const EpisodeInfo = defineAsyncComponent(() => import('@/views/detail/info/EpisodeDetailInfo.vue'));
 const RelatedEpisodes = defineAsyncComponent(() => import('@/components/related/RelatedEpisodes.vue'));
 

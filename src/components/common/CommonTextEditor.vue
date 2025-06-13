@@ -83,7 +83,7 @@ const submit = () => {
     entityId: entityInfo.value?.id,
     text: text.value
   };
-  axios.post(API.UPDATE_DETAIL, json)
+  axios.post(API.UPDATE_ENTITY_DETAIL, json)
       .then(res => {
         if (res.state === axios.SUCCESS) {
           toast.add({severity: 'success', detail: res.message, life: 3000});

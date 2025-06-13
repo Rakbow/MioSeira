@@ -18,22 +18,17 @@ const dialogRef = inject("dialogRef");
 const route = useRoute();
 const editBlock = ref(false);
 const isUpdate = ref(false);
+const tracks = ref<AlbumTrack[]>([]);
+const discNo = ref(1);
+const loading = ref();
+const analysisInput = ref();
 
 onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
 });
-
-const loading = ref();
-const disc = {
-  id: entityInfo.value?.id,
-  serial: 1,
-  tracks: []
-};
-const analysisInput = ref();
 const parseDisc = () => {
   loading.value = true;
-  disc.id = entityInfo.value?.id;
-  disc.tracks = parseAlbumTracks(analysisInput.value);
+  tracks.value.push(...parseAlbumTracks(discNo.value, analysisInput.value));
   loading.value = false;
 }
 
@@ -47,7 +42,10 @@ const close = () => {
 
 const submit = async () => {
   editBlock.value = true;
-  const res = await axios.post(API.QUICK_ADD_ALBUM_DISC, disc);
+  const res = await axios.post(API.QUICK_CREATE_ALBUM_TRACK, {
+    id: entityInfo.value?.id,
+    tracks: tracks.value
+  });
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     isUpdate.value = true;
@@ -69,7 +67,7 @@ const submit = async () => {
       <div class="field col">
         <FloatLabel variant="on">
           <label>{{ $t('AlbumDetailEditTrackDiscIndex') }}</label>
-          <InputNumber size="small" v-model="disc.serial" class="static w-full"/>
+          <InputNumber size="small" v-model="discNo" class="static w-full"/>
         </FloatLabel>
       </div>
       <div class="field col">
@@ -77,7 +75,7 @@ const submit = async () => {
                 @click="parseDisc" :title="$t('Analysis')"/>
       </div>
     </div>
-    <DataTable ref="dt" :value="disc.tracks" class="p-datatable-sm" :loading="loading"
+    <DataTable ref="dt" :value="tracks" class="p-datatable-sm" :loading="loading"
                alwaysShowPaginator paginator :rows="50" stripedRows size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -92,6 +90,7 @@ const submit = async () => {
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
         <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
       </template>
+      <Column :header="$t('Disc')" field="discNo" style="flex: 0 0 10rem"/>
       <Column :header="$t('Index')" field="serial" style="flex: 0 0 10rem"/>
       <Column :header="$t('Name')" field="title" style="flex: 0 0 10rem"/>
       <Column :header="$t('Duration')" field="duration" style="flex: 0 0 10rem"/>

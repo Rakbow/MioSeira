@@ -12,7 +12,6 @@ import {useOptionsStore} from "@/store/entityOptions";
 const {t} = useI18n();
 const dialog = useDialog();
 const dialogRef = inject("dialogRef");
-const config: ref<ItemFormConfig> = ref();
 const entry = ref<any>({});
 const option = ref<any>({});
 const isUpdate = ref(false);
@@ -83,7 +82,7 @@ const close = () => {
     </div>
 
     <Divider align="center"><b>{{ $t('AdvanceInfo') }}</b></Divider>
-    <div class="formgrid grid" v-if="entry.entityType === META.ENTITY.PRODUCT">
+    <div class="formgrid grid" v-if="entry.type === META.ENTRY_TYPE.PRODUCT">
       <div class="field col">
         <FloatLabel variant="on">
           <label>{{ $t('Date') }}</label>
@@ -93,17 +92,17 @@ const close = () => {
       <div class="field col">
         <FloatLabel variant="on">
           <label>{{ $t('Category') }}</label>
-          <Select v-model="entry.type" :options="option!.productTypeSet as any[]"
+          <Select v-model="entry.type" :options="option!.entrySubTypeSet as any[]" disabled
                   size="small" optionLabel="label" optionValue="value" class="static w-full"/>
         </FloatLabel>
       </div>
     </div>
 
-    <div class="formgrid grid" v-if="entry.entityType === META.ENTITY.CHARACTER || entry.entityType === META.ENTITY.PERSON">
+    <div class="formgrid grid" v-if="entry.type === META.ENTRY_TYPE.CHARACTER || entry.type === META.ENTRY_TYPE.PERSON">
       <div class="field col">
         <FloatLabel variant="on">
           <label>{{ $t('BirthDate') }}</label>
-          <InputText size="small" v-model="entry.birthDate" class="static w-full"/>
+          <InputText size="small" v-model="entry.date" class="static w-full"/>
         </FloatLabel>
       </div>
       <div class="field col">
@@ -115,18 +114,12 @@ const close = () => {
       </div>
     </div>
 
-    <div class="formgrid grid" v-if="entry.entityType === META.ENTITY.SUBJECT">
+    <div class="formgrid grid" v-if="entry.type === META.ENTRY_TYPE.CLASSIFICATION
+     || entry.type === META.ENTRY_TYPE.MATERIAL || entry.type === META.ENTRY_TYPE.EVENT">
       <div class="field col">
         <FloatLabel variant="on">
           <label>{{ $t('Date') }}</label>
           <InputText size="small" v-model="entry.date" class="static w-full"/>
-        </FloatLabel>
-      </div>
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ $t('Category') }}</label>
-          <Select v-model="entry.type" :options="option!.subjectTypeSet as any[]"
-                  size="small" optionLabel="label" optionValue="value" class="static w-full"/>
         </FloatLabel>
       </div>
     </div>

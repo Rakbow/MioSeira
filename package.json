@@ -29,6 +29,7 @@
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "marked": "^15.0.11",
+    "material-file-icons": "^2.4.0",
     "material-icons": "^1.13.14",
     "material-symbols": "^0.31.2",
     "md-editor-v3": "^5.5.1",
@@ -51,11 +52,11 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.6",
     "@vitejs/plugin-vue": "^5.2.4",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.6",
-    "@tailwindcss/postcss": "^4.1.6",
     "vite": "^6.3.5"
   }
 }

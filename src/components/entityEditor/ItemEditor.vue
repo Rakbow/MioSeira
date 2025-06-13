@@ -160,13 +160,6 @@ const parseItemSpec = () => {
                          optionLabel="label" optionValue="value" display="chip" class="static w-full"/>
           </FloatLabel>
         </div>
-        <div class="field col">
-          <FloatLabel variant="on">
-            <label>{{ $t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
-            <MultiSelect showClear size="small" v-model="item.mediaFormat" :options="option.mediaFormatSet"
-                         optionLabel="label" optionValue="value" display="chip" class="static w-full"/>
-          </FloatLabel>
-        </div>
       </div>
     </div>
 
@@ -205,29 +198,44 @@ const parseItemSpec = () => {
       </div>
       <div class="field col" v-if="item.type === META.ITEM_TYPE.BOOK">
         <FloatLabel variant="on">
-          <label>{{ $t('Size') }}</label>
+          <label>{{ $t('BookSize') }}</label>
           <InputText size="small" v-model="item.size" class="static w-full"/>
         </FloatLabel>
       </div>
 
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM">
+      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
+        <FloatLabel variant="on">
+          <label>{{ $t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
+          <MultiSelect showClear size="small" v-model="item.mediaFormat" :options="option.mediaFormatSet"
+                       optionLabel="label" optionValue="value" display="chip" class="static w-full"/>
+        </FloatLabel>
+      </div>
+      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
         <FloatLabel variant="on">
           <label>{{ $t('Discs') }}</label>
           <InputNumber size="small" v-model="item.discs" class="static w-full"/>
         </FloatLabel>
       </div>
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM">
+      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
         <FloatLabel variant="on">
-          <label>{{ $t('Tracks') }}</label>
-          <InputNumber size="small" v-model="item.tracks" class="static w-full"/>
+          <template v-if="item.type === META.ITEM_TYPE.ALBUM">
+            <label>{{ $t('Tracks') }}</label>
+            <InputNumber size="small" v-model="item.tracks" class="static w-full"/>
+          </template>
+          <template v-if="item.type === META.ITEM_TYPE.DISC">
+            <label>{{ $t('Episodes') }}</label>
+            <InputNumber size="small" v-model="item.episodes" class="static w-full"/>
+          </template>
         </FloatLabel>
       </div>
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM">
+      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
         <FloatLabel variant="on">
           <label>{{ $t('RunTime') }}</label>
           <InputNumber size="small" v-model="item!.runTime" class="static w-full"/>
         </FloatLabel>
       </div>
+
+
     </div>
     <div class="field">
       <InputGroup class="static w-full">

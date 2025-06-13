@@ -45,10 +45,9 @@ export class PublicHelper {
 
     static ENTITY = [
         {id: 0, name: 'item'},
-        {id: 1, name: 'subject'},
-        {id: 2, name: 'person'},
-        {id: 5, name: 'character'},
-        {id: 99, name: 'product'},
+        {id: 1, name: 'entry'},
+        {id: 4, name: 'ep'},
+        {id: 98, name: 'file'},
         {id: 100, name: 'franchise'}
     ]
 
@@ -151,6 +150,11 @@ export class PublicHelper {
         if (bytes < 0) throw new Error("Bytes cannot be negative");
         const mb = bytes / (1024 * 1024);
         return `${parseFloat(mb.toFixed(decimals))} MB`;
+    }
+
+    static getDuration = (duration: string): number => {
+        const [minutes, seconds] = duration.split(':').map(Number);
+        return minutes * 60 + seconds;
     }
 
 }

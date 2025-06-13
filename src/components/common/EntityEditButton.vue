@@ -17,6 +17,11 @@ const props = defineProps({
     type: String,
     required: false,
     default: 'right: 0'
+  },
+  label: {
+    type: String,
+    required: false,
+    default: 'Edit'
   }
 });
 
@@ -26,8 +31,8 @@ const userStore = useUserStore();
 <template>
   <div v-if="userStore.user">
     <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
-            @click="props.func" :style="position"
-            v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
+            @click="props.func" :style="position" size="small"
+            v-tooltip.bottom="{value: $t(label), class: 'short-tooltip'}">
       <template #icon>
         <span class="material-symbols-outlined">{{ icon }}</span>
       </template>

@@ -20,10 +20,10 @@ const loading = ref(false);
 
 onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
-  getPersonnel()
 });
 
 onMounted(() => {
+  getPersonnel()
 });
 
 const openEditDialog = () => {
@@ -103,7 +103,7 @@ const toggleCollapse = () => {
                 <template v-for="(chunk, chunkIndex) in chunkArray(item.entities, 10)" :key="chunkIndex">
                   <div style="display: block;">
                     <template v-for="(person, index) in chunk" :key="person.value">
-                      <router-link :to="`${API.PERSON_DETAIL}/${person.value}`">
+                      <router-link :to="`${API.ENTRY_DETAIL}/${person.value}`">
                         <span>{{ person.label }}</span>
                       </router-link>
                       <span v-if="person.remark">&nbsp;({{ (person as any).remark }})</span>
@@ -120,33 +120,6 @@ const toggleCollapse = () => {
             <span v-if="isCollapsed">{{$t('Expand')}}&nbsp;<i class="pi pi-sort-down-fill" style="font-size: 11px" /></span>
             <span v-else>{{$t('Collapse')}}&nbsp;<i class="pi pi-sort-up-fill" style="font-size: 11px" /></span>
           </Button>
-          <!--          <DataTable ref="dt" :value="personnel" class="person-table-tmp"-->
-          <!--                     :alwaysShowPaginator="!personnel.length"-->
-          <!--                     paginator :rows="50" size="small" tableStyle="background-color: #788990"-->
-          <!--                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink-->
-          <!--                                 LastPageLink CurrentPageReport RowsPerPageDropdown"-->
-          <!--                     currentPageReportTemplate="{first} to {last} of {totalRecords}">-->
-          <!--            <Column :header="$t('Role')" style="vertical-align: top;padding: 3px 6px">-->
-          <!--              <template #body="slotProps">-->
-          <!--                <span class="small-font" style="color: #788990">{{ slotProps.data.role.label }}</span>-->
-          <!--              </template>-->
-          <!--            </Column>-->
-          <!--            <Column style="font-size: 11px;padding: 3px 6px">-->
-          <!--              <template #body="slotProps">-->
-          <!--                <template v-for="(chunk, chunkIndex) in chunkArray(slotProps.data.entities, 10)" :key="chunkIndex">-->
-          <!--                  <div style="display: block">-->
-          <!--                    <template v-for="(person, index) in chunk" :key="person.value">-->
-          <!--                      <router-link :to="'/db/person/' + person.value">-->
-          <!--                        <span style="white-space: nowrap;">{{ person.label }}</span>-->
-          <!--                      </router-link>-->
-          <!--                      <span v-if="person.remark">&nbsp;({{ (person as any).remark }})</span>-->
-          <!--                      <span v-if="index < chunk.length - 1">, </span>-->
-          <!--                    </template>-->
-          <!--                  </div>-->
-          <!--                </template>-->
-          <!--              </template>-->
-          <!--            </Column>-->
-          <!--          </DataTable>-->
         </div>
         <div v-else>
           <span class="emptyInfo"><em>{{ $t('NoPerson') }}</em></span>

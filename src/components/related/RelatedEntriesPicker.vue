@@ -4,7 +4,7 @@ import {META} from "@/config/Web_Const";
 import {useOptionsStore} from "@/store/entityOptions";
 import {useI18n} from "vue-i18n";
 
-const EntrySelector = defineAsyncComponent(() => import('@/components/common/EntrySelector.vue'));
+const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
 const props = defineProps({
   relatedEntries: {
@@ -81,7 +81,7 @@ const displayEntrySelector = ref(false);
             <Divider type="dashed" class="mt-0 mb-0"/>
             <div class="col p-1">
               <Select
-                  v-if="entrySearchType === META.ENTRY_SEARCH_TYPE.PERSON || entrySearchType === META.ENTRY_SEARCH_TYPE.CHARACTER"
+                  v-if="entrySearchType === META.ENTRY_TYPE.PERSON || entrySearchType === META.ENTRY_TYPE.CHARACTER"
                   size="small"
                   v-model="entry.role" :options="options.roleSet" optionLabel="label" filter
                   :placeholder="$t('Role')" style="width: 100px;" class="w-full">

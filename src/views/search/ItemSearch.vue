@@ -16,7 +16,7 @@ import {ItemQueryParams} from "@/logic/itemService";
 import {META} from "@/config/Web_Const";
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
-const EntrySelector = defineAsyncComponent(() => import('@/components/common/EntrySelector.vue'));
+const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
 const {t} = useI18n();
 const toast = useToast();

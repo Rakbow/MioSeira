@@ -44,7 +44,9 @@ const columns = ref([
   {field: 'addedTime', header: t('AddedTime')},
   {field: 'editedTime', header: t('EditedTime')},
 ]);
-const queryParams = ref({});
+const queryParams = ref({
+  filters: {value: optionsStore.itemCurrent}
+});
 const option = ref<any>({});
 const itemType = ref();
 const switchItemType = (ev) => {
@@ -174,27 +176,36 @@ const exportCSV = () => {
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
              currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
     <template #header>
-      <BlockUI :blocked="editBlock" class="grid">
-        <div class="col-8">
-          <SelectButton size="small" v-model="itemType" :options="META.ITEM_TYPE_SET" @change="switchItemType($event)"
-                        optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
-            <template #option="slotProps">
-              <span class="material-symbols-outlined">{{ slotProps.option.icon }}</span>
-            </template>
-          </SelectButton>
-          <Button :label="$t('Add')" icon="pi pi-plus" class="p-button-success p-button-sm ml-2"
-                  @click="loadCreator(dialog)" style="width: 6em"/>
-          <Button :label="$t('Delete')" icon="pi pi-trash" class="p-button-danger p-button-sm ml-2"
-                  @click="confirmDeleteSelected"
-                  :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-          <Button :label="$t('Export')" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
-                  @click="exportCSV()" style="width: 6em"/>
-        </div>
-        <div class="col-4">
-          <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
-                       @update:modelValue="onToggle" class="text-end" size="small"
-                       :placeholder="$t('SelectedDisplayColumns')" style="width: 20em"/>
-        </div>
+      <BlockUI :blocked="editBlock" class="relative">
+        <SelectButton size="small" v-model="itemType" :options="META.ITEM_TYPE_SET" @change="switchItemType($event)"
+                      optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
+          <template #option="slotProps">
+            <span class="material-symbols-outlined" style="font-size: 20px">{{ slotProps.option.icon }}</span>
+          </template>
+        </SelectButton>
+
+        <Button variant="text" outlined @click="loadCreator(dialog)">
+          <template #icon>
+            <span class="material-symbols-outlined">add_box</span>
+          </template>
+        </Button>
+        <Button variant="text" severity="danger" :disabled="selectedItems.length"
+                outlined @click="confirmDeleteSelected">
+          <template #icon>
+            <span class="material-symbols-outlined">delete_forever</span>
+          </template>
+        </Button>
+        <Button variant="text" severity="help" :disabled="selectedItems.length"
+                outlined @click="exportCSV">
+          <template #icon>
+            <span class="material-symbols-outlined">open_in_new</span>
+          </template>
+        </Button>
+
+        <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
+                     @update:modelValue="onToggle" :placeholder="$t('SelectedDisplayColumns')"
+                     size="small"
+                     style="width: 200px;right: 0;position: absolute;top: 50%;transform: translateY(-50%);"/>
       </BlockUI>
     </template>
     <template #empty>
@@ -214,7 +225,8 @@ const exportCSV = () => {
         <Column :header="$t('BasicInfo')" :colspan="7" />
       </Row>
       <Row>
-        <Column :header="$t('CatalogId')" :sortable="true" field="catalogId" v-if="optionsStore.itemCurrent !== META.ITEM_TYPE.BOOK" />
+        <Column :header="$t('CatalogId')" :sortable="true" field="catalogId"
+                v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(optionsStore.itemCurrent)" />
         <Column :header="$t('Barcode')" :sortable="true" field="barcode" />
         <Column :header="$t('ReleaseDate')" :sortable="true" field="releaseDate" />
         <Column :header="$t('Price')" :sortable="true" field="price" />
@@ -235,7 +247,8 @@ const exportCSV = () => {
             exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
       <template #body="slotProps">
         <a :href="`${API.ITEM_DETAIL}/${slotProps.data.id}`">
-          <div class="text-container" :title="slotProps.data.name">
+          <div :title="slotProps.data.name"
+          style="width: 300px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
             {{ slotProps.data.name }}
           </div>
         </a>
@@ -245,7 +258,7 @@ const exportCSV = () => {
       </template>
     </Column>
     <Column :header="$t('CatalogId')" field="catalogId" :showFilterMenu="false"
-            v-if="optionsStore.itemCurrent !== META.ITEM_TYPE.BOOK">
+            v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(optionsStore.itemCurrent)">
       <template #filter="{filterModel,filterCallback}">
         <InputText size="small" type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 120px"/>
       </template>

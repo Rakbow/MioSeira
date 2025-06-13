@@ -20,10 +20,10 @@ const editBlock = ref(false);
 
 onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
-  getSubProduct()
 });
 
 onMounted(() => {
+  getSubProduct()
 });
 
 
@@ -85,13 +85,13 @@ const getSubProduct = async () => {
               <td><h4>{{ $t('Date') }}</h4></td>
               <td><h4>{{ $t('Product') }}</h4></td>
             </tr>
-            <tr v-for="item in subProducts">
-              <td style="color: #788990;">{{ (item as any).date }}</td>
+            <tr v-for="entry in subProducts">
+              <td style="color: #788990;">{{ (entry as any).date }}</td>
               <td class="a_with_underline">
-                <a :href="`${API.PRODUCT_DETAIL}/${item.id}`" :key="item.id">
-                  <span style="white-space: nowrap;" :class="'product-type-' + item.type.value">{{ item.name }}</span>
+                <a :href="`${API.ENTRY_DETAIL}/${entry.id}`" :key="entry.id">
+                  <span style="white-space: nowrap;" :class="'product-type-' + entry.subType.value">{{ entry.name }}</span>
                 </a>
-                <small>&nbsp;({{ (item as any).type.label }})</small>
+                <small>&nbsp;({{ (entry as any).subType.label }})</small>
               </td>
             </tr>
             </tbody>
@@ -120,13 +120,13 @@ const getSubProduct = async () => {
 }
 
 $product-colors: (
-    0: yellowgreen,
-    1: #00BFFF,
-    2: violet,
-    3: orange,
-    4: #0FFFFF,
-    5: #FFFFFF,
-    99: silver
+    0: silver,
+    1: yellowgreen,
+    2: #00BFFF,
+    3: violet,
+    4: orange,
+    5: #0FFFFF,
+    6: #FFFFFF
 );
 
 @each $key, $value in $product-colors {

@@ -15,9 +15,11 @@ import {PublicHelper} from "@/toolkit/publicHelper";
 
 import 'md-editor-v3/lib/style.css';
 import {useDraftStore} from "@/store/draft";
+import {AlbumTrack} from "@/logic/albumService";
 
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const RelatedEntriesPicker = defineAsyncComponent(() => import('@/components/related/RelatedEntriesPicker.vue'));
+const albumQuickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
 
 const editBlock = ref(false);
 const router = useRouter();
@@ -49,7 +51,9 @@ const dto = ref({
     pages: 0,
     discs: 0,
     tracks: 0,
+    episodes: 0,
     runTime: 0,
+    trackList: [],
 
     mediaFormat: [1],
     lang: 'ja-JP',
@@ -80,6 +84,8 @@ onBeforeMount(async () => {
 
 const switchItemType = () => {
   dto.value.item.type = parseInt(itemType.value.value);
+  if(dto.value.item.type === META.ITEM_TYPE.DISC)
+    dto.value.item.mediaFormat = [2]
 }
 const ISBNInterConvert = async (label) => {
   const res = await axios.post(API.BOOK_GENERATE_ISBN, {label: label, isbn: 'isbn13'})
@@ -127,6 +133,7 @@ const handleImage = async () => {
 const submit = async () => {
   editBlock.value = true;
   handleRelatedEntry();
+  if(dto.value.item.type === META.ITEM_TYPE.ALBUM) handleTracks();
   await handleImage();
   const res = await axios.post(API.ADVANCE_CREATE_ITEM, dto.value);
   if (res.state === axios.SUCCESS)
@@ -186,7 +193,42 @@ const parseBasicInfoText = (input: string) => {
   dto.value.item.price = parseInt(releasePriceRaw.replace(/\D/g, ''), 10);
 }
 
+const openQuickCreatorDialog = () => {
+  dialog.open(albumQuickCreator, {
+    props: {
+      header: t('TrackInfo'),
+      style: {
+        width: '40vw',
+        minWidth: '40vw'
+      },
+      breakpoints: {
+        '960px': '40vw',
+        '640px': '40vw'
+      },
+      modal: true,
+      closable: false
+    },
+    data: {
+      mode: 'advance'
+    },
+    onClose: (options) => {
+      if (options.data !== undefined) {
+        if (options.data.tracks.length > 0) {
+          dto.value.item.trackList = options.data.tracks;
+        }
+      }
+    }
+  });
+}
 
+const handleTracks = () => {
+  if(dto.value.item.trackList.length === 0) return;
+  dto.value.item.tracks = dto.value.item.trackList.length;
+  dto.value.item.discs = Math.max(...dto.value.item.trackList.map(t => t.discNo));
+  dto.value.item.runTime = dto.value.item.trackList.reduce((sum, item) => {
+    return sum + PublicHelper.getDuration(item.duration);
+  }, 0);
+}
 </script>
 
 <template>
@@ -315,7 +357,7 @@ const parseBasicInfoText = (input: string) => {
               </div>
             </div>
 
-            <div v-if="dto.item.type === META.ITEM_TYPE.ALBUM" class="formgrid grid">
+            <div v-if="dto.item.type === META.ITEM_TYPE.ALBUM || dto.item.type === META.ITEM_TYPE.DISC" class="formgrid grid">
               <div class="field col">
                 <FloatLabel variant="on">
                   <label>{{ $t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
@@ -331,8 +373,14 @@ const parseBasicInfoText = (input: string) => {
               </div>
               <div class="field col">
                 <FloatLabel variant="on">
-                  <label>{{ $t('Tracks') }}</label>
-                  <InputNumber size="small" v-model="dto.item.tracks" class="static w-full"/>
+                  <template v-if="dto.item.type === META.ITEM_TYPE.ALBUM">
+                    <label>{{ $t('Tracks') }}</label>
+                    <InputNumber size="small" v-model="dto.item.tracks" class="static w-full"/>
+                  </template>
+                  <template v-if="dto.item.type === META.ITEM_TYPE.DISC">
+                    <label>{{ $t('Episodes') }}</label>
+                    <InputNumber size="small" v-model="dto.item.episodes" class="static w-full"/>
+                  </template>
                 </FloatLabel>
               </div>
               <div class="field col">
@@ -359,7 +407,7 @@ const parseBasicInfoText = (input: string) => {
               </div>
               <div class="field col">
                 <FloatLabel variant="on">
-                  <label>{{ $t('Size') }}</label>
+                  <label>{{ $t('BookSize') }}</label>
                   <InputText size="small" v-model="dto.item.size" class="static w-full"/>
                 </FloatLabel>
               </div>
@@ -408,6 +456,41 @@ const parseBasicInfoText = (input: string) => {
             </div>
           </Panel>
         </div>
+        <div class="col-12" v-if="dto.item.type === META.ITEM_TYPE.ALBUM">
+          <Panel>
+            <template #header>
+              <span><i class="pi pi-list"/><strong>{{ $t('TrackInfo') }}</strong></span>
+            </template>
+            <template #icons>
+              <Button class="p-button-link" @click="openQuickCreatorDialog"
+                      v-tooltip.bottom="{value: $t('Add'), class: 'short-tooltip'}">
+                <template #icon>
+                  <span class="material-symbols-outlined">music_note_add</span>
+                </template>
+              </Button>
+            </template>
+            <DataTable ref="dt" :value="dto.item.trackList"
+                       alwaysShowPaginator paginator :rows="50" stripedRows size="small"
+                       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
+                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
+                       currentPageReportTemplate="{first} to {last} of {totalRecords}"
+                       scrollable scrollHeight="400px" responsiveLayout="scroll">
+              <template #empty>
+        <span class="emptyInfo">
+            {{ $t('CommonDataTableEmptyInfo') }}
+        </span>
+              </template>
+              <template #loading>
+                <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+              </template>
+              <Column :header="$t('Disc')" field="discNo" style="flex: 0 0 10rem"/>
+              <Column :header="$t('Index')" field="serial" style="flex: 0 0 10rem"/>
+              <Column :header="$t('Name')" field="title" style="flex: 0 0 10rem"/>
+              <Column :header="$t('Duration')" field="duration" style="flex: 0 0 10rem"/>
+            </DataTable>
+          </Panel>
+        </div>
       </div>
       <div class="col-5">
         <div class="col-12">
@@ -431,33 +514,33 @@ const parseBasicInfoText = (input: string) => {
           <Divider class="mb-0" align="left"><i class="pi pi-th-large"/><b class="ml-1">{{ $t('Product') }}</b>
           </Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.products"
-                                :entrySearchType="META.ENTRY_SEARCH_TYPE.PRODUCT"/>
+                                :entrySearchType="META.ENTRY_TYPE.PRODUCT"/>
           <Divider class="mb-0" align="left"><i class="pi pi-users"/><b class="ml-1">{{ $t('Person') }}</b></Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.persons"
-                                :entrySearchType="META.ENTRY_SEARCH_TYPE.PERSON"/>
+                                :entrySearchType="META.ENTRY_TYPE.PERSON"/>
           <div v-if="dto.item.type !== META.ITEM_TYPE.ALBUM && dto.item.type !== META.ITEM_TYPE.BOOK">
             <Divider class="mb-0" align="left"><i class="pi pi-users"/><b class="ml-1">{{ $t('Character') }}</b>
             </Divider>
             <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.characters"
-                                  :entrySearchType="META.ENTRY_SEARCH_TYPE.CHARACTER"/>
+                                  :entrySearchType="META.ENTRY_TYPE.CHARACTER"/>
           </div>
           <Divider class="mb-0" align="left"><i class="pi pi-folder-open"/><b class="ml-1">{{
               $t('Classification')
             }}</b>
           </Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.classifications"
-                                :entrySearchType="META.ENTRY_SEARCH_TYPE.CLASSIFICATION"/>
+                                :entrySearchType="META.ENTRY_TYPE.CLASSIFICATION"/>
           <div v-if="dto.item.type === META.ITEM_TYPE.GOODS || dto.item.type === META.ITEM_TYPE.FIGURE">
             <Divider class="mb-0" align="left">
               <span style="font-size: 1rem" class="material-symbols-outlined">diamond</span>
               <b class="ml-1">{{ $t('Material') }}</b>
             </Divider>
             <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.materials"
-                                  :entrySearchType="META.ENTRY_SEARCH_TYPE.MATERIAL"/>
+                                  :entrySearchType="META.ENTRY_TYPE.MATERIAL"/>
           </div>
           <Divider class="mb-0" align="left"><i class="pi pi-calendar"/><b class="ml-1">{{ $t('Event') }}</b></Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.events"
-                                :entrySearchType="META.ENTRY_SEARCH_TYPE.EVENT"/>
+                                :entrySearchType="META.ENTRY_TYPE.EVENT"/>
         </Panel>
       </div>
       <div class="col-12">

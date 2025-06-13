@@ -99,6 +99,7 @@ export const CnText = {
     Images: '图片',
 
     NoImage: '暂无图片',
+    NoFile: '暂无文件',
     NoCompanies: '暂无相关企业信息',
     NoPerson: '暂无相关人员信息',
     NoInfo: '暂无数据',

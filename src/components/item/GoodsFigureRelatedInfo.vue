@@ -41,7 +41,7 @@ const getExcRelatedEntries = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(c, index) in classifications">
-          <router-link :to="`${API.SUBJECT_DETAIL}/${c.target.value}`">
+          <router-link :to="`${API.ENTRY_DETAIL}/${c.target.value}`">
             <span style="white-space: nowrap;">{{ c.target.label }}</span>
           </router-link>
           <span v-if="index < classifications.length - 1">, </span>
@@ -56,7 +56,7 @@ const getExcRelatedEntries = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(e, index) in events">
-          <router-link :to="`${API.SUBJECT_DETAIL}/${e.target.value}`">
+          <router-link :to="`${API.ENTRY_DETAIL}/${e.target.value}`">
             <span style="white-space: nowrap;">{{ e.target.label }}</span>
           </router-link>
           <span v-if="e.remark">&nbsp;({{ (e as any).remark }})</span>
@@ -72,7 +72,7 @@ const getExcRelatedEntries = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(m, index) in materials">
-          <router-link :to="`${API.SUBJECT_DETAIL}/${m.target.value}`">
+          <router-link :to="`${API.ENTRY_DETAIL}/${m.target.value}`">
             <span style="white-space: nowrap;">{{ m.target.label }}</span>
           </router-link>
           <span v-if="m.remark">&nbsp;({{ (m as any).remark }})</span>

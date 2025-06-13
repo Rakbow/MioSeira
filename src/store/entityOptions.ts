@@ -16,7 +16,7 @@ export const useOptionsStore = defineStore('options', {
                 const res = await axios.get(API.GET_ENTITY_OPTION); // 后台 API
                 this.options = res.data;
                 this.itemCurrent = META.ITEM_TYPE.ALBUM;
-                this.entryCurrent = META.ENTRY_SEARCH_TYPE.PRODUCT;
+                this.entryCurrent = META.ENTRY_TYPE.PRODUCT;
             }
         },
         clear() {

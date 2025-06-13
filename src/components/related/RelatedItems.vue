@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineAsyncComponent, onBeforeMount, ref} from "vue";
+import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
 import {EntityInfo} from "@/config/Web_Const";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
@@ -18,6 +18,9 @@ const relatedItems = ref([]);
 
 onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
+})
+
+onMounted(() => {
   getRelatedItems();
 })
 

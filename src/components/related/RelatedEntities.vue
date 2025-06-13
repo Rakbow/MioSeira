@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import '@/assets/entity-detail.scss';
 import '@/assets/entity-global.scss';
-import {defineAsyncComponent, defineProps, onBeforeMount, ref} from 'vue';
+import {defineAsyncComponent, defineProps, onBeforeMount, onMounted, ref} from 'vue';
 import {useUserStore} from "@/store/user";
 import {useDialog} from "primevue/usedialog";
 import {PublicHelper} from "@/toolkit/publicHelper";
@@ -16,10 +16,11 @@ const allRelatedEntities = defineAsyncComponent(() => import('@/components/relat
 const {t} = useI18n();
 const entityInfo = ref<EntityInfo>();
 onBeforeMount(() => {
-  getRouter();
   entityInfo.value = PublicHelper.getEntityInfo(route);
-  getRelations();
 });
+onMounted((() => {
+  getRelations();
+}))
 
 const route = useRoute();
 const dialog = useDialog();
@@ -102,14 +103,6 @@ const getRelations = async () => {
   loading.value = false;
 }
 
-const getRouter = () => {
-  if (props.relatedGroup === META.RELATION_RELATED_GROUP.RELATED_PRODUCT) {
-    entityName.value = "product";
-  }else if (props.relatedGroup === META.RELATION_RELATED_GROUP.RELATED_CHAR) {
-    entityName.value = "character";
-  }
-}
-
 </script>
 
 <template>
@@ -141,7 +134,7 @@ const getRouter = () => {
                 </div>
                 <div class="col p-1" style="width: 240px">
                     <span class="block data-table-field-text-overflow-hidden">
-                      <a :href="`/db/${entityName}/${entry.id}`" :title="entry.name">{{ entry.name }}</a>
+                      <a :href="`${API.ENTRY_DETAIL}/${entry.id}`" :title="entry.name">{{ entry.name }}</a>
                     </span>
                   <small style="color: gray" class="block data-table-field-text-overflow-hidden">
                     {{ (entry as any).subName }}

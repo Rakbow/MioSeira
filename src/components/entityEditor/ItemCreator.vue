@@ -227,7 +227,7 @@ const parseItemSpec = () => {
       </div>
       <div class="field col" v-if="item.type === META.ITEM_TYPE.BOOK">
         <FloatLabel variant="on">
-          <label>{{ $t('Size') }}</label>
+          <label>{{ $t('BookSize') }}</label>
           <InputText size="small" v-model="item.size" class="static w-full"/>
         </FloatLabel>
       </div>

@@ -38,6 +38,16 @@ const items = ref([
     label: t('Role'),
     icon: 'pi pi-tags',
     route: '/db/manager/role'
+  },
+  {
+    label: t('Episode'),
+    icon: 'pi pi-list',
+    route: '/db/manager/ep'
+  },
+  {
+    label: t('File'),
+    icon: 'pi pi-file',
+    route: '/db/manager/file'
   }
 ]);
 </script>

@@ -145,19 +145,24 @@ const exportCSV = () => {
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
              currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
     <template #header>
-      <BlockUI :blocked="editBlock" class="grid">
-        <div class="col-8">
-          <Button :label="$t('Delete')" icon="pi pi-trash" class="p-button-danger p-button-sm ml-2"
-                  @click="confirmDeleteSelected"
-                  :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-          <Button :label="$t('Export')" icon="pi pi-external-link" class="ml-2 p-button-help p-button-sm"
-                  @click="exportCSV()" style="width: 6em"/>
-        </div>
-        <div class="col-4">
-          <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
-                       @update:modelValue="onToggle" class="text-end" size="small"
-                       :placeholder="$t('SelectedDisplayColumns')" style="width: 20em"/>
-        </div>
+      <BlockUI :blocked="editBlock" class="relative">
+
+        <Button variant="text" severity="danger" :disabled="selectedItems.length"
+                outlined @click="confirmDeleteSelected">
+          <template #icon>
+            <span class="material-symbols-outlined">delete_forever</span>
+          </template>
+        </Button>
+        <Button variant="text" severity="help" :disabled="selectedItems.length"
+                outlined @click="exportCSV">
+          <template #icon>
+            <span class="material-symbols-outlined">open_in_new</span>
+          </template>
+        </Button>
+        <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
+                     @update:modelValue="onToggle" size="small"
+                     :placeholder="$t('SelectedDisplayColumns')"
+                     style="width: 200px;right: 0;position: absolute;top: 50%;transform: translateY(-50%)"/>
       </BlockUI>
     </template>
     <template #empty>

@@ -36,8 +36,9 @@
         <DetailPad v-if="itemType === META.ITEM_TYPE.BOOK" :header="$t('Summary')" :text="item.summary" />
 <!--        <RelatedCharacters v-if="itemType == META.ITEM_TYPE.GOODS || itemType == META.ITEM_TYPE.FIGURE" />-->
         <RelatedPersons />
-        <DetailPad :header="$t('Description')" :text="item.detail" />
         <AlbumTrack v-if="itemType === META.ITEM_TYPE.ALBUM" />
+        <DetailPad :header="$t('Description')" :text="item.detail" />
+        <RelatedFiles />
       </div>
     </div>
     <div class="entity-detail-side-col">
@@ -67,11 +68,12 @@ import RelatedPersons from "@/components/related/RelatedPersons.vue";
 import DetailPad from "@/components/common/DetailPad.vue";
 import AlbumTrack from "@/components/item/AlbumTrackInfo.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
+import RelatedFiles from "@/components/related/RelatedFiles.vue";
 import Like from "@/components/common/EntityLike.vue";
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/logic/itemService";
 import {META} from "@/config/Web_Const";
-const ItemInfo = shallowRef();
+const ItemInfo = defineAsyncComponent(() => import('@/views/detail/info/ItemDetailInfo.vue'));
 const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
 
 const router = useRouter();
@@ -87,18 +89,6 @@ const cover = ref({});
 const option = ref({});
 const meta = ref<any>();
 
-const getItemInfo = () => {
-  if(itemType.value === META.ITEM_TYPE.ALBUM) {
-    ItemInfo.value = defineAsyncComponent(() => import('@/views/detail/info/AlbumDetailInfo.vue'));
-  }else if(itemType.value === META.ITEM_TYPE.BOOK) {
-    ItemInfo.value = defineAsyncComponent(() => import('@/views/detail/info/BookDetailInfo.vue'));
-  }else if(itemType.value === META.ITEM_TYPE.GOODS) {
-    ItemInfo.value = defineAsyncComponent(() => import('@/views/detail/info/GoodsDetailInfo.vue'));
-  }else if(itemType.value === META.ITEM_TYPE.FIGURE) {
-    ItemInfo.value = defineAsyncComponent(() => import('@/views/detail/info/FigureDetailInfo.vue'));
-  }
-}
-
 onBeforeMount(() => {
   meta.value = router.currentRoute.value.meta;
   item.value = meta.value.info.item;
@@ -106,8 +96,6 @@ onBeforeMount(() => {
   pageInfo.value = meta.value.info.traffic;
   cover.value = meta.value.info.cover;
   option.value = meta.value.info.options;
-
-  getItemInfo();
 });
 
 </script>

@@ -9,7 +9,7 @@ import { useRoute } from 'vue-router';
 import {useI18n} from "vue-i18n";
 import {API} from "@/config/Web_Helper_Strs";
 import {useOptionsStore} from "@/store/entityOptions";
-const EntrySelector = defineAsyncComponent(() => import('@/components/common/EntrySelector.vue'));
+const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
 const opStore = useOptionsStore();
 const {t} = useI18n();
@@ -44,11 +44,11 @@ const confirmDeleteSelected = () => {
 
 const getEntrySearchType = () => {
   if(dialogRef.value.data.relatedGroup == META.RELATION_RELATED_GROUP.RELATED_CHAR) {
-    entrySearchType.value = META.ENTRY_SEARCH_TYPE.CHARACTER;
+    entrySearchType.value = META.ENTRY_TYPE.CHARACTER;
   }else if(dialogRef.value.data.relatedGroup == META.RELATION_RELATED_GROUP.RELATED_PRODUCT) {
-    entrySearchType.value = META.ENTRY_SEARCH_TYPE.PRODUCT;
+    entrySearchType.value = META.ENTRY_TYPE.PRODUCT;
   }else if(dialogRef.value.data.relatedGroup == META.RELATION_RELATED_GROUP.RELATED_PERSON) {
-    entrySearchType.value = META.ENTRY_SEARCH_TYPE.PERSON;
+    entrySearchType.value = META.ENTRY_TYPE.PERSON;
   }
 }
 

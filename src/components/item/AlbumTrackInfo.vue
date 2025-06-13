@@ -7,8 +7,8 @@
       </template>
 
       <div class="relative">
-        <Edit :func="openAudioUpload" icon="cloud_upload" position="right: 30px" />
-        <Edit :func="openEditDialog" icon="edit_note" />
+        <Edit :func="openAudioUpload" icon="cloud_upload" position="right: 30px" label="Upload" />
+        <Edit :func="openQuickCreatorDialog" icon="music_note_add" label="Add" />
 
         <div v-if="!loading">
           <div v-if="!info.discs.length">
@@ -88,8 +88,7 @@
       </template>
       <template #content="{ files, removeUploadedFileCallback, removeFileCallback }">
         <DataTable v-if="fileInfos.length > 0" ref="dt" :value="fileInfos" class="p-datatable-sm"
-                   :alwaysShowPaginator="fileInfos.length !== 0"
-                   filterDisplay="row" paginator :rows="5"
+                   :alwaysShowPaginator="fileInfos.length !== 0" paginator :rows="5"
                    scrollable scrollHeight="flex" size="small"
                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -114,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
+import {computed, defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {useDialog} from "primevue/usedialog";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
@@ -126,13 +125,13 @@ import {useToast} from "primevue/usetoast";
 const {t} = useI18n();
 const toast = useToast();
 const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
-const editor = defineAsyncComponent(() => import('@/components/item/AlbumTrackEditor.vue'));
+const quickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
 
 onMounted(() => {
+  reloadTrackInfo();
 });
 
 onBeforeMount(() => {
-  reloadTrackInfo();
 })
 
 const route = useRoute();
@@ -155,8 +154,8 @@ const reloadTrackInfo = async () => {
   loading.value = false;
 }
 
-const openEditDialog = () => {
-  dialog.open(editor, {
+const openQuickCreatorDialog = () => {
+  dialog.open(quickCreator, {
     props: {
       header: t('TrackInfo'),
       style: {
@@ -171,11 +170,11 @@ const openEditDialog = () => {
       closable: false
     },
     data: {
-      discs: info.value.discs
+      mode: 'normal'
     },
     onClose: (options) => {
       if (options.data !== undefined) {
-        if (options.data.isUpdate) {
+        if (options.data.upload) {
           reloadTrackInfo();
         }
       }

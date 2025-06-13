@@ -14,7 +14,7 @@ export class EntryQueryParams {
     sortOrder: number | null;
 }
 
-export const loadEditor = (type: number, data: any, dialog: {
+export const loadEditor = (data: any, dialog: {
     open: (content: any, options?: (DynamicDialogOptions | undefined)) => DynamicDialogInstance
 }) => {
     dialog.open(editor, {
@@ -31,8 +31,7 @@ export const loadEditor = (type: number, data: any, dialog: {
             closable: false
         },
         data: {
-            entry: data,
-            type: type
+            entry: data
         },
         onClose: (options) => {
             // @ts-ignore

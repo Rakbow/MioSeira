@@ -38,15 +38,14 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         }
     },
     {
-        name: "PersonDetail",
-        path: API.PERSON_DETAIL + "/:id",
+        name: "EntryDetail",
+        path: API.ENTRY_DETAIL + "/:id",
         component: () => import('@/views/detail/EntryDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${META.ENTITY.PERSON}/${to.params.id}`);
+                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
-                    (to.meta as any).info.type = META.ENTITY.PERSON;
                     document.title = res.data.entry.name;
                     next();
                 } else {
@@ -57,53 +56,7 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             }
         },
         meta: {
-            title: "Person Detail"
-        }
-    },
-    {
-        name: "SubjectDetail",
-        path: API.SUBJECT_DETAIL + "/:id",
-        component: () => import('@/views/detail/EntryDetail.vue'),
-        beforeEnter: async (to, _from, next) => {
-            try {
-                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${META.ENTITY.SUBJECT}/${to.params.id}`);
-                if (res.state === axios.SUCCESS) {
-                    (to.meta as any).info = res.data;
-                    (to.meta as any).info.type = META.ENTITY.SUBJECT;
-                    document.title = res.data.entry.name;
-                    next();
-                } else {
-                    console.log(res.message);
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        },
-        meta: {
-            title: "Subject Detail"
-        }
-    },
-    {
-        name: "ProductDetail",
-        path: API.PRODUCT_DETAIL + "/:id",
-        component: () => import('@/views/detail/EntryDetail.vue'),
-        beforeEnter: async (to, _from, next) => {
-            try {
-                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${META.ENTITY.PRODUCT}/${to.params.id}`);
-                if (res.state === axios.SUCCESS) {
-                    (to.meta as any).info = res.data;
-                    (to.meta as any).info.type = META.ENTITY.PRODUCT;
-                    document.title = res.data.entry.name;
-                    next();
-                } else {
-                    console.log(res.message);
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        },
-        meta: {
-            title: "Product Detail"
+            title: "Entry Detail"
         }
     },
     {
@@ -126,29 +79,6 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         },
         meta: {
             title: "Item Detail"
-        }
-    },
-    {
-        name: "CharacterDetail",
-        path: API.CHARACTER_DETAIL + "/:id",
-        component: () => import('@/views/detail/EntryDetail.vue'),
-        beforeEnter: async (to, _from, next) => {
-            try {
-                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${META.ENTITY.CHARACTER}/${to.params.id}`);
-                if (res.state === axios.SUCCESS) {
-                    (to.meta as any).info = res.data;
-                    (to.meta as any).info.type = META.ENTITY.CHARACTER;
-                    document.title = res.data.entry.name;
-                    next();
-                } else {
-                    console.log(res.message);
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        },
-        meta: {
-            title: "Character Detail"
         }
     },
     {
@@ -203,6 +133,10 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             {
                 path: 'role',
                 component: () => import('@/views/manager/RoleManager.vue'),
+            },
+            {
+                path: 'file',
+                component: () => import('@/views/manager/FileManager.vue'),
             },
 
 

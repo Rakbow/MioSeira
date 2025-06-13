@@ -3,7 +3,7 @@
     <Panel>
       <template #header>
         <span>
-            <i class="pi pi-list"/><span><strong>{{ props.header }}</strong></span>
+            <i class="pi pi-list"/><span><strong>{{ t('RelatedEpisode') }}</strong></span>
         </span>
       </template>
       <div class="relative">

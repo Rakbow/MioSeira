@@ -65,9 +65,9 @@ const initQueryParam = async () => {
   queryParams.page = getNumberValue(route.query.page, 1);
 
   if (queryParams.searchType !== null) {
-    entrySearchType.value = META.ENTRY_SEARCH_TYPE_SET.find(i => i.value === queryParams.searchType?.toString())
+    entrySearchType.value = META.ENTRY_TYPE_SET.find(i => i.value === queryParams.searchType?.toString())
   } else {
-    entrySearchType.value = META.ENTRY_SEARCH_TYPE_SET[0]
+    entrySearchType.value = META.ENTRY_TYPE_SET[0]
   }
   // queryParams.size = getNumberValue(route.query.size, 60);
 }
@@ -212,7 +212,7 @@ const resetFilter = () => {
         <BlockUI :blocked="loading">
           <div class="field">
             <SelectButton class="w-full justify justify-content-center" size="small" v-model="entrySearchType"
-                          :options="META.ENTRY_SEARCH_TYPE_SET"
+                          :options="META.ENTRY_TYPE_SET"
                           @change="switchItemType"
                           optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
               <template #option="slotProps">
