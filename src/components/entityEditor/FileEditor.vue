@@ -16,6 +16,7 @@ const toast = useToast();
 
 onBeforeMount(async () => {
   entity.value = PublicHelper.deepCopy(dialogRef.value.data.entity);
+  entity.value.name = entity.value.name.replace(`.${entity.value.extension}`, "")
 })
 
 onMounted(() => {
@@ -23,6 +24,7 @@ onMounted(() => {
 
 const submit = async () => {
   editBlock.value = true;
+  entity.value.name = `${entity.value.name}.${entity.value.extension}`;
   const res = await axios.post(API.FILE_UPDATE, entity.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
@@ -50,23 +52,17 @@ const close = () => {
     <div class="field">
       <FloatLabel variant="on">
         <label>{{ $t('Name') }}<i class="required-label pi pi-asterisk"/></label>
-        <InputText size="small" v-model="entity.name" class="static w-full"/>
+        <InputGroup>
+          <InputText size="small" v-model="entity.name" class="static w-full"/>
+          <InputGroupAddon>{{ entity.extension }}</InputGroupAddon>
+        </InputGroup>
       </FloatLabel>
     </div>
-
-    <div class="formgrid grid">
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ $t('Size') }}</label>
-          <InputText size="small" v-model="entity.size" class="static w-full" disabled/>
-        </FloatLabel>
-      </div>
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ $t('Type') }}</label>
-          <InputText size="small" v-model="entity.mime" class="static w-full" disabled/>
-        </FloatLabel>
-      </div>
+    <div class="field">
+      <FloatLabel variant="on">
+        <label>{{ $t('Size') }}<i class="required-label pi pi-asterisk"/></label>
+        <InputText size="small" v-model="entity.size" class="static w-full" disabled/>
+      </FloatLabel>
     </div>
     <div class="field">
       <FloatLabel variant="on">

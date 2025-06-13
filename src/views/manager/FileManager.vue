@@ -12,6 +12,7 @@ import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
 import 'material-icons'
 import {loadEditor} from "@/logic/entityService";
+import {getIcon} from "material-file-icons";
 
 const route = useRoute();
 const router = useRouter();
@@ -22,8 +23,7 @@ const {t} = useI18n();
 const list = ref([]);
 const dt = ref();
 const filters = ref({
-  'name': {value: ''},
-  'mime': {value: ''}
+  'name': {value: ''}
 });
 const loading = ref(false);
 const editBlock = ref(false);
@@ -44,7 +44,6 @@ const initPageSize = () => {
 const initQueryParam = async () => {
   let page = !_isUndefined(route.query.page) ? route.query.page : 1;
   filters.value.name.value = !_isUndefined(route.query.name) ? route.query.name : '';
-  filters.value.mime.value = !_isUndefined(route.query.mime) ? route.query.mime : '';
   loading.value = true;
   queryParams.value = {
     first: (page - 1) * dt.value.rows,
@@ -66,8 +65,6 @@ const updateQueryParam = () => {
   currentQueryParams.size = dt.value.rows;
   if (!_isEmpty(queryParams.value.filters.name.value))
     currentQueryParams.name = queryParams.value.filters.name.value;
-  if (!_isEmpty(queryParams.value.filters.mime.value))
-    currentQueryParams.mime = queryParams.value.filters.mime.value;
 
   // 使用 router.push 更新 URL
   router.push({path: route.path, query: currentQueryParams});
@@ -172,18 +169,15 @@ const exportCSV = () => {
                 @click="loadEditor(META.ENTITY.FILE, slotProps.data, dialog)"/>
       </template>
     </Column>
-
+    <Column style="width: 32px">
+      <template #body="slotProps">
+        <div v-html="getIcon(slotProps.data.name).svg"/>
+      </template>
+    </Column>
     <Column :header="$t('Name')" field="name" :showFilterMenu="false"
             exportHeader="name" :sortable="true">
       <template #filter="{filterModel,filterCallback}">
         <InputText style="width: 60%" size="small" type="text" v-model="filterModel.value"
-                   @keydown.enter="filterCallback()"/>
-      </template>
-    </Column>
-    <Column :header="$t('Type')" field="mime" :showFilterMenu="false" style="width: 200px"
-            exportHeader="mime" :sortable="true">
-      <template #filter="{filterModel,filterCallback}">
-        <InputText style="width: 70%" size="small" type="text" v-model="filterModel.value"
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>

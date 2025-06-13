@@ -128,8 +128,7 @@ const openFilesUpload = () => {
           </template>
         </Column>
         <Column :header="$t('Name')" field="name" :showFilterMenu="false" :sortable="true"/>
-        <Column :header="$t('Type')" field="mime" :showFilterMenu="false" style="width: 120px" :sortable="true"/>
-        <Column :header="$t('Size')" field="size" :showFilterMenu="false" :sortable="true" style="width: 100px" />
+        <Column :header="$t('Size')" field="size" :showFilterMenu="false" :sortable="true" style="width: 150px" />
       </DataTable>
       <div v-else>
         <span class="empty-search-result"><em>{{ $t('NoFile') }}</em></span>

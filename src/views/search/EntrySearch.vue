@@ -49,25 +49,25 @@ onMounted(() => {
   first.value = (queryParams.page - 1) * queryParams.size;
 })
 
-const entrySearchType = ref();
+const entryType = ref();
 const switchItemType = () => {
-  if (entrySearchType.value === null) {
-    queryParams.searchType = null;
+  if (entryType.value === null) {
+    queryParams.type = null;
     return
   }
-  queryParams.searchType = parseInt(entrySearchType.value.value);
+  queryParams.type = parseInt(entryType.value.value);
 }
 
 const initQueryParam = async () => {
-  queryParams.searchType = getNumberValue(route.query.searchType);
+  queryParams.type = getNumberValue(route.query.type);
   queryParams.keywords = route.query.keywords ? route.query.keywords.split(',') : []
   queryParams.keyword = queryParams.keywords.join(',')
   queryParams.page = getNumberValue(route.query.page, 1);
 
-  if (queryParams.searchType !== null) {
-    entrySearchType.value = META.ENTRY_TYPE_SET.find(i => i.value === queryParams.searchType?.toString())
+  if (queryParams.type !== null) {
+    entryType.value = META.ENTRY_TYPE_SET.find(i => i.value === queryParams.type?.toString())
   } else {
-    entrySearchType.value = META.ENTRY_TYPE_SET[0]
+    entryType.value = META.ENTRY_TYPE_SET[0]
   }
   // queryParams.size = getNumberValue(route.query.size, 60);
 }
@@ -95,10 +95,10 @@ const updateQueryParam = () => {
   } else {
     delete currentQueryParams.keyword
   }
-  if (queryParams.searchType !== null) {
-    currentQueryParams.searchType = queryParams.searchType;
+  if (queryParams.type !== null) {
+    currentQueryParams.type = queryParams.type;
   } else {
-    delete currentQueryParams.searchType
+    delete currentQueryParams.type
   }
 
   // 使用 router.push 更新 URL
@@ -177,13 +177,13 @@ const resetFilter = () => {
             </div>
             <div v-if="!loading" v-for="(entry, index) in slotProps.items" :key="index" class="grid">
               <div class="entry-search-list-thumb col-fixed">
-                <a :href="`${entry.tableName}/${entry.id}`"
+                <a :href="`${API.ENTRY_DETAIL}/${entry.id}`"
                    class="entry-thumb">
                   <img role="presentation" :alt="entry.id" :src="(entry as any).thumb"/>
                 </a>
               </div>
               <div class="entry-search-list-info col">
-                <a :href="`${entry.tableName}/${entry.id}`" class="text-overflow-hidden-one"
+                <a :href="`${API.ENTRY_DETAIL}/${entry.id}`" class="text-overflow-hidden-one"
                    :title="entry.name">{{ entry.name }}</a>
                 <span class="text-overflow-hidden-one"
                    :title="entry.subName">{{ entry.subName }}</span>
@@ -211,7 +211,7 @@ const resetFilter = () => {
       <Panel>
         <BlockUI :blocked="loading">
           <div class="field">
-            <SelectButton class="w-full justify justify-content-center" size="small" v-model="entrySearchType"
+            <SelectButton class="w-full justify justify-content-center" size="small" v-model="entryType"
                           :options="META.ENTRY_TYPE_SET"
                           @change="switchItemType"
                           optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">

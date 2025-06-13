@@ -158,6 +158,11 @@ const displayDeleteDialog = ref(false);
 const confirmDeleteSelected = () => {
   displayDeleteDialog.value = true;
 }
+
+const openCreateTab = () => {
+  window.open('item/add', '_blank', 'noopener,noreferrer');
+}
+
 //endregion
 
 const exportCSV = () => {
@@ -184,7 +189,7 @@ const exportCSV = () => {
           </template>
         </SelectButton>
 
-        <Button variant="text" outlined @click="loadCreator(dialog)">
+        <Button variant="text" outlined @click="openCreateTab">
           <template #icon>
             <span class="material-symbols-outlined">add_box</span>
           </template>
@@ -222,7 +227,7 @@ const exportCSV = () => {
       <Row>
         <Column :colspan="2" :rowspan="2" />
         <Column :header="$t('Name')" :rowspan="2" />
-        <Column :header="$t('BasicInfo')" :colspan="7" />
+        <Column :header="$t('BasicInfo')" :colspan="9" />
       </Row>
       <Row>
         <Column :header="$t('CatalogId')" :sortable="true" field="catalogId"
@@ -233,6 +238,8 @@ const exportCSV = () => {
         <Column :header="$t('Region')" :sortable="true" field="region" />
         <Column :header="$t('ReleaseType')" :sortable="true" field="releaseType" />
         <Column :header="$t('Bonus')" :sortable="true" field="bonus" />
+        <Column :header="$t('Image')" field="imageCount" />
+        <Column :header="$t('File')" field="fileCount" />
       </Row>
     </ColumnGroup>
 
@@ -274,7 +281,7 @@ const exportCSV = () => {
         {{ `${slotProps.data.price} ${slotProps.data.currency}` }}
       </template>
     </Column>
-    <Column :header="$t('Region')" filterField="region" style="flex: 0 0 9rem">
+    <Column :header="$t('Region')" filterField="region" style="flex: 0 0 7rem">
       <template #body="slotProps">
         <span :class="`fi fi-${slotProps.data.region}`" style="margin-left: 0.5rem"/>
       </template>
@@ -308,6 +315,8 @@ const exportCSV = () => {
         <Checkbox v-model="filterModel.value" indeterminate binary :filter="true" @change="filterCallback()"/>
       </template>
     </Column>
+    <Column field="imageCount" />
+    <Column field="fileCount" />
     <Column v-for="(col, index) of selectedColumns" :field="col.field"
             :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
   </DataTable>

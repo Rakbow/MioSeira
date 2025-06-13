@@ -23,7 +23,7 @@
             <div class="col p-1">
               {{ file.name }}
               <small style="color: gray" class="text-sm text-overflow-hidden-one">
-                <span>{{ (file as any).mime }}&nbsp;&nbsp;&nbsp;{{ file.size }}</span>
+                <span>{{ file.size }}</span>
               </small>
             </div>
             <div class="col-1 flex align-items-center justify-content-center" style="width: 35px">
