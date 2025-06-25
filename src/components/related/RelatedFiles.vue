@@ -63,7 +63,7 @@ const getRelatedFiles = async () => {
   queryParams.value.filters.entityType.value = entityInfo.value?.type;
   queryParams.value.filters.entityId.value = entityInfo.value?.id;
   loading.value = true;
-  const res = await axios.post(API.GET_FILE_LIST, queryParams.value);
+  const res = await axios.post(API.FILE_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     files.value = res.data.data;
     records.value = res.data.total
@@ -105,7 +105,7 @@ const openFilesUpload = () => {
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-file"/>
-        <b>{{ $t('RelatedFiles') }}</b>
+        <b>{{ t('RelatedFiles') }}</b>
         <Edit :func="openFilesUpload" icon="note_add" label="Upload" />
       </template>
       <DataTable v-if="files.length" ref="dt" :value="files" class="small-font mt-3"
@@ -118,7 +118,7 @@ const openFilesUpload = () => {
                  currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
         <template #loading>
           <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-          <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+          <span>{{ t('CommonDataTableLoadingInfo') }}</span>
         </template>
 
         <Column style="width: 45px">
@@ -127,11 +127,11 @@ const openFilesUpload = () => {
                     @click="loadEditor(META.ENTITY.FILE, slotProps.data, dialog)"/>
           </template>
         </Column>
-        <Column :header="$t('Name')" field="name" :showFilterMenu="false" :sortable="true"/>
-        <Column :header="$t('Size')" field="size" :showFilterMenu="false" :sortable="true" style="width: 150px" />
+        <Column :header="t('Name')" field="name" :showFilterMenu="false" :sortable="true"/>
+        <Column :header="t('Size')" field="size" :showFilterMenu="false" :sortable="true" style="width: 150px" />
       </DataTable>
       <div v-else>
-        <span class="empty-search-result"><em>{{ $t('NoFile') }}</em></span>
+        <span class="empty-search-result"><em>{{ t('NoFile') }}</em></span>
       </div>
 
     </Fieldset>

@@ -2,11 +2,18 @@
 import {defineProps, onMounted, ref} from "vue";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
+import {useI18n} from "vue-i18n";
 
 const loading = ref(false);
+const {t} = useI18n();
+const extraInfo = ref({
+  materials: <any>[],
+  classifications: <any>[],
+  events: <any>[]
+});
 
 onMounted(() => {
-  getExcRelatedEntries();
+  loadExtraInfo();
 });
 
 const props = defineProps({
@@ -16,67 +23,59 @@ const props = defineProps({
   }
 });
 
-const materials = ref([]);
-const classifications = ref([]);
-const events = ref([]);
-
-const getExcRelatedEntries = async () => {
+const loadExtraInfo = async () => {
   loading.value = true;
-  const res = await axios.post(API.GET_EXC_RELATED_ENTRIES, {id: props.id});
-  if (res.state === axios.SUCCESS) {
-    classifications.value = res.data.classifications;
-    events.value = res.data.events;
-    materials.value = res.data.materials;
-  }
+  const res = await axios.post(API.ITEM_EXTRA_INFO, {id: props.id});
+  if (res.state === axios.SUCCESS) extraInfo.value = res.data;
   loading.value = false;
 }
 
 </script>
 
 <template>
-  <tr v-if="classifications.length">
+  <tr v-if="extraInfo.classifications.length">
     <td>
-      <b>{{ $t('Classification') }}</b>
+      <b>{{ t('Classification') }}</b>
     </td>
     <td>
       <div style="display: block;">
-        <template v-for="(c, index) in classifications">
-          <router-link :to="`${API.ENTRY_DETAIL}/${c.target.value}`">
+        <template v-for="(c, index) in extraInfo.classifications">
+          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${c.target.value}`">
             <span style="white-space: nowrap;">{{ c.target.label }}</span>
           </router-link>
-          <span v-if="index < classifications.length - 1">, </span>
+          <span v-if="index < extraInfo.classifications.length - 1">, </span>
         </template>
       </div>
     </td>
   </tr>
-  <tr v-if="events.length">
+  <tr v-if="extraInfo.events.length">
     <td>
-      <b>{{ $t('Event') }}</b>
+      <b>{{ t('Event') }}</b>
     </td>
     <td>
       <div style="display: block;">
-        <template v-for="(e, index) in events">
-          <router-link :to="`${API.ENTRY_DETAIL}/${e.target.value}`">
+        <template v-for="(e, index) in extraInfo.events">
+          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${e.target.value}`">
             <span style="white-space: nowrap;">{{ e.target.label }}</span>
           </router-link>
           <span v-if="e.remark">&nbsp;({{ (e as any).remark }})</span>
-          <span v-if="index < events.length - 1">, </span>
+          <span v-if="index < extraInfo.events.length - 1">, </span>
         </template>
       </div>
     </td>
   </tr>
-  <tr v-if="materials.length">
+  <tr v-if="extraInfo.materials.length">
     <td>
-      <b>{{ $t('Material') }}</b>
+      <b>{{ t('Material') }}</b>
     </td>
     <td>
       <div style="display: block;">
-        <template v-for="(m, index) in materials">
-          <router-link :to="`${API.ENTRY_DETAIL}/${m.target.value}`">
+        <template v-for="(m, index) in extraInfo.materials">
+          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${m.target.value}`">
             <span style="white-space: nowrap;">{{ m.target.label }}</span>
           </router-link>
           <span v-if="m.remark">&nbsp;({{ (m as any).remark }})</span>
-          <span v-if="index < materials.length - 1">, </span>
+          <span v-if="index < extraInfo.materials.length - 1">, </span>
         </template>
       </div>
     </td>

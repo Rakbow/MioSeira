@@ -2,25 +2,71 @@ import editor from "@/components/entityEditor/ItemEditor.vue";
 import creator from "@/components/entityEditor/ItemCreator.vue";
 import i18n from "@/config/i18n";
 import {DynamicDialogInstance, DynamicDialogOptions} from "primevue/dynamicdialogoptions";
+import {META} from "@/config/Web_Const";
 
 const {t} = i18n.global;
 
+export class ItemCreateDTO {
+    type: number = META.ITEM_TYPE.ALBUM;
+    subType: number = 0;
+    name: string = '';
+    aliases: string[] = [];
+    releaseDate: string = '';
+    releaseType: number = 0;
+    price: number = 0;
+    region: string = 'jp';
+    catalogId: string = '';
+    barcode: string = '';
+    bonus: boolean = false;
+
+    weight: number = 0;
+    width: number = 0;
+    length: number = 0;
+    height: number = 0;
+
+    //album
+    discs: number = 0;
+    tracks: number = 0;
+    episodes: number = 0;
+    runTime: number = 0;
+    disc = new AlbumDisc();
+
+    mediaFormat: number[] = [1];
+
+    //book
+    pages: number = 0;
+    lang: string = 'ja-JP';
+    summary: string = '';
+    size: string = '';
+
+
+    remark: string = '';
+    detail: string = '';
+}
+
+export class ItemAdvanceCreateDTO {
+    item = new ItemCreateDTO();
+    images: any[] = [];
+    generateThumb: boolean = false;
+    relatedEntities: any[] = [];
+}
+
 export class ItemQueryParams {
-    entries: Array;
-    entityType: number | null | undefined;
-    entityId: number | null;
-    keyword: string | null;
-    type: number | null;
-    subType: number | null;
-    releaseType: number | null;
-    barcode: string | null;
-    catalogId: string | null;
-    region: string | null;
-    bonus: number | null;
+    entries: any[] = [];
+    entityType: number | null | undefined = 0;
+    entityId: number | null = 0;
+    keyword: string | null = null;
+    type: number | null = 0;
+    subType: number | null = 0;
+    releaseType: number | null = 0;
+    barcode: string | null = "";
+    catalogId: string | null = "";
+    region: string | null = null;
+    bonus: number | null = 0;
     page: number | null = 1;
     size: number | null = 60;
-    sortField: string | null;
-    sortOrder: number | null;
+    sortField: string | null = null;
+    sortOrder: number | null = null;
 }
 
 // 定义商品参数接口
@@ -129,4 +175,41 @@ export const parseItemSpecParams = (input: string): ItemSpecParams => {
     }
 
     return result;
+}
+
+export class AlbumTrack {
+    id = 0;
+    discId= 0;
+    serial= 0;
+    name = '';
+    duration = '';
+}
+export class AlbumDisc {
+    id = 0;
+    itemId = 0;
+    catalogId = '';
+    discNo = 1;
+    mediaFormat = 1;
+    albumFormat: number[] = [];
+    tracks: AlbumTrack[] = [];
+}
+
+export const parseAlbumTracks = (input: string): AlbumTrack[] => {
+    const lines = input.split("\n").filter(line => line.trim() !== ""); // 按行分割并去掉空行
+    return lines.map(line => {
+        // 使用正则匹配每行的曲目信息
+        const match = line.match(/^(\d+)\s+(.*?)\s+(\d+:\d+)$/);
+        if (!match) {
+            throw new Error(`无法解析的行: ${line}`);
+        }
+
+        const serial = parseInt(match[1], 10); // 提取编号并转换为数字
+        let name = match[2].replace(/\s*\(M\d+\)\s*/g, "").trim(); // 去掉 (Mx) 部分
+        const duration = match[3]; // 提取时长部分
+        let track = new AlbumTrack();
+        track.serial = serial;
+        track.name = name;
+        track.duration = duration;
+        return track;
+    });
 }

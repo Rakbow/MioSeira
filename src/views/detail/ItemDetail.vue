@@ -10,14 +10,14 @@
       </div>
       <div class="grid border-round-sm m-3">
         <div class="col-4" style="width: 200px;height: 200px;text-align: center;vertical-align: middle;">
-          <img :src="cover" alt="main"/>
+          <img :src="cover.toString()" alt="main"/>
         </div>
         <div class="col card" style="background: #2f364f;">
           <div class="relative">
             <div v-if="userStore.user">
               <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
                       @click="loadEditor(item, dialog)" style="right: 10%"
-                      v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}" >
+                      v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}" >
                 <template #icon>
                   <span class="material-symbols-outlined">edit_note</span>
                 </template>
@@ -33,19 +33,18 @@
         </div>
       </div>
       <div class="m-3">
-        <DetailPad v-if="itemType === META.ITEM_TYPE.BOOK" :header="$t('Summary')" :text="item.summary" />
-<!--        <RelatedCharacters v-if="itemType == META.ITEM_TYPE.GOODS || itemType == META.ITEM_TYPE.FIGURE" />-->
+        <DetailPad v-if="itemType === META.ITEM_TYPE.BOOK" :header="t('Summary')" :text="item.summary" />
         <RelatedPersons />
         <AlbumTrack v-if="itemType === META.ITEM_TYPE.ALBUM" />
-        <DetailPad :header="$t('Description')" :text="item.detail" />
+        <DetailPad :header="t('Description')" :text="item.detail" />
         <RelatedFiles />
       </div>
     </div>
     <div class="entity-detail-side-col">
       <SideImages />
-      <RelationEntities :header="$t('RelatedProduct')" :relatedGroup="META.RELATION_RELATED_GROUP.RELATED_PRODUCT" />
+      <RelationEntities :header="t('RelatedProduct')" :relatedGroup="META.RELATION_RELATED_GROUP.PRODUCT" />
       <RelationEntities v-if="itemType === META.ITEM_TYPE.GOODS || itemType === META.ITEM_TYPE.FIGURE"
-                        :header="$t('RelatedCharacter')" :relatedGroup="META.RELATION_RELATED_GROUP.RELATED_CHAR" />
+                        :header="t('RelatedCharacter')" :relatedGroup="META.RELATION_RELATED_GROUP.CHARACTER" />
       <TrafficInfo :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime" />
     </div>
   </div>

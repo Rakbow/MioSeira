@@ -4,7 +4,7 @@ import ManagerMenu from "@/views/manager/ManagerMenu.vue";
 
 <template>
   <Toast />
-  <div class="grid" style="width: 1600px">
+  <div class="grid" style="width: 1500px">
     <div class="col-2">
       <ManagerMenu />
     </div>

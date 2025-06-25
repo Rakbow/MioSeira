@@ -4,11 +4,11 @@
     <div class="entity-detail-main-col">
       <div class="entity-header-title">
         <h1 style="display: inline;">{{ entry.name }}</h1>
-        <span class="small-font" v-if="entry.type === META.ENTRY_TYPE.PRODUCT">({{ entry.subType.label }})</span>
+        <span class="small-font" v-if="entry.type === META.ENTRY_TYPE.PRODUCT">({{ (entry as any).subType.label }})</span>
         <span class="small-font" v-else>({{ entry.type.label }})</span>
         <div v-if="entry.subType.value === META.ENTRY_SUB_TYPE.MAIN_SERIES">
-          <span>{{ entry.nameEn }}</span><br>
-          <span>{{ entry.nameZh }}</span><br>
+          <span>{{ entry!.nameEn }}</span><br>
+          <span>{{ entry!.nameZh }}</span><br>
         </div>
       </div>
       <div v-if="entry.subType.value !== META.ENTRY_SUB_TYPE.MAIN_SERIES" class="grid mx-2">
@@ -21,10 +21,7 @@
             <div v-if="userStore.user && userStore.user.type > 1">
               <Button class="p-button-link" icon="pi pi-pen-to-square"
                       @click="loadEditor(entry, dialog)"
-                      v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}"/>
-              <Button class="p-button-link" icon="pi pi-images"
-                      @click="openEditImage"
-                      v-tooltip.bottom="{value: $t('Images'), class: 'short-tooltip'}"/>
+                      v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}"/>
               <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked"/>
 
             </div>
@@ -32,7 +29,7 @@
         </div>
         <div class="col py-0">
           <DetailPad v-if="entry.subType.value !== META.ENTRY_SUB_TYPE.MAIN_SERIES"
-                     :header="$t('Description')" :text="entry.detail"/>
+                     :header="t('Description')" :text="entry.detail"/>
           <RelatedPersons v-if="entry.type.value === META.ENTRY_TYPE.PRODUCT && entry.subType.value !== META.ENTRY_SUB_TYPE.MAIN_SERIES"/>
           <RelatedItems v-if="entry.subType.value !== META.ENTRY_SUB_TYPE.MAIN_SERIES"/>
         </div>
@@ -72,8 +69,7 @@ import SubProductInfo from "@/components/special/SubProductInfo.vue";
 import RelatedItems from "@/components/related/RelatedItems.vue";
 import Like from "@/components/common/EntityLike.vue";
 import StatusEditor from "@/components/common/StatusEditor.vue";
-
-const entryImageEditor = defineAsyncComponent(() => import('@/components/image/EntryImageEditor.vue'));
+defineAsyncComponent(() => import('@/components/image/EntryImageEditor.vue'));
 const Info = defineAsyncComponent(() => import('@/views/detail/info/EntryDetailInfo.vue'));
 
 const meta = ref<any>();
@@ -83,7 +79,7 @@ const userStore = useUserStore();
 const dialog = useDialog();
 
 const entityType = ref();
-const entry = ref<any>({});
+const entry = ref();
 const pageInfo = ref({});
 const cover = ref({});
 
@@ -94,31 +90,6 @@ onBeforeMount(() => {
   pageInfo.value = meta.value.info.traffic;
   cover.value = meta.value.info.cover;
 });
-
-const openEditImage = () => {
-  dialog.open(entryImageEditor, {
-    props: {
-      header: t('Edit'),
-      style: {
-        width: '400px',
-      },
-      modal: true,
-      closable: true
-    },
-    data: {
-      cover: entry.value.cover,
-      thumb: entry.value.thumb
-    },
-    onClose: async (options) => {
-      if (options.data !== undefined) {
-        if (options.data.isUpdate) {
-
-        }
-      }
-    }
-  });
-}
-
 </script>
 
 <style lang="scss" scoped>

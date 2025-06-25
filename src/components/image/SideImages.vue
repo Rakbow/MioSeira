@@ -3,7 +3,7 @@ import {ref, defineAsyncComponent, onMounted, onBeforeMount} from 'vue';
 import {useDialog} from 'primevue/usedialog';
 
 const manager = defineAsyncComponent(() => import('@/components/image/ImageManager.vue'));
-const loader = defineAsyncComponent(() => import('@/components/image/ImageLoader.vue'));
+const browser = defineAsyncComponent(() => import('@/components/image/ImageBrowser.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 import {useUserStore} from "@/store/user";
 import {PublicHelper} from "@/toolkit/publicHelper";
@@ -60,7 +60,7 @@ const getDisplayImages = async () => {
   entityType: entityInfo.value?.type,
   entityId: entityInfo.value?.id
   }
-  const res = await axios.post(API.GET_DISPLAY_IMAGES, param);
+  const res = await axios.post(API.IMAGES_DEFAULT_DISPLAYED, param);
   if (res.state === axios.SUCCESS) {
     images.value = res.data.images;
     count.value = res.data.count;
@@ -71,7 +71,7 @@ const getDisplayImages = async () => {
 }
 
 const openLoader = () => {
-  dialog.open(loader, {
+  dialog.open(browser, {
     props: {
       header: t('Images'),
       style: {
@@ -87,7 +87,7 @@ const openEditDialog = () => {
     props: {
       header: `${t('Images')}${t('Edit')}`,
       style: {
-        width: '80vw',
+        width: '900px',
       },
       breakpoints: {
         '960px': '80vw',
@@ -105,32 +105,32 @@ const openEditDialog = () => {
     <Panel>
       <template #header>
       <span class="text-start side-panel-header">
-        <i class="pi pi-images"/><span><strong>{{ $t('Images') }}</strong></span>
+        <i class="pi pi-images"/><span><strong>{{ t('Images') }}</strong></span>
       </span>
       </template>
       <template #icons>
         <div v-if="userStore.user">
           <Button v-if="userStore.user.type > 1" class="p-panel-header-icon p-link ml-2" text rounded
-                  @click="openEditDialog" v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
+                  @click="openEditDialog" v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
             <span class="pi pi-cog"/>
           </Button>
           <Button :label="count.toString()" severity="success" size="small" outlined class="mr-2"
                   @click="openLoader" :disabled="!count"
-                  v-tooltip.bottom="{value: $t('ViewAll'), class: 'common-tooltip', disabled: !count}" />
+                  v-tooltip.bottom="{value: t('ViewAll'), class: 'common-tooltip', disabled: !count}" />
         </div>
       </template>
 
       <div v-if="!images.length">
-        <span class="empty-search-result">{{ $t('NoImage') }}</span>
+        <span class="empty-search-result">{{ t('NoImage') }}</span>
       </div>
       <ScrollPanel v-else style="max-height: 300px;max-width: 265px">
         <div v-if="images" class="grid justify-content-evenly justify-content-start" style="width: 260px">
           <div class="col-4 mt-2 mb-2" id="panel-image-div"
                v-for="(image, index) of images" :key="index">
-            <img class="sidebar-panel-image-middle" :src="image.thumb70"
+            <img class="sidebar-panel-image-middle" :src="image.thumb"
                  draggable="false"
                  oncontextmenu="return false"
-                 v-tooltip.bottom="{value: $t('UploadIn') + image.addedTime, class: 'image-tooltip'}"
+                 v-tooltip.bottom="{value: t('UploadIn') + image.addedTime, class: 'image-tooltip'}"
                  @click="imageClick(index)" alt="" />
           </div>
         </div>

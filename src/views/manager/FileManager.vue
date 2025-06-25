@@ -97,7 +97,7 @@ const onToggle = (val) => {
 
 const getData = async () => {
   loading.value = true;
-  const res = await axios.post(API.GET_FILE_LIST, queryParams.value);
+  const res = await axios.post(API.FILE_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     list.value = res.data.data;
     totalRecords.value = res.data.total
@@ -135,7 +135,7 @@ const exportCSV = () => {
              currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
     <template #header>
       <BlockUI :blocked="editBlock" class="relative">
-        <Button variant="text" severity="danger" :disabled="selectedItems.length"
+        <Button variant="text" severity="danger" :disabled="!selectedItems.length"
                 outlined @click="confirmDeleteSelected">
           <template #icon>
             <span class="material-symbols-outlined">delete_forever</span>
@@ -149,18 +149,18 @@ const exportCSV = () => {
         </Button>
         <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
                      @update:modelValue="onToggle" class="text-end" size="small"
-                     :placeholder="$t('SelectedDisplayColumns')"
+                     :placeholder="t('SelectedDisplayColumns')"
                      style="width: 200px;right: 0;position: absolute;top: 50%;transform: translateY(-50%)"/>
       </BlockUI>
     </template>
     <template #empty>
         <span class="emptyInfo">
-            {{ $t('CommonDataTableEmptyInfo') }}
+            {{ t('CommonDataTableEmptyInfo') }}
         </span>
     </template>
     <template #loading>
       <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-      <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+      <span>{{ t('CommonDataTableLoadingInfo') }}</span>
     </template>
 
     <Column style="width: 50px">
@@ -174,16 +174,16 @@ const exportCSV = () => {
         <div v-html="getIcon(slotProps.data.name).svg"/>
       </template>
     </Column>
-    <Column :header="$t('Name')" field="name" :showFilterMenu="false"
+    <Column :header="t('Name')" field="name" :showFilterMenu="false"
             exportHeader="name" :sortable="true">
       <template #filter="{filterModel,filterCallback}">
         <InputText style="width: 60%" size="small" type="text" v-model="filterModel.value"
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column :header="$t('Size')" field="size" :showFilterMenu="false" :sortable="true" style="width: 120px" />
-    <Column :header="$t('AddedTime')" field="addedTime" :showFilterMenu="false" :sortable="true" style="width: 250px" />
-    <Column :header="$t('EditedTime')" field="editedTime" :showFilterMenu="false" :sortable="true" style="width: 250px" />
+    <Column :header="t('Size')" field="size" :showFilterMenu="false" :sortable="true" style="width: 120px" />
+    <Column :header="t('AddedTime')" field="addedTime" :showFilterMenu="false" :sortable="true" style="width: 250px" />
+    <Column :header="t('EditedTime')" field="editedTime" :showFilterMenu="false" :sortable="true" style="width: 250px" />
 
     <Column v-for="(col, index) of selectedColumns" :field="col.field"
             :header="col.header" :key="col.field + '_' + index" :sortable="true"/>

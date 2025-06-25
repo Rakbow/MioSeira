@@ -2,10 +2,13 @@
   <div class="card">
     <BlockUI :blocked="loading">
       <SelectButton v-if="props.all" class="w-full" size="small" v-model="selectEntityType"
-                    :options="META.ENTRY_TYPE_SET" @change="switchEntrySearchType($event)"
+                    :options="META.ENTRY_TYPE_SET" @change="switchEntryType($event)"
                     optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
         <template #option="slotProps">
-          <span class="material-symbols-outlined">{{ slotProps.option.icon }}</span>
+          <span class="material-symbols-outlined"
+                v-tooltip.bottom="{value: t(slotProps.option.label), class: 'short-tooltip'}">
+            {{ slotProps.option.icon }}
+          </span>
         </template>
       </SelectButton>
       <IconField class="mt-2">
@@ -14,11 +17,11 @@
         <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="queryParam.keyword"/>
       </IconField>
     </BlockUI>
-    <DataView class="mt-2" :value="searchResult.data" lazy paginator @page="page($event)"
+    <DataView ref="dt" class="mt-2" :value="searchResult.data" lazy paginator @page="page($event)"
               :rows="queryParam.size" :totalRecords="searchResult.total">
       <template #empty>
         <span class="empty-search-result">
-            {{ $t('NoSearchResult') }}
+            {{ t('NoSearchResult') }}
         </span>
       </template>
       <template #list="slotProps">
@@ -30,7 +33,7 @@
               </div>
             </div>
             <div class="col p-1">
-              <a :href="`${API.ENTRY_DETAIL}/${entry.id}`" class="text-overflow-hidden-one"
+              <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" class="text-overflow-hidden-one"
                  :title="entry.name">{{ entry.name }}</a>
               <!--              <div>{{ entry.name }}</div>-->
               <small style="color: gray" class="text-xs text-overflow-hidden-one" :title="(entry as any).subName">
@@ -39,7 +42,7 @@
               </small>
             </div>
             <div class="col-1 flex align-items-center justify-content-center" style="width: 35px">
-              <Button v-if="!entry.isPicked" text @click="select(entry)">
+              <Button v-if="!entry.isPicked || type === META.ENTRY_TYPE.PERSON" text @click="select(entry)">
                 <template #icon>
                   <span class="material-symbols-outlined">add_box</span>
                 </template>
@@ -52,13 +55,13 @@
             </div>
           </div>
         </div>
-        <div v-if="loading" v-for="(index) in 5" :key="index">
+        <div v-if="loading" v-for="(index) in 7" :key="index">
           <div class="grid entity-search-result-block">
-            <div class="col ml-1">
-              <Skeleton size="50px"/>
+            <div class="col ml-1" style="height: 45px;max-width: 45px">
+              <Skeleton size="34px"/>
             </div>
             <div class="col-9">
-              <Skeleton class="mt-1 mb-2" width="10rem"/>
+              <Skeleton width="10rem"/>
               <Skeleton width="15rem"/>
             </div>
             <div class="col flex align-items-center justify-content-center"/>
@@ -70,15 +73,13 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps, onBeforeMount} from "vue";
+import {ref, onMounted, defineProps} from "vue";
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
 import {META} from "@/config/Web_Const";
 import {API} from "@/config/Web_Helper_Strs";
 import {inject} from "vue";
 import {PublicHelper} from "@/toolkit/publicHelper";
-
-onBeforeMount(() => {
-});
+import {useI18n} from "vue-i18n";
 
 onMounted(() => {
   pickedEntries.value = props.entries;
@@ -110,11 +111,13 @@ const props = defineProps({
 const emit = defineEmits(['pick']);
 
 const pickedEntries = ref([]);
+const dt = ref();
+const {t} = useI18n();
 const dialogRef = inject('dialogRef');
 const selectEntityType = ref();
 const loading = ref(false);
 const queryParam = ref({
-  searchType: props.type,
+  type: props.type,
   keyword: "",
   keywords: [],
   page: 0,
@@ -126,10 +129,10 @@ const searchResult = ref({
   data: []
 });
 
-const switchEntrySearchType = (ev) => {
+const switchEntryType = (ev) => {
   if (ev.value === null)
     selectEntityType.value = META.ENTRY_TYPE_SET[0];
-  queryParam.value.searchType = parseInt(selectEntityType.value.value);
+  queryParam.value.type = parseInt(selectEntityType.value.value);
   getEntries();
 }
 
@@ -137,7 +140,6 @@ const select = (entry) => {
   entry.isPicked = true;
   pickedEntries.value.push(entry);
   emit('pick', entry);
-  // if (!props.multiSelect) close()
 }
 
 const page = (ev) => {
@@ -145,7 +147,8 @@ const page = (ev) => {
   getEntries();
 }
 
-const search = (ev) => {
+const search = () => {
+  console.log(dt.value.first);
   queryParam.value.page = 1;
   getEntries();
 }

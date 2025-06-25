@@ -6,12 +6,12 @@ const {t} = i18n.global;
 
 export class EntryQueryParams {
     type: number | null | undefined;
-    keyword: string;
-    keywords: string[];
+    keyword: string | null = "";
+    keywords: string[] | null = [];
     page: number | null = 1;
     size: number | null = 10;
-    sortField: string | null;
-    sortOrder: number | null;
+    sortField: string | null = "";
+    sortOrder: number | null = null;
 }
 
 export const loadEditor = (data: any, dialog: {
@@ -22,10 +22,6 @@ export const loadEditor = (data: any, dialog: {
             header: t('Edit'),
             style: {
                 width: '600px',
-            },
-            breakpoints: {
-                '960px': '80vw',
-                '640px': '70vw'
             },
             modal: true,
             closable: false

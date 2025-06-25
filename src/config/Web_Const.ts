@@ -6,13 +6,13 @@ export const META = {
     },
     RELATION_RELATED_GROUP: {
         DEFAULT: 0,
-        RELATED_PERSON: 1,
-        RELATED_ENTRY: 2,
-        RELATED_ITEM: 3,
-        RELATED_CHAR: 4,
-        RELATED_PRODUCT: 5,
-        MATERIAL: 6,
-        EVENT: 7
+        PRODUCT: 1,
+        PERSON: 2,
+        CHARACTER: 3,
+        CLASSIFICATION: 4,
+        MATERIAL: 5,
+        EVENT: 6,
+        ITEM: 10
     },
     ACTION: {
         NO_ACTION: 0,
@@ -78,12 +78,12 @@ export const META = {
         {label: "gb", value: "gb"}
     ],
     ENTRY_TYPE_SET: [
-        {icon: 'list', value: '1'},
-        {icon: 'group', value: '2'},
-        {icon: 'mood', value: '3'},
-        {icon: 'folder', value: '4'},
-        {icon: 'diamond', value: '5'},
-        {icon: 'home', value: '6'}
+        {icon: 'dataset', value: '1', label: 'Product'},
+        {icon: 'group', value: '2', label: 'Person'},
+        {icon: 'mood', value: '3', label: 'Character'},
+        {icon: 'folder', value: '4', label: 'Classification'},
+        {icon: 'diamond', value: '5', label: 'Material'},
+        {icon: 'distance', value: '6', label: 'Event'}
     ],
     ITEM_TYPE_SET: [
         { icon: 'genres', value: '1', disabled: false },
@@ -96,28 +96,27 @@ export const META = {
     FILE_CREATE_TYPE_SET: [
         {icon: 'upload_file', value: '0'},
         {icon: 'cloud_done', value: '1'}
-    ]
+    ],
+    RELATED_GROUP_SET: [
+        {icon: 'list', value: '1'},
+        {icon: 'group', value: '2'},
+        {icon: 'mood', value: '3'},
+        {icon: 'folder', value: '4'},
+        {icon: 'diamond', value: '5'},
+        {icon: 'distance', value: '6'}
+    ],
+    GENDER_ICON_SET: {
+        0: "question",
+        1: "mars",
+        2: "venus"
+    },
+    ENTITY_TYPE_SET: {
+        O: 'item',
+        1: 'entry'
+    }
 }
-
-export interface ItemFormConfig {
-    type: number;
-    cells: [ItemFormCell];
-}
-
-export interface ItemFormCell {
-    type: number; // 0-InputText 1-InputNumber 2-InputMask 3-select 4-MultiSelect 5-ToggleSwitch 6-Textarea
-    options: string;
-    label: string;
-    model: string;
-    row: number;
-    col: number;
-    span: number;
-    placeholder: string;
-    required: boolean;
-}
-
-export interface Attribute {
-    label: string;
+export class Attribute {
+    label: string = "";
     value: any;
 }
 
@@ -133,4 +132,12 @@ export class RelatedEntry {
 export class EntityInfo {
     type: number = 0;
     id: number = 0;
+}
+
+export class QueryParams {
+    first: number = 0;
+    rows: number = 0;
+    sortField: string | null = null;
+    sortOrder: number | null = 1;
+    filters: any
 }

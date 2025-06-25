@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, defineProps, inject, onMounted, ref} from "vue";
 import {API} from "@/config/Web_Helper_Strs";
 import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
-import {PublicHelper} from "@/toolkit/publicHelper";
 import {META} from "@/config/Web_Const";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {useToast} from "primevue/usetoast";import {EntityInfo} from "@/config/Web_Const";
+import {useToast} from "primevue/usetoast";
 import {useRoute} from "vue-router";
 
-const entityInfo = ref<EntityInfo>();
 const cropper = defineAsyncComponent(() => import('@/components/image/ImageCropper.vue'));
 
 const route = useRoute();
@@ -21,16 +19,26 @@ const cover = ref();
 const thumb = ref();
 const uploadDialogDisplay = ref(false);
 const loading = ref(false);
-
 const image = ref();
 
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
+const props = defineProps({
+  id: {
+    type: Number,
+    required: true
+  },
+  cover: {
+    type: String,
+    required: true
+  },
+  thumb: {
+    type: String,
+    required: true
+  }
 });
 
 onMounted(() => {
-  cover.value = dialogRef.value.data.cover;
-  thumb.value = dialogRef.value.data.thumb;
+  cover.value = props.cover;
+  thumb.value = props.thumb;
 });
 
 const openUploadDialog = (type) => {
@@ -55,11 +63,10 @@ const clear = () => {
 const upload = async () => {
   loading.value = true;
   const formData = new FormData();
-  formData.append('entityType', entityInfo.value?.type);
-  formData.append('entityId', entityInfo.value?.id);
+  formData.append('id', props.id);
   formData.append('file', image.value.file);
   formData.append('imageType', image.value.type);
-  const res = await axios.form(API.UPLOAD_ENTRY_IMAGE, formData);
+  const res = await axios.form(API.ENTRY_UPLOAD_IMAGE, formData);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     if (image.value.type === META.IMAGE_TYPE.MAIN) cover.value = res.data;
@@ -100,20 +107,20 @@ const openCropper = () => {
     <div class="flex align-items-center justify-content-center image-container">
       <Button class="absolute bottom-0 right-0" size="small"
               @click="openUploadDialog(META.IMAGE_TYPE.MAIN)" icon="pi pi-cloud-upload" severity="info"
-              v-tooltip.bottom="{value: $t('Upload'), class: 'short-tooltip'}"/>
-      <img v-if="cover" :src="`https://static.rakbow.com/${cover}`" alt="cover"/>
+              v-tooltip.bottom="{value: t('Upload'), class: 'short-tooltip'}"/>
+      <img v-if="cover" :src="`${API.STATIC_DOMAIN}${cover}`" alt="cover"/>
       <img v-else :src="API.COMMON_EMPTY_COVER_IMAGE" alt="cover"/>
     </div>
     <div class="flex align-items-center justify-content-center image-container">
       <Button class="absolute bottom-0 right-0" size="small"
               @click="openUploadDialog(META.IMAGE_TYPE.THUMB)" icon="pi pi-cloud-upload" severity="info"
-              v-tooltip.bottom="{value: $t('Upload'), class: 'short-tooltip'}"/>
-      <img v-if="thumb" :src="`https://static.rakbow.com/${thumb}`" alt="thumb"/>
+              v-tooltip.bottom="{value: t('Upload'), class: 'short-tooltip'}"/>
+      <img v-if="thumb" :src="`${API.STATIC_DOMAIN}${thumb}`" alt="thumb"/>
       <img v-else :src="API.COMMON_EMPTY_THUMB_IMAGE" alt="cover"/>
     </div>
   </div>
 
-  <Dialog :modal="true" v-model:visible="uploadDialogDisplay" :style="{width: '400px'}" :header="$t('UploadImage')"
+  <Dialog :modal="true" v-model:visible="uploadDialogDisplay" :style="{width: '400px'}" :header="t('UploadImage')"
           class="p-fluid">
     <BlockUI :blocked="loading">
       <FileUpload accept="image/*" auto :customUpload="true"
@@ -121,14 +128,14 @@ const openCropper = () => {
                   :showCancelButton="false"
                   chooseIcon="pi pi-image" @select="select"
                   :maxFileSize="2000000" :previewWidth="100"
-                  :invalidFileSizeMessage="$t('ImageInvalidFileSizeMessage')">
+                  :invalidFileSizeMessage="t('ImageInvalidFileSizeMessage')">
         <template #header="{ chooseCallback }">
           <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined/>
           <Button @click="clear" icon="pi pi-times" rounded outlined severity="danger" :disabled="!image.file"/>
           <Button @click="upload" icon="pi pi-cloud-upload" rounded outlined severity="info" :disabled="!image.file"/>
         </template>
         <template #empty>
-          <span class="empty-search-result">{{ $t('DragImage') }}</span>
+          <span class="empty-search-result">{{ t('DragImage') }}</span>
         </template>
         <template #content>
           <div class="flex flex-wrap justify-content-center gap-3">
@@ -146,8 +153,8 @@ const openCropper = () => {
 
 <style scoped lang="scss">
 .image-container {
-  width: 160px;
-  height: 160px;
+  width: 100px;
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;

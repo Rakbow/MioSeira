@@ -27,18 +27,18 @@ const props = defineProps({
     <template #content>
       <div class="formgrid grid">
         <div class="col-fixed">
-          <i class="pi pi-chevron-circle-right"/><strong class="label-title">{{ $t('AddedTime') }}</strong>
+          <i class="pi pi-chevron-circle-right"/><strong class="label-title">{{ t('AddedTime') }}</strong>
         </div>
         <div class="col-11 col-offset-1 mb-2">{{ addedTime }}</div>
         <div class="col-fixed">
-          <i class="pi pi-chevron-circle-right"/><strong class="label-title">{{ $t('EditedTime') }}</strong>
+          <i class="pi pi-chevron-circle-right"/><strong class="label-title">{{ t('EditedTime') }}</strong>
         </div>
         <div class="col-11 col-offset-1 mb-2">{{ editedTime }}</div>
         <div class="col-fixed">
-          <i class="pi pi-chart-bar"/><strong class="label-title">{{ $t('PageTraffic') }}</strong>
+          <i class="pi pi-chart-bar"/><strong class="label-title">{{ t('PageTraffic') }}</strong>
         </div>
         <div class="col-11 col-offset-1 mb-2">
-          <i class="pi pi-eye"/><strong>{{ $t('Visit') }}: </strong>
+          <i class="pi pi-eye"/><strong>{{ t('Visit') }}: </strong>
           <span class="text-center">{{ info.visitCount }}</span>
         </div>
       </div>

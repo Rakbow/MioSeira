@@ -4,12 +4,12 @@ import {useDialog} from "primevue/usedialog";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {EntityInfo, META} from "@/config/Web_Const";
+import {EntityInfo, META, QueryParams} from "@/config/Web_Const";
 import {groupPersonnel, PersonnelGroup} from "@/logic/relationService";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
-const editor = defineAsyncComponent(() => import('@/components/related/RelationEditor.vue'));
+const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 
 const {t} = useI18n();
 const entityInfo = ref<EntityInfo>();
@@ -17,19 +17,32 @@ const route = useRoute();
 const dialog = useDialog();
 const personnel = ref<PersonnelGroup[]>([]);
 const loading = ref(false);
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-});
+const queryParams = ref<QueryParams>(new QueryParams());
 
 onMounted(() => {
+  entityInfo.value = PublicHelper.getEntityInfo(route);
+  initQueryParam();
   getPersonnel()
 });
 
+const initQueryParam = () => {
+  queryParams.value = {
+    first: 0,
+    rows: 0,
+    sortField: null,
+    sortOrder: null,
+    filters: {
+      entityType: {value: entityInfo.value?.type},
+      entityId: {value: entityInfo.value?.id},
+      relatedGroup: {value: META.RELATION_RELATED_GROUP.PERSON}
+    }
+  };
+}
+
 const openEditDialog = () => {
-  dialog.open(editor, {
+  dialog.open(manager, {
     props: {
-      header: `${t('RelatedEntity')}-${t('Edit')}`,
+      header: `${t('RelatedEntry')}-${t('Edit')}`,
       style: {
         width: '900px',
       },
@@ -37,8 +50,7 @@ const openEditDialog = () => {
       closable: true
     },
     data: {
-      relatedGroup: META.RELATION_RELATED_GROUP.RELATED_PERSON,
-      direction: META.RELATION_RELATED_DIRECTION.POSITIVE
+      relatedGroup: META.RELATION_RELATED_GROUP.PERSON
     },
     onClose: (options) => {
       if (options.data !== undefined) {
@@ -52,15 +64,9 @@ const openEditDialog = () => {
 
 const getPersonnel = async () => {
   loading.value = true;
-  let param = {
-    direction: META.RELATION_RELATED_DIRECTION.POSITIVE,
-    relatedGroup: META.RELATION_RELATED_GROUP.RELATED_PERSON,
-    entityType: entityInfo.value?.type,
-    entityId: entityInfo.value?.id
-  }
-  const res = await axios.post(API.GET_RELATED_ENTITY, param);
+  const res = await axios.post(API.RELATION_LIST, queryParams.value);
   if (res.state === axios.SUCCESS)
-    personnel.value = groupPersonnel(res.data);
+    personnel.value = groupPersonnel(res.data.data);
   loading.value = false;
 }
 
@@ -90,7 +96,7 @@ const toggleCollapse = () => {
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-users"/>
-        <b>{{ $t('Persons') }}</b>
+        <b>{{ t('Persons') }}</b>
       </template>
       <div class="relative">
         <Edit :func="openEditDialog" icon="edit_note" />
@@ -103,7 +109,7 @@ const toggleCollapse = () => {
                 <template v-for="(chunk, chunkIndex) in chunkArray(item.entities, 10)" :key="chunkIndex">
                   <div style="display: block;">
                     <template v-for="(person, index) in chunk" :key="person.value">
-                      <router-link :to="`${API.ENTRY_DETAIL}/${person.value}`">
+                      <router-link :to="`${API.ENTRY_DETAIL_PATH}/${person.value}`">
                         <span>{{ person.label }}</span>
                       </router-link>
                       <span v-if="person.remark">&nbsp;({{ (person as any).remark }})</span>
@@ -117,12 +123,12 @@ const toggleCollapse = () => {
           </table>
           <Button v-if="personnel.length > maxRows" @click="toggleCollapse"
                   class="p-button-link" size="small" style="font-size: 11px">
-            <span v-if="isCollapsed">{{$t('Expand')}}&nbsp;<i class="pi pi-sort-down-fill" style="font-size: 11px" /></span>
-            <span v-else>{{$t('Collapse')}}&nbsp;<i class="pi pi-sort-up-fill" style="font-size: 11px" /></span>
+            <span v-if="isCollapsed">{{t('Expand')}}&nbsp;<i class="pi pi-sort-down-fill" style="font-size: 11px" /></span>
+            <span v-else>{{t('Collapse')}}&nbsp;<i class="pi pi-sort-up-fill" style="font-size: 11px" /></span>
           </Button>
         </div>
         <div v-else>
-          <span class="emptyInfo"><em>{{ $t('NoPerson') }}</em></span>
+          <span class="emptyInfo"><em>{{ t('NoPerson') }}</em></span>
         </div>
       </div>
     </Fieldset>

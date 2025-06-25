@@ -11,7 +11,7 @@ import {LocationQueryValue, useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {useToast} from "primevue/usetoast";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {useOptionsStore} from "@/store/entityOptions";
+import {useEntityStore} from "@/logic/entityService";
 import {ItemQueryParams} from "@/logic/itemService";
 import {META} from "@/config/Web_Const";
 
@@ -22,8 +22,7 @@ const {t} = useI18n();
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
-const options = ref<any>({});
-const optionsStore = useOptionsStore();
+const store = useEntityStore();
 
 //region data view and paginator
 const first = ref(0);
@@ -31,7 +30,7 @@ const layout = ref('grid');
 const dataviewOptions = ref(['grid', 'list']);
 const loading = ref(false);
 const entryLoading = ref(false);
-const entries = ref([]);
+const entries = ref(<any>[]);
 //endregion
 
 const displayEntrySelector = ref(false);
@@ -43,14 +42,13 @@ const searchResult = ref({
 });
 
 onBeforeMount(async () => {
-  await optionsStore.fetchOptions();
-  options.value = optionsStore.options;
+  await store.fetchOptions();
 });
 
 onMounted(async () => {
   await initQueryParam();
   await getRelatedEntries();
-  await getEntities();
+  await getItems();
   first.value = (queryParams.page - 1) * queryParams.size;
 })
 
@@ -61,7 +59,7 @@ watch(layout, (newValue) => {
     queryParams.size = 20;
   }
   resetPage();
-  getEntities()
+  getItems()
 })
 
 const itemTypeSet = [
@@ -89,19 +87,15 @@ const initQueryParam = async () => {
   // 解析 entry 参数
   if (Array.isArray(route.query.entry)) {
     queryParams.entries = route.query.entry.map(item => {
-      const [entityType, entityId] = item.split(',');
+      const [entryId] = item.split(',');
       return {
-        entityType: parseInt(entityType, 10),
-        entityId: parseInt(entityId, 10)
+        id: parseInt(entryId, 10)
       };
     });
   } else if (route.query.entry) {
     // 如果 entry 是单个字符串
-    const [entityType, entityId] = route.query.entry.split(',');
-    queryParams.entries = [{
-      entityType: parseInt(entityType, 10),
-      entityId: parseInt(entityId, 10)
-    }];
+    const [entityId] = route.query.entry.split(',');
+    queryParams.entries = [parseInt(entityId, 10)];
   }
   queryParams.keyword = getStringValue(route.query.keyword);
   queryParams.type = getNumberValue(route.query.type);
@@ -136,15 +130,15 @@ const updateQueryParam = () => {
 
   // 防御逻辑
   // 1. 如果 page 大于 1，则加入路由参数
-  if (queryParams.page && queryParams.page > 1) {
+  if (queryParams.page) {
     query.page = queryParams.page;
   } else {
     delete query.page;
   }
 
   // 2. 如果 entries 非空，则加入路由参数
-  if (Array.isArray(queryParams.entries) && queryParams.entries.length > 0) {
-    query.entry = queryParams.entries.map(entry => `${entry.entityType},${entry.entityId}`);
+  if (Array.isArray(queryParams.entries) && queryParams.entries.length) {
+    query.entry = queryParams.entries.join(',');
   } else {
     delete query.entry;
   }
@@ -201,12 +195,12 @@ const updateQueryParam = () => {
 
 const onPage = (ev) => {
   queryParams.page = ev.page + 1;
-  getEntities();
+  getItems();
 }
 
-const getEntities = async () => {
+const getItems = async () => {
   searchResult.value.data = Array.from({length: 60});
-  queryParams.entries = entries.value.map(e => ({entityType: e.type, entityId: e.id}))
+  queryParams.entries = entries.value.map(e => e.id)
   updateQueryParam();
   loading.value = true;
   const res = await axios.post(API.ITEM_SEARCH, queryParams);
@@ -224,9 +218,9 @@ const getEntities = async () => {
 }
 
 const getRelatedEntries = async () => {
-  if (queryParams.entries) {
+  if (queryParams.entries.length) {
     entryLoading.value = true;
-    const res = await axios.post(API.GET_MINI_ENTRY, queryParams.entries);
+    const res = await axios.post(API.ENTRY_GET_MINI, queryParams.entries);
     if (res.state === axios.SUCCESS) {
       entries.value = res.data;
     }
@@ -237,22 +231,22 @@ const getRelatedEntries = async () => {
 const clearEntries = () => {
   entries.value = [];
   queryParams.entries = [];
-  getEntities();
+  getItems();
 }
 
-const removeEntries = (index) => {
+const removeEntries = (index: number) => {
   entries.value.splice(index, 1);
 }
 
 const search = () => {
   resetPage();
-  getEntities();
+  getItems();
 }
 
 const clearFilter = () => {
   resetPage();
   resetFilter();
-  getEntities();
+  getItems();
 
 }
 
@@ -305,7 +299,7 @@ const endHover = () => {
         </template>
         <template #empty>
             <span class="empty-search-result">
-                {{ $t('NoSearchResult') }}
+                {{ t('NoSearchResult') }}
             </span>
         </template>
         <template #grid="slotProps">
@@ -316,7 +310,7 @@ const endHover = () => {
               </div>
             </div>
             <div v-else v-for="(item, index) in slotProps.items" :key="index">
-              <a :href="`${API.ITEM_DETAIL}/${item.id}`"
+              <a :href="`${API.ITEM_DETAIL_PATH}/${item.id}`"
                  @pointerover="startHover($event, item)" @pointerleave="endHover"
                  :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
                 <img role="presentation" :alt="item.id" :src="(item as any).thumb"/>
@@ -331,13 +325,13 @@ const endHover = () => {
             </div>
             <div v-if="!loading" v-for="(item, index) in slotProps.items" :key="index" class="grid">
               <div class="item-search-list-thumb col-fixed">
-                <a :href="`${API.ITEM_DETAIL}/${item.id}`"
+                <a :href="`${API.ITEM_DETAIL_PATH}/${item.id}`"
                    :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
                   <img role="presentation" :alt="item.id" :src="(item as any).thumb"/>
                 </a>
               </div>
               <div class="item-search-list-info col">
-                <a :href="`${API.ITEM_DETAIL}/${item.id}`" class="text-overflow-hidden-one"
+                <a :href="`${API.ITEM_DETAIL_PATH}/${item.id}`" class="text-overflow-hidden-one"
                    :title="item.name">{{ item.name }}</a>
                 <Tag :value="item.type.label"/>
                 <span v-if="item.type.value !== META.ITEM_TYPE.ALBUM">
@@ -373,35 +367,8 @@ const endHover = () => {
     </div>
     <div class="entity-search-side-col">
       <Panel>
-        <!--        <div v-if="entryLoading" class="field">-->
-        <!--          <Skeleton height="70px" />-->
-        <!--        </div>-->
-        <!--        <div v-if="relatedEntry && !entryLoading" class="field">-->
-        <!--          <div class="item-search-related-entry grid">-->
-        <!--            <div class="col-fixed">-->
-        <!--              <div class="entry-thumb">-->
-        <!--                <img role="presentation" :alt="relatedEntry.name" :src="relatedEntry.thumb"/>-->
-        <!--              </div>-->
-        <!--            </div>-->
-        <!--            <div class="col">-->
-        <!--              <a :href="`/db/${relatedEntry?.tableName}/${relatedEntry.id}`" class="text-overflow-hidden-two"-->
-        <!--                 :title="relatedEntry.name">{{ relatedEntry.name }}</a>-->
-        <!--              <span style="color: gray;font-size: 11px" class="text-overflow-hidden-two" :title="(relatedEntry as any).subName">-->
-        <!--                  <span v-if="relatedEntry.info">({{ relatedEntry.info }})&nbsp;</span>-->
-        <!--                  <span>{{ (relatedEntry as any).subName }}</span>-->
-        <!--                </span>-->
-        <!--            </div>-->
-        <!--            <div class="col-1 flex align-items-center justify-content-center" style="width: 35px">-->
-        <!--              <Button text @click="displayEntrySelector = true">-->
-        <!--                <template #icon>-->
-        <!--                  <span class="material-symbols-outlined">edit_note</span>-->
-        <!--                </template>-->
-        <!--              </Button>-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </div>-->
         <BlockUI :blocked="loading">
-          <Divider align="left"><i class="pi pi-list"/><b>{{ $t('BasicInfo') }}</b></Divider>
+          <Divider align="left"><i class="pi pi-list"/><b>{{ t('BasicInfo') }}</b></Divider>
           <div class="field">
             <SelectButton class="w-full justify justify-content-center" size="small" v-model="itemType"
                           :options="itemTypeSet"
@@ -414,20 +381,20 @@ const endHover = () => {
           </div>
           <div class="field">
             <FloatLabel variant="on">
-              <label>{{ $t('Keyword') }}</label>
+              <label>{{ t('Keyword') }}</label>
               <InputText size="small" v-model="queryParams.keyword" class="static w-full"/>
             </FloatLabel>
           </div>
           <div class="formgrid grid">
             <div class="field col">
               <FloatLabel variant="on">
-                <label>{{ $t('Barcode') }}</label>
+                <label>{{ t('Barcode') }}</label>
                 <InputText size="small" v-model="queryParams.barcode" class="static w-full"/>
               </FloatLabel>
             </div>
             <div class="field col">
               <FloatLabel variant="on">
-                <label>{{ $t('CatalogId') }}</label>
+                <label>{{ t('CatalogId') }}</label>
                 <InputText size="small" v-model="queryParams.catalogId" class="static w-full"/>
               </FloatLabel>
             </div>
@@ -435,14 +402,14 @@ const endHover = () => {
           <div class="formgrid grid">
             <div class="field col">
               <FloatLabel variant="on">
-                <label>{{ $t('ReleaseType') }}</label>
-                <Select v-model="queryParams.releaseType" :options="options.releaseTypeSet"
+                <label>{{ t('ReleaseType') }}</label>
+                <Select v-model="queryParams.releaseType" :options="store.options.releaseTypeSet"
                         size="small" optionLabel="label" optionValue="value" class="static w-full"/>
               </FloatLabel>
             </div>
             <div class="field col">
               <FloatLabel variant="on">
-                <label>{{ $t('Region') }}</label>
+                <label>{{ t('Region') }}</label>
                 <Select v-model="queryParams.region" :options="META.RegionSet" optionLabel="label"
                         size="small" optionValue="value" class="static w-full">
                   <template #value="slotProps">
@@ -456,8 +423,8 @@ const endHover = () => {
             </div>
             <div class="field col">
               <ToggleButton size="small" v-model="queryParams.bonus"
-                            onIcon="pi true-icon pi-check-circle" :onLabel="$t('BonusInclusion')"
-                            offIcon="pi false-icon pi-times-circle" :offLabel="$t('BonusExclusion')"/>
+                            onIcon="pi true-icon pi-check-circle" :onLabel="t('BonusInclusion')"
+                            offIcon="pi false-icon pi-times-circle" :offLabel="t('BonusExclusion')"/>
             </div>
           </div>
           <div class="relative">
@@ -467,7 +434,7 @@ const endHover = () => {
                       severity="danger"/>
             </div>
           </div>
-          <Divider align="left"><i class="pi pi-th-large"/><b>{{ $t('RelatedEntity') }}</b></Divider>
+          <Divider align="left"><i class="pi pi-th-large"/><b>{{ t('RelatedEntity') }}</b></Divider>
           <Button variant="text" outlined @click="displayEntrySelector = true">
             <template #icon>
               <span class="material-symbols-outlined">add_box</span>
@@ -492,7 +459,7 @@ const endHover = () => {
                 </div>
                 <div class="col" style="width: 212px;">
                     <span class="data-table-field-text-overflow-hidden">
-                      <a :href="`/db/${entry?.tableName}/${entry.id}`" :title="entry.name">{{ entry.name }}</a>
+                      <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" :title="entry.name">{{ entry.name }}</a>
                     </span>
                   <small style="color: gray" class="data-table-field-text-overflow-hidden">
                     {{ (entry as any).subName }}
@@ -514,7 +481,7 @@ const endHover = () => {
     </Popover>
   </div>
 
-  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="$t('Add')">
+  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="t('Add')">
     <EntrySelector :all="true" :entries="entries"/>
   </Dialog>
 </template>

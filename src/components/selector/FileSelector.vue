@@ -11,7 +11,7 @@
               :rows="queryParam.size" :totalRecords="searchResult.total">
       <template #empty>
         <span class="empty-search-result">
-            {{ $t('NoSearchResult') }}
+            {{ t('NoSearchResult') }}
         </span>
       </template>
       <template #list="slotProps">

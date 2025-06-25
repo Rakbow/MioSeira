@@ -2,9 +2,28 @@ import {DynamicDialogInstance, DynamicDialogOptions} from "primevue/dynamicdialo
 import fileEditor from "@/components/entityEditor/FileEditor.vue";
 import {META} from "@/config/Web_Const";
 import i18n from "@/config/i18n";
+import {defineStore} from "pinia";
+import {useI18n} from "vue-i18n";
+import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import {API} from "@/config/Web_Helper_Strs";
+import {i18nConst} from "@/config/i18nConst";
 
 const {t} = i18n.global;
-let editor = null;
+let editor: any = null;
+
+export class EntityManageQueryParams {
+    first: number = 0;
+    rows: number = 10;
+    sortField: string | null = null;
+    sortOrder: number = -1;
+    filters: any | null = null;
+
+    initPage(size: number = 10): void {
+        this.first = 0;
+        this.rows = size;
+    }
+
+}
 
 export const loadEditor = (type: number, data: any, dialog: {
     open: (content: any, options?: (DynamicDialogOptions | undefined)) => DynamicDialogInstance
@@ -39,3 +58,38 @@ export const loadEditor = (type: number, data: any, dialog: {
         }
     });
 }
+
+export const useEntityStore = defineStore('options', {
+    state: () => ({
+        options: {} as Record<string, any>, // 全局缓存的选项数据
+        itemCurrent: 0,
+        entryCurrent: 0,
+    }),
+    actions: {
+        async fetchOptions() {
+            console.log('Fetching options...');
+            if (Object.keys(this.options).length === 0) {
+                const {locale} = useI18n();
+                this.$reset();
+
+                const res = await axios.get(API.ENTITY_GET_OPTION);
+                this.options = res.data;
+
+                this.itemCurrent = META.ITEM_TYPE.ALBUM;
+                this.entryCurrent = META.ENTRY_TYPE.PRODUCT;
+
+                this.options.genderSet = i18nConst.genderSet[locale.value!];
+                this.options.imageTypeSet = i18nConst.imageTypeSet[locale.value!];
+                this.options.bookTypeSet = i18nConst.bookTypeSet[locale.value!];
+                this.options.goodsTypeSet = i18nConst.goodsTypeSet[locale.value!];
+                this.options.figureTypeSet = i18nConst.figureTypeSet[locale.value!];
+                this.options.releaseTypeSet = i18nConst.releaseTypeSet[locale.value!];
+                this.options.entrySubTypeSet = i18nConst.entrySubTypeSet[locale.value!];
+            }
+        },
+        clear() {
+            this.options = {};
+        }
+    },
+    persist: true, // 开启持久化
+});

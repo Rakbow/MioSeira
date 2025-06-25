@@ -1,44 +1,44 @@
 <script setup lang="ts">
-import {defineProps, inject, onBeforeMount, onMounted, ref} from "vue";
+import {inject, onBeforeMount, ref} from "vue";
 import {useToast} from "primevue/usetoast";
-import {useDialog} from "primevue/usedialog";
 import {useRoute} from "vue-router";
-import {EntityInfo, META} from '@/config/Web_Const.ts';
+import {EntityInfo} from '@/config/Web_Const';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useI18n} from "vue-i18n";
-import {AlbumTrack, AlbumDisc, parseAlbumTracks} from "@/logic/albumService";
+import {AlbumDisc, parseAlbumTracks} from "@/logic/itemService";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {API} from "@/config/Web_Helper_Strs";
+import {useEntityStore} from "@/logic/entityService";
 
 const entityInfo = ref<EntityInfo>();
 const {t} = useI18n();
 const toast = useToast();
-const dialog = useDialog();
-const dialogRef = inject("dialogRef");
+const dr = inject<any>("dialogRef");
 const route = useRoute();
-const editBlock = ref(false);
+const block = ref(false);
 const upload = ref(false);
-const tracks = ref<AlbumTrack[]>([]);
-const discNo = ref(1);
 const loading = ref();
 const analysisInput = ref();
-const mode = ref('');
+const store = useEntityStore();
+const disc = ref(new AlbumDisc());
 
 onBeforeMount(() => {
-  mode.value = dialogRef.value.data.mode;
-  if(mode.value === 'normal')
+  if (dr.value.data.mode === 'normal'){
     entityInfo.value = PublicHelper.getEntityInfo(route);
+    disc.value.itemId = entityInfo.value!.id;
+  }
+  disc.value.mediaFormat = store.options.mediaFormatSet[1].value
+  disc.value.albumFormat = [store.options.albumFormatSet[0].value]
 });
 const parseDisc = () => {
   loading.value = true;
-  tracks.value.push(...parseAlbumTracks(discNo.value, analysisInput.value));
+  disc.value.tracks.push(...parseAlbumTracks(analysisInput.value));
   analysisInput.value = '';
-  discNo.value = discNo.value + 1;
   loading.value = false;
 }
 
 const close = () => {
-  dialogRef.value.close(
+  dr.value.close(
       {
         upload: upload.value
       }
@@ -46,25 +46,19 @@ const close = () => {
 }
 
 const submit = async () => {
-  if(mode.value === 'normal') {
-    editBlock.value = true;
-    const res = await axios.post(API.QUICK_CREATE_ALBUM_TRACK, {
-      id: entityInfo.value?.id,
-      tracks: tracks.value
-    });
+  if (dr.value.data.mode === 'normal') {
+    block.value = true;
+    const res = await axios.post(API.ALBUM_TRACK_QUICK_CREATE, disc.value);
     if (res.state === axios.SUCCESS) {
       toast.add({severity: 'success', detail: res.message, life: 3000});
       upload.value = true;
-      tracks.value = [];
       close();
-    } else {
-      toast.add({severity: 'error', detail: res.message, life: 3000});
     }
-    editBlock.value = false;
-  }else if(mode.value === 'advance') {
-    dialogRef.value.close(
+    block.value = false;
+  } else if (dr.value.data.mode === 'advance') {
+    dr.value.close(
         {
-          tracks: tracks.value
+          disc: disc.value
         }
     );
   }
@@ -75,47 +69,64 @@ const submit = async () => {
 </script>
 
 <template>
-  <BlockUI :blocked="editBlock">
-    <div class="field">
-      <Textarea class="w-full" size="small" rows="6" v-model="analysisInput"/>
-    </div>
+  <BlockUI :blocked="block">
     <div class="formgrid grid">
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ $t('AlbumDetailEditTrackDiscIndex') }}</label>
-          <InputNumber size="small" v-model="discNo" class="static w-full"/>
-        </FloatLabel>
-      </div>
-      <div class="field col">
-        <Button size="small" icon="pi pi-sync" class="p-button-warning"
-                @click="parseDisc" :title="$t('Analysis')" :disabled="analysisInput === ''" />
-      </div>
     </div>
-    <DataTable ref="dt" :value="tracks" :loading="loading"
+    <DataTable ref="dt" :value="disc.tracks" :loading="loading"
                alwaysShowPaginator paginator :rows="50" stripedRows size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="{first} to {last} of {totalRecords}"
                scrollable scrollHeight="400px" responsiveLayout="scroll">
+      <template #header>
+        <div class="field">
+          <Textarea class="w-full" size="small" rows="6" v-model="analysisInput"/>
+        </div>
+        <div class="grid">
+          <div class="col">
+            <FloatLabel variant="on">
+              <label>{{ t('Index') }}</label>
+              <InputNumber size="small" v-model="disc.discNo" class="static w-full"/>
+            </FloatLabel>
+          </div>
+          <div class="col">
+            <FloatLabel variant="on">
+              <label>{{ t('MediaFormat') }}</label>
+              <Select v-model="disc.mediaFormat" :options="store.options.mediaFormatSet"
+                      size="small" optionLabel="label" optionValue="value" class="static w-full"/>
+            </FloatLabel>
+          </div>
+          <div class="field col" style="max-width: 50px">
+            <Button size="small" icon="pi pi-sync" class="p-button-warning"
+                    @click="parseDisc" :title="t('Analysis')" :disabled="analysisInput === ''"/>
+          </div>
+        </div>
+        <div class="field">
+          <FloatLabel variant="on">
+            <label>{{ t('AlbumFormat') }}<i class="required-label pi pi-asterisk"/></label>
+            <MultiSelect showClear size="small" v-model="disc.albumFormat" :options="store.options.albumFormatSet"
+                         optionLabel="label" optionValue="value" display="chip" class="static w-full"/>
+          </FloatLabel>
+        </div>
+      </template>
       <template #empty>
         <span class="emptyInfo">
-            {{ $t('CommonDataTableEmptyInfo') }}
+            {{ t('CommonDataTableEmptyInfo') }}
         </span>
       </template>
       <template #loading>
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+        <span>{{ t('CommonDataTableLoadingInfo') }}</span>
       </template>
-      <Column :header="$t('Disc')" field="discNo" style="flex: 0 0 10rem"/>
-      <Column :header="$t('Index')" field="serial" style="flex: 0 0 10rem"/>
-      <Column :header="$t('Name')" field="title" style="flex: 0 0 10rem"/>
-      <Column :header="$t('Duration')" field="duration" style="flex: 0 0 10rem"/>
+      <Column :header="t('Index')" field="serial" style="flex: 0 0 10rem"/>
+      <Column :header="t('Name')" field="name" style="flex: 0 0 10rem"/>
+      <Column :header="t('Duration')" field="duration" style="flex: 0 0 10rem"/>
     </DataTable>
     <div class="relative">
       <div class="bottom-0 right-0">
-        <Button icon="pi pi-times" size="small" :label="$t('Cancel')" @click="close"
+        <Button icon="pi pi-times" size="small" :label="t('Cancel')" @click="close"
                 class="p-button-text"/>
-        <Button icon="pi pi-save" size="small" :label="$t('Save')" @click="submit"/>
+        <Button icon="pi pi-save" size="small" :label="t('Save')" @click="submit"/>
       </div>
     </div>
   </BlockUI>

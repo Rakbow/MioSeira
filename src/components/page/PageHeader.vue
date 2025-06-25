@@ -9,13 +9,13 @@
         <Avatar v-if="userStore.isAuthenticated" :image="userStore.user.headerUrl" class="mr-2" shape="circle" />
         <!--        <Button label="Toggle Color Scheme" @click="toggleColorScheme()" />-->
         <Button v-if="!userStore.isAuthenticated" text rounded @click="openLogin"
-                v-tooltip.bottom="{value: $t('SignIn'), class: 'short-tooltip'}">
+                v-tooltip.bottom="{value: t('SignIn'), class: 'short-tooltip'}">
           <template #icon>
             <span class="material-symbols-outlined">login</span>
           </template>
         </Button>
         <Button v-if="userStore.isAuthenticated" text rounded @click="logout"
-                v-tooltip.bottom="{value: $t('SignOut'), class: 'short-tooltip'}">
+                v-tooltip.bottom="{value: t('SignOut'), class: 'short-tooltip'}">
           <template #icon>
             <span class="material-symbols-outlined">logout</span>
           </template>

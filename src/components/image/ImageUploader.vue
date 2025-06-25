@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {defineProps, onBeforeMount, ref, watch} from "vue";
+import {defineProps, onBeforeMount, ref} from "vue";
 import {META} from "@/config/Web_Const";
-import {usePrimeVue} from "primevue/config";
-import {useOptionsStore} from "@/store/entityOptions";
+import {useEntityStore} from "@/logic/entityService";
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n();
 const emit = defineEmits(['update:images', 'update:generateThumb']);
-const optionsStore = useOptionsStore();
-const $primevue = usePrimeVue();
+const store = useEntityStore();
 const images = ref([]);
 const generateThumb = ref(false);
 const dt = ref();
@@ -30,7 +30,7 @@ const props = defineProps({
 });
 
 onBeforeMount(async () => {
-  await optionsStore.fetchOptions();
+  await store.fetchOptions();
   images.value = props.images;
   generateThumb.value = props.generateThumb;
 })
@@ -39,11 +39,14 @@ const selectFile = async (ev) => {
   if (!ev.files) return;
   for (let file of ev.files) {
     let image = {
-      type: META.IMAGE_TYPE.DEFAULT,
+      type: store.options.imageTypeSet[0].value,
       name: file.name.replace(/\.[^/.]+$/, ''),
       detail: '',
       size: PublicHelper.formatSize(file.size),
       file: file
+    }
+    if(image.name === 'Cover') {
+      image.type = store.options.imageTypeSet[2].value;
     }
     images.value.push(image)
   }
@@ -86,16 +89,16 @@ const changeGenerateThumb = () => {
               :showCancelButton="false"
               chooseIcon="pi pi-image" @select="selectFile($event)"
               :maxFileSize="30000000" :previewWidth="100"
-              :invalidFileSizeMessage="$t('ImageInvalidFileSizeMessage')">
+              :invalidFileSizeMessage="t('ImageInvalidFileSizeMessage')">
     <template #header="{ chooseCallback }">
       <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined/>
       <Button @click="onImageClear()" icon="pi pi-times" rounded outlined severity="danger"
               :disabled="!images || images.length === 0"/>
       <Checkbox v-model="generateThumb" binary @change="changeGenerateThumb" />
-      <small class="label-title">{{ $t('ImageGenerateThumb') }}</small>
+      <small class="label-title">{{ t('ImageGenerateThumb') }}</small>
     </template>
     <template #empty>
-      <span class="empty-search-result">{{ $t('DragImage') }}</span>
+      <span class="empty-search-result">{{ t('DragImage') }}</span>
     </template>
     <template #content="{ files, removeUploadedFileCallback, removeFileCallback }">
       <DataTable v-if="images.length > 0" :value="images" class="p-datatable-sm"
@@ -112,7 +115,7 @@ const changeGenerateThumb = () => {
             </div>
           </template>
         </Column>
-        <Column :header="$t('Name')" field="name" style="max-width: 10rem">
+        <Column :header="t('Name')" field="name" style="max-width: 10rem">
           <template #body="slotProps">
             <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.name }}</div>
           </template>
@@ -120,12 +123,12 @@ const changeGenerateThumb = () => {
             <InputText v-model="data[field]" fluid/>
           </template>
         </Column>
-        <Column :header="$t('Type')" field="type" style="width: 8rem">
+        <Column :header="t('Type')" field="type" style="width: 8rem">
           <template #body="slotProps">
-            <Tag :value="PublicHelper.value2Label(slotProps.data.type, optionsStore.options.imageTypeSet)"/>
+            <Tag :value="PublicHelper.value2Label(slotProps.data.type, store.options.imageTypeSet)"/>
           </template>
           <template #editor="{ data, field }">
-            <Select v-model="data[field]" :options="optionsStore.options.imageTypeSet"
+            <Select v-model="data[field]" :options="store.options.imageTypeSet"
                     optionLabel="label" optionValue="value" fluid>
               <template #option="slotProps">
                 <Tag :value="slotProps.option.label"/>
@@ -133,8 +136,8 @@ const changeGenerateThumb = () => {
             </Select>
           </template>
         </Column>
-        <Column :header="$t('ImageSize')" field="size" style="width: 6rem"/>
-        <Column v-if="props.showDetail" :header="$t('Description')" field="detail">
+        <Column :header="t('ImageSize')" field="size" style="width: 6rem"/>
+        <Column v-if="props.showDetail" :header="t('Description')" field="detail">
           <template #body="slotProps">
             <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.detail }}</div>
           </template>

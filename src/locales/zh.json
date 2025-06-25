@@ -61,8 +61,6 @@
   "ReleasePrice": "发行价格",
   "PublishPrice": "出版价格",
   "CurrencyUnit": "货币单位",
-  "BelongToFranchises": "所属系列",
-  "BelongToProducts": "所属作品",
   "Remark": "备注",
   "Bonus": "特典",
   "PublishFormat": "出版形式",
@@ -83,8 +81,8 @@
 
   "Index": "序号",
 
-  "Item": "Item",
-  "ItemType": "物品类型",
+  "Item": "物品",
+  "Entry": "词条",
 
   "Type": "类型",
 
@@ -119,7 +117,6 @@
 
   "Category": "分类",
   "Franchises": "所属系列",
-  "Products": "所属作品",
 
   "Image": "图片",
   "ImageSize": "大小",
@@ -182,38 +179,11 @@
   "MerchChineseName": "商品名(中)",
   "MerchEnglishName": "商品名(英)",
 
-  "Franchise": "系列",
   "Product": "作品",
-  "MetaFranchise": "元系列",
-  "ParentFranchise": "父系列",
-  "ChildFranchise": "子系列",
-
-  "FranchiseName": "名称",
-  "FranchiseChineseName": "名称(中)",
-  "FranchiseEnglishName": "名称(英)",
 
   "ItemDetailPlayListTitle": "播放列表",
   "ItemDetailSummaryTitle": "简介",
   "ItemDetailCompaniesTitle": "相关企业",
-
-  "AlbumDetailArtistInfoTitle": "创作信息",
-  "AlbumDetailTrackInfoTitle": "音轨信息",
-
-  "BookDetailAuthorSpecTitle": "作者/规格",
-
-  "GameDetailStaffInfoTitle": "开发制作人员",
-
-  "FranchiseDetailProductTitle": "作品",
-
-  "RelatedAlbumTitle": "相关专辑",
-  "RelatedBookTitle": "相关书籍",
-  "RelatedDiscTitle": "相关碟片",
-  "RelatedGameTitle": "相关游戏",
-  "RelatedMerchTitle": "相关商品",
-  "RelatedProductTitle": "相关作品",
-
-  "FranchiseDetailReleaseDate": "日&nbsp期",
-  "FranchiseDetailProduct": "作&nbsp品",
 
   "ItemDetailMessageNoArtistInfo": "暂无创作信息",
   "ItemDetailMessageNoBonusInfo": "暂无特典信息",
@@ -224,15 +194,6 @@
   "ItemDetailMessageNoSummary": "暂无简介",
   "ItemDetailMessageNoOrganization": "暂无关联组织信息",
 
-  "AlbumDetailMessageNoTrackInfo": "暂无音轨信息",
-
-  "BookDetailMessageNoAuthor": "暂无作者信息",
-
-  "GameDetailMessageNoStaffInfo": "暂无开发制作人员信息",
-
-  "FranchiseDetailMessageNoProduct": "暂无作品",
-  "FranchiseDetailMessageNoChildFranchise": "暂无子系列",
-
   "MessageDeleted": "已删除",
   "MessageAdded": "已新增",
 
@@ -240,67 +201,9 @@
   "TooltipGenerateBookISBN10": "生成ISBN-10",
   "TooltipGenerateBookISBN13": "生成ISBN-13",
 
-  "PlaceholderBelongToFranchises": "所属系列",
-  "PlaceholderBelongToProducts": "选择所属作品",
   "PlaceholderMediaFormat": "选择媒体格式",
   "PlaceholderCurrencyUnit": "单位",
   "PlaceholderRegion": "选择地区",
-
-  "ItemDetailOptionImageEditTitle": "图片管理",
-  "ItemDetailOptionCompaniesEditTitle": "相关企业",
-  "ItemDetailOptionDescriptionEditTitle": "描述信息",
-  "ItemDetailOptionBonusEditTitle": "特典信息",
-  "ItemDetailOptionSpecEditTitle": "规格信息",
-  "ItemDetailOptionOrganizationEditTitle": "关联组织",
-  "ItemDetailOptionPersonnelEditTitle": "相关人员",
-
-  "AlbumDetailOptionTrackInfoEditTitle": "音轨信息",
-
-  "BookDetailOptionAuthorEditTitle": "作者信息",
-
-  "GameDetailOptionStaffEditTitle": "开发制作人员",
-
-  "ProductDetailOptionStaffEditTitle": "Staff信息",
-
-  "ItemDetailBaseInfoEditTitle": "基础信息编辑",
-  "ItemDetailSpecEditTitle": "规格信息编辑",
-  "ItemDetailOrganizationEditTitle": "关联组织信息编辑",
-
-  "AlbumDetailArtistEditTitle": "创作信息编辑",
-  "AlbumDetailTrackEditTitle": "音轨信息编辑",
-
-  "BookDetailAuthorEditTitle": "作者信息编辑",
-
-  "GameDetailStaffInfoEditTitle": "开发制作人员信息编辑",
-
-  "ItemDetailEditOrganizationLabel": "组织类型",
-  "ItemDetailEditOrganizationValue": "组织名称",
-
-  "AlbumDetailEditArtistPos": "职位",
-  "AlbumDetailEditArtistName": "人员",
-  "AlbumDetailEditTrackAudioNames": "曲目列表",
-  "AlbumDetailEditTrackAudioLengths": "曲目长度",
-  "AlbumDetailEditTrackDiscIndex": "碟片序号",
-  "AlbumDetailEditTrackTrackIndex": "曲目序号",
-  "AlbumDetailEditTrackTrackID": "曲目编号",
-  "AlbumDetailEditTrackTrackLength": "曲目时长",
-
-  "BookDetailEditAuthorPos": "职位",
-  "BookDetailEditAuthorName": "人员",
-  "BookDetailEditSpecLabel": "规格名称",
-  "BookDetailEditSpecValue": "规格数据",
-
-  "GameDetailEditStaffPos": "职位",
-  "GameDetailEditStaffName": "人员",
-
-  "MerchDetailEditSpecLabel": "规格名称",
-  "MerchDetailEditSpecValue": "规格数据",
-
-  "AlbumDetailEditTrackDiscAdd": "添加碟片",
-
-  "ErrorMessageItemDetailPersonnelMain": "主要人员只能选择一项！",
-  "ErrorMessageMusicDetailArtistsMain": "主要人员只能选择一项！",
-  "ErrorMessageBookDetailAuthorsMain": "主要作者只能选择一项！",
   "TrackInfoTitleEmpty": "音轨标题列表为空",
   "TrackInfoDurationEmpty": "音轨时长列表为空",
   "TrackInfoNotEquals": "标题与时长列表不匹配",
@@ -333,25 +236,13 @@
   "ImageGenerateThumb": "生成缩略图",
   "ImageNameZh": "图片名(中)",
   "ImageNameEn": "图片名(英)",
-  "ImageTypes": [
-    {"label": "默认", "value": 0},
-    {"label": "缩略图", "value": 1},
-    {"label": "封面", "value": 2},
-    {"label": "其他", "value": 99}
-  ],
-  "CurrencyUnitSet": [
-    {"label": "JPY", "value": "JPY"},
-    {"label": "CNY", "value": "CNY"},
-    {"label": "USD", "value": "USD"},
-    {"label": "EUR", "value": "EUR"},
-    {"label": "TWD", "value": "TWD"},
-    {"label": "UNKNOWN", "value": "UNKNOWN"}
-  ],
 
   "RelatedType": "关联类型",
   "Relation": "关联信息",
   "Entity": "实体",
   "RelatedEntity": "关联条目",
+  "RelatedEntry": "关联词条",
+  "RelatedPerson": "关联人物",
   "RelatedProduct": "关联作品",
   "RelatedCharacter": "关联角色",
   "RelatedItem": "关联物品",

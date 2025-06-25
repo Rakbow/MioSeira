@@ -9,12 +9,12 @@ import {useDialog} from "primevue/usedialog";
 import {META} from "@/config/Web_Const";
 import {API} from '@/config/Web_Helper_Strs';
 import {useI18n} from "vue-i18n";
-import {loadCreator, loadEditor} from "@/logic/itemService";
+import {loadEditor} from "@/logic/itemService";
 import "flag-icons/css/flag-icons.min.css";
 import 'material-icons'
-import { useOptionsStore } from '@/store/entityOptions';
+import { useEntityStore } from '@/logic/entityService';
 
-const optionsStore = useOptionsStore();
+const store = useEntityStore();
 const route = useRoute();
 const router = useRouter();
 const first = ref();
@@ -24,7 +24,7 @@ const {t} = useI18n();
 const items = ref([]);
 const dt = ref();
 const filters = ref({
-  'itemType': {value: optionsStore.itemCurrent},
+  'itemType': {value: store.itemCurrent},
   'name': {value: ''},
   'catalogId': {value: ''},
   'region': {value: ''},
@@ -45,15 +45,14 @@ const columns = ref([
   {field: 'editedTime', header: t('EditedTime')},
 ]);
 const queryParams = ref({
-  filters: {value: optionsStore.itemCurrent}
+  filters: {value: store.itemCurrent}
 });
-const option = ref<any>({});
 const itemType = ref();
 const switchItemType = (ev) => {
   if(ev.value === null)
-    itemType.value = META.ITEM_TYPE_SET[optionsStore.itemCurrent-1];
-  optionsStore.itemCurrent = parseInt(itemType.value.value);
-  queryParams.value.filters.itemType.value = optionsStore.itemCurrent;
+    itemType.value = META.ITEM_TYPE_SET[store.itemCurrent-1];
+  store.itemCurrent = parseInt(itemType.value.value);
+  queryParams.value.filters.itemType.value = store.itemCurrent;
   getItems();
 }
 const initPageSize = () => {
@@ -114,9 +113,8 @@ onBeforeMount(() => {
 })
 
 const initOption = async () => {
-  await optionsStore.fetchOptions();
-  option.value = optionsStore.options;
-  itemType.value = META.ITEM_TYPE_SET[optionsStore.itemCurrent-1];
+  await store.fetchOptions();
+  itemType.value = META.ITEM_TYPE_SET[store.itemCurrent-1];
 }
 
 const onPage = (ev) => {
@@ -140,7 +138,7 @@ const onToggle = (val) => {
 
 const getItems = async () => {
   loading.value = true;
-  const res = await axios.post(API.GET_ITEM_LIST, queryParams.value);
+  const res = await axios.post(API.ITEM_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total
@@ -194,7 +192,7 @@ const exportCSV = () => {
             <span class="material-symbols-outlined">add_box</span>
           </template>
         </Button>
-        <Button variant="text" severity="danger" :disabled="selectedItems.length"
+        <Button variant="text" severity="danger" :disabled="!selectedItems.length"
                 outlined @click="confirmDeleteSelected">
           <template #icon>
             <span class="material-symbols-outlined">delete_forever</span>
@@ -208,38 +206,38 @@ const exportCSV = () => {
         </Button>
 
         <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
-                     @update:modelValue="onToggle" :placeholder="$t('SelectedDisplayColumns')"
+                     @update:modelValue="onToggle" :placeholder="t('SelectedDisplayColumns')"
                      size="small"
                      style="width: 200px;right: 0;position: absolute;top: 50%;transform: translateY(-50%);"/>
       </BlockUI>
     </template>
     <template #empty>
         <span class="emptyInfo">
-            {{ $t('CommonDataTableEmptyInfo') }}
+            {{ t('CommonDataTableEmptyInfo') }}
         </span>
     </template>
     <template #loading>
       <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-      <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+      <span>{{ t('CommonDataTableLoadingInfo') }}</span>
     </template>
 
     <ColumnGroup type="header">
       <Row>
         <Column :colspan="2" :rowspan="2" />
-        <Column :header="$t('Name')" :rowspan="2" />
-        <Column :header="$t('BasicInfo')" :colspan="9" />
+        <Column :header="t('Name')" :rowspan="2" />
+        <Column :header="t('BasicInfo')" :colspan="9" />
       </Row>
       <Row>
-        <Column :header="$t('CatalogId')" :sortable="true" field="catalogId"
-                v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(optionsStore.itemCurrent)" />
-        <Column :header="$t('Barcode')" :sortable="true" field="barcode" />
-        <Column :header="$t('ReleaseDate')" :sortable="true" field="releaseDate" />
-        <Column :header="$t('Price')" :sortable="true" field="price" />
-        <Column :header="$t('Region')" :sortable="true" field="region" />
-        <Column :header="$t('ReleaseType')" :sortable="true" field="releaseType" />
-        <Column :header="$t('Bonus')" :sortable="true" field="bonus" />
-        <Column :header="$t('Image')" field="imageCount" />
-        <Column :header="$t('File')" field="fileCount" />
+        <Column :header="t('CatalogId')" :sortable="true" field="catalogId"
+                v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)" />
+        <Column :header="t('Barcode')" :sortable="true" field="barcode" />
+        <Column :header="t('ReleaseDate')" :sortable="true" field="releaseDate" />
+        <Column :header="t('Price')" :sortable="true" field="price" />
+        <Column :header="t('Region')" :sortable="true" field="region" />
+        <Column :header="t('ReleaseType')" :sortable="true" field="releaseType" />
+        <Column :header="t('Bonus')" :sortable="true" field="bonus" />
+        <Column :header="t('Image')" field="imageCount" />
+        <Column :header="t('File')" field="fileCount" />
       </Row>
     </ColumnGroup>
 
@@ -250,10 +248,10 @@ const exportCSV = () => {
       </template>
     </Column>
 
-    <Column :header="$t('Name')" field="name" :showFilterMenu="false"
+    <Column :header="t('Name')" field="name" :showFilterMenu="false"
             exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
       <template #body="slotProps">
-        <a :href="`${API.ITEM_DETAIL}/${slotProps.data.id}`">
+        <a :href="`${API.ITEM_DETAIL_PATH}/${slotProps.data.id}`">
           <div :title="slotProps.data.name"
           style="width: 300px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
             {{ slotProps.data.name }}
@@ -264,24 +262,24 @@ const exportCSV = () => {
         <InputText size="small" type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column :header="$t('CatalogId')" field="catalogId" :showFilterMenu="false"
-            v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(optionsStore.itemCurrent)">
+    <Column :header="t('CatalogId')" field="catalogId" :showFilterMenu="false"
+            v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)">
       <template #filter="{filterModel,filterCallback}">
         <InputText size="small" type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 120px"/>
       </template>
     </Column>
-    <Column :header="$t('Barcode')" field="barcode" :showFilterMenu="false">
+    <Column :header="t('Barcode')" field="barcode" :showFilterMenu="false">
       <template #filter="{filterModel,filterCallback}">
         <InputText size="small" type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" style="width: 130px"/>
       </template>
     </Column>
-    <Column :header="$t('ReleaseDate')" field="releaseDate" />
-    <Column :header="$t('Price')" field="price" >
+    <Column :header="t('ReleaseDate')" field="releaseDate" />
+    <Column :header="t('Price')" field="price" >
       <template #body="slotProps">
         {{ `${slotProps.data.price} ${slotProps.data.currency}` }}
       </template>
     </Column>
-    <Column :header="$t('Region')" filterField="region" style="flex: 0 0 7rem">
+    <Column :header="t('Region')" filterField="region" style="flex: 0 0 7rem">
       <template #body="slotProps">
         <span :class="`fi fi-${slotProps.data.region}`" style="margin-left: 0.5rem"/>
       </template>
@@ -297,16 +295,16 @@ const exportCSV = () => {
         </Select>
       </template>
     </Column>
-    <Column :header="$t('ReleaseType')" filterField="releaseType" :showFilterMenu="false" style="flex: 0 0 9rem">
+    <Column :header="t('ReleaseType')" filterField="releaseType" :showFilterMenu="false" style="flex: 0 0 9rem">
       <template #body="slotProps">
         {{ slotProps.data.releaseType.label }}
       </template>
       <template #filter="{filterModel,filterCallback}">
         <Select size="small" v-model="filterModel.value" @change="filterCallback()" style="width: 8rem"
-                :options="option.releaseTypeSet" optionLabel="label" optionValue="value"/>
+                :options="store.options.releaseTypeSet" optionLabel="label" optionValue="value"/>
       </template>
     </Column>
-    <Column :header="$t('Bonus')" field="bonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
+    <Column :header="t('Bonus')" field="bonus" dataType="boolean" bodyClass="text-center" style="flex: 0 0 3rem">
       <template #body="{data}">
         <i class="pi"
            :class="{'true-icon pi-check-circle': data!.bonus, 'false-icon pi-times-circle': !data!.bonus}"></i>

@@ -2,16 +2,16 @@
   <BlockUI :blocked="editBlock">
     <MdEditor v-model="text" preview-theme="github"/>
     <div class="text-end mt-3 mb-2">
-      <Button icon="pi pi-times" :label="$t('Cancel')" @click="close"
+      <Button icon="pi pi-times" :label="t('Cancel')" @click="close"
               class="p-button-text"/>
-      <Button icon="pi pi-save" :label="$t('Save')" @click="submit"/>
+      <Button icon="pi pi-save" :label="t('Save')" @click="submit"/>
     </div>
 <!--    <Panel>-->
 <!--      <div v-if="images.length > 0">-->
 <!--        <DataTable :value="images" class="p-datatable-sm" striped-rows>-->
 <!--          <template #header>-->
 <!--            <div class="flex flex-wrap align-items-center justify-content-between gap-2">-->
-<!--              <span class="text-xl text-900 font-bold">{{ $t('Images') }}</span>-->
+<!--              <span class="text-xl text-900 font-bold">{{ t('Images') }}</span>-->
 <!--            </div>-->
 <!--          </template>-->
 <!--          <Column header-style="width: 5%">-->
@@ -19,19 +19,19 @@
 <!--              <Button icon="pi pi-copy" @click="copyImageUrl(slotProps.data.url)"></Button>-->
 <!--            </template>-->
 <!--          </Column>-->
-<!--          <Column :header="$t('Image')" header-style="width: 8%">-->
+<!--          <Column :header="t('Image')" header-style="width: 8%">-->
 <!--            <template #body="slotProps">-->
-<!--              <img :src="slotProps.data.thumb50" :alt="slotProps.data.nameEn"-->
+<!--              <img :src="slotProps.data.thumb" :alt="slotProps.data.nameEn"-->
 <!--                   class="entry-thumb"/>-->
 <!--            </template>-->
 <!--          </Column>-->
-<!--          <Column field="nameZh" :header="$t('NameZh')" header-style="width: 10%" />-->
-<!--          <Column field="nameEn" :header="$t('NameEn')" header-style="width: 10%" />-->
-<!--          <Column field="description" :header="$t('Description')" header-style="width: 20%" />-->
+<!--          <Column field="nameZh" :header="t('NameZh')" header-style="width: 10%" />-->
+<!--          <Column field="nameEn" :header="t('NameEn')" header-style="width: 10%" />-->
+<!--          <Column field="description" :header="t('Description')" header-style="width: 20%" />-->
 <!--        </DataTable>-->
 <!--      </div>-->
 <!--      <div v-else>-->
-<!--        <span class="emptyInfo"><em>{{ $t('NoImage') }}</em></span>-->
+<!--        <span class="emptyInfo"><em>{{ t('NoImage') }}</em></span>-->
 <!--      </div>-->
 <!--    </Panel>-->
   </BlockUI>
@@ -83,7 +83,7 @@ const submit = () => {
     entityId: entityInfo.value?.id,
     text: text.value
   };
-  axios.post(API.UPDATE_ENTITY_DETAIL, json)
+  axios.post(API.ENTITY_UPDATE_DETAIL, json)
       .then(res => {
         if (res.state === axios.SUCCESS) {
           toast.add({severity: 'success', detail: res.message, life: 3000});
@@ -112,7 +112,7 @@ const loadImages = async () => {
     entityType: entityInfo.value?.type,
     entityId: entityInfo.value?.id
   }
-  const res = await axios.post(API.GET_IMAGES, param);
+  const res = await axios.post(API.IMAGE_LIST, param);
   if(res.state === axios.SUCCESS) {
     images.value = res.data.images;
     editBlock.value = false;

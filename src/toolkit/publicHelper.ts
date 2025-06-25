@@ -1,6 +1,5 @@
-import {Attribute, EntityInfo} from "@/config/Web_Const";
+import {Attribute, EntityInfo, META} from "@/config/Web_Const";
 import {RouteLocationNormalizedLoaded} from "vue-router";
-import {usePrimeVue} from "primevue/config";
 
 export class PublicHelper {
 
@@ -55,11 +54,11 @@ export class PublicHelper {
         for (const key in obj) {
             if (obj.hasOwnProperty(key)) {
                 let value = obj[key];
-                if(Array.isArray(value)) {
+                if (Array.isArray(value)) {
                     if (value.every(item => this.isAttribute(item))) {
                         obj[key] = value.map(i => i.value);
                     }
-                }else {
+                } else {
                     if (PublicHelper.isAttribute(value)) {
                         obj[key] = value['value'];
                     }
@@ -119,11 +118,9 @@ export class PublicHelper {
         return `${year}/${month}/${day}`; // 返回 "yyyy/MM/dd" 格式
     }
 
-    static getGenderIcon = (value) => ({
-        0: "question",
-        1: "mars",
-        2: "venus",
-    }[value]);
+    static getGenderIcon = (value: number): string => {
+        return META.GENDER_ICON_SET[value].toString;
+    };
 
     static getDomain = (url: string): string => {
         try {
@@ -136,7 +133,7 @@ export class PublicHelper {
     };
 
     static splitAndTrim = (input: string, separator: string = ","): string[] => {
-        if(input === undefined || input === null) return [];
+        if (input === undefined || input === null) return [];
         return input
             .trim() // 去掉字符串首尾的空格
             .replace(/,+/g, ',') // 将连续多个逗号替换为一个逗号
@@ -155,6 +152,47 @@ export class PublicHelper {
     static getDuration = (duration: string): number => {
         const [minutes, seconds] = duration.split(':').map(Number);
         return minutes * 60 + seconds;
+    }
+
+    // 检查对象、数组、字符串等是否为空
+    static isEmpty = (value: any): boolean => {
+        if (value == null) {
+            return true; // null 或 undefined 返回 true
+        }
+
+        if (typeof value === 'boolean') {
+            return false; // 布尔值不为空
+        }
+
+        if (typeof value === 'number') {
+            return value === 0; // 数字为0时返回 true
+        }
+
+        if (typeof value === 'string') {
+            return value.trim().length === 0; // 空字符串或只含空格时返回 true
+        }
+
+        if (Array.isArray(value)) {
+            return value.length === 0; // 数组为空时返回 true
+        }
+
+        if (typeof value === 'object') {
+            return Object.keys(value).length === 0; // 空对象返回 true
+        }
+
+        return false; // 其他类型都返回 false
+    }
+
+    static isUndefined = (value: any): boolean => {
+        return typeof value === 'undefined';
+    }
+
+    static isNotEmpty = (value: any): boolean => {
+        return !this.isEmpty(value);
+    }
+
+    static isNotUndefined = (value: any): boolean => {
+        return !this.isUndefined(value);
     }
 
 }

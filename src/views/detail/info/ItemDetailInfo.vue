@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {defineProps} from "vue";
-import {META} from '@/config/Web_Const.ts';
-import {useI18n} from "vue-i18n";
+import {META} from '@/config/Web_Const';
 import "flag-icons/css/flag-icons.min.css";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import GoodsFigureRelatedInfo from "@/components/item/GoodsFigureRelatedInfo.vue";
-
+import ItemExtraInfo from "@/components/item/ItemExtraInfo.vue";
+import {useI18n} from "vue-i18n";
 const {t} = useI18n();
+
 const props = defineProps({
   item: {
     type: Object,
@@ -22,7 +22,7 @@ const props = defineProps({
     <tbody class="entity-info-table">
     <tr v-if="[META.ITEM_TYPE.ALBUM, META.ITEM_TYPE.DISC].includes(item.type)">
       <td>
-        <b>{{ $t('MediaFormat') }}</b>
+        <b>{{ t('MediaFormat') }}</b>
       </td>
       <td v-for="format of item.mediaFormat" style="display:inline">
         <Tag class="ml-1" :value="format.label"/>
@@ -30,7 +30,7 @@ const props = defineProps({
     </tr>
     <tr v-if="item.type === META.ITEM_TYPE.ALBUM">
       <td>
-        <b>{{ $t('AlbumFormat') }}</b>
+        <b>{{ t('AlbumFormat') }}</b>
       </td>
       <td v-for="format of item.albumFormat" style="display:inline">
         <Tag class="ml-1" :value="format.label"/>
@@ -39,7 +39,7 @@ const props = defineProps({
     <template v-if="item.type === META.ITEM_TYPE.BOOK">
       <tr>
         <td>
-          <b>{{ $t('BookType') }}</b>
+          <b>{{ t('BookType') }}</b>
         </td>
         <td>
           <a :href="'/db/manager/book?bookType=' + item.subType.value">
@@ -49,7 +49,7 @@ const props = defineProps({
       </tr>
       <tr>
         <td>
-          <b>{{ $t('PublishLanguage') }}</b>
+          <b>{{ t('PublishLanguage') }}</b>
         </td>
         <td>
           <a :href="'/db/manager/book?lang=' + item.lang.value">
@@ -60,7 +60,7 @@ const props = defineProps({
     </template>
     <tr v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(item.type)">
       <td>
-        <b>{{ $t('Type') }}</b>
+        <b>{{ t('Type') }}</b>
       </td>
       <td>
         <Tag class="ml-1" :value="item.subType.label"/>
@@ -69,7 +69,7 @@ const props = defineProps({
 
     <tr>
       <td>
-        <b>{{ $t('Releases') }}</b>
+        <b>{{ t('Releases') }}</b>
       </td>
       <td>
         {{ item.releaseDate }}
@@ -95,7 +95,7 @@ const props = defineProps({
             <a href="#" class="dropdown-toggle"
                data-bs-toggle="dropdown">
               <span v-if="item.currency === 'JPY'"
-                    v-tooltip="{value: $t('TaxInclusive'), class: 'region-tooltip'}">JPY</span>
+                    v-tooltip="{value: t('TaxInclusive'), class: 'region-tooltip'}">JPY</span>
               <span v-else>{{ item.currency }}</span>
             </a>
             <div class="dropdown-menu" style="background: black">
@@ -106,7 +106,7 @@ const props = defineProps({
           </span>
         </span>
         <Tag class="ml-1" :value="item.releaseType.label"/>
-        <i v-if="item.bonus" v-tooltip.bottom="{value: $t('Bonus'), class: 'short-tooltip'}"
+        <i v-if="item.bonus" v-tooltip.bottom="{value: t('Bonus'), class: 'short-tooltip'}"
            class="ml-1 pi pi-star-fill" style="color: #b7b71e"/>
       </td>
     </tr>
@@ -119,7 +119,7 @@ const props = defineProps({
 
     <tr>
       <td>
-        <b>{{ $t('Spec') }}</b>
+        <b>{{ t('Spec') }}</b>
       </td>
       <td>
         <template v-if="item.type === META.ITEM_TYPE.ALBUM">
@@ -142,7 +142,7 @@ const props = defineProps({
     <template v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(item.type)">
       <tr v-if="item.versions.length">
         <td>
-          <b>{{ $t('Version') }}</b>
+          <b>{{ t('Version') }}</b>
         </td>
         <td>
           <div style="display: block;">
@@ -153,12 +153,12 @@ const props = defineProps({
           </div>
         </td>
       </tr>
-      <GoodsFigureRelatedInfo :id="item.id" />
+      <ItemExtraInfo :id="item.id" />
     </template>
 
     <tr v-if="item.spec">
       <td>
-        <b>{{ $t('Dimensions') }}</b>
+        <b>{{ t('Dimensions') }}</b>
       </td>
       <td>
         <span>{{ item.spec }}</span>

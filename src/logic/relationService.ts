@@ -21,8 +21,9 @@ export interface PersonnelGroup {
 }
 
 export const groupPersonnel = (personnelList: Relation[]): PersonnelGroup[] => {
+    if(personnelList === null) return [];
     return personnelList.reduce((acc: PersonnelGroup[], current: Relation) => {
-        const {role, target, remark} = current;
+        const {role, target} = current;
         const existingGroup = acc.find(group => group.role.value === role.value);
         target.remark = current.remark;
         if (existingGroup)

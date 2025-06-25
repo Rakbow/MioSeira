@@ -3,7 +3,7 @@
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-align-justify"/>
-        <b>{{ $t('TrackInfo') }}</b>
+        <b>{{ t('TrackInfo') }}</b>
       </template>
 
       <div class="relative">
@@ -12,17 +12,25 @@
 
         <div v-if="!loading">
           <div v-if="!info.discs.length">
-            <span class="emptyInfo"><em>{{ $t('NoTrackInfo') }}</em></span>
+            <span class="emptyInfo"><em>{{ t('NoTrackInfo') }}</em></span>
           </div>
           <div v-else>
             <p class="album-track-title">
-              {{ $t('TotalDiscNum') }}:&nbsp;<b>{{ info.discs.length }}</b>&nbsp;
-              {{ $t('TotalTrackNum') }}:&nbsp;<b>{{ info.totalTracks }}</b>&nbsp;
-              {{ $t('TotalLength') }}:&nbsp;<b>{{ info.totalDuration }}</b>
+              {{ t('TotalDiscNum') }}:&nbsp;<b>{{ info.discs.length }}</b>&nbsp;
+              {{ t('TotalTrackNum') }}:&nbsp;<b>{{ info.totalTracks }}</b>&nbsp;
+              {{ t('TotalLength') }}:&nbsp;<b>{{ info.totalDuration }}</b>
             </p>
             <div v-for="disc in info.discs">
               <b class="album-track-sub-title">
-                {{ `Disc ${disc!.serial}   ${disc.code}` }}
+                {{ `Disc ${disc.discNo} (${disc.mediaFormat.label})` }}
+                <template v-if="disc.catalogId">&nbsp;[{{ disc.catalogId }}]</template>
+                <template v-if="disc.albumFormat.length">
+                  &nbsp;
+                  <p v-for="(format, index) of disc.albumFormat" style="display:inline">
+                    <span style="color: gray">{{ format.label }}</span>
+                    <span v-if="index < disc.albumFormat.length - 1">, </span>
+                  </p>
+                </template>
               </b>
               <table class="episode-list-table table table-sm table-hover">
                 <tbody>
@@ -30,7 +38,7 @@
                     <th>{{ track.serial }}</th>
                     <td nowrap="nowrap">
                       <router-link :to="`${API.EPISODE_DETAIL}/${track.id}`">
-                        <span>{{ track.title }}</span>
+                        <span>{{ track.name }}</span>
                       </router-link>
                     </td>
                     <td class="episode-list-duration">
@@ -40,8 +48,8 @@
                 </tbody>
               </table>
               <span class="episode-list-total">
-                <span>&nbsp;{{ $t('TrackNum') }}:&nbsp;</span>{{ disc!.tracks.length }}
-                <span>&nbsp;{{ $t('DiscLength') }}:&nbsp;</span>{{ disc.duration }}
+                <span>&nbsp;{{ t('TrackNum') }}:&nbsp;</span>{{ disc.tracks.length }}
+                <span>&nbsp;{{ t('DiscLength') }}:&nbsp;</span>{{ disc.duration }}
               </span>
             </div>
           </div>
@@ -69,14 +77,14 @@
       </div>
     </Fieldset>
   </div>
-  <Dialog :modal="true" v-model:visible="audioUploadDisplay" :style="{width: '600px'}" :header="$t('Upload')">
+  <Dialog :modal="true" v-model:visible="audioUploadDisplay" :style="{width: '600px'}" :header="t('Upload')">
     <BlockUI :blocked="editBlock">
       <FileUpload ref="dt" auto multiple :customUpload="true"
                 :showUploadButton="false"
                 :showCancelButton="false"
                 chooseIcon="pi pi-image" @select="selectFile"
                 :maxFileSize="100000000" :previewWidth="100"
-                :invalidFileSizeMessage="$t('ImageInvalidFileSizeMessage')">
+                :invalidFileSizeMessage="t('ImageInvalidFileSizeMessage')">
       <template #header="{ chooseCallback }">
         <Button @click="chooseCallback()" icon="pi pi-file" rounded outlined/>
         <Button @click="clearFile" icon="pi pi-times" rounded outlined severity="danger"
@@ -84,7 +92,7 @@
         <Button @click="uploadAudioFile" icon="pi pi-save" rounded outlined v-if="fileInfos.length" />
       </template>
       <template #empty>
-        <span class="empty-search-result">{{ $t('DragImage') }}</span>
+        <span class="empty-search-result">{{ t('DragImage') }}</span>
       </template>
       <template #content="{ files, removeUploadedFileCallback, removeFileCallback }">
         <DataTable v-if="fileInfos.length > 0" ref="dt" :value="fileInfos" class="p-datatable-sm"
@@ -93,12 +101,12 @@
                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                    currentPageReportTemplate="{first} to {last} of {totalRecords}">
-          <Column :header="$t('Name')" style="max-width: 10rem">
+          <Column :header="t('Name')" style="max-width: 10rem">
             <template #body="slotProps">
               <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.name }}</div>
             </template>
           </Column>
-          <Column :header="$t('Size')" field="size" style="width: 6rem"/>
+          <Column :header="t('Size')" field="size" style="width: 6rem"/>
           <Column style="width: 1rem">
             <template #body="{ index }">
               <Button size="small" icon="pi pi-times" outlined rounded severity="danger"
@@ -147,7 +155,7 @@ const info = ref({
 const reloadTrackInfo = async () => {
   editBlock.value = true;
   loading.value = true;
-  const res = await axios.post(API.GET_ALBUM_TRACK_INFO, {id: route.params.id});
+  const res = await axios.post(API.ALBUM_TRACK_LIST, {id: route.params.id});
   if(res.state === axios.SUCCESS)
     info.value = res.data;
   editBlock.value = false;
@@ -213,7 +221,7 @@ const uploadAudioFile = async () => {
   fd.append('albumId', route.params.id);
   fileInfos.value.forEach(f => fd.append('files', f.file));
   editBlock.value = true;
-  const res = await axios.form(API.UPLOAD_ALBUM_TRACK_FILES, fd);
+  const res = await axios.form(API.ALBUM_TRACK_FILES_UPLOAD, fd);
   if (res.state === axios.SUCCESS)
     toast.add({severity: 'success', detail: res.message, life: 3000});
     audioUploadDisplay.value = false;

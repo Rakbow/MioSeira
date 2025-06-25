@@ -3,9 +3,9 @@
   <div class="flex flex-wrap justify-content-center gap-3">
     <div class="entity-detail-main-col">
       <div class="entity-header-title">
-        <h1 style="display: inline;">{{ episode.title }}</h1>
-        <div v-if="episode.titleEn">
-          <span>{{ episode.titleEn }}</span>
+        <h1 style="display: inline;">{{ episode.name }}</h1>
+        <div v-if="episode.nameEn">
+          <span>{{ episode.nameEn }}</span>
         </div>
       </div>
       <div class="grid mx-2">
@@ -18,21 +18,20 @@
             <div v-if="userStore.user && userStore.user.type > 1">
               <Button class="p-button-link" icon="pi pi-pen-to-square"
                       @click="loadEditor(META.ENTITY.EPISODE, episode, dialog)"
-                      v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}"/>
+                      v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}"/>
               <Like :likeCount="episode.traffic.likeCount" :liked="episode.traffic.liked" />
 
             </div>
           </div>
         </div>
         <div class="col py-0">
-          <DetailPad :header="$t('Description')" :text="episode.detail"/>
+          <DetailPad :header="t('Description')" :text="episode.detail"/>
           <RelatedFiles />
         </div>
       </div>
     </div>
     <div class="entity-detail-side-col">
-      <RelatedEpisodes :relatedType="episode.relatedType" :relatedId="episode.relatedId"
-                       :id="episode.id" :discNo="episode.discNo" />
+      <RelatedEpisodes :relatedType="episode.relatedType" :relatedId="episode.relatedId" :id="episode.id" />
       <TrafficInfo :info="episode.traffic" :addedTime="episode.addedTime" :editedTime="episode.editedTime"/>
     </div>
   </div>

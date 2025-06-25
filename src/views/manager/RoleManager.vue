@@ -90,7 +90,7 @@ const onFilter = () => {
 
 const getItems = async () => {
   loading.value = true;
-  const res = await axios.post(API.GET_ROLE_LIST, queryParams.value);
+  const res = await axios.post(API.ROLE_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     items.value = res.data.data;
     totalRecords.value = res.data.total
@@ -134,7 +134,7 @@ const confirmDeleteSelected = () => {
 
 const submitAddItem = async () => {
   loading.value = true;
-  const res = await axios.post(API.ADD_ROLE, itemAdd.value);
+  const res = await axios.post(API.ROLE_CREATE, itemAdd.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeAddDialog();
@@ -147,7 +147,7 @@ const submitAddItem = async () => {
 
 const submitEditItem = async () => {
   loading.value = true;
-  const res = await axios.post(API.UPDATE_ROLE, itemEdit.value);
+  const res = await axios.post(API.ROLE_UPDATE, itemEdit.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeEditDialog();
@@ -195,26 +195,26 @@ const exportCSV = () => {
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">
           <div class="col-8">
-            <Button :label="$t('Add')" icon="pi pi-plus" severity="success" size="small" class="mr-2"
+            <Button :label="t('Add')" icon="pi pi-plus" severity="success" size="small" class="mr-2"
                     @click="openAddDialog" style="width: 6em"/>
-            <Button :label="$t('Delete')" icon="pi pi-trash" severity="danger" size="small" class="mr-2"
+            <Button :label="t('Delete')" icon="pi pi-trash" severity="danger" size="small" class="mr-2"
                     @click="confirmDeleteSelected"
                     :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-            <Button :label="$t('Export')" icon="pi pi-external-link" severity="help" size="small" class="mr-2"
+            <Button :label="t('Export')" icon="pi pi-external-link" severity="help" size="small" class="mr-2"
                     @click="exportCSV()" style="width: 6em"/>
-            <Button :label="$t('Refresh')" icon="pi pi-refresh" severity="info" size="small" class="mr-2"
+            <Button :label="t('Refresh')" icon="pi pi-refresh" severity="info" size="small" class="mr-2"
                     @click="refreshItem()" style="width: 6em"/>
           </div>
         </BlockUI>
       </template>
       <template #empty>
         <span class="emptyInfo">
-            {{ $t('CommonDataTableEmptyInfo') }}
+            {{ t('CommonDataTableEmptyInfo') }}
         </span>
       </template>
       <template #loading>
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+        <span>{{ t('CommonDataTableLoadingInfo') }}</span>
       </template>
       <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
       <Column style="flex: 0 0 3rem">
@@ -222,18 +222,18 @@ const exportCSV = () => {
           <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)" />
         </template>
       </Column>
-      <Column :header="$t('Name')" field="name" :showFilterMenu="false"
+      <Column :header="t('Name')" field="name" :showFilterMenu="false"
               exportHeader="name" sortable style="flex: 0 0 5rem">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$t('NameZh')" field="nameZh" sortable :showFilterMenu="false">
+      <Column :header="t('NameZh')" field="nameZh" sortable :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="$t('NameEn')" field="nameEn" sortable :showFilterMenu="false">
+      <Column :header="t('NameEn')" field="nameEn" sortable :showFilterMenu="false">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
@@ -242,50 +242,50 @@ const exportCSV = () => {
               :header="col.header" :key="col.field + '_' + index" sortable/>
     </DataTable>
   </div>
-  <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '400px'}" :header="$t('Add')"
+  <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '400px'}" :header="t('Add')"
           class="p-fluid">
     <BlockUI :blocked="editBlock">
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $t('Name') }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ t('Name') }}<span style="color: red">*</span></label>
         <InputText v-model="itemAdd.name"/>
       </div>
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $t('NameZh') }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ t('NameZh') }}<span style="color: red">*</span></label>
         <InputText v-model="itemAdd.nameZh"/>
       </div>
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $t('NameEn') }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ t('NameEn') }}<span style="color: red">*</span></label>
         <InputText v-model="itemAdd.nameEn"/>
       </div>
     </BlockUI>
     <template #footer>
-      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
               :disabled="editBlock"/>
-      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text" @click="submitAddItem"
+      <Button :label="t('Save')" icon="pi pi-check" class="p-button-text" @click="submitAddItem"
               :disabled="editBlock"/>
     </template>
   </Dialog>
 
-  <Dialog :modal="true" v-model:visible="displayEditDialog" :style="{width: '400px'}" :header="$t('Edit')"
+  <Dialog :modal="true" v-model:visible="displayEditDialog" :style="{width: '400px'}" :header="t('Edit')"
           class="p-fluid">
     <BlockUI :blocked="editBlock">
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $t('Name') }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ t('Name') }}<span style="color: red">*</span></label>
         <InputText v-model="itemEdit.name"/>
       </div>
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $t('NameZh') }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ t('NameZh') }}<span style="color: red">*</span></label>
         <InputText v-model="itemEdit.nameZh"/>
       </div>
       <div class="formgrid grid">
-        <label class="font-bold block mb-2">{{ $t('NameEn') }}<span style="color: red">*</span></label>
+        <label class="font-bold block mb-2">{{ t('NameEn') }}<span style="color: red">*</span></label>
         <InputText v-model="itemEdit.nameEn"/>
       </div>
     </BlockUI>
     <template #footer>
-      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeEditDialog"
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeEditDialog"
               :disabled="editBlock"/>
-      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text" @click="submitEditItem"
+      <Button :label="t('Save')" icon="pi pi-check" class="p-button-text" @click="submitEditItem"
               :disabled="editBlock"/>
     </template>
   </Dialog>

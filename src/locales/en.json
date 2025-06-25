@@ -31,8 +31,6 @@
   "ReleasePrice": "发行价格",
   "PublishPrice": "出版价格",
   "CurrencyUnit": "货币单位",
-  "BelongToFranchises": "所属系列",
-  "BelongToProducts": "所属作品",
   "Remark": "备注",
   "Bonus": "特典",
   "PublishFormat": "出版形式",
@@ -156,21 +154,6 @@
   "ItemDetailSummaryTitle": "简介",
   "ItemDetailCompaniesTitle": "相关企业",
 
-  "AlbumDetailArtistInfoTitle": "创作信息",
-  "AlbumDetailTrackInfoTitle": "音轨信息",
-
-  "BookDetailAuthorSpecTitle": "作者/规格",
-
-  "GameDetailStaffInfoTitle": "开发制作人员",
-
-  "FranchiseDetailProductTitle": "作品",
-
-  "RelatedAlbumTitle": "相关专辑",
-  "RelatedBookTitle": "相关书籍",
-  "RelatedDiscTitle": "相关碟片",
-  "RelatedGameTitle": "相关游戏",
-  "RelatedMerchTitle": "相关商品",
-  "RelatedProductTitle": "相关作品",
 
   "FranchiseDetailReleaseDate": "日&nbsp期",
   "FranchiseDetailProduct": "作&nbsp品",
@@ -200,8 +183,6 @@
   "TooltipGenerateBookISBN10": "生成ISBN-10",
   "TooltipGenerateBookISBN13": "生成ISBN-13",
 
-  "PlaceholderBelongToFranchises": "所属系列",
-  "PlaceholderBelongToProducts": "选择所属作品",
   "PlaceholderMediaFormat": "选择媒体格式",
   "PlaceholderCurrencyUnit": "单位",
   "PlaceholderRegion": "选择地区",
@@ -296,15 +277,6 @@
     {"label": "缩略图", "value": 1},
     {"label": "封面", "value": 2},
     {"label": "其他", "value": 99}
-  ],
-
-  "CurrencyUnitSet": [
-    {"label": "JPY", "value": "JPY"},
-    {"label": "CNY", "value": "CNY"},
-    {"label": "USD", "value": "USD"},
-    {"label": "EUR", "value": "EUR"},
-    {"label": "TWD", "value": "TWD"},
-    {"label": "UNKNOWN", "value": "UNKNOWN"}
   ],
 
   "RelatedType": "关联类型",

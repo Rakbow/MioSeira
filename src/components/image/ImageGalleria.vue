@@ -31,24 +31,24 @@ const close = () => {
               @update:visible="close"
               :numVisible="7" :circular="true" :fullScreen="true" :showItemNavigators="true" :showThumbnails="false">
       <template #item="slotProps">
-        <img :src="slotProps.item.thumb" :alt="slotProps.item.name" style="width: 100%; display: block"
+        <img :src="slotProps.item.display" :alt="slotProps.item.name" style="width: 100%; display: block"
              oncontextmenu="return false"/>
       </template>
       <template #thumbnail="slotProps">
-        <img :src="slotProps.item.thumb50" :alt="slotProps.item.name" style="display: block"/>
+        <img :src="slotProps.item.thumb" :alt="slotProps.item.name" style="display: block"/>
       </template>
       <template #caption="{item}">
         <div class="image-galleria-footer">
           <div class="col-6">
                 <span v-if="images" class="title-container">
                   <span>{{ `${activeIndex + 1}/${images.length}` }}</span>
-                  <span class="title">{{ item!.nameZh }}</span>
-                  <span style="font-size: 10px">{{ item!.description }}</span>
+                  <span class="title">{{ item.name }}</span>
+                  <span style="font-size: 10px">{{ item.detail }}</span>
               </span>
           </div>
           <div class="col-6 text-end">
               <span v-if="images">
-                  <span>{{ $t('UploadIn') + item!.addedTime }}</span>
+                  <span>{{ t('UploadIn') + item!.addedTime }}</span>
               </span>
           </div>
         </div>

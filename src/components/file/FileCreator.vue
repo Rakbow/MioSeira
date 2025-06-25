@@ -83,7 +83,7 @@ const submitByUpload = async () => {
     fd.append('remarks', f.remark);
   });
   editBlock.value = true;
-  const res = await axios.form(API.UPLOAD_FILES, fd);
+  const res = await axios.form(API.FILE_UPLOAD, fd);
   if (res.state === axios.SUCCESS)
     toast.add({severity: 'success', detail: res.message, life: 3000});
     isUpdate.value = true;
@@ -99,7 +99,7 @@ const submitByCould = async () => {
     fileIds: fileInfos.value.map(f => f.id)
   }
   editBlock.value = true;
-  const res = await axios.post(API.CREATE_FILE_RELATED, param);
+  const res = await axios.post(API.FILE_RELATED_CREATE, param);
   if (res.state === axios.SUCCESS)
     toast.add({severity: 'success', detail: res.message, life: 3000});
   isUpdate.value = true;
@@ -146,14 +146,14 @@ const switchCreateType = (ev) => {
                 :showCancelButton="false"
                 chooseIcon="pi pi-image" @select="selectFile"
                 :maxFileSize="1000000000" :previewWidth="100"
-                :invalidFileSizeMessage="$t('ImageInvalidFileSizeMessage')">
+                :invalidFileSizeMessage="t('ImageInvalidFileSizeMessage')">
       <template #header="{ chooseCallback }">
         <Button @click="chooseCallback()" icon="pi pi-file" rounded outlined/>
         <Button @click="clearFile" icon="pi pi-times" rounded outlined severity="danger"
                 :disabled="!fileInfos || fileInfos.length === 0"/>
       </template>
       <template #empty>
-        <span class="empty-search-result">{{ $t('DragImage') }}</span>
+        <span class="empty-search-result">{{ t('DragImage') }}</span>
       </template>
     </FileUpload>
     <Button v-show="currentCreateType === 1" variant="text" outlined @click="displaySelector = true">
@@ -171,7 +171,7 @@ const switchCreateType = (ev) => {
                currentPageReportTemplate="{first} to {last} of {totalRecords}">
       <template #empty>
         <span class="emptyInfo">
-            {{ $t('CommonDataTableEmptyInfo') }}
+            {{ t('CommonDataTableEmptyInfo') }}
         </span>
       </template>
       <Column style="width: 40px">
@@ -179,7 +179,7 @@ const switchCreateType = (ev) => {
           <div v-html="getIcon(slotProps.data.name).svg"/>
         </template>
       </Column>
-      <Column :header="$t('Name')" field="name" style="width: 300px">
+      <Column :header="t('Name')" field="name" style="width: 300px">
         <template #body="slotProps">
           <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.name }}</div>
         </template>
@@ -187,7 +187,7 @@ const switchCreateType = (ev) => {
           <InputText v-model="data[field]" fluid/>
         </template>
       </Column>
-      <Column :header="$t('Size')" field="size" style="width: 80px">
+      <Column :header="t('Size')" field="size" style="width: 80px">
         <template #body="slotProps">{{handleSize(slotProps.data.size)}}</template>
       </Column>
       <Column style="width: 1rem">
@@ -197,13 +197,13 @@ const switchCreateType = (ev) => {
         </template>
       </Column>
     </DataTable>
-    <Button icon="pi pi-times" :label="$t('Cancel')" @click="close"
+    <Button icon="pi pi-times" :label="t('Cancel')" @click="close"
             class="p-button-text"/>
-    <Button icon="pi pi-save" :label="$t('Save')" @click="submit" :disabled="!fileInfos.length" />
+    <Button icon="pi pi-save" :label="t('Save')" @click="submit" :disabled="!fileInfos.length" />
   </BlockUI>
 
 
-  <Dialog :modal="true" v-model:visible="displaySelector" :style="{width: '600px'}" :header="$t('Add')">
+  <Dialog :modal="true" v-model:visible="displaySelector" :style="{width: '600px'}" :header="t('Add')">
     <FileSelector :entries="fileInfos"/>
   </Dialog>
 </template>

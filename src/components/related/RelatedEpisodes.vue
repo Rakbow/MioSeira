@@ -35,11 +35,11 @@
                 {{ ep.serial }}
               </th>
               <td nowrap="nowrap" v-if="ep.id === props.id" class="episode-list-current-td">
-                <span>{{ ep.title }}</span>
+                <span>{{ ep.name }}</span>
               </td>
               <td nowrap="nowrap" v-else>
                 <router-link :to="`${API.EPISODE_DETAIL}/${ep.id}`">
-                  <span>{{ ep.title }}</span>
+                  <span>{{ ep.name }}</span>
                 </router-link>
               </td>
               <!--              <td class="album-track-duration">-->
@@ -115,10 +115,6 @@ const props = defineProps({
   id: {
     type: Number,
     required: true
-  },
-  discNo: {
-    type: Number,
-    required: true
   }
 });
 onMounted(() => {
@@ -132,12 +128,11 @@ const loading = ref(false);
 const getRelatedData = async () => {
   loading.value = true;
   const res = await axios.post(
-      API.GET_EPISODE_RELATED,
+      API.EPISODE_GET_RELATED,
       {
         relatedType: props.relatedType,
         relatedId: props.relatedId,
-        id: props.id,
-        discNo: props.discNo
+        id: props.id
       }
   );
   if (res.state === axios.SUCCESS)

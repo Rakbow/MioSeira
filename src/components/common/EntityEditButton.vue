@@ -32,7 +32,7 @@ const userStore = useUserStore();
   <div v-if="userStore.user">
     <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
             @click="props.func" :style="position" size="small"
-            v-tooltip.bottom="{value: $t(label), class: 'short-tooltip'}">
+            v-tooltip.bottom="{value: t(label), class: 'short-tooltip'}">
       <template #icon>
         <span class="material-symbols-outlined">{{ icon }}</span>
       </template>

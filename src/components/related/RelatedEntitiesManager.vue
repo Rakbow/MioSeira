@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import {onMounted, ref, inject, defineAsyncComponent, defineProps, onBeforeMount} from "vue";
-import {PublicHelper} from '@/toolkit/publicHelper.ts';
-import {AxiosHelper as axios} from '@/toolkit/axiosHelper.ts';
+import {onMounted, ref, inject, defineAsyncComponent, onBeforeMount} from "vue";
+import {PublicHelper} from '@/toolkit/publicHelper';
+import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
 import {useToast} from "primevue/usetoast";
-import {useDialog} from 'primevue/usedialog';
-import {EntityInfo, META} from '@/config/Web_Const.ts';
-import { useRoute } from 'vue-router';
+import {Attribute, EntityInfo, META, QueryParams} from '@/config/Web_Const';
+import {useRoute} from 'vue-router';
 import {useI18n} from "vue-i18n";
 import {API} from "@/config/Web_Helper_Strs";
-import {useOptionsStore} from "@/store/entityOptions";
+import {useEntityStore} from "@/logic/entityService";
+import {DialogServiceMethods} from "primevue/dialogservice";
+
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
-const opStore = useOptionsStore();
+const store = useEntityStore();
 const {t} = useI18n();
 const toast = useToast();
-const dialog = useDialog();
 const dialogRef = inject("dialogRef");
 const entityInfo = ref<EntityInfo>();
 const isUpdate = ref(false);
@@ -22,67 +22,98 @@ const route = useRoute();
 const relations = ref([]);
 const editBlock = ref(false);
 const filters = ref({
-  'entityType': {value: entityInfo.value?.type},
-  'entityId': {value: entityInfo.value?.id},
-  'relatedGroup': {value: -1},
-  'direction': {value: 1}
+  entityType: {value: null},
+  entityId: {value: null},
+  relatedGroup: {value: null}
 });
-const roleSet = ref([]);
 const dt = ref();
 const first = ref(0);
 const totalRecords = ref(0);
-const queryParams = ref({});
+const queryParams = ref<QueryParams>(new QueryParams());
 const selectedItems = ref([]);
 const loading = ref(false);
 const displayAddDialog = ref(false);
 const displayEditDialog = ref(false);
 const displayDeleteDialog = ref(false);
-const entrySearchType = ref();
+const entryType = ref();
+const relatedGroup = ref();
 const confirmDeleteSelected = () => {
   displayDeleteDialog.value = true;
 }
 
-const getEntrySearchType = () => {
-  if(dialogRef.value.data.relatedGroup == META.RELATION_RELATED_GROUP.RELATED_CHAR) {
-    entrySearchType.value = META.ENTRY_TYPE.CHARACTER;
-  }else if(dialogRef.value.data.relatedGroup == META.RELATION_RELATED_GROUP.RELATED_PRODUCT) {
-    entrySearchType.value = META.ENTRY_TYPE.PRODUCT;
-  }else if(dialogRef.value.data.relatedGroup == META.RELATION_RELATED_GROUP.RELATED_PERSON) {
-    entrySearchType.value = META.ENTRY_TYPE.PERSON;
-  }
-}
-
-onBeforeMount(() => {
-  getEntrySearchType();
-  filters.value.direction.value = dialogRef.value.data.direction;
-  filters.value.relatedGroup.value = dialogRef.value.data.relatedGroup;
-  roleSet.value = (opStore.options as any).roleSet;
+onBeforeMount(async () => {
+  entityInfo.value = PublicHelper.getEntityInfo(route);
+  await store.fetchOptions();
 })
 
 onMounted(async () => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-  await opStore.fetchOptions();
-  isUpdate.value = false;
-  loading.value = true;
-  filters.value.entityType.value = entityInfo.value?.type;
-  filters.value.entityId.value = entityInfo.value?.id;
+  initQueryParam();
+  relatedGroup.value = META.RELATED_GROUP_SET[dialogRef.value.data.relatedGroup - 1];
+  await getRelations();
+});
+
+const initQueryParam = () => {
   queryParams.value = {
     first: 0,
     rows: dt.value.rows,
     sortField: null,
     sortOrder: null,
-    filters: filters.value
+    filters: {
+      entityType: {value: entityInfo.value?.type},
+      entityId: {value: entityInfo.value?.id},
+      relatedGroup: {value: dialogRef.value.data.relatedGroup}
+    }
   };
-  await getRelation();
-  loading.value = false;
-});
+}
 
-const getRelation = async () => {
+const switchRelatedGroup = (ev: Event) => {
+  if (ev.value === null) {
+    entryType.value = null;
+    queryParams.value.filters.relatedGroup.value = null;
+  } else {
+    entryType.value = parseInt(relatedGroup.value.value);
+    queryParams.value.filters.relatedGroup.value = entryType.value;
+  }
+  getRelations();
+}
+
+const itemAdd = ref({
+  role: new Attribute(),
+  reverseRole: new Attribute(),
+  entities: <any>[]
+});
+const itemEdit = ref<any>({});
+const displayEntrySelector = ref(false);
+const openEntrySelector = () => {
+  displayEntrySelector.value = true;
+}
+const removeRelatedEntry = (index: number) => {
+  itemAdd.value.entities.splice(index, 1);
+}
+const clearRelatedEntry = () => {
+  itemAdd.value.entities = [];
+}
+
+const openAddDialog = () => {
+  displayAddDialog.value = true;
+  itemAdd.value = {
+    role: store.options.roleSet[0],
+    reverseRole: store.options.roleSet[0],
+    entities: []
+  }
+}
+
+const openEditDialog = (value: any) => {
+  displayEditDialog.value = true;
+  itemEdit.value = value;
+}
+
+const getRelations = async () => {
   loading.value = true;
   editBlock.value = true;
-  const res = await axios.post(API.GET_RELATION, queryParams.value);
-  if(res.state === axios.SUCCESS) {
-    if(res.data.data === null)
+  const res = await axios.post(API.RELATION_LIST, queryParams.value);
+  if (res.state === axios.SUCCESS) {
+    if (res.data.data === null)
       relations.value = [];
     else
       relations.value = res.data.data;
@@ -93,62 +124,21 @@ const getRelation = async () => {
   loading.value = false;
 }
 
-const itemAdd = ref({
-  role: {},
-  reverseRole: {},
-  entities: []
-});
-const itemEdit = ref({});
-
-const selectedItem = ref(null);
-const cancelEdit = () => {
-  dialogRef.value.close(
-    {
-      isUpdate: isUpdate.value
-    }
-  );
-};
-
-const displayEntrySelector = ref(false);
-const openEntrySelector = () => {
-  displayEntrySelector.value = true;
-}
-const removeRelatedEntry = (index) => {
-  itemAdd.value.entities.splice(index, 1);
-}
-const clearRelatedEntry = () => {
-  itemAdd.value.entities = [];
-}
-
-const openAddDialog = () => {
-  displayAddDialog.value = true;
-  itemAdd.value = {
-    role: roleSet.value[0],
-    reverseRole: roleSet.value[0],
-    entities: []
-  }
-}
-
-const openEditDialog = (value) => {
-  displayEditDialog.value = true;
-  itemEdit.value = value;
-}
-
 const addRelation = async () => {
   editBlock.value = true;
   let param = {
     entityType: entityInfo.value?.type,
     entityId: entityInfo.value?.id,
-    relatedEntityType: itemAdd.value.entities[0].type,
+    relatedGroup: queryParams.value.filters.relatedGroup.value,
     roleId: itemAdd.value.role.value,
     reverseRoleId: itemAdd.value.reverseRole.value,
-    relatedEntityIds: itemAdd.value.entities.map(i => ({ id: i.id, remark: i.remark }))
+    relatedEntries: itemAdd.value.entities.map(i => ({id: i.id, remark: i.remark}))
   }
-  const res = await axios.post(API.ADD_RELATION, param);
+  const res = await axios.post(API.RELATION_CREATE, param);
   if (res.state === axios.SUCCESS) {
     isUpdate.value = true;
     displayAddDialog.value = false;
-    await getRelation();
+    await getRelations();
     toast.add({severity: 'success', summary: res.message, detail: '', life: 3000});
   } else {
     toast.add({severity: 'error', summary: res.message, detail: '', life: 3000});
@@ -162,13 +152,13 @@ const updateRelation = async () => {
     id: itemEdit.value.id,
     roleId: itemEdit.value.role.value,
     reverseRoleId: itemEdit.value.reverseRole.value,
-    remark:itemEdit.value.remark
+    remark: itemEdit.value.remark
   }
-  const res = await axios.post(API.UPDATE_RELATION, param);
+  const res = await axios.post(API.RELATION_UPDATE, param);
   if (res.state === axios.SUCCESS) {
     isUpdate.value = true;
     displayEditDialog.value = false;
-    await getRelation();
+    await getRelations();
     toast.add({severity: 'success', summary: res.message, detail: '', life: 3000});
   } else {
     toast.add({severity: 'error', summary: res.message, detail: '', life: 3000});
@@ -181,11 +171,11 @@ const deleteRelation = async () => {
   let param = {
     ids: selectedItems.value.map(i => i.id)
   }
-  const res = await axios.delete(API.DELETE_RELATION, param);
+  const res = await axios.delete(API.RELATION_DELETE, param);
   if (res.state === axios.SUCCESS) {
     isUpdate.value = true;
     displayDeleteDialog.value = false;
-    await getRelation();
+    await getRelations();
     toast.add({severity: 'success', summary: res.message, detail: '', life: 3000});
   } else {
     toast.add({severity: 'error', summary: res.message, detail: '', life: 3000});
@@ -195,15 +185,15 @@ const deleteRelation = async () => {
 
 const onPage = (ev) => {
   queryParams.value = ev;
-  getRelation();
+  getRelations();
 };
 const onSort = (ev) => {
   queryParams.value = ev;
-  getRelation();
+  getRelations();
 };
 const onFilter = () => {
   queryParams.value.filters = filters.value;
-  getRelation();
+  getRelations();
 };
 
 </script>
@@ -220,6 +210,17 @@ const onFilter = () => {
                currentPageReportTemplate="{first} to {last} of {totalRecords}"
                scrollable scrollHeight="400px" responsiveLayout="scroll">
       <template #header>
+        <SelectButton size="small" v-model="relatedGroup" :options="META.ENTRY_TYPE_SET"
+                      @change="switchRelatedGroup($event)"
+                      optionLabel="value" dataKey="value" ariaLabelledby="custom">
+          <template #option="slotProps">
+            <span class="material-symbols-outlined" style="font-size: 20px"
+                  v-tooltip.bottom="{value: t(slotProps.option.label), class: 'short-tooltip'}">
+              {{ slotProps.option.icon }}
+            </span>
+          </template>
+        </SelectButton>
+
         <Button size="small" variant="text" outlined @click="openAddDialog" :disabled="editBlock">
           <template #icon>
             <span class="material-symbols-outlined">add_box</span>
@@ -234,12 +235,12 @@ const onFilter = () => {
       </template>
       <template #empty>
         <span class="emptyInfo">
-            {{ $t('CommonDataTableEmptyInfo') }}
+            {{ t('CommonDataTableEmptyInfo') }}
         </span>
       </template>
       <template #loading>
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+        <span>{{ t('CommonDataTableLoadingInfo') }}</span>
       </template>
       <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
       <Column>
@@ -247,45 +248,45 @@ const onFilter = () => {
           <i style="cursor: pointer" class="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
         </template>
       </Column>
-      <Column :header="$t('Group')" field="relatedGroup" style="flex: 0 0 10rem">
+      <Column :header="t('Group')" field="relatedGroup" style="flex: 0 0 10rem">
         <template #body="slotProps">
           {{ slotProps.data.relatedGroup.label }}
         </template>
       </Column>
-      <Column :header="$t('Role')" field="role" style="flex: 0 0 10rem">
+      <Column :header="t('Role')" field="role" style="flex: 0 0 10rem">
         <template #body="slotProps">
           {{ slotProps.data.role.label }}
         </template>
       </Column>
-      <Column :header="$t('ReverseRole')" field="reverseRole" style="flex: 0 0 10rem">
+      <Column :header="t('ReverseRole')" field="reverseRole" style="flex: 0 0 10rem">
         <template #body="slotProps">
           {{ slotProps.data.reverseRole.label }}
         </template>
       </Column>
-      <Column :header="$t('RelatedEntity')" field="role" style="flex: 0 0 10rem">
+      <Column :header="t('RelatedEntity')" field="role" style="flex: 0 0 10rem">
         <template #body="slotProps">
-          <router-link class="common-link" :to="`/db/${slotProps.data.relatedTypeName}/${slotProps.data.target.value}`">
+          <router-link class="common-link" :to="`/db/${META.ENTITY_TYPE_SET[slotProps.data.targetType]}/${slotProps.data.target.value}`">
             {{ slotProps.data.target.label }}
           </router-link>
         </template>
       </Column>
-      <Column :header="$t('Remark')" field="remark" />
+      <Column :header="t('Remark')" field="remark"/>
     </DataTable>
   </BlockUI>
-  <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '600px'}" :header="$t('Add')"
+  <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '600px'}" :header="t('Add')"
           class="p-fluid">
     <template #header>
-      <i class="pi pi-user-plus mr-2" style="font-size: 2rem" />
-      <b>{{$t('Add')}}</b>
+      <i class="pi pi-user-plus mr-2" style="font-size: 2rem"/>
+      <b>{{ t('Add') }}</b>
     </template>
     <div class="grid">
       <div class="col-6">
-        <label class="ml-1">{{ $t('Role') }}</label>
+        <label class="ml-1">{{ t('Role') }}</label>
         <InputGroup>
           <InputGroupAddon>
-            <i class="pi pi-tag" />
+            <i class="pi pi-tag"/>
           </InputGroupAddon>
-          <Select size="small" v-model="itemAdd.role" :options="roleSet" optionLabel="label" filter>
+          <Select size="small" v-model="itemAdd.role" :options="store.options.roleSet" optionLabel="label" filter>
             <template #option="slotProps">
               <div class="flex align-options-center">
                 <div>{{ slotProps.option.label }}</div>
@@ -295,12 +296,12 @@ const onFilter = () => {
         </InputGroup>
       </div>
       <div class="col-6">
-        <label class="ml-1">{{ $t('ReverseRole') }}</label>
+        <label class="ml-1">{{ t('ReverseRole') }}</label>
         <InputGroup>
           <InputGroupAddon>
-            <i class="pi pi-tag" />
+            <i class="pi pi-tag"/>
           </InputGroupAddon>
-          <Select size="small" v-model="itemAdd.reverseRole" :options="roleSet" optionLabel="label" filter>
+          <Select size="small" v-model="itemAdd.reverseRole" :options="store.options.roleSet" optionLabel="label" filter>
             <template #option="slotProps">
               <div class="flex align-options-center">
                 <div>{{ slotProps.option.label }}</div>
@@ -344,11 +345,11 @@ const onFilter = () => {
               </div>
               <Divider type="dashed" class="mt-0 mb-0"/>
               <div class="col p-1" style="max-width: 160px;">
-                <InputText size="small" v-model="entry.remark" />
+                <InputText size="small" v-model="entry.remark"/>
               </div>
               <div class="col-fixed p-1">
                 <Button size="small" icon="pi pi-trash" severity="danger" variant="text"
-                        @click="removeRelatedEntry(index)" />
+                        @click="removeRelatedEntry(index)"/>
               </div>
             </div>
           </div>
@@ -356,26 +357,25 @@ const onFilter = () => {
       </template>
     </DataView>
     <template #footer>
-      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text" @click="displayAddDialog = false"
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text" @click="displayAddDialog = false"
               :disabled="editBlock"/>
-      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text" @click="addRelation"
+      <Button :label="t('Save')" icon="pi pi-check" class="p-button-text" @click="addRelation"
               :disabled="editBlock"/>
     </template>
   </Dialog>
-  <Dialog :modal="true" v-model:visible="displayDeleteDialog" :header="$t('Delete')"
-          :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
+  <Dialog :modal="true" v-model:visible="displayDeleteDialog" :header="t('Delete')" :style="{width: '400px'}">
     <div class="confirmation-content">
       <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"/>
-      <span>{{ $t('ConfirmDeleteImage') }}</span>
+      <span>{{ t('ConfirmDeleteImage') }}</span>
     </div>
     <template #footer>
-      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text"
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text"
               @click="displayDeleteDialog = false"/>
-      <Button :label="$t('Delete')" icon="pi pi-check" class="p-button-text"
+      <Button :label="t('Delete')" icon="pi pi-check" class="p-button-text"
               @click="deleteRelation"/>
     </template>
   </Dialog>
-  <Dialog :modal="true" v-model:visible="displayEditDialog" :header="$t('Edit')" class="p-fluid">
+  <Dialog :modal="true" v-model:visible="displayEditDialog" :header="t('Edit')" class="p-fluid">
     <div class="flex flex-wrap">
       <div class="p-3" style="width: 220px">
         <div class="grid" style="border: 1px solid gray;border-radius: 5px;">
@@ -393,8 +393,8 @@ const onFilter = () => {
     </div>
     <div class="field">
       <FloatLabel variant="on">
-        <label>{{ $t('Role') }}</label>
-        <Select v-model="itemEdit.role" :options="roleSet"
+        <label>{{ t('Role') }}</label>
+        <Select v-model="itemEdit.role" :options="store.options.roleSet"
                 size="small" optionLabel="label" filter class="static w-full">
           <template #option="slotProps">
             <div class="flex align-options-center">
@@ -406,8 +406,8 @@ const onFilter = () => {
     </div>
     <div class="field">
       <FloatLabel variant="on">
-        <label>{{ $t('Role') }}</label>
-        <Select v-model="itemEdit.reverseRole" :options="roleSet"
+        <label>{{ t('Role') }}</label>
+        <Select v-model="itemEdit.reverseRole" :options="store.options.roleSet"
                 size="small" optionLabel="label" filter class="static w-full">
           <template #option="slotProps">
             <div class="flex align-options-center">
@@ -419,19 +419,19 @@ const onFilter = () => {
     </div>
     <div class="field">
       <FloatLabel variant="on">
-        <label>{{ $t('Remark') }}</label>
+        <label>{{ t('Remark') }}</label>
         <InputText size="small" v-model="itemEdit.remark" class="static w-full"/>
       </FloatLabel>
     </div>
     <template #footer>
-      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text"
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text"
               @click="displayEditDialog = false"/>
-      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text"
+      <Button :label="t('Save')" icon="pi pi-check" class="p-button-text"
               @click="updateRelation"/>
     </template>
   </Dialog>
-  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="$t('Add')">
-    <EntrySelector :type="entrySearchType" :entries="itemAdd.entities" />
+  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="t('Add')">
+    <EntrySelector :type="entryType" :entries="itemAdd.entities"/>
   </Dialog>
 </template>
 

@@ -39,11 +39,11 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
     },
     {
         name: "EntryDetail",
-        path: API.ENTRY_DETAIL + "/:id",
+        path: API.ENTRY_DETAIL_PATH + "/:id",
         component: () => import('@/views/detail/EntryDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(`${API.GET_ENTRY_DETAIL}/${to.params.id}`);
+                const res = await axios.post(`${API.ENTRY_GET_DETAIL}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
                     document.title = res.data.entry.name;
@@ -61,11 +61,11 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
     },
     {
         name: "ItemDetail",
-        path: API.ITEM_DETAIL + "/:id",
+        path: API.ITEM_DETAIL_PATH + "/:id",
         component: () => import('@/views/detail/ItemDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(`${API.GET_ITEM_DETAIL}/${to.params.id}`);
+                const res = await axios.post(`${API.ITEM_GET_DETAIL}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
                     document.title = res.data.item.name;
@@ -87,10 +87,10 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
         component: () => import('@/views/detail/EpisodeDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await axios.post(`${API.GET_EPISODE_DETAIL}/${to.params.id}`);
+                const res = await axios.post(`${API.EPISODE_GET_DETAIL}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
                     (to.meta as any).info = res.data;
-                    document.title = res.data.title;
+                    document.title = res.data.name;
                     next();
                 } else {
                     console.log(res.message);
@@ -142,7 +142,7 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
 
             {
                 path: 'item/add',
-                component: () => import('@/views/manager/ItemAdvanceCreator.vue')
+                component: () => import('@/views/manager/ItemAdvanceCreate.vue')
             }
         ],
     }

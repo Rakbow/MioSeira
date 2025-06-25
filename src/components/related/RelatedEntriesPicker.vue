@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {defineAsyncComponent, defineProps, onBeforeMount, ref, toRef, watch} from "vue";
 import {META} from "@/config/Web_Const";
-import {useOptionsStore} from "@/store/entityOptions";
+import {useEntityStore} from "@/logic/entityService";
 import {useI18n} from "vue-i18n";
 
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
@@ -11,20 +11,18 @@ const props = defineProps({
     type: Array,
     required: true
   },
-  entrySearchType: {
+  type: {
     type: Number,
     required: true
   }
 });
 const {t} = useI18n();
-const options = ref<any>({});
-const optionsStore = useOptionsStore();
+const store = useEntityStore();
 const emit = defineEmits(['update:relatedEntries']);
 const relatedEntries = toRef(props, 'relatedEntries')
 
 onBeforeMount(async () => {
-  await optionsStore.fetchOptions();
-  options.value = optionsStore.options;
+  await store.fetchOptions();
 })
 
 watch(relatedEntries, (val) => {
@@ -81,10 +79,10 @@ const displayEntrySelector = ref(false);
             <Divider type="dashed" class="mt-0 mb-0"/>
             <div class="col p-1">
               <Select
-                  v-if="entrySearchType === META.ENTRY_TYPE.PERSON || entrySearchType === META.ENTRY_TYPE.CHARACTER"
+                  v-if="type === META.ENTRY_TYPE.PERSON || type === META.ENTRY_TYPE.CHARACTER"
                   size="small"
-                  v-model="entry.role" :options="options.roleSet" optionLabel="label" filter
-                  :placeholder="$t('Role')" style="width: 100px;" class="w-full">
+                  v-model="entry.role" :options="store.options.roleSet" optionLabel="label" filter
+                  :placeholder="t('Role')" style="width: 100px;" class="w-full">
                 <template #option="slotProps">
                   {{ slotProps.option.label }}
                 </template>
@@ -99,8 +97,8 @@ const displayEntrySelector = ref(false);
       </div>
     </template>
   </DataView>
-  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="$t('Add')">
-    <EntrySelector :type="entrySearchType" :entries="relatedEntries"/>
+  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="t('Add')">
+    <EntrySelector :type="type" :entries="relatedEntries"/>
   </Dialog>
 </template>
 

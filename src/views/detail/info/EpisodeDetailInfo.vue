@@ -22,15 +22,15 @@ onBeforeMount(() => {
 <template>
   <ul id="infobox">
     <li>
-      <span class="tip">{{ $t('Category') }}:&nbsp;</span>
-      <Tag v-if="entity.episodeType === 0" class="ml-1" :value="$t('EpisodeType0')"/>
-      <Tag v-else class="ml-1" :value="$t('EpisodeType1')"/>
+      <span class="tip">{{ t('Category') }}:&nbsp;</span>
+      <Tag v-if="entity.episodeType === 0" class="ml-1" :value="t('EpisodeType0')"/>
+      <Tag v-else class="ml-1" :value="t('EpisodeType1')"/>
     </li>
     <li v-if="entity.episodeType === 1">
-      <span class="tip">{{ $t('PremiereDate') }}:&nbsp;&nbsp;</span>{{ entity.premiereDate }}
+      <span class="tip">{{ t('PremiereDate') }}:&nbsp;&nbsp;</span>{{ entity.premiereDate }}
     </li>
-    <li><span class="tip">{{ $t('Index') }}:&nbsp;&nbsp;</span>{{ `${entity.discNo}-${entity.serial}` }}</li>
-    <li><span class="tip">{{ $t('Duration') }}:&nbsp;&nbsp;</span>{{ entity.duration }}</li>
+    <li><span class="tip">{{ t('Index') }}:&nbsp;&nbsp;</span>{{ `${entity.discNo}-${entity.serial}` }}</li>
+    <li><span class="tip">{{ t('Duration') }}:&nbsp;&nbsp;</span>{{ entity.duration }}</li>
   </ul>
 </template>
 

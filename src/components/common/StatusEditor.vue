@@ -37,7 +37,7 @@ const updateStatus = async () => {
     ids: [entityInfo.value?.id],
     status: !status.value
   };
-  const res = await axios.post(API.UPDATE_ENTITY_STATUS, json);
+  const res = await axios.post(API.ENTITY_UPDATE_STATUS, json);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
   } else {

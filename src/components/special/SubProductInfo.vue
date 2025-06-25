@@ -9,7 +9,7 @@ import {EntityInfo, META} from "@/config/Web_Const";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 
-const editor = defineAsyncComponent(() => import('@/components/related/RelationEditor.vue'));
+const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 const {t} = useI18n();
 const entityInfo = ref<EntityInfo>();
 const route = useRoute();
@@ -28,7 +28,7 @@ onMounted(() => {
 
 
 const openEditDialog = () => {
-  dialog.open(editor, {
+  dialog.open(manager, {
     props: {
       header: `${t('RelatedEntity')}-${t('Edit')}`,
       style: {
@@ -52,7 +52,7 @@ const openEditDialog = () => {
 
 const getSubProduct = async () => {
   editBlock.value = true;
-  const res = await axios.post(API.GET_SUB_PRODUCTS, {id: entityInfo.value?.id});
+  const res = await axios.post(API.ENTRY_GET_SUB_PRODUCTS, {id: entityInfo.value?.id});
   if (res.state === axios.SUCCESS)
     subProducts.value = res.data;
   editBlock.value = false;
@@ -65,13 +65,13 @@ const getSubProduct = async () => {
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-th-large"/>
-        <b>{{ $t('Product') }}</b>
+        <b>{{ t('Product') }}</b>
       </template>
       <div class="relative">
         <div v-if="userStore.user">
           <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
                   @click="openEditDialog" style="right: 0"
-                  v-tooltip.bottom="{value: $t('Edit'), class: 'short-tooltip'}">
+                  v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
             <template #icon>
               <span class="material-symbols-outlined">edit_note</span>
             </template>
@@ -82,13 +82,13 @@ const getSubProduct = async () => {
           <table class="table-borderless">
             <tbody class="person-table">
             <tr>
-              <td><h4>{{ $t('Date') }}</h4></td>
-              <td><h4>{{ $t('Product') }}</h4></td>
+              <td><h4>{{ t('Date') }}</h4></td>
+              <td><h4>{{ t('Product') }}</h4></td>
             </tr>
             <tr v-for="entry in subProducts">
               <td style="color: #788990;">{{ (entry as any).date }}</td>
               <td class="a_with_underline">
-                <a :href="`${API.ENTRY_DETAIL}/${entry.id}`" :key="entry.id">
+                <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" :key="entry.id">
                   <span style="white-space: nowrap;" :class="'product-type-' + entry.subType.value">{{ entry.name }}</span>
                 </a>
                 <small>&nbsp;({{ (entry as any).subType.label }})</small>
@@ -98,7 +98,7 @@ const getSubProduct = async () => {
           </table>
         </div>
         <div v-else>
-          <span class="emptyInfo"><em>{{ $t('NoPerson') }}</em></span>
+          <span class="emptyInfo"><em>{{ t('NoPerson') }}</em></span>
         </div>
       </div>
     </Fieldset>

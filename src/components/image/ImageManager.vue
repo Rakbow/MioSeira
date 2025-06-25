@@ -2,7 +2,7 @@
   <Toast/>
   <BlockUI :blocked="editBlock">
     <DataTable ref="dt" :value="images" class="p-datatable-sm" :alwaysShowPaginator="images.length !== 0"
-               lazy :totalRecords="totalRecords" :loading="loading"
+               lazy :totalRecords="totalRecords" :loading="loading" size="small"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
                filterDisplay="row" v-model:filters="filters"
                paginator :rows="10" :first="first" columnResizeMode="fit"
@@ -14,110 +14,124 @@
                responsiveLayout="scroll">
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">
-          <div class="col-8">
-            <Button :label="$t('Add')" icon="pi pi-plus" class="p-button-success p-button-sm mr-2"
-                    @click="openAddDialog" style="width: 6em"/>
-            <Button :label="$t('Delete')" icon="pi pi-trash" class="p-button-danger p-button-sm mr-2"
-                    @click="confirmDeleteSelected"
-                    :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
-          </div>
+          <Button variant="text" outlined @click="openAddDialog">
+            <template #icon>
+              <span class="material-symbols-outlined">add_box</span>
+            </template>
+          </Button>
+          <Button variant="text" severity="danger" :disabled="!selectedItems.length"
+                  outlined @click="confirmDeleteSelected">
+            <template #icon>
+              <span class="material-symbols-outlined">delete_forever</span>
+            </template>
+          </Button>
         </BlockUI>
       </template>
       <template #empty>
         <span class="emptyInfo">
-            {{ $t('CommonDataTableEmptyInfo') }}
+            {{ t('CommonDataTableEmptyInfo') }}
         </span>
       </template>
       <template #loading>
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+        <span>{{ t('CommonDataTableLoadingInfo') }}</span>
       </template>
-      <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
-      <Column style="flex: 0 0 3rem">
+      <Column selectionMode="multiple" style="width: 30px" exportable/>
+      <Column style="width: 30px">
         <template #body="slotProps">
           <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
         </template>
       </Column>
-      <Column :header="$t('Image')" style="flex: 0 0 5rem">
+      <Column :header="t('Image')" style="width: 50px">
         <template #body="slotProps">
-          <img :src="slotProps.data.thumb50" :alt="slotProps.data.name"
+          <img :src="slotProps.data.thumb" :alt="slotProps.data.name" style="height: 30px"
                class="entry-thumb image-click" @click="imageClick(slotProps.index)" />
         </template>
       </Column>
-      <Column :header="$t('Name')" field="name" sortable style="flex: 0 0 5rem"/>
-      <Column :header="$t('NameZh')" field="nameZh" sortable/>
-      <Column :header="$t('Type')" field="type" filterField="type"
-              :showFilterMenu="false" sortable style="flex: 0 0 10rem">
+      <Column :header="t('Name')" field="name" :sortable="true" style="flex: 0 0 10rem"/>
+      <Column :header="t('Size')" field="size" :sortable="true" style="width: 100px"/>
+      <Column :header="t('Type')" filterField="type"
+              :showFilterMenu="false" :sortable="true" style="width: 110px">
         <template #body="slotProps">
-          {{ PublicHelper.value2Label(slotProps.data.type, imageTypeSet) }}
+          <div style="display: flex;justify-content: center;">
+            <Tag :value="slotProps.data.type.label"/>
+          </div>
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <Select v-model="filterModel.value" :options="imageTypeSet" :filter="true" @change="filterCallback()"
+          <Select v-model="filterModel.value" :options="store.options.imageTypeSet" :filter="true" @change="filterCallback()"
                     :showClear="true" optionLabel="label" optionValue="value" Style="min-width: 100px" />
         </template>
       </Column>
-      <Column :header="$t('UploadTime')" field="addedTime" sortable/>
-      <Column :header="$t('EditedTime')" field="editedTime" sortable/>
+      <Column :header="t('UploadTime')" field="addedTime" :sortable="true" style="width: 150px" />
+      <Column :header="t('EditedTime')" field="editedTime" :sortable="true" style="width: 150px" />
     </DataTable>
   </BlockUI>
-  <Dialog :modal="true" v-model:visible="displayDeleteDialog" :header="$t('Delete')"
-          :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
+  <Dialog :modal="true" v-model:visible="displayDeleteDialog" :header="t('Delete')" :style="{width: '400px'}">
     <div class="confirmation-content">
       <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"/>
-      <span>{{ $t('ConfirmDeleteImage') }}</span>
+      <span>{{ t('ConfirmDeleteImage') }}</span>
     </div>
     <template #footer>
-      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text"
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text"
               @click="displayDeleteDialog = false"/>
-      <Button :label="$t('Delete')" icon="pi pi-check" class="p-button-text"
-              @click="deleteImages"/>
+      <Button :label="t('Delete')" icon="pi pi-check" class="p-button-text"
+              @click="remove"/>
     </template>
   </Dialog>
-  <Dialog :modal="true" v-model:visible="displayAddDialog" :header="$t('Add')"
+  <Dialog :modal="true" v-model:visible="displayAddDialog" :header="t('Add')"
           :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
     <BlockUI :blocked="editBlock">
       <ImageUploader v-model:images="addImages" v-model:generateThumb="generateThumb" />
     </BlockUI>
     <template #footer>
-      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text"
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text"
               @click="displayAddDialog = false" :disabled="editBlock"/>
-      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text"
-              @click="addImage" :disabled="editBlock || addImages.length === 0"/>
+      <Button :label="t('Save')" icon="pi pi-check" class="p-button-text"
+              @click="upload" :disabled="editBlock || addImages.length === 0"/>
     </template>
   </Dialog>
-  <Dialog :modal="true" v-model:visible="displayEditDialog" :header="$t('Edit')"
-          :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
-    <BlockUI :blocked="editBlock">
-      <div class="p-fluid">
-        <div class="field">
-          <InputText id="url" v-model="imageEdit.url" disabled />
-        </div>
-        <div class="formgrid grid">
-          <div class="field col">
-            <label>{{ $t('Name') }}<span style="color: red">*</span></label>
-            <InputText id="name" v-model="imageEdit.name"/>
-          </div>
-          <div class="field col">
-            <label>{{ $t('NameZh') }}</label>
-            <InputText id="nameZh" v-model="imageEdit.nameZh"/>
-          </div>
-          <div class="field col">
-            <label>{{ $t('Type') }}<span style="color: red">*</span></label>
-            <Select v-model="imageEdit.type" :options="imageTypeSet"
-                    optionLabel="label" optionValue="value"/>
-          </div>
-        </div>
-        <div class="field">
-          <label>{{ $t('Description') }}</label>
-          <Textarea v-model="imageEdit.detail" rows="3" cols="20" :autoResize="true"/>
-        </div>
+  <Dialog :modal="true" v-model:visible="displayEditDialog" :header="t('Edit')" class="p-fluid">
+    <div class="flex flex-wrap mb-3" style="display: flex;justify-content: center;">
+      <div class="entry-thumb center">
+        <img role="presentation" :alt="imageEdit.name" :src="imageEdit.thumb"/>
       </div>
-    </BlockUI>
+    </div>
+    <div class="field">
+      <FloatLabel variant="on">
+        <label>{{ t('Path') }}</label>
+        <InputText id="url" v-model="imageEdit.url" disabled />
+      </FloatLabel>
+    </div>
+    <div class="field">
+      <FloatLabel variant="on">
+        <label>{{ t('Name') }}</label>
+        <InputText id="name" v-model="imageEdit.name"/>
+      </FloatLabel>
+    </div>
+    <div class="field">
+      <FloatLabel variant="on">
+        <label>{{ t('Type') }}</label>
+        <Select v-model="imageEdit.type" :options="store.options.imageTypeSet"
+                size="small" optionLabel="label" filter class="static w-full">
+          <template #option="slotProps">
+            <div class="flex align-options-center">
+              <div>{{ slotProps.option.label }}</div>
+            </div>
+          </template>
+        </Select>
+      </FloatLabel>
+    </div>
+    <div class="field">
+      <FloatLabel variant="on">
+        <label>{{ t('Description') }}</label>
+        <InputText size="small" v-model="imageEdit.detail" class="static w-full"/>
+      </FloatLabel>
+    </div>
     <template #footer>
-      <Button :label="$t('Cancel')" icon="pi pi-times" class="p-button-text"
-              @click="displayEditDialog = false" :disabled="editBlock"/>
-      <Button :label="$t('Save')" icon="pi pi-check" class="p-button-text"
-              @click="updateImage" :disabled="editBlock"/>
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text"
+              @click="displayEditDialog = false"/>
+      <Button :label="t('Save')" icon="pi pi-check" class="p-button-text"
+              @click="update"/>
     </template>
   </Dialog>
   <ImageGalleria :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
@@ -125,18 +139,18 @@
 
 <script setup lang="ts">
 import {useToast} from 'primevue/usetoast';
-import {ref, inject, onMounted, defineAsyncComponent, onBeforeMount} from "vue";
-import {API} from '@/config/Web_Helper_Strs.ts';
+import {ref, onMounted, defineAsyncComponent, onBeforeMount} from "vue";
+import {API} from '@/config/Web_Helper_Strs';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntityInfo} from "@/config/Web_Const";
+import {useEntityStore} from "@/logic/entityService";
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 
 const addImages = ref([]);
-const dialogRef = inject("dialogRef");
 const route = useRoute();
 const {t} = useI18n();
 const toast = useToast();
@@ -153,9 +167,11 @@ const displayEditDialog = ref(false);
 const displayDeleteDialog = ref(false);
 const dt = ref();
 const generateThumb = ref(false);
-
+const store = useEntityStore();
 const entityInfo = ref<EntityInfo>();
+
 onBeforeMount(() => {
+  store.fetchOptions();
   entityInfo.value = PublicHelper.getEntityInfo(route);
 });
 
@@ -169,21 +185,12 @@ onMounted(async () => {
     sortOrder: null,
     filters: filters.value
   };
-  await getImages();
+  await load();
 });
 
 const confirmDeleteSelected = () => {
   displayDeleteDialog.value = true;
 }
-
-const imageTypeSet = ref(
-    [
-      {label: '默认', value: 0},
-      {label: '缩略图', value: 1},
-      {label: '封面', value: 2},
-      {label: '其他', value: 99}
-    ]
-);
 
 const filters = ref({
   'entityType': {value: entityInfo.value?.type},
@@ -193,15 +200,15 @@ const filters = ref({
 
 const onPage = (ev) => {
   queryParams.value = ev;
-  getImages();
+  load();
 };
 const onSort = (ev) => {
   queryParams.value = ev;
-  getImages();
+  load();
 };
 const onFilter = () => {
   queryParams.value.filters = filters.value;
-  getImages();
+  load();
 };
 
 const openAddDialog = () => {
@@ -217,6 +224,7 @@ const openEditDialog = (data) => {
     name: data.name,
     nameZh: data.nameZh,
     detail: data.detail,
+    thumb: data.thumb,
   };
   displayEditDialog.value = true;
 }
@@ -225,20 +233,20 @@ const closeEditDialog = () => {
   displayEditDialog.value = false;
 }
 
-const getImages = async () => {
+
+//region CRUD
+const load = async () => {
   loading.value = true;
-  const res = await axios.post(API.GET_IMAGES, queryParams.value);
+  const res = await axios.post(API.IMAGE_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     images.value = res.data.data;
     totalRecords.value = res.data.total
-  } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
   }
   loading.value = false;
   first.value = queryParams.value.first;
 }
 
-const addImage = async () => {
+const upload = async () => {
   const fd = new FormData();
   fd.append('entityType', entityInfo.value?.type);
   fd.append('entityId', entityInfo.value?.id);
@@ -254,30 +262,30 @@ const addImage = async () => {
   fd.append('infos', JSON.stringify(infos));
   fd.append('generateThumb', generateThumb.value);
   editBlock.value = true;
-  const res = await axios.form(API.UPLOAD_IMAGE, fd);
+  const res = await axios.form(API.IMAGE_UPLOAD, fd);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     displayAddDialog.value = false;
-    await getImages();
+    await load();
   } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
   }
   editBlock.value = false;
 }
 
-const updateImage = async () => {
+const update = async () => {
   editBlock.value = true;
   let json = {
     id: imageEdit.value.id,
-    type: imageEdit.value.type,
+    type: imageEdit.value.type.value,
     name: imageEdit.value.name,
     nameZh: imageEdit.value.nameZh,
     detail: imageEdit.value.detail,
   };
-  const res = await axios.post(API.UPDATE_IMAGE, json);
+  const res = await axios.post(API.IMAGE_UPDATE, json);
   if (res.state === axios.SUCCESS) {
     closeEditDialog();
-    await getImages();
+    await load();
     toast.add({severity: 'success', detail: res.message, life: 3000});
   } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
@@ -285,19 +293,21 @@ const updateImage = async () => {
   editBlock.value = false;
 };
 
-const deleteImages = async () => {
+const remove = async () => {
   editBlock.value = true;
-  const res = await axios.delete(API.DELETE_IMAGE, selectedItems.value);
+  const res = await axios.delete(API.IMAGE_DELETE, selectedItems.value);
   if (res.state === axios.SUCCESS) {
     selectedItems.value = [];
     displayDeleteDialog.value = false;
-    await getImages();
+    await load();
     toast.add({severity: 'success', detail: res.message, life: 3000});
   } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
   }
   editBlock.value = false;
 }
+//endregion
+
 const activeIndex = ref(0)
 const displayCustom = ref(false)
 const imageClick = (index) => {

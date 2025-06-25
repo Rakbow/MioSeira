@@ -43,7 +43,7 @@ const like = async () => {
     entityType: entityInfo.value?.type,
     entityId: entityInfo.value?.id
   };
-  const res = await axios.post(API.LIKE_ENTITY, param);
+  const res = await axios.post(API.ENTITY_LIKE, param);
   if (res.state === axios.SUCCESS) {
     likeCount.value++;
     liked.value = true;
@@ -56,7 +56,7 @@ const like = async () => {
 </script>
 
 <template>
-  <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: $t('Like'), class: 'short-tooltip'}">
+  <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: t('Like'), class: 'short-tooltip'}">
     <i class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"></i>
   </Button>
   <span class="ml-1 mr-2">{{ likeCount }}</span>

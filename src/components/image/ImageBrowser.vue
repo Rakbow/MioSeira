@@ -12,37 +12,37 @@
                currentPageReportTemplate="{first} to {last} of {totalRecords}">
       <template #empty>
         <span class="emptyInfo">
-            {{ $t('CommonDataTableEmptyInfo') }}
+            {{ t('CommonDataTableEmptyInfo') }}
         </span>
       </template>
       <template #loading>
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ $t('CommonDataTableLoadingInfo') }}</span>
+        <span>{{ t('CommonDataTableLoadingInfo') }}</span>
       </template>
       <Column style="width: 100px">
         <template #body="slotProps">
           <div class="edit-img-box">
-            <img :src="slotProps.data.thumb70" :alt="slotProps.data.name"
+            <img :src="slotProps.data.thumb" :alt="slotProps.data.name"
                  class="entry-thumb image-click" @click="imageClick(slotProps.index)" />
           </div>
         </template>
       </Column>
-      <Column :header="$t('Type')" field="type" filterField="type"
+      <Column :header="t('Type')" field="type" filterField="type"
               :showFilterMenu="false" :sortable="true" style="width: 5rem;">
         <template #body="slotProps">
           <div style="display: flex;justify-content: center;">
-            <Tag :value="PublicHelper.value2Label(slotProps.data.type, imageTypeSet)"/>
+            <Tag :value="slotProps.data.type.label"/>
           </div>
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <Select v-model="filterModel.value" :options="imageTypeSet" @change="filterCallback()"
+          <Select v-model="filterModel.value" :options="store.options.imageTypeSet" @change="filterCallback()"
                   optionLabel="label" optionValue="value" Style="min-width: 100px"/>
         </template>
       </Column>
-      <Column :header="$t('Info')" field="name">
+      <Column :header="t('Info')" field="name">
         <template #body="slotProps">
-          {{ `${slotProps.data.name}/${slotProps.data.nameZh}`}}<br>
-          {{ `${slotProps.data.addedTime}`}}
+          {{ slotProps.data.name }}<br>
+          {{ slotProps.data.addedTime }}
         </template>
       </Column>
     </DataTable>
@@ -52,16 +52,17 @@
 
 <script setup lang="ts">
 import {useToast} from 'primevue/usetoast';
-import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
-import {API} from '@/config/Web_Helper_Strs.ts';
+import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
+import {API} from '@/config/Web_Helper_Strs';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntityInfo} from "@/config/Web_Const";
+import {useEntityStore} from "@/logic/entityService";
+
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 
-const dialogRef = inject("dialogRef");
 const route = useRoute();
 const {t} = useI18n();
 const toast = useToast();
@@ -73,17 +74,10 @@ const queryParams = ref({});
 const first = ref(0);
 const dt = ref();
 const entityInfo = ref<EntityInfo>();
-
-const imageTypeSet = ref(
-    [
-      {label: '默认', value: 0},
-      {label: '缩略图', value: 1},
-      {label: '封面', value: 2},
-      {label: '其他', value: 99}
-    ]
-);
+const store = useEntityStore();
 
 onBeforeMount(() => {
+  store.fetchOptions();
   entityInfo.value = PublicHelper.getEntityInfo(route);
 })
 
@@ -123,7 +117,7 @@ const onFilter = () => {
 
 const getImages = async () => {
   loading.value = true;
-  const res = await axios.post(API.GET_IMAGES, queryParams.value);
+  const res = await axios.post(API.IMAGE_LIST, queryParams.value);
   if (res.state === axios.SUCCESS) {
     images.value = res.data.data;
     totalRecords.value = res.data.total

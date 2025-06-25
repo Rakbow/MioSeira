@@ -25,12 +25,12 @@ const toast = useToast();
 
 const items = ref([
   {
-    label: 'Item',
+    label: t('Item'),
     icon: 'pi pi-th-large',
     route: '/db/manager/item'
   },
   {
-    label: 'Entry',
+    label: t('Entry'),
     icon: 'pi pi-list',
     route: '/db/manager/entry'
   },

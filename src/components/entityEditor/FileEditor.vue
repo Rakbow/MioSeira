@@ -48,10 +48,10 @@ const close = () => {
 
 <template>
   <BlockUI :blocked="editBlock" class="form-container">
-    <Divider align="center"><b>{{ $t('BasicInfo') }}</b></Divider>
+    <Divider align="center"><b>{{ t('BasicInfo') }}</b></Divider>
     <div class="field">
       <FloatLabel variant="on">
-        <label>{{ $t('Name') }}<i class="required-label pi pi-asterisk"/></label>
+        <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>
         <InputGroup>
           <InputText size="small" v-model="entity.name" class="static w-full"/>
           <InputGroupAddon>{{ entity.extension }}</InputGroupAddon>
@@ -60,27 +60,27 @@ const close = () => {
     </div>
     <div class="field">
       <FloatLabel variant="on">
-        <label>{{ $t('Size') }}<i class="required-label pi pi-asterisk"/></label>
+        <label>{{ t('Size') }}<i class="required-label pi pi-asterisk"/></label>
         <InputText size="small" v-model="entity.size" class="static w-full" disabled/>
       </FloatLabel>
     </div>
     <div class="field">
       <FloatLabel variant="on">
-        <label>{{ $t('Path') }}</label>
+        <label>{{ t('Path') }}</label>
         <InputText size="small" v-model="entity.path" class="static w-full" disabled/>
       </FloatLabel>
     </div>
     <div class="field">
       <FloatLabel variant="on">
-        <label>{{ $t('Remark') }}</label>
+        <label>{{ t('Remark') }}</label>
         <Textarea size="small" v-model="entity!.remark" rows="4" cols="20" class="static w-full"/>
       </FloatLabel>
     </div>
     <div class="relative">
       <div class="bottom-0 right-0">
-        <Button icon="pi pi-times" :label="$t('Cancel')" @click="close"
+        <Button icon="pi pi-times" :label="t('Cancel')" @click="close"
                 class="p-button-text"/>
-        <Button icon="pi pi-save" :label="$t('Save')" @click="submit"/>
+        <Button icon="pi pi-save" :label="t('Save')" @click="submit"/>
       </div>
     </div>
   </BlockUI>
