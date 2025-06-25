@@ -11,6 +11,14 @@ import {i18nConst} from "@/config/i18nConst";
 const {t} = i18n.global;
 let editor: any = null;
 
+export class ImageDTO {
+    type: number = 0;
+    name: string = "";
+    detail: string = "";
+    size: string = "";
+    file: File = null;
+}
+
 export class EntityManageQueryParams {
     first: number = 0;
     rows: number = 10;

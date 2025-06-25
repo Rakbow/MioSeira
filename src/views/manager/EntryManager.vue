@@ -217,7 +217,7 @@ const exportCSV = () => {
       </template>
     </Column>
 
-    <Column :header="t('Name')" field="name" :showFilterMenu="false"
+    <Column :header="t('Name')" field="name" :showFilterMenu="false" :showClearButton="true"
             exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
       <template #body="slotProps">
         <a :href="`${API.ENTRY_DETAIL_PATH}/${slotProps.data.id}`">
