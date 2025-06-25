@@ -79,7 +79,6 @@ const handleRelatedEntry = () => {
 const handleImage = async () => {
   for (const i of dto.value.images) {
     i.base64Code = await PublicHelper.fileToBase64(i.file);
-    i.file = null;
   }
 }
 
@@ -89,8 +88,15 @@ const submit = async () => {
   block.value = true;
   handleRelatedEntry();
   if(dto.value.item.type === META.ITEM_TYPE.ALBUM) handleTracks();
-  await handleImage();
-  const res = await axios.post(API.ITEM_CREATE_ADVANCE, dto.value);
+  // await handleImage();
+
+  const fd = new FormData();
+  dto.value.images.forEach(i => {
+    fd.append('images', i.file)
+    i.file = null;
+  });
+  fd.append('param', JSON.stringify(dto.value));
+  const res = await axios.form(API.ITEM_CREATE_ADVANCE, fd);
   if (res.state === axios.SUCCESS)
     await router.push(`${API.ITEM_DETAIL_PATH}/${res.data}`);
   else

@@ -3,6 +3,7 @@ import creator from "@/components/entityEditor/ItemCreator.vue";
 import i18n from "@/config/i18n";
 import {DynamicDialogInstance, DynamicDialogOptions} from "primevue/dynamicdialogoptions";
 import {META} from "@/config/Web_Const";
+import {ImageDTO} from "@/logic/entityService";
 
 const {t} = i18n.global;
 
@@ -46,7 +47,7 @@ export class ItemCreateDTO {
 
 export class ItemAdvanceCreateDTO {
     item = new ItemCreateDTO();
-    images: any[] = [];
+    images: ImageDTO[] = [];
     generateThumb: boolean = false;
     relatedEntities: any[] = [];
 }

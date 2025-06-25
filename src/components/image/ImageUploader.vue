@@ -2,13 +2,13 @@
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {defineProps, onBeforeMount, ref} from "vue";
 import {META} from "@/config/Web_Const";
-import {useEntityStore} from "@/logic/entityService";
+import {ImageDTO, useEntityStore} from "@/logic/entityService";
 import {useI18n} from "vue-i18n";
 
 const {t} = useI18n();
 const emit = defineEmits(['update:images', 'update:generateThumb']);
 const store = useEntityStore();
-const images = ref([]);
+const images = ref<ImageDTO[]>([]);
 const generateThumb = ref(false);
 const dt = ref();
 const props = defineProps({
@@ -35,21 +35,22 @@ onBeforeMount(async () => {
   generateThumb.value = props.generateThumb;
 })
 
-const selectFile = async (ev) => {
-  if (!ev.files) return;
-  for (let file of ev.files) {
-    let image = {
-      type: store.options.imageTypeSet[0].value,
-      name: file.name.replace(/\.[^/.]+$/, ''),
-      detail: '',
-      size: PublicHelper.formatSize(file.size),
-      file: file
-    }
-    if(image.name === 'Cover') {
-      image.type = store.options.imageTypeSet[2].value;
-    }
+const selectFile = async (ev: any) => {
+  if (!ev.files as File[]) return;
+  let files = ev.files.filter(f => !images.value.some(i => i.file.objectURL === f.objectURL))
+  for (let file: File of files) {
+    let image = new ImageDTO();
+    image.name = file.name.replace(/\.[^/.]+$/, '');
+    image.type = store.options.imageTypeSet[image.name === 'Cover' ? 2 : 0].value;
+    image.size = PublicHelper.formatSize(file.size);
+    image.file = file;
     images.value.push(image)
   }
+  emit('update:images', images.value);
+};
+
+const onImageReorder = (ev) => {
+  images.value = ev.value;
   emit('update:images', images.value);
 };
 
@@ -104,10 +105,11 @@ const changeGenerateThumb = () => {
       <DataTable v-if="images.length > 0" :value="images" class="p-datatable-sm"
                  :alwaysShowPaginator="images.length !== 0" paginator :rows="5"
                  editMode="cell" @cellEditComplete="onImageCellEdite"
-                 scrollable scrollHeight="flex" size="small"
+                 scrollable scrollHeight="flex" size="small" @rowReorder="onImageReorder"
                  paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                  currentPageReportTemplate="{first} to {last} of {totalRecords}">
+        <Column rowReorder headerStyle="width: 3rem" />
         <Column style="width: 6rem">
           <template #body="slotProps">
             <div class="image-thumb-50">
