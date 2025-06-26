@@ -80,7 +80,8 @@ const parseItemSpec = () => {
     <div class="field">
       <FloatLabel variant="on">
         <label>{{ t('Aliases') }}</label>
-        <AutoComplete size="small" v-model="item.aliases" separator="," multiple :typeahead="false" class="static w-full"/>
+        <AutoComplete size="small" v-model="item.aliases" separator="," multiple :typeahead="false"
+                      class="static w-full"/>
       </FloatLabel>
     </div>
 
@@ -129,7 +130,8 @@ const parseItemSpec = () => {
         <FloatLabel variant="on">
           <label v-if="item.type !== META.ITEM_TYPE.BOOK">{{ t('Barcode') }}</label>
           <label v-if="item.type === META.ITEM_TYPE.BOOK">{{ t('BookISBN13') }}</label>
-          <InputText size="small" v-if="item.type !== META.ITEM_TYPE.BOOK" v-model="item!.barcode" class="static w-full"/>
+          <InputText size="small" v-if="item.type !== META.ITEM_TYPE.BOOK" v-model="item!.barcode"
+                     class="static w-full"/>
           <InputGroup v-else class="static w-full">
             <InputText size="small" v-model="item!.barcode"/>
             <Button size="small" icon="pi pi-sync" class="p-button-warning"
@@ -140,7 +142,8 @@ const parseItemSpec = () => {
       <div class="field col">
         <FloatLabel variant="on">
           <label>{{ t('CatalogId') }}</label>
-          <InputText size="small" v-model="item.catalogId" class="static w-full" :disabled="item.type == META.ITEM_TYPE.BOOK"/>
+          <InputText size="small" v-model="item.catalogId" class="static w-full"
+                     :disabled="item.type == META.ITEM_TYPE.BOOK"/>
         </FloatLabel>
       </div>
     </div>
@@ -247,19 +250,65 @@ const parseItemSpec = () => {
       </div>
     </div>
 
-    <div class="field">
-      <FloatLabel variant="on">
-        <label>{{ t('Remark') }}</label>
-        <Textarea size="small" v-model="item!.remark" rows="4" cols="20" class="static w-full"/>
-      </FloatLabel>
-    </div>
-    <div class="relative">
-      <div class="bottom-0 right-0">
-        <Button icon="pi pi-times" :label="t('Cancel')" @click="close"
-                class="p-button-text"/>
-        <Button icon="pi pi-save" :label="t('Save')" @click="submit"/>
+    <template v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(item.type)">
+      <Divider align="center"><b>{{ t('Other') }}</b></Divider>
+      <div class="formgrid grid">
+        <div class="field col">
+          <FloatLabel variant="on">
+            <label>{{ t('Scale') }}</label>
+            <InputText size="small" v-model="item.scale" class="static w-full"/>
+          </FloatLabel>
+        </div>
+        <div class="field col">
+          <FloatLabel variant="on">
+            <label>{{ t('Various') }}</label>
+            <InputText size="small" v-model="item.various" class="static w-full"/>
+          </FloatLabel>
+        </div>
       </div>
-    </div>
+      <div class="formgrid grid">
+        <div class="field col">
+          <FloatLabel variant="on">
+            <label>{{ t('Title') }}</label>
+            <InputText size="small" v-model="item.title" class="static w-full"/>
+          </FloatLabel>
+        </div>
+        <div class="field col">
+          <FloatLabel variant="on">
+            <label>{{ t('TitleEn') }}</label>
+            <InputText size="small" v-model="item.titleEn" class="static w-full"/>
+          </FloatLabel>
+        </div>
+      </div>
+      <div class="field">
+        <FloatLabel variant="on">
+          <label>{{ t('Version') }}</label>
+          <AutoComplete size="small" v-model="item.versions" separator="," multiple :typeahead="false"
+                        class="static w-full"/>
+        </FloatLabel>
+      </div>
+      <div class="field">
+        <FloatLabel variant="on">
+          <label>{{ t('VersionEn') }}</label>
+          <AutoComplete size="small" v-model="item.versionsEn" separator="," multiple :typeahead="false"
+                        class="static w-full"/>
+        </FloatLabel>
+      </div>
+    </template>
+
+      <div class="field">
+        <FloatLabel variant="on">
+          <label>{{ t('Remark') }}</label>
+          <Textarea size="small" v-model="item!.remark" rows="4" cols="20" class="static w-full"/>
+        </FloatLabel>
+      </div>
+      <div class="relative">
+        <div class="bottom-0 right-0">
+          <Button icon="pi pi-times" :label="t('Cancel')" @click="close"
+                  class="p-button-text"/>
+          <Button icon="pi pi-save" :label="t('Save')" @click="submit"/>
+        </div>
+      </div>
   </BlockUI>
 </template>
 

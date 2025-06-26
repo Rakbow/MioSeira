@@ -75,13 +75,6 @@ const handleRelatedEntry = () => {
 
   dto.value.relatedEntities.push(...entities);
 }
-
-const handleImage = async () => {
-  for (const i of dto.value.images) {
-    i.base64Code = await PublicHelper.fileToBase64(i.file);
-  }
-}
-
 //endregion
 
 const submit = async () => {
@@ -96,7 +89,7 @@ const submit = async () => {
     i.file = null;
   });
   fd.append('param', JSON.stringify(dto.value));
-  const res = await axios.form(API.ITEM_CREATE_ADVANCE, fd);
+  const res = await axios.form(API.ITEM_CREATE, fd);
   if (res.state === axios.SUCCESS)
     await router.push(`${API.ITEM_DETAIL_PATH}/${res.data}`);
   else

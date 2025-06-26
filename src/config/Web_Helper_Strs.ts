@@ -9,13 +9,13 @@ export const API = {
 
     //region item
     ITEM_SEARCH_PATH: '/db/item',
+    ITEM_CREATE_PATH: 'item/add',
     ITEM_SEARCH: '/api/db/item/search',
     ITEM_DETAIL_PATH: '/db/item',
     ITEM_GET_DETAIL: '/api/db/item/detail',
     ITEM_LIST: '/api/db/item/list',
     ITEM_CREATE: '/api/db/item/create',
     ITEM_UPDATE: '/api/db/item/update',
-    ITEM_CREATE_ADVANCE: '/api/db/item/create-advance',
 
     ITEM_EXTRA_INFO: '/api/db/item/get-extra-info',
     ITEM_CONVERT_ISBN: '/api/db/item/convert-isbn',

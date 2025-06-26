@@ -103,7 +103,7 @@ const changeGenerateThumb = () => {
     </template>
     <template #content="{ files, removeUploadedFileCallback, removeFileCallback }">
       <DataTable v-if="images.length > 0" :value="images" class="p-datatable-sm"
-                 :alwaysShowPaginator="images.length !== 0" paginator :rows="5"
+                 :alwaysShowPaginator="images.length !== 0" paginator :rows="8"
                  editMode="cell" @cellEditComplete="onImageCellEdite"
                  scrollable scrollHeight="flex" size="small" @rowReorder="onImageReorder"
                  paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {useToast} from "primevue/usetoast";
 import {useRoute, useRouter} from "vue-router";
 import {useDialog} from "primevue/usedialog";
 import {META} from "@/config/Web_Const";
@@ -10,60 +9,52 @@ import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/logic/entryService";
 import "flag-icons/css/flag-icons.min.css";
 import 'material-icons'
-import {EntityManageQueryParams, useEntityStore} from '@/logic/entityService';
+import {EntityManageParam, useEntityStore} from '@/logic/entityService';
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {PColumn} from "@/logic/frame";
 
+const dt = ref();
+const {t} = useI18n();
+const dialog = useDialog();
 const store = useEntityStore();
 const route = useRoute();
 const router = useRouter();
-const first = ref();
-const dialog = useDialog();
-const toast = useToast();
-const {t} = useI18n();
-const entries = ref([]);
-const dt = ref();
-const loading = ref(false);
-const editBlock = ref(false);
-const totalRecords = ref(0);
-const selectedEntries = ref([]);
-const selectedColumns = ref(new Array<PColumn>());
-const columns = ref([
-    new PColumn('remark', t('Remark')),
-    new PColumn('addedTime', t('AddedTime')),
-    new PColumn('editedTime', t('EditedTime'))
-]);
-const queryParams = ref(new EntityManageQueryParams());
-const filters = ref({
-  type: {value: store.entryCurrent},
-  name: {value: ''}
-});
+const param = ref(new EntityManageParam());
 const entryType = ref();
 
 onBeforeMount(async () => {
-  entryType.value = META.ENTRY_TYPE_SET[store.entryCurrent - 1];
+  entryType.value = META.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
+  param.value.query.initFilters({
+    type: {value: store.entryCurrent},
+    keyword: {value: ''}
+  });
+  param.value.initColumns([
+    new PColumn('remark', t('Remark')),
+    new PColumn('addedTime', t('AddedTime')),
+    new PColumn('editedTime', t('EditedTime'))
+  ])
 })
 
 onMounted(() => {
   initQueryParam();
-  getEntries();
+  load();
 })
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null)
     entryType.value = META.ENTRY_TYPE_SET[0];
   store.entryCurrent = parseInt(entryType.value.value);
-  queryParams.value.filters.type.value = store.entryCurrent;
-  getEntries();
+  param.value.query.filters.type.value = store.entryCurrent;
+  param.value.query.initPage(dt.value.rows);
+  load();
 }
 
 const initQueryParam = async () => {
   let page: number = PublicHelper.isNotUndefined(route.query.page) ? parseInt(route.query.page!.toString()) : 1;
 
-  queryParams.value.first = (page - 1) * dt.value.rows;
-  queryParams.value.rows = dt.value.rows;
-  queryParams.value.filters = filters.value;
-  queryParams.value.filters.name.value = PublicHelper.isNotUndefined(route.query.name) ? route.query.name!.toString() : '';
+  param.value.query.first = (page - 1) * dt.value.rows;
+  param.value.query.rows = dt.value.rows;
+  param.value.query.filters.keyword.value = PublicHelper.isNotUndefined(route.query.keyword) ? route.query.keyword!.toString() : '';
 }
 
 const updateQueryParam = () => {
@@ -71,24 +62,24 @@ const updateQueryParam = () => {
   const currentQueryParams = {...route.query};
 
   // 修改查询参数的值
-  currentQueryParams.page = (queryParams.value.first / dt.value.rows + 1).toString();
+  currentQueryParams.page = (param.value.query.first / dt.value.rows + 1).toString();
   currentQueryParams.size = dt.value.rows;
 
-  if (PublicHelper.isNotEmpty(queryParams.value.filters.type.value)) {
-    currentQueryParams.type = queryParams.value.filters.type.value;
+  if (PublicHelper.isNotEmpty(param.value.query.filters.type.value)) {
+    currentQueryParams.type = param.value.query.filters.type.value;
   }else {
     delete currentQueryParams.type;
   }
 
-  if (PublicHelper.isNotEmpty(queryParams.value.filters.name.value)) {
-    currentQueryParams.name = queryParams.value.filters.name.value;
+  if (PublicHelper.isNotEmpty(param.value.query.filters.keyword.value)) {
+    currentQueryParams.keyword = param.value.query.filters.keyword.value;
   }else {
-    delete currentQueryParams.name;
+    delete currentQueryParams.keyword;
   }
 
-  if (PublicHelper.isNotEmpty(queryParams.value.sortField)) {
-    currentQueryParams.sortField = queryParams.value.sortField;
-    currentQueryParams.sortOrder = queryParams.value.sortOrder.toString();
+  if (PublicHelper.isNotEmpty(param.value.query.sortField)) {
+    currentQueryParams.sortField = param.value.query.sortField;
+    currentQueryParams.sortOrder = param.value.query.sortOrder.toString();
   }else {
     delete currentQueryParams.sortField;
     delete currentQueryParams.sortOrder;
@@ -100,44 +91,35 @@ const updateQueryParam = () => {
 //endregion
 
 const onPage = (ev: any) => {
-  queryParams.value.first = ev.first;
-  queryParams.value.rows = ev.rows;
-  getEntries();
+  param.value.query.first = ev.first;
+  param.value.query.rows = ev.rows;
+  load();
 };
 const onSort = (ev: any) => {
-  queryParams.value.initPage(dt.value.rows);
-  queryParams.value.sortField = ev.sortField;
-  queryParams.value.sortOrder = ev.sortOrder;
-  getEntries();
+  param.value.query.initPage(dt.value.rows);
+  param.value.query.sortField = ev.sortField;
+  param.value.query.sortOrder = ev.sortOrder;
+  load();
 };
 const onFilter = () => {
-  queryParams.value.initPage(dt.value.rows);
-  queryParams.value.filters = filters.value;
-  getEntries();
+  param.value.query.initPage(dt.value.rows);
+  load();
 };
-
-const onToggle = (val: PColumn[]) => {
-  selectedColumns.value = columns.value.filter(col => val.includes(col));
-};
-
-const getEntries = async () => {
-
-  if(PublicHelper.isEmpty(queryParams.value.sortField)) {
-    queryParams.value.sortField = 'items';
-    queryParams.value.sortOrder = -1;
+const load = async () => {
+  if(PublicHelper.isEmpty(param.value.query.sortField)) {
+    param.value.query.sortField = 'items';
+    param.value.query.sortOrder = -1;
   }
-  first.value = queryParams.value.first;
+  param.value.first = param.value.query.first;
   updateQueryParam();
 
-  loading.value = true;
-  const res = await axios.post(API.ENTRY_GET_LIST, queryParams.value);
+  param.value.load();
+  const res = await axios.post(API.ENTRY_GET_LIST, param.value.query);
   if (res.state === axios.SUCCESS) {
-    entries.value = res.data.data;
-    totalRecords.value = res.data.total
-  } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    param.value.data = res.data.data;
+    param.value.total = res.data.total
   }
-  loading.value = false;
+  param.value.endLoad();
 }
 
 //region item CRUD
@@ -152,20 +134,24 @@ const exportCSV = () => {
   dt.value.exportCSV();
 };
 
+const onToggle = (val: PColumn[]) => {
+  param.value.selectedColumns = param.value.columns.filter(col => val.includes(col));
+};
+
 </script>
 
 <template>
-  <DataTable ref="dt" :value="entries" class="p-datatable-sm small-font" :alwaysShowPaginator="entries.length !== 0"
-             lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
+  <DataTable ref="dt" :value="param.data" class="p-datatable-sm small-font" :alwaysShowPaginator="param.data.length !== 0"
+             lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
-             paginator :rows="10" :first="first" stripedRows size="small"
-             v-model:selection="selectedEntries" dataKey="id" removableSort
+             paginator :rows="10" :first="param.first" stripedRows size="small"
+             v-model:selection="param.selectedData" dataKey="id" removableSort
              scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
              currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
     <template #header>
-      <BlockUI :blocked="editBlock" class="relative">
+      <BlockUI :blocked="param.block" class="relative">
         <SelectButton size="small" v-model="entryType" :options="META.ENTRY_TYPE_SET"
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
@@ -175,19 +161,19 @@ const exportCSV = () => {
           </span>
           </template>
         </SelectButton>
-        <Button variant="text" severity="danger" :disabled="!selectedEntries.length"
+        <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
                 outlined @click="confirmDeleteSelected">
           <template #icon>
             <span class="material-symbols-outlined">delete_forever</span>
           </template>
         </Button>
-        <Button variant="text" severity="help" :disabled="selectedEntries.length"
+        <Button variant="text" severity="help" :disabled="param.selectedData.length"
                 outlined @click="exportCSV">
           <template #icon>
-            <span class="material-symbols-outlined">open_in_new</span>
+            <span class="material-symbols-outlined">file_export</span>
           </template>
         </Button>
-        <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
+        <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
                      @update:modelValue="onToggle" class="text-end" size="small"
                      :placeholder="t('SelectedDisplayColumns')"
                      style="width: 200px;right: 0;position: absolute;top: 50%;transform: translateY(-50%)"/>
@@ -203,11 +189,14 @@ const exportCSV = () => {
       <span>{{ t('CommonDataTableLoadingInfo') }}</span>
     </template>
 
-    <Column selectionMode="multiple" style="width: 45px" exportable/>
+    <Column selectionMode="multiple" style="width: 35px" exportable/>
     <Column style="width: 45px">
       <template #body="slotProps">
-        <Button class="p-button-link" size="small" icon="pi pi-pencil"
-                @click="loadEditor(slotProps.data, dialog)"/>
+        <Button variant="text" outlined size="small" @click="loadEditor(slotProps.data, dialog)">
+          <template #icon>
+            <span style="font-size: 15px" class="material-symbols-outlined">edit_square</span>
+          </template>
+        </Button>
       </template>
     </Column>
     <Column style="width: 35px">
@@ -217,12 +206,12 @@ const exportCSV = () => {
       </template>
     </Column>
 
-    <Column :header="t('Name')" field="name" :showFilterMenu="false" :showClearButton="true"
-            exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
-      <template #body="slotProps">
-        <a :href="`${API.ENTRY_DETAIL_PATH}/${slotProps.data.id}`">
-          <div class="text-container" :title="slotProps.data.name">
-            {{ slotProps.data.name }}
+    <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
+            exportHeader="name" :sortable="true">
+      <template #body="{data}">
+        <a :href="`${API.ENTRY_DETAIL_PATH}/${data.id}`">
+          <div class="text-container" :title="data.name">
+            {{ data!.name }}
           </div>
         </a>
       </template>
@@ -247,13 +236,13 @@ const exportCSV = () => {
     <Column :header="t('Gender')" :sortable="true" field="gender" :showFilterMenu="false"
             v-if="store.entryCurrent === META.ENTRY_TYPE.PERSON
              || store.entryCurrent === META.ENTRY_TYPE.CHARACTER" style="width: 60px">
-      <template #body="slotProps">
-        <Tag :value="slotProps.data.gender.label"/>
+      <template #body="{data}">
+        <Tag :value="data!.gender.label"/>
       </template>
     </Column>
     <Column :header="t('Item')" field="items" :sortable="true" :showFilterMenu="false" style="width: 60px" />
 
-    <Column v-for="(col, index) of selectedColumns" :field="col.field"
+    <Column v-for="(col, index) of param.selectedColumns" :field="col.field"
             :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
   </DataTable>
 </template>

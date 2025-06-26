@@ -87,7 +87,7 @@ const openEditDialog = () => {
     props: {
       header: `${t('Images')}${t('Edit')}`,
       style: {
-        width: '900px',
+        width: '750px',
       },
       breakpoints: {
         '960px': '80vw',

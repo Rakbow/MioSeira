@@ -21,7 +21,7 @@ onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
 })
 
-onMounted(() => {
+              (() => {
   getRelatedItems();
 })
 const getRelatedItems = async () => {

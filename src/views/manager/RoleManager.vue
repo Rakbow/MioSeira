@@ -1,106 +1,95 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onBeforeMount, onMounted, ref} from "vue";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute, useRouter} from "vue-router";
-import _isEmpty from "lodash/isEmpty";
-import _isUndefined from "lodash/isUndefined";
 import {useI18n} from "vue-i18n";
 import {API} from "@/config/Web_Helper_Strs";
+import {EntityManageParam} from "@/logic/entityService";
 
-//region query
+const {t} = useI18n();
+const dt = ref();
+const toast = useToast();
 const route = useRoute();
 const router = useRouter();
-const first = ref();
+const param = ref(new EntityManageParam());
+const itemAdd = ref({});
+const itemEdit = ref({});
+
+onBeforeMount(async () => {
+  param.value.query.initFilters({
+    keyword: {value: ''}
+  });
+})
+onMounted(() => {
+  initQueryParam();
+  load();
+})
+
 const initQueryParam = async () => {
-  let page = !_isUndefined(route.query.page) ? route.query.page : 1;
-  filters.value.name.value = !_isUndefined(route.query.name) ? route.query.name : '';
-  filters.value.nameZh.value = !_isUndefined(route.query.nameZh) ? route.query.nameZh : '';
-  filters.value.nameEn.value = !_isUndefined(route.query.nameEn) ? route.query.nameEn : '';
-  loading.value = true;
-  queryParams.value = {
-    first: (page - 1) * dt.value.rows,
-    rows: dt.value.rows,
-    sortField: null,
-    sortOrder: null,
-    filters: filters.value
-  };
-  await getItems();
-  loading.value = false;
+  let page: number = PublicHelper.isNotUndefined(route.query.page) ? parseInt(route.query.page!.toString()) : 1;
+
+  param.value.query.first = (page - 1) * dt.value.rows;
+  param.value.query.rows = dt.value.rows;
+  param.value.query.filters.keyword.value = PublicHelper.isNotUndefined(route.query.keyword) ? route.query.keyword!.toString() : '';
 }
 
 const updateQueryParam = () => {
-  // 获取当前查询参数对象
-  const currentQueryParams :any = {};
-
-  // 修改查询参数的值
-  currentQueryParams.page = queryParams.value.first/dt.value.rows + 1;
+  const currentQueryParams = {...route.query};
+  currentQueryParams.page = (param.value.query.first / dt.value.rows + 1).toString();
   currentQueryParams.size = dt.value.rows;
-  if(!_isEmpty(queryParams.value.filters.name.value))
-    currentQueryParams.name = queryParams.value.filters.name.value;
-  if(!_isEmpty(queryParams.value.filters.nameZh.value))
-    currentQueryParams.nameZh = queryParams.value.filters.nameZh.value;
-  if(!_isEmpty(queryParams.value.filters.nameEn.value))
-    currentQueryParams.nameEn = queryParams.value.filters.nameEn.value;
+
+  if (PublicHelper.isNotEmpty(param.value.query.filters.keyword.value)) {
+    currentQueryParams.keyword = param.value.query.filters.keyword.value;
+  }else {
+    delete currentQueryParams.keyword;
+  }
+
+  if (PublicHelper.isNotEmpty(param.value.query.sortField)) {
+    currentQueryParams.sortField = param.value.query.sortField;
+    currentQueryParams.sortOrder = param.value.query.sortOrder.toString();
+  }else {
+    delete currentQueryParams.sortField;
+    delete currentQueryParams.sortOrder;
+  }
 
   // 使用 router.push 更新 URL
-  router.push({ path: route.path, query: currentQueryParams });
+  router.push({path: route.path, query: currentQueryParams});
 };
 //endregion
 
-
-onMounted(() => {
-  initQueryParam();
-})
-
-
-const toast = useToast();
-const {t} = useI18n();
-const items = ref([]);
-const itemAdd = ref({});
-const itemEdit = ref({});
-const dt = ref();
-const filters = ref({
-  'name': {value: ''},
-  'nameZh': {value: ''},
-  'nameEn': {value: ''},
-});
-const loading = ref(false);
-const editBlock = ref(false);
-const totalRecords = ref(0);
-const selectedItems = ref([]);
-const selectedColumns = ref([]);
-const columns = ref([]);
-const queryParams = ref({});
-const option = ref({});
-
-const onPage = (event) => {
-  queryParams.value = event;
-  getItems();
+const onPage = (ev: any) => {
+  param.value.query.first = ev.first;
+  param.value.query.rows = ev.rows;
+  load();
 };
-const onSort = (event) => {
-  queryParams.value = event;
-  getItems();
+const onSort = (ev: any) => {
+  param.value.query.initPage(dt.value.rows);
+  param.value.query.sortField = ev.sortField;
+  param.value.query.sortOrder = ev.sortOrder;
+  load();
 };
 const onFilter = () => {
-  queryParams.value.filters = filters.value;
-  getItems();
+  param.value.query.initPage(dt.value.rows);
+  load();
 };
 
-const getItems = async () => {
-  loading.value = true;
-  const res = await axios.post(API.ROLE_LIST, queryParams.value);
-  if (res.state === axios.SUCCESS) {
-    items.value = res.data.data;
-    totalRecords.value = res.data.total
-  } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
-  }
-  loading.value = false;
-  first.value = queryParams.value.first;
+const load = async () => {
+  param.value.first = param.value.query.first;
   updateQueryParam();
+  param.value.load();
+  const res = await axios.post(API.ROLE_LIST, param.value.query);
+  if (res.state === axios.SUCCESS) {
+    param.value.data = res.data.data;
+    param.value.total = res.data.total
+  }
+  param.value.endLoad();
 }
+
+const exportCSV = () => {
+  dt.value.exportCSV();
+};
 
 //region item CRUD
 
@@ -133,73 +122,67 @@ const confirmDeleteSelected = () => {
 }
 
 const submitAddItem = async () => {
-  loading.value = true;
+  param.value.load();
   const res = await axios.post(API.ROLE_CREATE, itemAdd.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeAddDialog();
-    await getItems();
+    await load();
   } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
   }
-  loading.value = false;
+  param.value.endLoad();
 }
 
 const submitEditItem = async () => {
-  loading.value = true;
+  param.value.load();
   const res = await axios.post(API.ROLE_UPDATE, itemEdit.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
     closeEditDialog();
-    await getItems();
+    await load();
   } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
   }
-  loading.value = false;
+  param.value.endLoad();
 }
 
 const refreshItem = async () => {
-  loading.value = true;
+  param.value.load();
   const res = await axios.post(API.REFRESH_ROLE);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
-    await getItems();
+    await load();
   } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
   }
-  loading.value = false;
+  param.value.endLoad();
 }
 //endregion
-
-const exportCSV = () => {
-  dt.value.exportCSV();
-};
-
-
 
 </script>
 
 <template>
   <div class="flex justify-content-center">
-    <DataTable ref="dt" :value="items" class="p-datatable-sm" :alwaysShowPaginator="items.length !== 0"
-               lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
+    <DataTable ref="dt" :value="param.data" class="p-datatable-sm small-font" size="small"
+               :alwaysShowPaginator="param.data.length !== 0"
+               lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
-               filterDisplay="row" :globalFilterFields="['name', 'nameZh', 'nameEn']"
-               paginator :rows="10" :first="first" stripedRows columnResizeMode="fit"
-               v-model:selection="selectedItems" dataKey="id" removableSort
-               scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
+               filterDisplay="row" paginator :rows="10" :first="param.first" stripedRows
+               v-model:selection="param.selectedData" dataKey="id" removableSort
+               scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="{first} to {last} of {totalRecords}"
                responsiveLayout="scroll">
       <template #header>
-        <BlockUI :blocked="editBlock" class="grid">
+        <BlockUI :blocked="param.block" class="grid">
           <div class="col-8">
             <Button :label="t('Add')" icon="pi pi-plus" severity="success" size="small" class="mr-2"
                     @click="openAddDialog" style="width: 6em"/>
             <Button :label="t('Delete')" icon="pi pi-trash" severity="danger" size="small" class="mr-2"
                     @click="confirmDeleteSelected"
-                    :disabled="!selectedItems || !selectedItems.length" style="width: 6em"/>
+                    :disabled="!param.selectedData || !param.selectedData.length" style="width: 6em"/>
             <Button :label="t('Export')" icon="pi pi-external-link" severity="help" size="small" class="mr-2"
                     @click="exportCSV()" style="width: 6em"/>
             <Button :label="t('Refresh')" icon="pi pi-refresh" severity="info" size="small" class="mr-2"
@@ -222,29 +205,21 @@ const exportCSV = () => {
           <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)" />
         </template>
       </Column>
-      <Column :header="t('Name')" field="name" :showFilterMenu="false"
-              exportHeader="name" sortable style="flex: 0 0 5rem">
+      <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false"
+              exportHeader="name" :sortable="true">
         <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
+          <InputText size="small" type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
         </template>
       </Column>
-      <Column :header="t('NameZh')" field="nameZh" sortable :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column :header="t('NameEn')" field="nameEn" sortable :showFilterMenu="false">
-        <template #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()"/>
-        </template>
-      </Column>
-      <Column v-for="(col, index) of selectedColumns" :field="col.field"
-              :header="col.header" :key="col.field + '_' + index" sortable/>
+      <Column :header="t('NameZh')" field="nameZh" :sortable="true" />
+      <Column :header="t('NameEn')" field="nameEn" :sortable="true" />
+      <Column v-for="(col, index) of param.selectedColumns" :field="col.field"
+              :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
     </DataTable>
   </div>
   <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '400px'}" :header="t('Add')"
           class="p-fluid">
-    <BlockUI :blocked="editBlock">
+    <BlockUI :blocked="param.block">
       <div class="formgrid grid">
         <label class="font-bold block mb-2">{{ t('Name') }}<span style="color: red">*</span></label>
         <InputText v-model="itemAdd.name"/>
@@ -260,15 +235,15 @@ const exportCSV = () => {
     </BlockUI>
     <template #footer>
       <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeAddDialog"
-              :disabled="editBlock"/>
+              :disabled="param.block"/>
       <Button :label="t('Save')" icon="pi pi-check" class="p-button-text" @click="submitAddItem"
-              :disabled="editBlock"/>
+              :disabled="param.block"/>
     </template>
   </Dialog>
 
   <Dialog :modal="true" v-model:visible="displayEditDialog" :style="{width: '400px'}" :header="t('Edit')"
           class="p-fluid">
-    <BlockUI :blocked="editBlock">
+    <BlockUI :blocked="param.block">
       <div class="formgrid grid">
         <label class="font-bold block mb-2">{{ t('Name') }}<span style="color: red">*</span></label>
         <InputText v-model="itemEdit.name"/>
@@ -284,9 +259,9 @@ const exportCSV = () => {
     </BlockUI>
     <template #footer>
       <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text" @click="closeEditDialog"
-              :disabled="editBlock"/>
+              :disabled="param.block"/>
       <Button :label="t('Save')" icon="pi pi-check" class="p-button-text" @click="submitEditItem"
-              :disabled="editBlock"/>
+              :disabled="param.block"/>
     </template>
   </Dialog>
 

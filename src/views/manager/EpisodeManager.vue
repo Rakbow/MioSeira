@@ -1,119 +1,96 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {useToast} from "primevue/usetoast";
 import {useRoute, useRouter} from "vue-router";
-import _isEmpty from "lodash/isEmpty";
-import _isUndefined from "lodash/isUndefined";
 import {API} from '@/config/Web_Helper_Strs';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
 import 'material-icons'
+import {PublicHelper} from "@/toolkit/publicHelper";
+import {EntityManageParam} from "@/logic/entityService";
+import {PColumn} from "@/logic/frame";
 
+const {t} = useI18n();
+const dt = ref();
 const route = useRoute();
 const router = useRouter();
-const first = ref();
-const toast = useToast();
-const {t} = useI18n();
-const episodes = ref([]);
-const dt = ref();
-const filters = ref({
-  'name': {value: ''},
-});
-const loading = ref(false);
-const editBlock = ref(false);
-const totalRecords = ref(0);
-const selectedItems = ref([]);
-const selectedColumns = ref([]);
-const columns = ref([
-  {field: 'addedTime', header: t('AddedTime')},
-  {field: 'editedTime', header: t('EditedTime')},
-]);
-const queryParams = ref({});
+const param = ref(new EntityManageParam());
 
-const initPageSize = () => {
-  queryParams.value.first = 0;
-  queryParams.value.rows = dt.value.rows;
-}
+onBeforeMount(async () => {
+  param.value.query.initFilters({
+    keyword: {value: ''}
+  });
+  param.value.initColumns([
+    new PColumn('remark', t('Remark')),
+    new PColumn('addedTime', t('AddedTime')),
+    new PColumn('editedTime', t('EditedTime'))
+  ])
+})
+
+onMounted(() => {
+  initQueryParam();
+  load();
+})
 
 const initQueryParam = async () => {
-  let page = !_isUndefined(route.query.page) ? route.query.page : 1;
-  filters.value.name.value = !_isUndefined(route.query.name) ? route.query.name : '';
-  loading.value = true;
-  queryParams.value = {
-    first: (page - 1) * dt.value.rows,
-    rows: dt.value.rows,
-    sortField: null,
-    sortOrder: null,
-    filters: filters.value
-  };
-  await getData();
-  loading.value = false;
+  let page: number = PublicHelper.isNotUndefined(route.query.page) ? parseInt(route.query.page!.toString()) : 1;
+
+  param.value.query.first = (page - 1) * dt.value.rows;
+  param.value.query.rows = dt.value.rows;
+  param.value.query.filters.keyword.value = PublicHelper.isNotUndefined(route.query.keyword) ? route.query.keyword!.toString() : '';
 }
 
 const updateQueryParam = () => {
-  // 获取当前查询参数对象
   const currentQueryParams = {...route.query};
-
-  // 修改查询参数的值
-  currentQueryParams.page = (queryParams.value.first / dt.value.rows + 1).toString();
+  currentQueryParams.page = (param.value.query.first / dt.value.rows + 1).toString();
   currentQueryParams.size = dt.value.rows;
-  if (!_isEmpty(queryParams.value.filters.name.value))
-    currentQueryParams.name = queryParams.value.filters.name.value;
+
+  if (PublicHelper.isNotEmpty(param.value.query.filters.keyword.value)) {
+    currentQueryParams.keyword = param.value.query.filters.keyword.value;
+  }else {
+    delete currentQueryParams.keyword;
+  }
+
+  if (PublicHelper.isNotEmpty(param.value.query.sortField)) {
+    currentQueryParams.sortField = param.value.query.sortField;
+    currentQueryParams.sortOrder = param.value.query.sortOrder.toString();
+  }else {
+    delete currentQueryParams.sortField;
+    delete currentQueryParams.sortOrder;
+  }
 
   // 使用 router.push 更新 URL
   router.push({path: route.path, query: currentQueryParams});
 };
 //endregion
 
-
-onMounted(() => {
-  initQueryParam();
-})
-
-onBeforeMount(async () => {
-})
-
-const onPage = (ev) => {
-  queryParams.value = ev;
-  getData();
+const onPage = (ev: any) => {
+  param.value.query.first = ev.first;
+  param.value.query.rows = ev.rows;
+  load();
 };
-const onSort = (ev) => {
-  initPageSize();
-  queryParams.value = ev;
-  getData();
+const onSort = (ev: any) => {
+  param.value.query.initPage(dt.value.rows);
+  param.value.query.sortField = ev.sortField;
+  param.value.query.sortOrder = ev.sortOrder;
+  load();
 };
 const onFilter = () => {
-  initPageSize();
-  queryParams.value.filters = filters.value;
-  getData();
+  param.value.query.initPage(dt.value.rows);
+  load();
 };
 
-const onToggle = (val) => {
-  selectedColumns.value = columns.value.filter(col => val.includes(col));
-};
-
-const getData = async () => {
-  loading.value = true;
-  const res = await axios.post(API.EPISODE_GET_LIST, queryParams.value);
-  if (res.state === axios.SUCCESS) {
-    episodes.value = res.data.data;
-    totalRecords.value = res.data.total
-  } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
-  }
-  loading.value = false;
-  first.value = queryParams.value.first;
+const load = async () => {
+  param.value.first = param.value.query.first;
   updateQueryParam();
+  param.value.load();
+  const res = await axios.post(API.EPISODE_GET_LIST, param.value.query);
+  if (res.state === axios.SUCCESS) {
+    param.value.data = res.data.data;
+    param.value.total = res.data.total
+  }
+  param.value.endLoad();
 }
-
-//region item CRUD
-const displayDeleteDialog = ref(false);
-
-const confirmDeleteSelected = () => {
-  displayDeleteDialog.value = true;
-}
-//endregion
 
 const exportCSV = () => {
   dt.value.exportCSV();
@@ -122,34 +99,24 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="episodes" class="p-datatable-sm small-font" :alwaysShowPaginator="episodes.length !== 0"
-             lazy v-model:filters="filters" :totalRecords="totalRecords" :loading="loading"
+  <DataTable ref="dt" :value="param.data" class="p-datatable-sm small-font" :alwaysShowPaginator="param.data.length !== 0"
+             lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
-             paginator :rows="10" :first="first" stripedRows size="small"
-             v-model:selection="selectedItems" dataKey="id" removableSort
+             paginator :rows="10" :first="param.first" stripedRows size="small"
+             v-model:selection="param.selectedData" dataKey="id" removableSort
              scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
+             currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll"
+             rowGroupMode="rowspan" groupRowsBy="parent.name">
     <template #header>
-      <BlockUI :blocked="editBlock" class="relative">
-
-        <Button variant="text" severity="danger" :disabled="!selectedItems.length"
-                outlined @click="confirmDeleteSelected">
-          <template #icon>
-            <span class="material-symbols-outlined">delete_forever</span>
-          </template>
-        </Button>
-        <Button variant="text" severity="help" :disabled="selectedItems.length"
+      <BlockUI :blocked="param.block" class="relative">
+        <Button variant="text" severity="help" :disabled="param.selectedData.length"
                 outlined @click="exportCSV">
           <template #icon>
-            <span class="material-symbols-outlined">open_in_new</span>
+            <span class="material-symbols-outlined">file_export</span>
           </template>
         </Button>
-        <MultiSelect :model-value="selectedColumns" :options="columns" optionLabel="header"
-                     @update:modelValue="onToggle" size="small"
-                     :placeholder="t('SelectedDisplayColumns')"
-                     style="width: 200px;right: 0;position: absolute;top: 50%;transform: translateY(-50%)"/>
       </BlockUI>
     </template>
     <template #empty>
@@ -162,45 +129,49 @@ const exportCSV = () => {
       <span>{{ t('CommonDataTableLoadingInfo') }}</span>
     </template>
 
-    <Column style="flex: 0 0 3rem">
+    <Column style="width: 45px">
       <template #body>
-        <Button class="p-button-link" size="small" icon="pi pi-pencil" />
+        <Button variant="text" outlined size="small">
+          <template #icon>
+            <span style="font-size: 15px" class="material-symbols-outlined">edit_square</span>
+          </template>
+        </Button>
       </template>
     </Column>
-
-    <Column :header="t('Title')" field="title" :showFilterMenu="false"
-            exportHeader="title" :sortable="true">
-      <template #body="slotProps">
-        <a :href="`${API.EPISODE_DETAIL}/${slotProps.data.id}`">
-          <div class="text-container" :title="slotProps.data.name">
-            {{ slotProps.data.name }}
+    <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
+            exportHeader="name" :sortable="true">
+      <template #body="{data}">
+        <a :href="`${API.EPISODE_DETAIL}/${data.id}`">
+          <div class="text-container" :title="data.name">
+            {{ data!.name }}
           </div>
         </a>
       </template>
       <template #filter="{filterModel,filterCallback}">
-        <InputText class="w-full" size="small" type="text" v-model="filterModel.value"
+        <InputText style="width: 70%" size="small" type="text" v-model="filterModel.value"
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column :header="t('Duration')" field="duration" :showFilterMenu="false" />
-    <Column :header="t('Index')" :showFilterMenu="false">
-      <template #body="slotProps">
-        {{ `${slotProps.data.discNo}-${slotProps.data.serial}` }}
+    <Column :header="t('Duration')" field="duration" :showFilterMenu="false" :sortable="true" style="width: 60px" />
+    <Column :header="t('Index')" :showFilterMenu="false" style="width: 50px">
+      <template #body="{data}">
+        {{ `${data!.discNo}-${data!.serial}` }}
       </template>
     </Column>
 
-    <Column header="Parent" :showFilterMenu="false">
-      <template #body="slotProps">
-        <a :href="`/db/${slotProps.data.parent.tableName}/${slotProps.data.parent.id}`">
-          <div class="text-container" :title="slotProps.data.parent.name">
-            {{ slotProps.data.parent.name }}
-          </div>
+    <Column field="parent.name" header="Parent" style="width: 300px" :bodyStyle="{position: 'relative'}">
+      <template #body="{data}">
+        <a :title="data.parent.name"
+           :href="`/db/${data.parent.tableName}/${data.parent.id}`"
+           style="width: 280px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
+           position: absolute;margin-top: 10px;top: 0">
+          {{ data!.parent.name }}
         </a>
       </template>
     </Column>
-
-    <Column v-for="(col, index) of selectedColumns" :field="col.field"
-            :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
+    <Column :header="t('AddedTime')" field="addedTime" :showFilterMenu="false" :sortable="true" style="width: 140px" />
+    <Column :header="t('EditedTime')" field="editedTime" :showFilterMenu="false" :sortable="true" style="width: 140px" />
+    <Column :header="t('File')" field="fileCount" style="width: 40px" />
   </DataTable>
 </template>
 

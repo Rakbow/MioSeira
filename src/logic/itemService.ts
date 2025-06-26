@@ -1,5 +1,4 @@
 import editor from "@/components/entityEditor/ItemEditor.vue";
-import creator from "@/components/entityEditor/ItemCreator.vue";
 import i18n from "@/config/i18n";
 import {DynamicDialogInstance, DynamicDialogOptions} from "primevue/dynamicdialogoptions";
 import {META} from "@/config/Web_Const";
@@ -104,33 +103,6 @@ export const loadEditor = (item: any, dialog: {
                 if (options.data.isUpdate) {
                     location.reload();
                 }
-            }
-        }
-    });
-}
-
-export const loadCreator = (dialog: {
-    open: (content: any, options?: (DynamicDialogOptions | undefined)) => DynamicDialogInstance
-}) => {
-    dialog.open(creator, {
-        props: {
-            header: t('Add'),
-            style: {
-                width: '800px',
-            },
-            breakpoints: {
-                '960px': '80vw',
-                '640px': '70vw'
-            },
-            modal: true,
-            closable: false
-        },
-        data: {},
-        onClose: (options) => {
-            // @ts-ignore
-            if (options.data !== undefined) {
-                // @ts-ignore
-                return options.data.isUpdate;
             }
         }
     });

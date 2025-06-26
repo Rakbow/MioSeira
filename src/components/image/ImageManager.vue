@@ -11,7 +11,7 @@
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="{first} to {last} of {totalRecords}"
-               responsiveLayout="scroll">
+               responsiveLayout="scroll" tableStyle="font-size: 11px">
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">
           <Button variant="text" outlined @click="openAddDialog">
@@ -38,32 +38,35 @@
       </template>
       <Column selectionMode="multiple" style="width: 30px" exportable/>
       <Column style="width: 30px">
-        <template #body="slotProps">
-          <Button class="p-button-link" icon="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
+        <template #body="{data}">
+          <Button variant="text" outlined size="small" @click="openEditDialog(data)">
+            <template #icon>
+              <span style="font-size: 15px" class="material-symbols-outlined">edit_square</span>
+            </template>
+          </Button>
         </template>
       </Column>
-      <Column :header="t('Image')" style="width: 50px">
+      <Column :header="t('Image')" style="width: 50px" bodyClass="text-center">
         <template #body="slotProps">
-          <img :src="slotProps.data.thumb" :alt="slotProps.data.name" style="height: 30px"
-               class="entry-thumb image-click" @click="imageClick(slotProps.index)" />
+          <img :src="slotProps.data.thumb" :alt="slotProps.data.name" style="height: 25px"
+               class="image-click" @click="imageClick(slotProps.index)" />
         </template>
       </Column>
-      <Column :header="t('Name')" field="name" :sortable="true" style="flex: 0 0 10rem"/>
-      <Column :header="t('Size')" field="size" :sortable="true" style="width: 100px"/>
-      <Column :header="t('Type')" filterField="type"
-              :showFilterMenu="false" :sortable="true" style="width: 110px">
+      <Column :header="t('Name')" field="name" :sortable="true"/>
+      <Column :header="t('Size')" field="size" :sortable="true" style="width: 60px"/>
+      <Column :header="t('Type')" filterField="type" :showFilterMenu="false" :sortable="true" style="width: 80px">
         <template #body="slotProps">
           <div style="display: flex;justify-content: center;">
-            <Tag :value="slotProps.data.type.label"/>
+            <Tag :value="slotProps.data.type.label" style="padding: 0 .5rem;font-size: 11px;font-weight: normal"/>
           </div>
         </template>
         <template #filter="{filterModel,filterCallback}">
-          <Select v-model="filterModel.value" :options="store.options.imageTypeSet" :filter="true" @change="filterCallback()"
+          <Select size="small" v-model="filterModel.value" :options="store.options.imageTypeSet" :filter="true" @change="filterCallback()"
                     :showClear="true" optionLabel="label" optionValue="value" Style="min-width: 100px" />
         </template>
       </Column>
-      <Column :header="t('UploadTime')" field="addedTime" :sortable="true" style="width: 150px" />
-      <Column :header="t('EditedTime')" field="editedTime" :sortable="true" style="width: 150px" />
+      <Column :header="t('UploadTime')" field="addedTime" :sortable="true" style="width: 120px" />
+      <Column :header="t('EditedTime')" field="editedTime" :sortable="true" style="width: 120px" />
     </DataTable>
   </BlockUI>
   <Dialog :modal="true" v-model:visible="displayDeleteDialog" :header="t('Delete')" :style="{width: '400px'}">
@@ -147,6 +150,7 @@ import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntityInfo} from "@/config/Web_Const";
 import {useEntityStore} from "@/logic/entityService";
+import {loadEditor} from "@/logic/itemService";
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 

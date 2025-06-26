@@ -7,6 +7,7 @@ import {useI18n} from "vue-i18n";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 import {i18nConst} from "@/config/i18nConst";
+import {PColumn} from "@/logic/frame";
 
 const {t} = i18n.global;
 let editor: any = null;
@@ -16,7 +17,7 @@ export class ImageDTO {
     name: string = "";
     detail: string = "";
     size: string = "";
-    file: File = null;
+    file: File | null = null;
 }
 
 export class EntityManageQueryParams {
@@ -31,6 +32,40 @@ export class EntityManageQueryParams {
         this.rows = size;
     }
 
+    clearSort(): void {
+        this.sortField = null;
+    }
+
+    initFilters(filters: any): void {
+        this.filters = filters;
+    }
+
+}
+
+export class EntityManageParam {
+    first: number = 0;
+    loading: boolean = false;//loading where search data
+    block: boolean = false;//component blocked where search data
+    total: number = 0;
+    data: any[] = [];
+    selectedData: any[] = [];
+    columns: PColumn[] = [];
+    selectedColumns: PColumn[] = [];
+    query: EntityManageQueryParams = new EntityManageQueryParams();
+
+    load(): void {
+        this.loading = true;
+        this.block = true;
+    }
+
+    endLoad(): void {
+        this.loading = false;
+        this.block = false;
+    }
+
+    initColumns(columns: PColumn[]): void {
+        this.columns = columns;
+    }
 }
 
 export const loadEditor = (type: number, data: any, dialog: {
@@ -70,8 +105,8 @@ export const loadEditor = (type: number, data: any, dialog: {
 export const useEntityStore = defineStore('options', {
     state: () => ({
         options: {} as Record<string, any>, // 全局缓存的选项数据
-        itemCurrent: 0,
-        entryCurrent: 0,
+        itemCurrent: 1,
+        entryCurrent: 1,
     }),
     actions: {
         async fetchOptions() {
