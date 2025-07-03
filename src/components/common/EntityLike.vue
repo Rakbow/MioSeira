@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {defineProps, onBeforeMount, onMounted, ref} from "vue";
-import {API} from '@/config/Web_Helper_Strs.ts';
+import {API} from '@/config/Web_Helper_Strs';
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
@@ -56,10 +56,12 @@ const like = async () => {
 </script>
 
 <template>
-  <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: t('Like'), class: 'short-tooltip'}">
-    <i class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"></i>
-  </Button>
-  <span class="ml-1 mr-2">{{ likeCount }}</span>
+  <div class="justify-content-center mt-1">
+    <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: t('Like'), class: 'short-tooltip'}">
+      <i style="font-size: 1.7rem" class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"/>
+    </Button>
+    <span style="font-size: 1.4rem">{{ likeCount }}</span>
+  </div>
 </template>
 
 <style scoped>

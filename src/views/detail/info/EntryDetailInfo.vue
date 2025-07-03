@@ -37,7 +37,7 @@ onBeforeMount(() => {
     </li>
     <li v-if="entry.type.value === META.ENTRY_TYPE.PERSON || entry.type.value === META.ENTRY_TYPE.CHARACTER">
       <span class="tip">{{ t('Gender') }}:&nbsp;</span>
-      <i :class="'mt-2 pi pi-' + PublicHelper.getGenderIcon(entry.gender.value)" style="font-size: 12px"
+      <i :class="PublicHelper.getGenderIcon(entry.gender.value)" style="font-size: 12px"
          v-tooltip.right="{value: entry.gender.label, class: 'short-tooltip'}" />
     </li>
     <li v-if="entry.type.value !== META.ENTRY_TYPE.CLASSIFICATION && entry.type.value !== META.ENTRY_TYPE.MATERIAL">

@@ -4,6 +4,7 @@ $golden-text: #beb993;
 $common-background: #2F364F;
 $common-root-background: #18181b;
 $common-header-background: #1B273D;
+$common-border-bottom: #3C405C;
 $common-link: #ceffff;
 $label: #788990;
 $time: #68b;
@@ -11,17 +12,18 @@ $gray: #bbb;
 
 $small-font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, Meiryo, sans-serif;
 
-$common-border-radius: 10px;
+$common-border-radius: 1rem;
 $common-border-down-radius: 0 0 10px 10px;
 $common-border-up-radius: 10px 10px 0 0;
 
 html {
-  font-size: 14px;
+  font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background-color: #001122;
-  min-width: 1250px;
+  min-width: 125rem;
 
   font-family: var(--font-family);
   color: var(--text-color);
@@ -52,7 +54,7 @@ a:visited, a:hover {
 }
 
 .small-font {
-  font: 11px $small-font-family;
+  font: 1.1rem $small-font-family;
 }
 
 .label-title {
@@ -72,4 +74,12 @@ a:visited, a:hover {
 
 .image-click {
   cursor: url("https://static.rakbow.com/common/zoomin.cur"), pointer;
+}
+
+/* 文本超出部分显示为省略号 */
+.text-ellipsis {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

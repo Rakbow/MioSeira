@@ -45,7 +45,7 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             try {
                 const res = await axios.post(`${API.ENTRY_GET_DETAIL}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
-                    (to.meta as any).info = res.data;
+                    to.meta.info = res.data;
                     document.title = res.data.entry.name;
                     next();
                 } else {
@@ -67,7 +67,7 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             try {
                 const res = await axios.post(`${API.ITEM_GET_DETAIL}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
-                    (to.meta as any).info = res.data;
+                    to.meta.info = res.data;
                     document.title = res.data.item.name;
                     next();
                 } else {
@@ -89,7 +89,7 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
             try {
                 const res = await axios.post(`${API.EPISODE_GET_DETAIL}/${to.params.id}`);
                 if (res.state === axios.SUCCESS) {
-                    (to.meta as any).info = res.data;
+                    to.meta.info = res.data;
                     document.title = res.data.name;
                     next();
                 } else {

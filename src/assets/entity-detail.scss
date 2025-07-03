@@ -3,43 +3,47 @@
 .entity-detail {
   &-main-col {
     margin-top: .5rem !important;
-    width: 900px;
+    width: 90rem;
     background: general.$common-root-background !important;
-    border-radius: 10px;
+    border-radius: 1rem;
   }
+
   &-side-col {
-    width: 300px;
+    width: 30rem;
   }
+
+  &-header-title {
+
+    margin: 1rem;
+
+    span {
+      color: general.$label;
+      display: inline;
+      font: 1.2rem general.$small-font-family;
+      margin-left: .5rem;
+    }
+
+    h1 {
+      font-family: Arial, Helvetica, Meiryo, sans-serif;
+      font-size: 2rem;
+      margin: 0;
+      font-weight: bold;
+      color: general.$golden-text;
+      text-align: left;
+      padding-top: 0;
+      padding-bottom: 0;
+
+      display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
+      -webkit-box-orient: vertical; /* 设置为纵向排列 */
+      -webkit-line-clamp: 3; /* 限制显示的行数 */
+      overflow: hidden; /* 超出部分隐藏 */
+      text-overflow: ellipsis; /* 显示 "..." */
+    }
+  }
+
 }
 
-.entity-header-title {
 
-  margin: 1rem;
-
-  span {
-    color: general.$label;
-    display:inline;
-    font: 12px general.$small-font-family;
-    margin-left: .5rem;
-  }
-
-  h1 {
-    font-family: Arial, Helvetica, Meiryo, sans-serif;
-    font-size: 20px;
-    margin: 0;
-    font-weight: bold;
-    color: general.$golden-text;
-    text-align: left;
-    padding-top: 0;
-    padding-bottom: 0;
-
-    display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
-    -webkit-box-orient: vertical; /* 设置为纵向排列 */
-    -webkit-line-clamp: 3; /* 限制显示的行数 */
-    overflow: hidden; /* 超出部分隐藏 */
-    text-overflow: ellipsis; /* 显示 "..." */
-  }
-}
 
 .entity-fieldset {
 
@@ -52,20 +56,20 @@
     background-color: general.$common-background;
 
     &-content {
-      padding: 5px;
+      padding: .5rem;
     }
 
     &-legend {
 
       background: general.$common-root-background !important;
-      border: 1px solid general.$golden-text;
+      border: .1rem solid general.$golden-text;
 
       span {
         transform: translateY(30%);
       }
 
       i, b {
-        font-size: 11px;
+        font-size: 1.1rem;
         color: general.$golden-text;
       }
 
@@ -82,11 +86,11 @@
 
 .entity-info-table {
 
-  font: 12px general.$small-font-family;
+  font: 1.2rem general.$small-font-family;
 
   td {
     padding-bottom: 0;
-    padding-top: 1px;
+    padding-top: .1rem;
   }
 
   i {
@@ -102,7 +106,7 @@
 
   .p-tag {
     &-label {
-      font: 10px general.$small-font-family;
+      font: 1rem general.$small-font-family;
     }
   }
 
@@ -110,12 +114,12 @@
 
 .entity-detail-markdown {
   box-sizing: border-box;
-  padding: 5px;
-  font-size: 12px;
+  padding: .5rem;
+  font-size: 1rem;
 
   article {
-    width: 750px;
-    font-size: 13px;
+    width: 75rem;
+    font-size: 1.3rem;
   }
 
   p {
@@ -125,32 +129,56 @@
 }
 
 .entity-detail-side-panel {
+  margin: .5rem 0 1rem 0 !important;
+  border-radius: general.$common-border-radius !important;
+
   .p-panel {
-    border-radius: general.$common-border-radius;
     &-header {
-      padding: 0 0 .5rem 1rem;
+      vertical-align: middle;
+      padding: .4rem 0 .4rem 1rem;
       background: general.$common-header-background;
       color: general.$golden-text;
       border-top-left-radius: general.$common-border-radius;
       border-top-right-radius: general.$common-border-radius;
 
       i {
-        margin-right: 0.5rem;
-        font-size: 14px;
-        vertical-align: middle;
+        margin-right: .7rem;
+        font-size: 1.5rem;
         line-height: inherit;
-        transform: translateY(-10%);
+        vertical-align: middle;
       }
-      span {
-        font-size: 1.1rem;
+
+      &-actions {
+        height: 2rem;
       }
-      .p-button-sm {
-        padding: 0 0.5rem;
+
+      strong {
+        font-size: 1.4rem;
+        vertical-align: middle;
+      }
+
+      .p-button {
+        &-success {
+          transform: translateY(-30%) !important;
+        }
+
+        span {
+          font-size: 1.3rem;
+        }
+
+        .material-symbols-outlined {
+          transform: translateY(-5%) !important;
+          font-size: 2.2rem;
+        }
+
+        padding: 0;
+        margin-right: 0.5rem !important;
       }
 
     }
+
     &-content {
-      padding: 10px;
+      padding: 1rem;
       background: general.$common-background;
       border-bottom-left-radius: general.$common-border-radius;
       border-bottom-right-radius: general.$common-border-radius;
@@ -160,20 +188,85 @@
 
 .page-info {
   margin-top: .5rem;
+
   .p-card {
     &-body {
-      font-size: 11px;
+      font-size: 1.1rem;
       border-radius: general.$common-border-radius;
-      padding: 6px 10px 6px 10px;
+      padding: .6rem 1rem .6rem 1rem;
       background: #2f364f;
     }
+
     &-card-content {
       padding: 0;
     }
   }
+
   i {
-    font-size: 11px;
+    font-size: 1.1remx;
     margin-right: .5rem;
     margin-left: .25rem;
   }
+}
+
+.side-image {
+
+  .p-scrollpanel {
+    &-bar {
+      &-x {
+        opacity: 0;
+      }
+      &-x:hover {
+        opacity: 0;
+      }
+      &-y {
+        opacity: 1;
+      }
+    }
+
+    &-content {
+      width: 26rem;
+      padding: 0;
+      margin-left: 1rem;
+      background-color: general.$common-background;
+    }
+  }
+}
+
+.entity-like {
+  bottom: 1rem;
+  right: 1rem;
+  position: absolute;
+}
+
+.item_status_edit {
+  top: 0;
+  right: 0;
+  position: absolute;
+  height: 3rem;
+  width: 5rem;
+  border-radius: var(--border-radius);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  background-color: general.$common-background;
+}
+
+.tingle-markdown-body {
+  color: black;
+}
+
+.markdown-body a:hover ,
+.markdown-body a:visited ,
+.markdown-body a {
+  color: general.$common-link;
+  text-decoration: none;
+}
+
+.table-hover > tbody > tr:hover > td,
+
+.table-hover > tbody > tr:hover > th {
+  color: #788990;
+  background-color: #3C405C;
+
 }

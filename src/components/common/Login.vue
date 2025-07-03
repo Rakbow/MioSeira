@@ -21,7 +21,7 @@
           <!--                        <label htmlFor="verifyCode" class="block text-900 font-medium mb-2">验证码</label>-->
         </div>
         <div class="flex align-items-center">
-          <img id="kaptcha" style="width:100px;height:40px;" class="mr-2" alt="" src=""/>
+          <img id="kaptcha" style="width:10rem;height:4rem;" class="mr-2" alt="" src=""/>
           <Button @click="refreshKaptcha" icon="pi pi-refresh" :v-tooltip="t('RefreshVerifyCode')"
                   class="p-button-rounded p-button-text"/>
         </div>

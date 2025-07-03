@@ -12,6 +12,16 @@ import {PColumn} from "@/logic/frame";
 const {t} = i18n.global;
 let editor: any = null;
 
+export interface RelationConfig {
+    key: number[];
+    type: number;
+    subTypeSets: number[][];
+}
+
+export const findRelationConfig = (key: [number, number]): RelationConfig | undefined => {
+    return META.RELATION_CONFIG.find(cfg => cfg.key[0] === key[0] && cfg.key[1] === key[1]);
+}
+
 export class ImageDTO {
     type: number = 0;
     name: string = "";
@@ -22,30 +32,16 @@ export class ImageDTO {
 
 export class EntityManageQueryParams {
     first: number = 0;
-    rows: number = 10;
+    rows: number = 15;
     sortField: string | null = null;
-    sortOrder: number = -1;
+    sortOrder: number = 1;
     filters: any | null = null;
-
-    initPage(size: number = 10): void {
-        this.first = 0;
-        this.rows = size;
-    }
-
-    clearSort(): void {
-        this.sortField = null;
-    }
-
-    initFilters(filters: any): void {
-        this.filters = filters;
-    }
 
 }
 
 export class EntityManageParam {
-    first: number = 0;
     loading: boolean = false;//loading where search data
-    block: boolean = false;//component blocked where search data
+    blocking: boolean = false;//component blocked where search data
     total: number = 0;
     data: any[] = [];
     selectedData: any[] = [];
@@ -53,14 +49,45 @@ export class EntityManageParam {
     selectedColumns: PColumn[] = [];
     query: EntityManageQueryParams = new EntityManageQueryParams();
 
+    initPage(first: number = 0, rows: number = 15): void {
+        this.query.first = first;
+        this.query.rows = rows;
+    }
+
+    countPage(page: number, rows: number): void {
+        this.query.first = (page - 1) * rows
+        this.query.rows = rows
+    }
+
+    initSort(field: string, order: number): void {
+        this.query.sortField = field;
+        this.query.sortOrder = order;
+    }
+
+    clearSort(): void {
+        this.query.sortField = null;
+    }
+
+    initFilters(filters: any): void {
+        this.query.filters = filters;
+    }
+
     load(): void {
         this.loading = true;
-        this.block = true;
+        this.blocking = true;
     }
 
     endLoad(): void {
         this.loading = false;
-        this.block = false;
+        this.blocking = false;
+    }
+
+    block(): void {
+        this.blocking = true;
+    }
+
+    endBlock(): void {
+        this.blocking = false;
     }
 
     initColumns(columns: PColumn[]): void {
@@ -78,11 +105,7 @@ export const loadEditor = (type: number, data: any, dialog: {
         props: {
             header: t('Edit'),
             style: {
-                width: '450px',
-            },
-            breakpoints: {
-                '960px': '80vw',
-                '640px': '70vw'
+                width: '45rem',
             },
             modal: true,
             closable: false
@@ -110,8 +133,8 @@ export const useEntityStore = defineStore('options', {
     }),
     actions: {
         async fetchOptions() {
-            console.log('Fetching options...');
             if (Object.keys(this.options).length === 0) {
+                console.log('Fetching options...');
                 const {locale} = useI18n();
                 this.$reset();
 
@@ -121,13 +144,13 @@ export const useEntityStore = defineStore('options', {
                 this.itemCurrent = META.ITEM_TYPE.ALBUM;
                 this.entryCurrent = META.ENTRY_TYPE.PRODUCT;
 
-                this.options.genderSet = i18nConst.genderSet[locale.value!];
-                this.options.imageTypeSet = i18nConst.imageTypeSet[locale.value!];
-                this.options.bookTypeSet = i18nConst.bookTypeSet[locale.value!];
-                this.options.goodsTypeSet = i18nConst.goodsTypeSet[locale.value!];
-                this.options.figureTypeSet = i18nConst.figureTypeSet[locale.value!];
-                this.options.releaseTypeSet = i18nConst.releaseTypeSet[locale.value!];
-                this.options.entrySubTypeSet = i18nConst.entrySubTypeSet[locale.value!];
+                this.options.genderSet = i18nConst.genderSet[locale.value];
+                this.options.imageTypeSet = i18nConst.imageTypeSet![locale.value];
+                this.options.bookTypeSet = i18nConst.bookTypeSet![locale.value];
+                this.options.goodsTypeSet = i18nConst.goodsTypeSet![locale.value];
+                this.options.figureTypeSet = i18nConst.figureTypeSet![locale.value];
+                this.options.releaseTypeSet = i18nConst.releaseTypeSet![locale.value];
+                this.options.entrySubTypeSet = i18nConst.entrySubTypeSet![locale.value];
             }
         },
         clear() {

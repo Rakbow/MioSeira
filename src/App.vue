@@ -9,6 +9,12 @@
     <PageFooter/>
   </footer>
   <DynamicDialog @scroll="handleScroll"/>
+  <ConfirmDialog group="templating">
+    <template #message="slotProps">
+      <i :class="slotProps.message.icon" style="font-size: 3rem"/>
+      <p>{{ slotProps.message.message }}</p>
+    </template>
+  </ConfirmDialog>
 </template>
 
 <script setup lang="ts">
@@ -66,8 +72,8 @@ header {
 }
 
 main {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   //position: relative;
   flex: 1; /* 让main占满剩余空间，使其高度随内容动态变化 */
   min-height: calc(100vh);

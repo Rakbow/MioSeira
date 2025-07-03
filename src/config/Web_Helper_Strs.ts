@@ -57,6 +57,7 @@ export const API = {
     RELATION_CREATE: '/api/db/relation/create',
     RELATION_UPDATE: '/api/db/relation/update',
     RELATION_DELETE: '/api/db/relation/delete',
+    RELATION_PERSONNEL: '/api/db/relation/personnel',
     //endregion
 
     //region role
@@ -64,7 +65,7 @@ export const API = {
     ROLE_CREATE: '/api/db/role/create',
     ROLE_UPDATE: '/api/db/role/update',
     ROLE_DELETE: '/api/db/role/delete',
-    REFRESH_ROLE: '/api/db/refresh-role',
+    ROLE_REFRESH: '/api/db/role/refresh',
     //endregion
 
     //region file

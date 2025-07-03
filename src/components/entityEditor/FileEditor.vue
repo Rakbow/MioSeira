@@ -47,7 +47,7 @@ const close = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="editBlock" class="form-container">
+  <BlockUI :blocked="editBlock" class="entity-editor">
     <Divider align="center"><b>{{ t('BasicInfo') }}</b></Divider>
     <div class="field">
       <FloatLabel variant="on">

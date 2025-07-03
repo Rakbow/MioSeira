@@ -36,8 +36,8 @@ const searchResult = ref({
   data: []
 });
 
-onBeforeMount(async () => {
-  await store.fetchOptions();
+onBeforeMount(() => {
+  store.fetchOptions();
 });
 
 onMounted(() => {
@@ -251,5 +251,4 @@ const resetFilter = () => {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/item-detail.css';
 </style>

@@ -4,9 +4,14 @@ export interface Role {
 }
 
 export interface RelatedEntity {
-    label: string;
-    value: number;
+    entityType: number;
+    entityId: number;
+    name: string;
+    subName: string;
+
     remark: string;
+
+    role: Role;
 }
 
 export interface Relation {
@@ -23,13 +28,13 @@ export interface PersonnelGroup {
 export const groupPersonnel = (personnelList: Relation[]): PersonnelGroup[] => {
     if(personnelList === null) return [];
     return personnelList.reduce((acc: PersonnelGroup[], current: Relation) => {
-        const {role, target} = current;
-        const existingGroup = acc.find(group => group.role.value === role.value);
+        const {target} = current;
+        const existingGroup = acc.find(group => group.role.value === target.role.value);
         target.remark = current.remark;
         if (existingGroup)
             existingGroup.entities.push(target);
         else
-            acc.push({role, entities: [target]});
+            acc.push({role: target.role, entities: [target]});
         return acc;
     }, []);
 }

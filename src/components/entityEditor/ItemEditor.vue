@@ -10,16 +10,16 @@ import {useEntityStore} from "@/logic/entityService";
 import {ItemSpecParams, parseItemSpecParams} from "@/logic/itemService";
 
 const {t} = useI18n();
-const dialogRef = inject("dialogRef");
+const dialogRef = inject<any>("dialogRef");
 const item = ref<any>({});
 const isUpdate = ref(false);
-const editBlock = ref(false);
+const block = ref(false);
 const toast = useToast();
 const store = useEntityStore();
 const itemSpec = ref('');
 
-onBeforeMount(async () => {
-  await store.fetchOptions();
+onBeforeMount(() => {
+  store.fetchOptions();
   item.value = PublicHelper.deepCopy(dialogRef.value.data.item);
   PublicHelper.handleAttributes(item.value);
 })
@@ -28,7 +28,7 @@ onMounted(() => {
 })
 
 const submit = async () => {
-  editBlock.value = true;
+  block.value = true;
   const res = await axios.post(API.ITEM_UPDATE, item.value);
   if (res.state === axios.SUCCESS) {
     toast.add({severity: 'success', detail: res.message, life: 3000});
@@ -37,7 +37,7 @@ const submit = async () => {
   } else {
     toast.add({severity: 'error', detail: res.message, life: 3000});
   }
-  editBlock.value = false;
+  block.value = false;
 }
 
 const close = () => {
@@ -48,14 +48,12 @@ const close = () => {
   );
 }
 
-const ISBNInterConvert = async (label, isbn) => {
-  editBlock.value = true;
-  const res = await axios.post(API.ITEM_CONVERT_ISBN, {label: label, isbn: isbn})
-  if (res.state === axios.SUCCESS) {
-    if (label === 'isbn13') item.value.ean13 = res.data;
-    if (label === 'isbn10') item.value.isbn10 = res.data;
-  }
-  editBlock.value = false;
+const ISBNInterConvert = async (isbn10: string) => {
+  block.value = true;
+  const res = await axios.post(API.ITEM_CONVERT_ISBN, isbn10)
+  if (res.state === axios.SUCCESS)
+    item.value.ean13 = res.data;
+  block.value = false;
 };
 
 const parseItemSpec = () => {
@@ -69,249 +67,189 @@ const parseItemSpec = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="editBlock" class="form-container">
+  <BlockUI :blocked="block" class="entity-editor">
     <Divider align="center"><b>{{ t('BasicInfo') }}</b></Divider>
-    <div class="field">
+
+    <FloatLabel class="field" variant="on">
+      <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>
+      <InputText size="large" v-model="item.name"/>
+    </FloatLabel>
+    <FloatLabel class="field" variant="on">
+      <label>{{ t('Aliases') }}</label>
+      <AutoComplete size="large" v-model="item.aliases" separator="," multiple :typeahead="false"/>
+    </FloatLabel>
+
+    <div class="grid">
       <FloatLabel variant="on">
-        <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>
-        <InputText size="small" v-model="item.name" class="static w-full"/>
+        <label>{{ t('Barcode') }}</label>
+        <InputText size="large" v-if="item.type !== META.ITEM_TYPE.BOOK" v-model="item!.barcode"/>
+        <InputGroup v-else>
+          <InputText size="large" v-model="item!.barcode"/>
+          <Button size="large" icon="pi pi-sync" class="p-button-warning"
+                  @click="ISBNInterConvert(item.barcode)" :title="t('TooltipGenerateBookISBN13')"/>
+        </InputGroup>
       </FloatLabel>
-    </div>
-    <div class="field">
       <FloatLabel variant="on">
-        <label>{{ t('Aliases') }}</label>
-        <AutoComplete size="small" v-model="item.aliases" separator="," multiple :typeahead="false"
-                      class="static w-full"/>
+        <label>{{ t('CatalogId') }}</label>
+        <InputText size="large" v-model="item.catalogId" :disabled="item.type == META.ITEM_TYPE.BOOK"/>
       </FloatLabel>
     </div>
 
-    <div class="formgrid grid">
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ t('ReleaseDate') }}</label>
-          <InputMask size="small" v-model="item!.releaseDate" mask="****/**/**" class="static w-full"/>
-        </FloatLabel>
-      </div>
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ t('ReleaseType') }}</label>
-          <Select v-model="item.releaseType" :options="store.options.releaseTypeSet"
-                  size="small" optionLabel="label" optionValue="value" class="static w-full"/>
-        </FloatLabel>
-      </div>
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ t('ReleasePrice') }}</label>
-          <InputNumber size="small" v-model="item!.price" class="static w-full"/>
-        </FloatLabel>
-      </div>
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ t('Region') }}</label>
-          <Select v-model="item.region" :options="META.RegionSet" optionLabel="label"
-                  size="small" optionValue="value" class="static w-full">
-            <template #value="slotProps">
-              <span :class="`fi fi-${slotProps.value}`"/>
-            </template>
-            <template #option="slotProps">
-              <span :class="`fi fi-${slotProps.option.value}`"/>
-            </template>
-          </Select>
-        </FloatLabel>
-      </div>
-      <div class="field col">
-        <ToggleButton size="small" v-model="item.bonus"
-                      onIcon="pi true-icon pi-check-circle" :onLabel="t('BonusInclusion')"
-                      offIcon="pi false-icon pi-times-circle" :offLabel="t('BonusExclusion')"/>
-      </div>
-    </div>
-    <div class="formgrid grid">
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label v-if="item.type !== META.ITEM_TYPE.BOOK">{{ t('Barcode') }}</label>
-          <label v-if="item.type === META.ITEM_TYPE.BOOK">{{ t('BookISBN13') }}</label>
-          <InputText size="small" v-if="item.type !== META.ITEM_TYPE.BOOK" v-model="item!.barcode"
-                     class="static w-full"/>
-          <InputGroup v-else class="static w-full">
-            <InputText size="small" v-model="item!.barcode"/>
-            <Button size="small" icon="pi pi-sync" class="p-button-warning"
-                    @click="ISBNInterConvert('isbn13', item.barcode)" :title="t('TooltipGenerateBookISBN13')"/>
-          </InputGroup>
-        </FloatLabel>
-      </div>
-      <div class="field col">
-        <FloatLabel variant="on">
-          <label>{{ t('CatalogId') }}</label>
-          <InputText size="small" v-model="item.catalogId" class="static w-full"
-                     :disabled="item.type == META.ITEM_TYPE.BOOK"/>
-        </FloatLabel>
-      </div>
+    <div class="grid" style="align-items: center">
+      <FloatLabel variant="on">
+        <label>{{ t('ReleaseDate') }}</label>
+        <InputMask size="large" v-model="item!.releaseDate" mask="****/**/**"/>
+      </FloatLabel>
+      <FloatLabel variant="on">
+        <label>{{ t('ReleaseType') }}</label>
+        <Select v-model="item.releaseType" :options="store.options.releaseTypeSet"
+                size="large" optionLabel="label" optionValue="value"/>
+      </FloatLabel>
+      <FloatLabel variant="on">
+        <label>{{ t('ReleasePrice') }}</label>
+        <InputNumber size="large" v-model="item!.price"/>
+      </FloatLabel>
+      <FloatLabel variant="on">
+        <label>{{ t('Region') }}</label>
+        <Select v-model="item.region" :options="META.RegionSet" optionLabel="label"
+                size="large" optionValue="value">
+          <template #value="slotProps">
+            <span :class="`fi fi-${slotProps.value}`"/>
+          </template>
+          <template #option="slotProps">
+            <span :class="`fi fi-${slotProps.option.value}`"/>
+          </template>
+        </Select>
+      </FloatLabel>
+      <ToggleButton style="height: 3rem" size="small" v-model="item.bonus"
+                    onIcon="pi pi-check-circle" :onLabel="t('BonusInclusion')"
+                    offIcon="pi pi-times-circle" :offLabel="t('BonusExclusion')"/>
     </div>
 
-    <div v-if="item.type === META.ITEM_TYPE.BOOK">
-      <div class="formgrid grid">
-        <div class="field col">
-          <FloatLabel variant="on">
-            <label class="mb-3">{{ t('BookType') }}<i class="required-label pi pi-asterisk"/></label>
-            <Select size="small" v-model="item.subType" :options="store.options.bookTypeSet"
-                    optionLabel="label" optionValue="value" class="static w-full"/>
-          </FloatLabel>
-        </div>
-        <div class="field col">
-          <FloatLabel variant="on">
-            <label class="mb-3">{{ t('Language') }}<i class="required-label pi pi-asterisk"/></label>
-            <Select size="small" v-model="item.lang" :options="store.options.languageSet"
-                    optionLabel="label" optionValue="value" class="static w-full"/>
-          </FloatLabel>
-        </div>
-      </div>
-      <div class="field">
+    <template v-if="item.type === META.ITEM_TYPE.BOOK">
+      <div class="grid">
         <FloatLabel variant="on">
-          <label>{{ t('Summary') }}</label>
-          <Textarea size="small" v-model="item.summary" rows="4" cols="20" class="static w-full"/>
+          <label class="mb-3">{{ t('BookType') }}<i class="pi pi-asterisk"/></label>
+          <Select size="large" v-model="item.subType" :options="store.options.bookTypeSet"
+                  optionLabel="label" optionValue="value"/>
+        </FloatLabel>
+        <FloatLabel variant="on">
+          <label class="mb-3">{{ t('Language') }}<i class="pi pi-asterisk"/></label>
+          <Select size="large" v-model="item.lang" :options="store.options.languageSet"
+                  optionLabel="label" optionValue="value"/>
         </FloatLabel>
       </div>
-    </div>
+      <FloatLabel variant="on">
+        <label>{{ t('Summary') }}</label>
+        <Textarea size="large" v-model="item.summary" rows="4" cols="20"/>
+      </FloatLabel>
+    </template>
 
     <Divider align="center"><b>{{ t('Dimensions') }}</b></Divider>
-    <div class="formgrid grid">
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.BOOK">
+
+    <div class="grid">
+      <template v-if="item.type === META.ITEM_TYPE.BOOK">
         <FloatLabel variant="on">
           <label>{{ t('Pages') }}</label>
-          <InputNumber size="small" v-model="item.pages" class="static w-full"/>
+          <InputNumber size="large" v-model="item.pages"/>
         </FloatLabel>
-      </div>
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.BOOK">
         <FloatLabel variant="on">
           <label>{{ t('BookSize') }}</label>
-          <InputText size="small" v-model="item.size" class="static w-full"/>
+          <InputText size="large" v-model="item.size"/>
         </FloatLabel>
-      </div>
-
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.DISC">
-        <FloatLabel variant="on">
-          <label>{{ t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
-          <MultiSelect showClear size="small" v-model="item.mediaFormat" :options="store.options.mediaFormatSet"
-                       optionLabel="label" optionValue="value" display="chip" class="static w-full"/>
+      </template>
+      <template v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
+        <FloatLabel variant="on" v-if="item.type === META.ITEM_TYPE.DISC">
+          <label>{{ t('MediaFormat') }}<i class="pi pi-asterisk"/></label>
+          <MultiSelect showClear v-model="item.mediaFormat" :options="store.options.mediaFormatSet"
+                       optionLabel="label" optionValue="value" display="chip"/>
         </FloatLabel>
-      </div>
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
         <FloatLabel variant="on">
           <label>{{ t('Discs') }}</label>
-          <InputNumber size="small" v-model="item.discs" class="static w-full"/>
+          <InputNumber size="large" v-model="item.discs"/>
         </FloatLabel>
-      </div>
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
         <FloatLabel variant="on">
           <template v-if="item.type === META.ITEM_TYPE.ALBUM">
             <label>{{ t('Tracks') }}</label>
-            <InputNumber size="small" v-model="item.tracks" class="static w-full"/>
+            <InputNumber size="large" v-model="item.tracks"/>
           </template>
           <template v-if="item.type === META.ITEM_TYPE.DISC">
             <label>{{ t('Episodes') }}</label>
-            <InputNumber size="small" v-model="item.episodes" class="static w-full"/>
+            <InputNumber size="large" v-model="item.episodes"/>
           </template>
         </FloatLabel>
-      </div>
-      <div class="field col" v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
         <FloatLabel variant="on">
           <label>{{ t('RunTime') }}</label>
-          <InputNumber size="small" v-model="item!.runTime" class="static w-full"/>
+          <InputNumber size="large" v-model="item!.runTime"/>
         </FloatLabel>
-      </div>
-
-
+      </template>
     </div>
-    <div class="field">
-      <InputGroup class="static w-full">
-        <InputText size="small" v-model="itemSpec"/>
-        <Button size="small" icon="pi pi-sync" class="p-button-warning"
-                @click="parseItemSpec" :title="t('Analysis')"/>
+
+    <InputGroup class="field">
+      <InputText size="large" v-model="itemSpec"/>
+      <Button size="large" icon="pi pi-sync" class="p-button-warning" @click="parseItemSpec" :title="t('Analysis')"/>
+    </InputGroup>
+
+    <div class="field flex gap-3">
+      <InputGroup>
+        <InputGroupAddon>M</InputGroupAddon>
+        <InputNumber size="large" suffix=" g" :minFractionDigits="0" :maxFractionDigits="2" v-model="item.weight"/>
       </InputGroup>
-    </div>
-    <div class="field">
-      <div class="flex flex-col gap-4">
-        <InputGroup>
-          <InputGroupAddon>M</InputGroupAddon>
-          <InputNumber size="small" suffix=" g" :minFractionDigits="0" :maxFractionDigits="2" v-model="item.weight"/>
-        </InputGroup>
-        <InputGroup>
-          <InputGroupAddon>W</InputGroupAddon>
-          <InputNumber size="small" suffix=" mm" v-model="item.width"/>
-        </InputGroup>
-        <InputGroup>
-          <InputGroupAddon>L</InputGroupAddon>
-          <InputNumber size="small" suffix=" mm" v-model="item.length"/>
-        </InputGroup>
-        <InputGroup>
-          <InputGroupAddon>H</InputGroupAddon>
-          <InputNumber size="small" suffix=" mm" v-model="item.height"/>
-        </InputGroup>
-      </div>
+      <InputGroup>
+        <InputGroupAddon>W</InputGroupAddon>
+        <InputNumber size="large" suffix=" mm" v-model="item.width"/>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupAddon>L</InputGroupAddon>
+        <InputNumber size="large" suffix=" mm" v-model="item.length"/>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupAddon>H</InputGroupAddon>
+        <InputNumber size="large" suffix=" mm" v-model="item.height"/>
+      </InputGroup>
     </div>
 
     <template v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(item.type)">
       <Divider align="center"><b>{{ t('Other') }}</b></Divider>
-      <div class="formgrid grid">
-        <div class="field col">
-          <FloatLabel variant="on">
-            <label>{{ t('Scale') }}</label>
-            <InputText size="small" v-model="item.scale" class="static w-full"/>
-          </FloatLabel>
-        </div>
-        <div class="field col">
-          <FloatLabel variant="on">
-            <label>{{ t('Various') }}</label>
-            <InputText size="small" v-model="item.various" class="static w-full"/>
-          </FloatLabel>
-        </div>
-      </div>
-      <div class="formgrid grid">
-        <div class="field col">
-          <FloatLabel variant="on">
-            <label>{{ t('Title') }}</label>
-            <InputText size="small" v-model="item.title" class="static w-full"/>
-          </FloatLabel>
-        </div>
-        <div class="field col">
-          <FloatLabel variant="on">
-            <label>{{ t('TitleEn') }}</label>
-            <InputText size="small" v-model="item.titleEn" class="static w-full"/>
-          </FloatLabel>
-        </div>
-      </div>
-      <div class="field">
+      <div class="grid">
         <FloatLabel variant="on">
-          <label>{{ t('Version') }}</label>
-          <AutoComplete size="small" v-model="item.versions" separator="," multiple :typeahead="false"
-                        class="static w-full"/>
+          <label>{{ t('Scale') }}</label>
+          <InputText size="large" v-model="item.scale"/>
+        </FloatLabel>
+        <FloatLabel variant="on">
+          <label>{{ t('Various') }}</label>
+          <InputText size="large" v-model="item.various"/>
         </FloatLabel>
       </div>
-      <div class="field">
+      <div class="grid">
         <FloatLabel variant="on">
-          <label>{{ t('VersionEn') }}</label>
-          <AutoComplete size="small" v-model="item.versionsEn" separator="," multiple :typeahead="false"
-                        class="static w-full"/>
+          <label>{{ t('Title') }}</label>
+          <InputText size="large" v-model="item.title"/>
+        </FloatLabel>
+        <FloatLabel variant="on">
+          <label>{{ t('TitleEn') }}</label>
+          <InputText size="large" v-model="item.titleEn"/>
         </FloatLabel>
       </div>
+      <FloatLabel class="field" variant="on">
+        <label>{{ t('Version') }}</label>
+        <AutoComplete size="large" v-model="item.versions" separator="," multiple :typeahead="false"/>
+      </FloatLabel>
+      <FloatLabel class="field" variant="on">
+        <label>{{ t('VersionEn') }}</label>
+        <AutoComplete size="large" v-model="item.versionsEn" separator="," multiple :typeahead="false"/>
+      </FloatLabel>
     </template>
 
-      <div class="field">
-        <FloatLabel variant="on">
-          <label>{{ t('Remark') }}</label>
-          <Textarea size="small" v-model="item!.remark" rows="4" cols="20" class="static w-full"/>
-        </FloatLabel>
-      </div>
-      <div class="relative">
-        <div class="bottom-0 right-0">
-          <Button icon="pi pi-times" :label="t('Cancel')" @click="close"
-                  class="p-button-text"/>
-          <Button icon="pi pi-save" :label="t('Save')" @click="submit"/>
-        </div>
-      </div>
+    <FloatLabel class="field" variant="on">
+      <label>{{ t('Remark') }}</label>
+      <Textarea size="large" v-model="item!.remark" rows="4" cols="20"/>
+    </FloatLabel>
+
+    <Button icon="pi pi-times" class="p-button-text" @click="close"/>
+    <Button icon="pi pi-save" @click="submit"/>
   </BlockUI>
 </template>
 
 <style scoped lang="scss">
-@use "@/assets/entity-manager";
 </style>

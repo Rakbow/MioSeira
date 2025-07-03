@@ -110,7 +110,7 @@ const exportCSV = () => {
              currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll"
              rowGroupMode="rowspan" groupRowsBy="parent.name">
     <template #header>
-      <BlockUI :blocked="param.block" class="relative">
+      <BlockUI :blocked="param.blocking" class="relative">
         <Button variant="text" severity="help" :disabled="param.selectedData.length"
                 outlined @click="exportCSV">
           <template #icon>

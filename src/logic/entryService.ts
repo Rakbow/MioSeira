@@ -21,10 +21,10 @@ export const loadEditor = (data: any, dialog: {
         props: {
             header: t('Edit'),
             style: {
-                width: '600px',
+                width: '50rem',
             },
             modal: true,
-            closable: false
+            closable: true
         },
         data: {
             entry: data

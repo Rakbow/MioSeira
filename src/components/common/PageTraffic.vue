@@ -10,14 +10,12 @@ const props = defineProps({
     default: () => ({
       visitCount: 0
     })
-  },
+  } as any,
   addedTime: {
-    type: String,
-    default: () => ('????/??/?? ??:??:??')
+    type: String
   },
   editedTime: {
-    type: String,
-    default: () => ('????/??/?? ??:??:??')
+    type: String
   }
 });
 </script>

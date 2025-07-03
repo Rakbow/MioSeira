@@ -1,233 +1,232 @@
 <script setup lang="ts">
-import {onMounted, ref, inject, defineAsyncComponent, onBeforeMount} from "vue";
-import {PublicHelper} from '@/toolkit/publicHelper';
+import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
 import {useToast} from "primevue/usetoast";
-import {Attribute, EntityInfo, META, QueryParams} from '@/config/Web_Const';
-import {useRoute} from 'vue-router';
+import {META} from '@/config/Web_Const';
 import {useI18n} from "vue-i18n";
 import {API} from "@/config/Web_Helper_Strs";
-import {useEntityStore} from "@/logic/entityService";
-import {DialogServiceMethods} from "primevue/dialogservice";
+import {EntityManageParam, useEntityStore} from "@/logic/entityService";
+import {PToast} from "@/logic/frame";
+import {useConfirm} from "primevue";
 
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
 const store = useEntityStore();
 const {t} = useI18n();
 const toast = useToast();
-const dialogRef = inject("dialogRef");
-const entityInfo = ref<EntityInfo>();
+const confirm = useConfirm();
+const dialogRef = inject<any>("dialogRef");
+const param = ref(new EntityManageParam());
 const isUpdate = ref(false);
-const route = useRoute();
-const relations = ref([]);
-const editBlock = ref(false);
-const filters = ref({
-  entityType: {value: null},
-  entityId: {value: null},
-  relatedGroup: {value: null}
-});
 const dt = ref();
-const first = ref(0);
-const totalRecords = ref(0);
-const queryParams = ref<QueryParams>(new QueryParams());
-const selectedItems = ref([]);
-const loading = ref(false);
-const displayAddDialog = ref(false);
-const displayEditDialog = ref(false);
-const displayDeleteDialog = ref(false);
-const entryType = ref();
-const relatedGroup = ref();
-const confirmDeleteSelected = () => {
-  displayDeleteDialog.value = true;
-}
+const entryType = ref(META.ENTRY_TYPE.PRODUCT);
+const curEntryType = ref<any>(null);
 
-onBeforeMount(async () => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-  await store.fetchOptions();
+
+onBeforeMount(() => {
+  store.fetchOptions();
+  param.value.initFilters({
+    entityType: {value: dialogRef.value.data.entityType},
+    entityId: {value: dialogRef.value.data.entityId},
+    targetEntityType: {value: dialogRef.value.data.type},
+    targetEntitySubTypes: {value: []}
+  });
+  if (dialogRef.value.data.subTypes.length) {
+    entryType.value = dialogRef.value.data.subTypes[0];
+    param.value.query.filters.targetEntitySubTypes.value = [entryType.value];
+    curEntryType.value = META.ENTRY_TYPE_SET[entryType.value - 1];
+  }
 })
 
-onMounted(async () => {
-  initQueryParam();
-  relatedGroup.value = META.RELATED_GROUP_SET[dialogRef.value.data.relatedGroup - 1];
-  await getRelations();
+onMounted(() => {
+  param.value.initPage(0, 10);
+  load();
 });
 
-const initQueryParam = () => {
-  queryParams.value = {
-    first: 0,
-    rows: dt.value.rows,
-    sortField: null,
-    sortOrder: null,
-    filters: {
-      entityType: {value: entityInfo.value?.type},
-      entityId: {value: entityInfo.value?.id},
-      relatedGroup: {value: dialogRef.value.data.relatedGroup}
-    }
-  };
-}
-
-const switchRelatedGroup = (ev: Event) => {
+const switchEntryType = (ev: any) => {
   if (ev.value === null) {
-    entryType.value = null;
-    queryParams.value.filters.relatedGroup.value = null;
+    entryType.value = META.ENTRY_TYPE.PRODUCT;
+    param.value.query.filters.targetEntitySubTypes.value = [];
   } else {
-    entryType.value = parseInt(relatedGroup.value.value);
-    queryParams.value.filters.relatedGroup.value = entryType.value;
+    entryType.value = parseInt(curEntryType.value.value);
+    param.value.query.filters.targetEntitySubTypes.value = [entryType.value];
   }
-  getRelations();
+  load();
 }
 
-const itemAdd = ref({
-  role: new Attribute(),
-  reverseRole: new Attribute(),
-  entities: <any>[]
-});
-const itemEdit = ref<any>({});
+
 const displayEntrySelector = ref(false);
 const openEntrySelector = () => {
   displayEntrySelector.value = true;
 }
 const removeRelatedEntry = (index: number) => {
-  itemAdd.value.entities.splice(index, 1);
+  createdDTO.value.entities.splice(index, 1);
 }
 const clearRelatedEntry = () => {
-  itemAdd.value.entities = [];
+  createdDTO.value.entities = [];
 }
 
-const openAddDialog = () => {
-  displayAddDialog.value = true;
-  itemAdd.value = {
-    role: store.options.roleSet[0],
-    reverseRole: store.options.roleSet[0],
-    entities: []
-  }
+//region create
+const createDialog = ref(false);
+const createdDTO = ref({
+  entityType: dialogRef.value.data.entityType,
+  entitySubType: dialogRef.value.data.entitySubType,
+  entityId: dialogRef.value.data.entityId,
+  relatedEntityType: META.ENTITY.ENTRY,
+  relatedEntitySubType: entryType.value,
+  roleId: 0,
+  relatedRoleId: 0,
+  entities: <any>[],
+  relatedEntries: <any>[]
+});
+const openCreate = () => {
+  createdDTO.value.roleId = 0;
+  createdDTO.value.relatedRoleId = 0;
+  createdDTO.value.entities = [];
+  createdDTO.value.relatedEntries = [];
+  createdDTO.value.relatedEntitySubType = entryType.value;
+  createDialog.value = true;
+  console.log(entryType.value)
 }
-
-const openEditDialog = (value: any) => {
-  displayEditDialog.value = true;
-  itemEdit.value = value;
-}
-
-const getRelations = async () => {
-  loading.value = true;
-  editBlock.value = true;
-  const res = await axios.post(API.RELATION_LIST, queryParams.value);
-  if (res.state === axios.SUCCESS) {
-    if (res.data.data === null)
-      relations.value = [];
-    else
-      relations.value = res.data.data;
-    totalRecords.value = res.data.total
-  }
-  first.value = queryParams.value.first;
-  editBlock.value = false;
-  loading.value = false;
-}
-
-const addRelation = async () => {
-  editBlock.value = true;
-  let param = {
-    entityType: entityInfo.value?.type,
-    entityId: entityInfo.value?.id,
-    relatedGroup: queryParams.value.filters.relatedGroup.value,
-    roleId: itemAdd.value.role.value,
-    reverseRoleId: itemAdd.value.reverseRole.value,
-    relatedEntries: itemAdd.value.entities.map(i => ({id: i.id, remark: i.remark}))
-  }
-  const res = await axios.post(API.RELATION_CREATE, param);
+const create = async () => {
+  param.value.block();
+  createdDTO.value.relatedEntries = createdDTO.value.entities.map(i => ({id: i.id, remark: i.remark}));
+  const res = await axios.post(API.RELATION_CREATE, createdDTO.value);
   if (res.state === axios.SUCCESS) {
     isUpdate.value = true;
-    displayAddDialog.value = false;
-    await getRelations();
-    toast.add({severity: 'success', summary: res.message, detail: '', life: 3000});
+    createDialog.value = false;
+    await load();
+    toast.add(new PToast().success(res.message));
   } else {
-    toast.add({severity: 'error', summary: res.message, detail: '', life: 3000});
+    toast.add(new PToast().error(res.message));
   }
-  editBlock.value = false;
+  param.value.endBlock();
 }
+//endregion
 
-const updateRelation = async () => {
-  editBlock.value = true;
-  let param = {
-    id: itemEdit.value.id,
-    roleId: itemEdit.value.role.value,
-    reverseRoleId: itemEdit.value.reverseRole.value,
-    remark: itemEdit.value.remark
-  }
-  const res = await axios.post(API.RELATION_UPDATE, param);
+//region update
+const updateDTO = ref<any>({});
+const updateDialog = ref(false);
+const openUpdate = (value: any) => {
+  updateDialog.value = true;
+  updateDTO.value = JSON.parse(JSON.stringify(value));
+}
+const update = async () => {
+  param.value.block();
+  const res = await axios.post(API.RELATION_UPDATE, {
+    id: updateDTO.value.id,
+    roleId: updateDTO.value.role.value,
+    relatedRoleId: updateDTO.value.target.role.value,
+    remark: updateDTO.value.remark,
+    direction: updateDTO.value.direction
+  });
   if (res.state === axios.SUCCESS) {
     isUpdate.value = true;
-    displayEditDialog.value = false;
-    await getRelations();
-    toast.add({severity: 'success', summary: res.message, detail: '', life: 3000});
+    updateDialog.value = false;
+    await load();
+    toast.add(new PToast().success(res.message));
   } else {
-    toast.add({severity: 'error', summary: res.message, detail: '', life: 3000});
+    toast.add(new PToast().error(res.message));
   }
-  editBlock.value = false;
+  param.value.endBlock();
 }
+//endregion
 
-const deleteRelation = async () => {
-  editBlock.value = true;
-  let param = {
-    ids: selectedItems.value.map(i => i.id)
-  }
-  const res = await axios.delete(API.RELATION_DELETE, param);
+//region delete
+const openDelete = () => {
+  confirm.require({
+    group: 'templating',
+    header: t('Delete'),
+    message: t('ConfirmDeleteSelected'),
+    icon: 'pi pi-trash',
+    rejectProps: {
+      label: t('Cancel'),
+      icon: 'pi pi-times',
+      severity: 'secondary',
+      outlined: true,
+      size: 'large'
+    },
+    acceptProps: {
+      label: t('Delete'),
+      severity: 'danger',
+      icon: 'pi pi-check',
+      size: 'large'
+    },
+    accept: () => {
+      remove();
+    }
+  });
+};
+
+const remove = async () => {
+  const res = await axios.delete(API.RELATION_DELETE, {ids: param.value.selectedData.map(i => i.id)});
   if (res.state === axios.SUCCESS) {
     isUpdate.value = true;
-    displayDeleteDialog.value = false;
-    await getRelations();
-    toast.add({severity: 'success', summary: res.message, detail: '', life: 3000});
+    toast.add(new PToast().success(res.message));
+    await load();
   } else {
-    toast.add({severity: 'error', summary: res.message, detail: '', life: 3000});
+    toast.add(new PToast().error(res.message));
   }
-  editBlock.value = false;
+  param.value.endBlock();
 }
+//endregion
 
-const onPage = (ev) => {
-  queryParams.value = ev;
-  getRelations();
+//region query
+const onPage = (ev: any) => {
+  param.value.initPage(ev.first, ev.rows);
+  load();
 };
-const onSort = (ev) => {
-  queryParams.value = ev;
-  getRelations();
+const onSort = (ev: any) => {
+  param.value.initPage(0, dt.value.rows);
+  param.value.initSort(ev.sortField, ev.sortOrder);
+  load();
 };
-const onFilter = () => {
-  queryParams.value.filters = filters.value;
-  getRelations();
-};
+
+const load = async () => {
+  param.value.load();
+  const res = await axios.post(API.RELATION_LIST, param.value.query);
+  if (res.state === axios.SUCCESS) {
+    param.value.data = res.data.data;
+    param.value.total = res.data.total
+  }
+  param.value.endLoad();
+}
+//endregion
 
 </script>
 
 <template>
-  <BlockUI :blocked="editBlock">
-    <DataTable ref="dt" :value="relations" class="p-datatable-sm" :loading="loading"
-               :alwaysShowPaginator="relations.length !== 0"
-               lazy v-model:filters="filters" :totalRecords="totalRecords" paginator :rows="10" :first="first"
-               @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
-               v-model:selection="selectedItems" stripedRows size="small"
+  <BlockUI :blocked="param.blocking">
+    <DataTable ref="dt" :value="param.data" class="p-datatable-sm" :loading="param.loading"
+               :alwaysShowPaginator="param.data.length !== 0"
+               lazy :totalRecords="param.total" paginator
+               :rows="param.query.rows" :first="param.query.first"
+               @page="onPage($event)" @sort="onSort($event)"
+               v-model:selection="param.selectedData" stripedRows size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="{first} to {last} of {totalRecords}"
-               scrollable scrollHeight="400px" responsiveLayout="scroll">
+               scrollable scrollHeight="40rem" responsiveLayout="scroll">
       <template #header>
-        <SelectButton size="small" v-model="relatedGroup" :options="META.ENTRY_TYPE_SET"
-                      @change="switchRelatedGroup($event)"
+        <SelectButton size="small" v-model="curEntryType" :options="META.ENTRY_TYPE_SET"
+                      @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
-          <template #option="slotProps">
-            <span class="material-symbols-outlined" style="font-size: 20px"
-                  v-tooltip.bottom="{value: t(slotProps.option.label), class: 'short-tooltip'}">
-              {{ slotProps.option.icon }}
+          <template #option="{option}">
+            <span class="material-symbols-outlined" style="font-size: 2rem"
+                  v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}">
+              {{ option!.icon }}
             </span>
           </template>
         </SelectButton>
 
-        <Button size="small" variant="text" outlined @click="openAddDialog" :disabled="editBlock">
+        <Button size="small" variant="text" outlined @click="openCreate" :disabled="param.blocking">
           <template #icon>
             <span class="material-symbols-outlined">add_box</span>
           </template>
         </Button>
-        <Button variant="text" severity="danger" :disabled="!selectedItems || !selectedItems.length || editBlock"
-                outlined @click="confirmDeleteSelected">
+        <Button variant="text" severity="danger"
+                :disabled="!param.selectedData || !param.selectedData.length || param.blocking"
+                outlined @click="openDelete">
           <template #icon>
             <span class="material-symbols-outlined">delete_forever</span>
           </template>
@@ -242,199 +241,128 @@ const onFilter = () => {
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
         <span>{{ t('CommonDataTableLoadingInfo') }}</span>
       </template>
-      <Column selectionMode="multiple" style="flex: 0 0 3rem" exportable/>
-      <Column>
-        <template #body="slotProps">
-          <i style="cursor: pointer" class="pi pi-pencil" @click="openEditDialog(slotProps.data)"/>
+      <Column selectionMode="multiple" style="width: 3rem" exportable/>
+      <Column style="width: 3rem">
+        <template #body="{data}">
+          <Button variant="text" outlined size="small" @click="openUpdate(data)" style="padding: 0">
+            <template #icon>
+              <span style="font-size: 1.5rem" class="material-symbols-outlined">edit_square</span>
+            </template>
+          </Button>
         </template>
       </Column>
-      <Column :header="t('Group')" field="relatedGroup" style="flex: 0 0 10rem">
-        <template #body="slotProps">
-          {{ slotProps.data.relatedGroup.label }}
-        </template>
-      </Column>
-      <Column :header="t('Role')" field="role" style="flex: 0 0 10rem">
-        <template #body="slotProps">
-          {{ slotProps.data.role.label }}
-        </template>
-      </Column>
-      <Column :header="t('ReverseRole')" field="reverseRole" style="flex: 0 0 10rem">
-        <template #body="slotProps">
-          {{ slotProps.data.reverseRole.label }}
-        </template>
-      </Column>
-      <Column :header="t('RelatedEntity')" field="role" style="flex: 0 0 10rem">
-        <template #body="slotProps">
-          <router-link class="common-link" :to="`/db/${META.ENTITY_TYPE_SET[slotProps.data.targetType]}/${slotProps.data.target.value}`">
-            {{ slotProps.data.target.label }}
+      <Column :header="t('Group')" field="target.subType.label" style="width: 4rem"/>
+      <Column :header="t('Role')" field="target.role.label" style="width: 10rem"/>
+      <Column :header="t('ReverseRole')" field="role.label" style="width: 10rem"/>
+      <Column :header="t('RelatedEntity')">
+        <template #body="{data}">
+          <router-link class="common-link" :title="data.target.name"
+                       :to="`${API.ENTRY_DETAIL_PATH}/${data.target.entityId}`">
+            {{ data!.target.name }}
           </router-link>
         </template>
       </Column>
-      <Column :header="t('Remark')" field="remark"/>
+      <Column :header="t('Remark')" field="remark" style="width: 10rem"/>
     </DataTable>
   </BlockUI>
-  <Dialog :modal="true" v-model:visible="displayAddDialog" :style="{width: '600px'}" :header="t('Add')"
-          class="p-fluid">
-    <template #header>
-      <i class="pi pi-user-plus mr-2" style="font-size: 2rem"/>
-      <b>{{ t('Add') }}</b>
-    </template>
-    <div class="grid">
-      <div class="col-6">
-        <label class="ml-1">{{ t('Role') }}</label>
-        <InputGroup>
-          <InputGroupAddon>
-            <i class="pi pi-tag"/>
-          </InputGroupAddon>
-          <Select size="small" v-model="itemAdd.role" :options="store.options.roleSet" optionLabel="label" filter>
-            <template #option="slotProps">
-              <div class="flex align-options-center">
-                <div>{{ slotProps.option.label }}</div>
-              </div>
-            </template>
-          </Select>
-        </InputGroup>
+  <Dialog :modal="true" v-model:visible="createDialog" :style="{width: '55rem'}" :header="t('Add')">
+    <BlockUI :blocked="param.blocking" class="entity-editor">
+      <div class="grid mt-3">
+        <FloatLabel variant="on">
+          <label>{{ t('Role') }}</label>
+          <Select v-model="createdDTO.roleId" :options="store.options.roleSet" :filter="true"
+                  size="large" optionLabel="label" optionValue="value"/>
+        </FloatLabel>
+        <FloatLabel variant="on">
+          <label>{{ t('ReverseRole') }}</label>
+          <Select v-model="createdDTO.relatedRoleId" :options="store.options.roleSet" :filter="true"
+                  size="large" optionLabel="label" optionValue="value"/>
+        </FloatLabel>
       </div>
-      <div class="col-6">
-        <label class="ml-1">{{ t('ReverseRole') }}</label>
-        <InputGroup>
-          <InputGroupAddon>
-            <i class="pi pi-tag"/>
-          </InputGroupAddon>
-          <Select size="small" v-model="itemAdd.reverseRole" :options="store.options.roleSet" optionLabel="label" filter>
-            <template #option="slotProps">
-              <div class="flex align-options-center">
-                <div>{{ slotProps.option.label }}</div>
-              </div>
+      <DataView :value="createdDTO.entities" layout="grid">
+        <template #empty>
+          <span class="empty-search-result"/>
+        </template>
+        <template #header>
+          <Button variant="text" outlined @click="openEntrySelector">
+            <template #icon>
+              <span class="material-symbols-outlined">add_box</span>
             </template>
-          </Select>
-        </InputGroup>
-      </div>
-    </div>
-    <DataView :value="itemAdd.entities" layout="grid">
-      <template #empty>
-        <span class="empty-search-result"/>
-      </template>
-      <template #header>
-        <Button variant="text" outlined @click="openEntrySelector">
-          <template #icon>
-            <span class="material-symbols-outlined">add_box</span>
-          </template>
-        </Button>
-        <Button v-if="itemAdd.entities.length" variant="text" severity="danger"
-                outlined @click="clearRelatedEntry">
-          <template #icon>
-            <span class="material-symbols-outlined">delete_forever</span>
-          </template>
-        </Button>
-      </template>
-      <template #grid="slotProps">
-        <div class="flex flex-wrap">
-          <div v-for="(entry, index) in slotProps.items" :key="index" class="p-3" style="width: 220px">
-            <div class="grid" style="border: 1px solid gray;border-radius: 5px;">
-              <div class="col-fixed p-1" style="width: 45px">
-                <div class="entry-thumb">
-                  <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
-                </div>
-              </div>
-              <div class="col p-1">
-                <span class="text-sm">{{ entry.name }}</span><br>
-                <small style="color: gray" class="text-xs">
-                  <span>{{ entry.subName }}</span>
-                </small>
-              </div>
-              <Divider type="dashed" class="mt-0 mb-0"/>
-              <div class="col p-1" style="max-width: 160px;">
-                <InputText size="small" v-model="entry.remark"/>
-              </div>
-              <div class="col-fixed p-1">
-                <Button size="small" icon="pi pi-trash" severity="danger" variant="text"
-                        @click="removeRelatedEntry(index)"/>
-              </div>
+          </Button>
+          <Button v-if="createdDTO.entities.length" variant="text" severity="danger"
+                  outlined @click="clearRelatedEntry">
+            <template #icon>
+              <span class="material-symbols-outlined">delete_forever</span>
+            </template>
+          </Button>
+        </template>
+        <template #grid="{items}">
+          <div class="related-create-entity" v-for="(entry, index) in items" :key="index">
+            <div class="related-create-entity-thumb">
+              <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
+            </div>
+            <div class="related-create-entity-info">
+              <span :title="entry.name">{{ entry.name }}</span><br>
+              <small :title="entry.subName">{{ (entry as any).subName }}</small>
+            </div>
+            <Divider type="dashed"/>
+            <div class="related-create-entity-action">
+              <InputText size="small" v-model="entry.remark"/>
+            </div>
+            <div class="fixed-col">
+              <Button size="small" icon="pi pi-trash" severity="danger" variant="text"
+                      @click="removeRelatedEntry(index)"/>
             </div>
           </div>
-        </div>
-      </template>
-    </DataView>
+        </template>
+      </DataView>
+    </BlockUI>
     <template #footer>
-      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text" @click="displayAddDialog = false"
-              :disabled="editBlock"/>
-      <Button :label="t('Save')" icon="pi pi-check" class="p-button-text" @click="addRelation"
-              :disabled="editBlock"/>
+      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text" @click="createDialog = false"
+              :disabled="param.blocking"/>
+      <Button :label="t('Save')" icon="pi pi-check" @click="create"
+              :disabled="param.blocking"/>
     </template>
   </Dialog>
-  <Dialog :modal="true" v-model:visible="displayDeleteDialog" :header="t('Delete')" :style="{width: '400px'}">
-    <div class="confirmation-content">
-      <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"/>
-      <span>{{ t('ConfirmDeleteImage') }}</span>
-    </div>
-    <template #footer>
-      <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text"
-              @click="displayDeleteDialog = false"/>
-      <Button :label="t('Delete')" icon="pi pi-check" class="p-button-text"
-              @click="deleteRelation"/>
-    </template>
-  </Dialog>
-  <Dialog :modal="true" v-model:visible="displayEditDialog" :header="t('Edit')" class="p-fluid">
-    <div class="flex flex-wrap">
-      <div class="p-3" style="width: 220px">
-        <div class="grid" style="border: 1px solid gray;border-radius: 5px;">
-          <div class="col-fixed p-1" style="width: 45px">
-            <div class="entry-thumb">
-              <img role="presentation" :alt="itemEdit.name" :src="itemEdit.thumb"/>
-            </div>
-          </div>
-          <div class="col p-1">
-            <span class="text-sm">{{ itemEdit.target.label }}</span><br>
-            <small style="color: gray" class="text-xs"></small>
-          </div>
+  <Dialog :modal="true" v-model:visible="updateDialog" :header="t('Edit')">
+    <BlockUI :blocked="param.blocking" class="entity-editor">
+      <div class="related-create-entity">
+        <div class="related-create-entity-thumb">
+          <img role="presentation" :alt="updateDTO.target.name" :src="updateDTO.target.thumb"/>
+        </div>
+        <div class="related-create-entity-info">
+          <span :title="updateDTO.target.name">{{ updateDTO.target.name }}</span><br>
+          <small :title="updateDTO.target.subName">{{ updateDTO.target.subName }}</small>
         </div>
       </div>
-    </div>
-    <div class="field">
-      <FloatLabel variant="on">
-        <label>{{ t('Role') }}</label>
-        <Select v-model="itemEdit.role" :options="store.options.roleSet"
-                size="small" optionLabel="label" filter class="static w-full">
-          <template #option="slotProps">
-            <div class="flex align-options-center">
-              <div>{{ slotProps.option.label }}</div>
-            </div>
-          </template>
-        </Select>
-      </FloatLabel>
-    </div>
-    <div class="field">
-      <FloatLabel variant="on">
-        <label>{{ t('Role') }}</label>
-        <Select v-model="itemEdit.reverseRole" :options="store.options.roleSet"
-                size="small" optionLabel="label" filter class="static w-full">
-          <template #option="slotProps">
-            <div class="flex align-options-center">
-              <div>{{ slotProps.option.label }}</div>
-            </div>
-          </template>
-        </Select>
-      </FloatLabel>
-    </div>
-    <div class="field">
+      <div class="grid mt-3">
+        <FloatLabel variant="on">
+          <label>{{ t('Role') }}</label>
+          <Select v-model="updateDTO.role.value" :options="store.options.roleSet" :filter="true"
+                  size="large" optionLabel="label" optionValue="value"/>
+        </FloatLabel>
+        <FloatLabel variant="on">
+          <label>{{ t('ReverseRole') }}</label>
+          <Select v-model="updateDTO.target.role.value" :options="store.options.roleSet" :filter="true"
+                  size="large" optionLabel="label" optionValue="value"/>
+        </FloatLabel>
+      </div>
       <FloatLabel variant="on">
         <label>{{ t('Remark') }}</label>
-        <InputText size="small" v-model="itemEdit.remark" class="static w-full"/>
+        <InputText size="large" v-model="updateDTO.remark"/>
       </FloatLabel>
-    </div>
+    </BlockUI>
     <template #footer>
       <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text"
-              @click="displayEditDialog = false"/>
+              @click="updateDialog = false" :disabled="param.blocking"/>
       <Button :label="t('Save')" icon="pi pi-check" class="p-button-text"
-              @click="updateRelation"/>
+              @click="update" :disabled="param.blocking"/>
     </template>
   </Dialog>
   <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="t('Add')">
-    <EntrySelector :type="entryType" :entries="itemAdd.entities"/>
+    <EntrySelector :type="entryType" :entries="createdDTO.entities"/>
   </Dialog>
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/entity-global.scss';
 </style>

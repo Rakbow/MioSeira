@@ -118,10 +118,6 @@ export class PublicHelper {
         return `${year}/${month}/${day}`; // 返回 "yyyy/MM/dd" 格式
     }
 
-    static getGenderIcon = (value: number): string => {
-        return META.GENDER_ICON_SET[value].toString;
-    };
-
     static getDomain = (url: string): string => {
         try {
             const urlObj = new URL(url);
@@ -193,6 +189,10 @@ export class PublicHelper {
 
     static isNotUndefined = (value: any): boolean => {
         return !this.isUndefined(value);
+    }
+
+    static getGenderIcon = (value: number): string => {
+        return value === 1 ? 'pi pi-mars' : value === 2 ? 'pi pi-venus' : ''
     }
 
 }

@@ -40,22 +40,19 @@
 <script setup lang="ts">
 import {MdEditor} from "md-editor-v3";
 import {onMounted, ref, inject, onBeforeMount} from "vue";
-import {PublicHelper} from '@/toolkit/publicHelper.ts';
-import {AxiosHelper as axios} from '@/toolkit/axiosHelper.ts';
+import {PublicHelper} from '@/toolkit/publicHelper';
+import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
 import {useToast} from "primevue/usetoast";
-import {useDialog} from 'primevue/usedialog';
-import {API} from '@/config/Web_Helper_Strs.ts';
-import {EntityInfo, META} from '@/config/Web_Const.ts';
+import {API} from '@/config/Web_Helper_Strs';
+import {EntityInfo} from '@/config/Web_Const';
 import { useRoute } from 'vue-router';
 import {useI18n} from "vue-i18n";
 
 const {t} = useI18n();
 const toast = useToast();
-const dialog = useDialog();
-const dialogRef = inject("dialogRef");
+const dialogRef = inject<any>("dialogRef");
 const text = ref('');
 const type = ref('');
-const images = ref([]);
 // const emit = defineEmits(['update']);
 const isUpdate = ref(false);
 const route = useRoute();
@@ -72,9 +69,6 @@ onMounted(() => {
 });
 
 const editBlock = ref(false);
-const copyImageUrl = (url) => {
-  PublicHelper.copyToClip(url + '?imageMogr2/auto-orient/thumbnail/400x400');
-}
 
 const submit = () => {
   editBlock.value = true;
@@ -106,24 +100,8 @@ const close = () => {
   );
 }
 
-const loadImages = async () => {
-  editBlock.value = true;
-  let param = {
-    entityType: entityInfo.value?.type,
-    entityId: entityInfo.value?.id
-  }
-  const res = await axios.post(API.IMAGE_LIST, param);
-  if(res.state === axios.SUCCESS) {
-    images.value = res.data.images;
-    editBlock.value = false;
-  }else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
-    editBlock.value = false;
-  }
-}
-
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

@@ -41,8 +41,8 @@ const searchResult = ref({
   data: []
 });
 
-onBeforeMount(async () => {
-  await store.fetchOptions();
+onBeforeMount(() => {
+  store.fetchOptions();
 });
 
 onMounted(async () => {

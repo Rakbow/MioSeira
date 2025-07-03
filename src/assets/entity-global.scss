@@ -33,9 +33,9 @@ $item-color-6-14: #a4a;
 }
 
 .entity-image-cover-200 {
-  width: 200px;
+  width: 20rem;
   @include common-entity-image;
-  border-radius: 10px;
+  border-radius: 1rem;
 
   img {
     @include common-entity-image-img;
@@ -44,9 +44,9 @@ $item-color-6-14: #a4a;
 }
 
 .image-thumb-50 {
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 1rem;
   @include common-entity-image;
 
   img {
@@ -56,8 +56,8 @@ $item-color-6-14: #a4a;
 }
 
 .entry-thumb {
-  border: 2px solid general.$golden-text;
-  border-radius: 10px;
+  border: .2rem solid general.$golden-text;
+  border-radius: .5rem;
   @include common-entity-image;
 
   img {
@@ -67,10 +67,10 @@ $item-color-6-14: #a4a;
 }
 
 .entry-thumb-50 {
-  width: 50px;
-  height: 50px;
-  border: 2px solid general.$golden-text;
-  border-radius: 10px;
+  width: 5rem;
+  height: 5rem;
+  border: .2rem solid general.$golden-text;
+  border-radius: 1rem;
   @include common-entity-image;
 
   img {
@@ -80,10 +80,10 @@ $item-color-6-14: #a4a;
 }
 
 .entry-thumb-35 {
-  width: 35px;
-  height: 35px;
-  border: 2px solid general.$golden-text;
-  border-radius: 10px;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: .2rem solid general.$golden-text;
+  border-radius: 1rem;
   @include common-entity-image;
 
   img {
@@ -93,9 +93,9 @@ $item-color-6-14: #a4a;
 }
 
 .item-thumb-loading {
-  width: 64px;
-  height: 64px;
-  border-radius: 10px;
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: 1rem;
   @include common-entity-image;
 
   img {
@@ -104,17 +104,17 @@ $item-color-6-14: #a4a;
 }
 
 .item-thumb {
-  width: 64px;
-  height: 64px;
-  border-radius: 10px;
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: 1rem;
   @include common-entity-image;
 
   img {
-    border-radius: 10px;
-    padding: 0.5px;
+    border-radius: 1rem;
+    padding: 0.05rem;
     @include common-entity-image-img;
   }
-  border: 2px solid;
+  border: .2rem solid;
 
   &-1-0 {
     border-color: $item-color-1-0;
@@ -179,7 +179,7 @@ $item-color-6-14: #a4a;
 
 .entity-search-result-block {
   margin: .5rem .5rem .5rem .25rem;
-  border-radius: 7px;
+  border-radius: .7rem;
   background-color: #2F364F;
 }
 
@@ -217,11 +217,83 @@ $item-color-6-14: #a4a;
 }
 
 .p-select {
-  font-size: 10px;
+  font-size: 1rem;
   .p-select-option {
-    font-size: 10px;
+    font-size: 1rem;
     .p-select-option-label {
-      font-size: 10px;
+      font-size: 1rem;
     }
+  }
+}
+
+.related-entity {
+
+  display: flex;
+  overflow: hidden;
+  max-width: 38rem;
+  margin: 0 0 .5rem 0;
+  border-radius: .75rem;
+  background: general.$common-root-background;
+
+  &-thumb {
+    flex: 0 0 auto;
+    margin: 0.5rem 0 0.5rem 0.5rem;
+    border: .2rem solid general.$golden-text;
+    border-radius: .75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+  }
+
+  &-info {
+    flex-grow: 1;
+    flex-basis: 0;
+    padding: 0.5rem;
+
+    overflow: hidden;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+
+    a,small {
+      overflow: hidden;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+    }
+
+    small {
+      color: gray;
+      display: block;
+    }
+
+  }
+
+  &-role {
+    flex: 0 0 auto;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .p-tag {
+    padding: .1rem .4rem;
+    .p-tag-label {
+      font-size: 1.1rem !important;
+      font-weight: 350;
+    }
+  }
+}
+
+.p-dataview-content {
+  .related-entity {
+    background: general.$common-background !important;
+    max-width: 60rem !important;
   }
 }

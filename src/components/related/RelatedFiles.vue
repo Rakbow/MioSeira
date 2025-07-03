@@ -1,75 +1,49 @@
 <script setup lang="ts">
-import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
-import {EntityInfo, META} from "@/config/Web_Const";
+import {defineAsyncComponent, defineProps, onMounted, ref} from "vue";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
-import {PublicHelper} from "@/toolkit/publicHelper";
-import {useRoute} from "vue-router";
-import {loadEditor} from "@/logic/entityService";
 import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
+
 const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const fileUploader = defineAsyncComponent(() => import('@/components/file/FileCreator.vue'));
 
 const {t} = useI18n();
 const records = ref(0);
-const entityInfo = ref<EntityInfo>();
 const loading = ref(false);
-const route = useRoute();
-const first = ref();
 const files = ref([]);
-const queryParams = ref();
-const dt = ref();
 const dialog = useDialog();
 
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-})
-
 onMounted((() => {
-  initQueryParam();
-  getRelatedFiles();
+  load();
 }))
 
-const initPageSize = () => {
-  queryParams.value.first = 0;
-  queryParams.value.rows = dt.value.rows;
-}
+const props = defineProps({
+  type: {
+    type: Number,
+    required: true
+  },
+  id: {
+    type: Number,
+    required: true
+  }
+});
 
-const onPage = (ev) => {
-  queryParams.value = ev;
-  getRelatedFiles();
-};
-const onSort = (ev) => {
-  initPageSize();
-  queryParams.value = ev;
-  getRelatedFiles();
-};
-
-const initQueryParam = async () => {
-  queryParams.value = {
-    first: 0,
-    rows: 10,
-    sortField: null,
-    sortOrder: null,
-    filters: {
-      'entityType': {value: 0},
-      'entityId': {value: 0}
-    }
-  };
-}
-
-const getRelatedFiles = async () => {
-  queryParams.value.filters.entityType.value = entityInfo.value?.type;
-  queryParams.value.filters.entityId.value = entityInfo.value?.id;
+const load = async () => {
   loading.value = true;
-  const res = await axios.post(API.FILE_LIST, queryParams.value);
+  const res = await axios.post(API.FILE_LIST, {
+    first: 0,
+    rows: 0,
+    filters: {
+      entityType: {value: props.type},
+      entityId: {value: props.id}
+    }
+  });
   if (res.state === axios.SUCCESS) {
     files.value = res.data.data;
     records.value = res.data.total
   }
   loading.value = false;
-  first.value = queryParams.value.first;
 }
 
 const openFilesUpload = () => {
@@ -87,10 +61,10 @@ const openFilesUpload = () => {
       modal: true,
       closable: true
     },
-    onClose: (options) => {
-      if (options.data !== undefined) {
+    onClose: (options: any) => {
+      if (options.data) {
         if (options.data.isUpdate) {
-          getRelatedFiles();
+          load();
         }
       }
     }
@@ -101,50 +75,49 @@ const openFilesUpload = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="loading" class="entity-fieldset">
+  <BlockUI :blocked="loading" class="entity-fieldset related-file">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-file"/>
         <b>{{ t('RelatedFiles') }}</b>
-        <Edit :func="openFilesUpload" icon="note_add" label="Upload" />
       </template>
-      <DataTable v-if="files.length" ref="dt" :value="files" class="small-font mt-3"
-                 lazy :totalRecords="records" :loading="loading" @page="onPage($event)" @sort="onSort($event)"
-                 :alwaysShowPaginator="files.length > 10" paginator :rows="10" :first="first"
-                 stripedRows size="small" dataKey="id" removableSort
-                 scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
-                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-                 currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
-        <template #loading>
-          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-          <span>{{ t('CommonDataTableLoadingInfo') }}</span>
-        </template>
-
-        <Column style="width: 45px">
-          <template #body="slotProps">
-            <Button class="p-button-link" size="small" icon="pi pi-pencil"
-                    @click="loadEditor(META.ENTITY.FILE, slotProps.data, dialog)"/>
-          </template>
-        </Column>
-        <Column :header="t('Name')" field="name" :showFilterMenu="false" :sortable="true"/>
-        <Column :header="t('Size')" field="size" :showFilterMenu="false" :sortable="true" style="width: 150px" />
-      </DataTable>
-      <div v-else>
-        <span class="empty-search-result"><em>{{ t('NoFile') }}</em></span>
+      <div class="relative">
+        <Edit :func="openFilesUpload" icon="note_add" label="Upload"/>
+        <table class="related-file-table table table-sm table-hover" style="width: 70rem">
+          <tbody>
+          <tr v-for="(file, index) in (files as any[])">
+            <td style="width: 2rem">{{ index + 1 }}</td>
+            <td style="width: 60rem" nowrap="nowrap">
+              {{ file.name }}
+            </td>
+            <td>
+              {{ file.size }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
+
 
     </Fieldset>
   </BlockUI>
 </template>
 
 <style scoped lang="scss">
-:deep(.p-datatable) {
-  .p-datatable-tbody > tr > td {
-    padding: 1px;
+@use '@/assets/general' as g;
+
+.related-file {
+
+  &-table {
+
+    margin: .5rem 2rem 0 0 !important;
+
+    td {
+      padding: 0 0 .2rem 0;
+      border-bottom: .1rem solid g.$common-border-bottom;
+      color: #B0C4DE;
+    }
   }
-  .p-datatable-table-container {
-    border-radius: 10px;
-  }
+
 }
 </style>

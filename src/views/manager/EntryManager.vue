@@ -24,7 +24,7 @@ const entryType = ref();
 
 onBeforeMount(async () => {
   entryType.value = META.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
-  param.value.query.initFilters({
+  param.value.initFilters({
     type: {value: store.entryCurrent},
     keyword: {value: ''}
   });
@@ -45,74 +45,71 @@ const switchEntryType = (ev: any) => {
     entryType.value = META.ENTRY_TYPE_SET[0];
   store.entryCurrent = parseInt(entryType.value.value);
   param.value.query.filters.type.value = store.entryCurrent;
-  param.value.query.initPage(dt.value.rows);
+  param.value.clearSort();
+  param.value.initPage(0, dt.value.rows);
   load();
 }
 
 const initQueryParam = async () => {
-  let page: number = PublicHelper.isNotUndefined(route.query.page) ? parseInt(route.query.page!.toString()) : 1;
+  const { query } = route;
+  const page = parseInt(query.page?.toString() ?? '1');
 
-  param.value.query.first = (page - 1) * dt.value.rows;
-  param.value.query.rows = dt.value.rows;
-  param.value.query.filters.keyword.value = PublicHelper.isNotUndefined(route.query.keyword) ? route.query.keyword!.toString() : '';
+  if (query.sort) {
+    param.value.query.sortField = query.sort.toString();
+    if (query.order) {
+      param.value.query.sortOrder = query.order.toString() === 'desc' ? -1 : 1;
+    }
+  }
+
+  param.value.countPage(page, dt.value.rows);
+  param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
 }
 
 const updateQueryParam = () => {
-  // 获取当前查询参数对象
-  const currentQueryParams = {...route.query};
+  const { query: { filters, sortField, sortOrder, first }} = param.value;
+  const curQuery = {...route.query};
 
-  // 修改查询参数的值
-  currentQueryParams.page = (param.value.query.first / dt.value.rows + 1).toString();
-  currentQueryParams.size = dt.value.rows;
+  curQuery.page = ((first / dt.value.rows) + 1).toString();
 
-  if (PublicHelper.isNotEmpty(param.value.query.filters.type.value)) {
-    currentQueryParams.type = param.value.query.filters.type.value;
-  }else {
-    delete currentQueryParams.type;
+  ['type', 'keyword'].forEach(key => {
+    if (filters[key]?.value) {
+      curQuery[key] = filters[key].value;
+    } else {
+      delete curQuery[key];
+    }
+  });
+
+  if (sortField) {
+    curQuery.sort = sortField;
+    curQuery.order = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : null;
+  } else {
+    delete curQuery.sort;
+    delete curQuery.order;
   }
 
-  if (PublicHelper.isNotEmpty(param.value.query.filters.keyword.value)) {
-    currentQueryParams.keyword = param.value.query.filters.keyword.value;
-  }else {
-    delete currentQueryParams.keyword;
-  }
-
-  if (PublicHelper.isNotEmpty(param.value.query.sortField)) {
-    currentQueryParams.sortField = param.value.query.sortField;
-    currentQueryParams.sortOrder = param.value.query.sortOrder.toString();
-  }else {
-    delete currentQueryParams.sortField;
-    delete currentQueryParams.sortOrder;
-  }
-
-  // 使用 router.push 更新 URL
-  router.push({path: route.path, query: currentQueryParams});
+  router.push({path: route.path, query: curQuery});
 };
 //endregion
 
 const onPage = (ev: any) => {
-  param.value.query.first = ev.first;
-  param.value.query.rows = ev.rows;
+  param.value.initPage(ev.first, ev.rows);
   load();
 };
 const onSort = (ev: any) => {
-  param.value.query.initPage(dt.value.rows);
-  param.value.query.sortField = ev.sortField;
-  param.value.query.sortOrder = ev.sortOrder;
+  param.value.initPage(0, dt.value.rows);
+  param.value.initSort(ev.sortField, ev.sortOrder);
   load();
 };
 const onFilter = () => {
-  param.value.query.initPage(dt.value.rows);
+  param.value.initPage(0, dt.value.rows);
   load();
 };
-const load = async () => {
-  if(PublicHelper.isEmpty(param.value.query.sortField)) {
-    param.value.query.sortField = 'items';
-    param.value.query.sortOrder = -1;
-  }
-  param.value.first = param.value.query.first;
-  updateQueryParam();
 
+const onToggle = (val: PColumn[]) => {
+  param.value.selectedColumns = param.value.columns.filter(col => val.includes(col));
+};
+const load = async () => {
+  updateQueryParam();
   param.value.load();
   const res = await axios.post(API.ENTRY_GET_LIST, param.value.query);
   if (res.state === axios.SUCCESS) {
@@ -134,29 +131,25 @@ const exportCSV = () => {
   dt.value.exportCSV();
 };
 
-const onToggle = (val: PColumn[]) => {
-  param.value.selectedColumns = param.value.columns.filter(col => val.includes(col));
-};
-
 </script>
 
 <template>
   <DataTable ref="dt" :value="param.data" class="p-datatable-sm small-font" :alwaysShowPaginator="param.data.length !== 0"
              lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
-             paginator :rows="10" :first="param.first" stripedRows size="small"
-             v-model:selection="param.selectedData" dataKey="id" removableSort
-             scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
+             paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small"
+             v-model:selection="param.selectedData" dataKey="id" removableSort showGridlines
+             scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
              currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
     <template #header>
-      <BlockUI :blocked="param.block" class="relative">
+      <BlockUI :blocked="param.blocking" class="relative">
         <SelectButton size="small" v-model="entryType" :options="META.ENTRY_TYPE_SET"
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
           <template #option="slotProps">
-            <span class="material-symbols-outlined" style="font-size: 20px" :title="t(slotProps.option.label)">
+            <span class="material-symbols-outlined" style="font-size: 2rem" :title="t(slotProps.option.label)">
             {{ slotProps.option.icon }}
           </span>
           </template>
@@ -167,7 +160,7 @@ const onToggle = (val: PColumn[]) => {
             <span class="material-symbols-outlined">delete_forever</span>
           </template>
         </Button>
-        <Button variant="text" severity="help" :disabled="param.selectedData.length"
+        <Button variant="text" severity="help" :disabled="param.data.length"
                 outlined @click="exportCSV">
           <template #icon>
             <span class="material-symbols-outlined">file_export</span>
@@ -176,7 +169,7 @@ const onToggle = (val: PColumn[]) => {
         <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
                      @update:modelValue="onToggle" class="text-end" size="small"
                      :placeholder="t('SelectedDisplayColumns')"
-                     style="width: 200px;right: 0;position: absolute;top: 50%;transform: translateY(-50%)"/>
+                     style="width: 20rem;right: 0;position: absolute;top: 50%;transform: translateY(-50%)"/>
       </BlockUI>
     </template>
     <template #empty>
@@ -189,58 +182,72 @@ const onToggle = (val: PColumn[]) => {
       <span>{{ t('CommonDataTableLoadingInfo') }}</span>
     </template>
 
-    <Column selectionMode="multiple" style="width: 35px" exportable/>
-    <Column style="width: 45px">
-      <template #body="slotProps">
-        <Button variant="text" outlined size="small" @click="loadEditor(slotProps.data, dialog)">
+    <Column selectionMode="multiple" style="width: 3rem" exportable class="text-center"/>
+    <Column style="width: 3rem">
+      <template #body="{data}">
+        <Button variant="text" outlined size="small" @click="loadEditor(data, dialog)">
           <template #icon>
-            <span style="font-size: 15px" class="material-symbols-outlined">edit_square</span>
+            <span style="font-size: 1.5rem" class="material-symbols-outlined">edit_square</span>
           </template>
         </Button>
       </template>
     </Column>
-    <Column style="width: 35px">
+    <Column class="text-center" style="width: 2.5rem">
       <template #body="prop">
-        <img v-if="prop.data.thumb" :alt="prop.data.name" :src="`${API.STATIC_DOMAIN}${prop.data.thumb}`" style="width: 25px" />
-        <img v-else :alt="prop.data.name" :src="API.COMMON_EMPTY_THUMB_IMAGE" style="width: 25px" />
+        <img v-if="prop.data.thumb" :alt="prop.data.name" :src="`${API.STATIC_DOMAIN}${prop.data.thumb}`"
+             style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto" />
+        <img v-else :alt="prop.data.name" :src="API.COMMON_EMPTY_THUMB_IMAGE" style="width: 2.5rem" />
       </template>
     </Column>
 
-    <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
+    <Column :header="t('Name')" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
             exportHeader="name" :sortable="true">
       <template #body="{data}">
-        <a :href="`${API.ENTRY_DETAIL_PATH}/${data.id}`">
-          <div class="text-container" :title="data.name">
-            {{ data!.name }}
-          </div>
+        <a :href="`${API.ENTRY_DETAIL_PATH}/${data.id}`" :title="data.name">
+          {{ data!.name }}
         </a>
       </template>
       <template #filter="{filterModel,filterCallback}">
-        <InputText style="width: 70%" size="small" type="text" v-model="filterModel.value"
+        <InputText style="width: 70%" size="large" type="text" v-model="filterModel.value"
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column :header="t('NameZh')" field="nameZh" :showFilterMenu="false" :sortable="true"/>
-    <Column :header="t('NameEn')" field="nameEn" :showFilterMenu="false" :sortable="true"/>
-
-    <Column :header="t('Date')" :sortable="true" field="date" :showFilterMenu="false"
-            v-if="store.entryCurrent !== META.ENTRY_TYPE.CLASSIFICATION
-             &&　store.entryCurrent !== META.ENTRY_TYPE.MATERIAL" style="width: 150px"/>
-
-    <Column :header="t('Type')" :sortable="true" field="subType"
-            v-if="store.entryCurrent === META.ENTRY_TYPE.PRODUCT" style="width: 80px">
-      <template #body="slotProps">
-        <Tag :value="slotProps.data.subType.label"/>
-      </template>
-    </Column>
-    <Column :header="t('Gender')" :sortable="true" field="gender" :showFilterMenu="false"
-            v-if="store.entryCurrent === META.ENTRY_TYPE.PERSON
-             || store.entryCurrent === META.ENTRY_TYPE.CHARACTER" style="width: 60px">
+    <Column :header="t('NameEn')" field="nameEn" :sortable="true" style="width: 25rem">
       <template #body="{data}">
-        <Tag :value="data!.gender.label"/>
+        <div :title="data.nameEn" style="width: 25rem" class="text-ellipsis">
+          {{ data!.nameEn }}
+        </div>
       </template>
     </Column>
-    <Column :header="t('Item')" field="items" :sortable="true" :showFilterMenu="false" style="width: 60px" />
+    <Column :header="t('NameZh')" field="nameZh" :sortable="true" style="width: 25rem">
+      <template #body="{data}">
+        <div :title="data.nameZh" style="width: 25rem" class="text-ellipsis">
+          {{ data!.nameZh }}
+        </div>
+      </template>
+    </Column>
+
+
+
+    <Column :header="t('Date')" :sortable="true" field="date"
+            v-if="![META.ENTRY_TYPE.CLASSIFICATION, META.ENTRY_TYPE.MATERIAL].includes(store.entryCurrent)"
+            :style="`width: ${
+              [META.ENTRY_TYPE.PRODUCT, META.ENTRY_TYPE.PERSON].includes(store.entryCurrent) ? '7.5' :
+              store.entryCurrent === META.ENTRY_TYPE.CHARACTER ? '15' : '16'
+            }rem`"/>
+    <Column :header="t('Type')" :sortable="true" field="subType"
+            v-if="store.entryCurrent === META.ENTRY_TYPE.PRODUCT" style="width: 6rem" class="text-center">
+      <template #body="{data}">
+        <Tag v-if="data.subType.value" :value="data.subType.label"/>
+      </template>
+    </Column>
+    <Column :header="t('Gender')" :sortable="true" field="gender" class="text-center"
+            v-if="[META.ENTRY_TYPE.PERSON, META.ENTRY_TYPE.CHARACTER].includes(store.entryCurrent)" style="width: 5rem">
+      <template #body="{data}">
+        <i style="font-size: 1.4rem" :class="PublicHelper.getGenderIcon(data.gender.value)" />
+      </template>
+    </Column>
+    <Column :header="t('Item')" field="items" :sortable="true" style="width: 5rem" class="text-center" />
 
     <Column v-for="(col, index) of param.selectedColumns" :field="col.field"
             :header="col.header" :key="col.field + '_' + index" :sortable="true"/>

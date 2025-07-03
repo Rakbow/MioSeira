@@ -21,8 +21,8 @@ const store = useEntityStore();
 const emit = defineEmits(['update:relatedEntries']);
 const relatedEntries = toRef(props, 'relatedEntries')
 
-onBeforeMount(async () => {
-  await store.fetchOptions();
+onBeforeMount(() => {
+  store.fetchOptions();
 })
 
 watch(relatedEntries, (val) => {

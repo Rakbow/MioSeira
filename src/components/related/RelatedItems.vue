@@ -19,11 +19,11 @@ const relatedItems = ref([]);
 
 onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
-})
+});
 
-              (() => {
+onMounted(() => {
   getRelatedItems();
-})
+});
 const getRelatedItems = async () => {
   loading.value = true;
   let param = {
@@ -68,7 +68,7 @@ const endHover = () => {
         <b>{{ t('RelatedItem') }}</b>
       </template>
       <RouterLink v-if="records" class="ml-4" :to="`${API.ITEM_SEARCH_PATH}?entry=${entityInfo?.id}`">
-        <span>{{records}}&nbsp;<i class="pi pi-angle-double-right" style="font-size: 11px" /></span>
+        <span>{{records}}&nbsp;<i class="pi pi-angle-double-right" style="font-size: 1.3rem" /></span>
       </RouterLink>
       <DataView :value="relatedItems" layout="grid">
         <template #empty>

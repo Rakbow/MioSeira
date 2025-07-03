@@ -10,7 +10,6 @@ import {loadEditor} from "@/logic/itemService";
 import "flag-icons/css/flag-icons.min.css";
 import 'material-icons'
 import {EntityManageParam, useEntityStore} from '@/logic/entityService';
-import {PublicHelper} from "@/toolkit/publicHelper";
 import {PColumn} from "@/logic/frame";
 
 const {t} = useI18n();
@@ -22,13 +21,11 @@ const router = useRouter();
 const param = ref(new EntityManageParam());
 
 const basicColumnCount = ref(0);
-const otherColumnCount = ref(0);
-
 const itemType = ref();
 
 onBeforeMount(async () => {
   itemType.value = META.ITEM_TYPE_SET[store.itemCurrent === 0 ? 0 : store.itemCurrent - 1];
-  param.value.query.initFilters({
+  param.value.initFilters({
     type: {value: store.itemCurrent},
     keyword: {value: ''}
   });
@@ -64,53 +61,62 @@ const switchItemType = (ev: any) => {
     itemType.value = META.ITEM_TYPE_SET[0];
   store.itemCurrent = parseInt(itemType.value.value);
   param.value.query.filters.type.value = store.itemCurrent;
-  param.value.query.clearSort();
-  param.value.query.initPage(dt.value.rows);
+  param.value.clearSort();
+  param.value.initPage(0, dt.value.rows);
   load();
 }
 
 const initQueryParam = async () => {
-  let page: number = PublicHelper.isNotUndefined(route.query.page) ? parseInt(route.query.page!.toString()) : 1;
+  const { query } = route;
+  const page = parseInt(query.page?.toString() ?? '1');
 
-  param.value.query.first = (page - 1) * dt.value.rows;
-  param.value.query.rows = dt.value.rows;
-  param.value.query.filters.keyword.value = PublicHelper.isNotUndefined(route.query.keyword) ? route.query.keyword : '';
+  if (query.sort) {
+    param.value.query.sortField = query.sort.toString();
+    if (query.order) {
+      param.value.query.sortOrder = query.order.toString() === 'desc' ? -1 : 1;
+    }
+  }
+
+  param.value.countPage(page, dt.value.rows);
+  param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
 }
 
 const updateQueryParam = () => {
-  const currentQueryParams = {...route.query};
+  const { query: { filters, sortField, sortOrder, first }} = param.value;
+  const curQuery = {...route.query};
 
-  currentQueryParams.page = (param.value.query.first / dt.value.rows + 1).toString();
-  currentQueryParams.size = dt.value.rows;
+  curQuery.page = ((first / dt.value.rows) + 1).toString();
 
-  if (PublicHelper.isNotEmpty(param.value.query.filters.type.value)) {
-    currentQueryParams.type = param.value.query.filters.type.value;
+  ['type', 'keyword'].forEach(key => {
+    if (filters[key]?.value) {
+      curQuery[key] = filters[key].value;
+    } else {
+      delete curQuery[key];
+    }
+  });
+
+  if (sortField) {
+    curQuery.sort = sortField;
+    curQuery.order = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : null;
   } else {
-    delete currentQueryParams.type;
+    delete curQuery.sort;
+    delete curQuery.order;
   }
 
-  if (PublicHelper.isNotEmpty(param.value.query.filters.keyword.value)) {
-    currentQueryParams.keyword = param.value.query.filters.keyword.value;
-  } else {
-    delete currentQueryParams.keyword;
-  }
-
-  router.push({path: route.path, query: currentQueryParams});
+  router.push({path: route.path, query: curQuery});
 };
 
 const onPage = (ev: any) => {
-  param.value.query.first = ev.first;
-  param.value.query.rows = ev.rows;
+  param.value.initPage(ev.first, ev.rows);
   load();
 };
 const onSort = (ev: any) => {
-  param.value.query.initPage(dt.value.rows);
-  param.value.query.sortField = ev.sortField;
-  param.value.query.sortOrder = ev.sortOrder;
+  param.value.initPage(0, dt.value.rows);
+  param.value.initSort(ev.sortField, ev.sortOrder);
   load();
 };
 const onFilter = () => {
-  param.value.query.initPage(dt.value.rows);
+  param.value.initPage(0, dt.value.rows);
   load();
 };
 
@@ -119,7 +125,6 @@ const onToggle = (val: PColumn[]) => {
 };
 
 const load = async () => {
-  param.value.first = param.value.query.first;
   updateQueryParam();
   param.value.load();
   const res = await axios.post(API.ITEM_LIST, param.value.query);
@@ -152,18 +157,18 @@ const exportCSV = () => {
   <DataTable ref="dt" :value="param.data" class="p-datatable-sm small-font" :alwaysShowPaginator="param.data.length !== 0"
              lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
-             paginator :rows="10" :first="param.first" stripedRows size="small" showGridlines
+             paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small" showGridlines
              v-model:selection="param.selectedData" dataKey="id" removableSort
-             scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
+             scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
              currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
     <template #header>
-      <BlockUI :blocked="param.block" class="relative">
+      <BlockUI :blocked="param.blocking" class="relative">
         <SelectButton size="small" v-model="itemType" :options="META.ITEM_TYPE_SET" @change="switchItemType($event)"
-                      optionLabel="value" dataKey="value" ariaLabelledby="custom">
+                      optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
           <template #option="slotProps">
-            <span class="material-symbols-outlined" style="font-size: 20px">{{ slotProps.option.icon }}</span>
+            <span class="material-symbols-outlined" style="font-size: 2rem">{{ slotProps.option.icon }}</span>
           </template>
         </SelectButton>
 
@@ -178,17 +183,17 @@ const exportCSV = () => {
             <span class="material-symbols-outlined">delete_forever</span>
           </template>
         </Button>
-        <Button variant="text" severity="help" :disabled="param.selectedData.length"
+        <Button variant="text" severity="help" :disabled="!param.data.length"
                 outlined @click="exportCSV">
           <template #icon>
-            <span class="material-symbols-outlined">open_in_new</span>
+            <span class="material-symbols-outlined">file_export</span>
           </template>
         </Button>
 
         <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
                      @update:modelValue="onToggle" :placeholder="t('SelectedDisplayColumns')"
                      size="small"
-                     style="width: 200px;right: 0;position: absolute;top: 50%;transform: translateY(-50%);"/>
+                     style="width: 20rem;right: 0;position: absolute;top: 50%;transform: translateY(-50%);"/>
       </BlockUI>
     </template>
     <template #empty>
@@ -221,30 +226,30 @@ const exportCSV = () => {
         </Column>
       </Row>
       <Row>
-        <Column :header="t('Type')" :sortable="true" field="subType" style="width: 80px"
+        <Column :header="t('Type')" :sortable="true" field="subType" style="width: 7.5rem"
                 v-if="![META.ITEM_TYPE.ALBUM, META.ITEM_TYPE.DISC].includes(store.itemCurrent)"/>
-        <Column :header="t('CatalogId')" :sortable="true" field="catalogId" style="width: 115px"
+        <Column :header="t('CatalogId')" :sortable="true" field="catalogId" style="width: 11rem"
                 v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
-        <Column :header="t('Barcode')" :sortable="true" field="barcode" style="width: 100px"/>
-        <Column :header="t('ReleaseDate')" :sortable="true" field="releaseDate" style="width: 80px"/>
-        <Column :header="t('Price')" :sortable="true" field="price" style="width: 80px"/>
-        <Column :header="t('Region')" :sortable="true" field="region" style="width: 60px"/>
-        <Column :header="t('ReleaseType')" :sortable="true" field="releaseType" style="width: 80px"/>
-        <Column :header="t('Bonus')" :sortable="true" field="bonus" style="width: 60px"
+        <Column :header="t('Barcode')" :sortable="true" field="barcode" style="width: 9rem"/>
+        <Column :header="t('ReleaseDate')" :sortable="true" field="releaseDate" style="width: 7.5rem"/>
+        <Column :header="t('Price')" :sortable="true" field="price" style="width: 8rem"/>
+        <Column :header="t('Region')" :sortable="true" field="region" style="width: 5rem"/>
+        <Column :header="t('ReleaseType')" :sortable="true" field="releaseType" style="width: 7rem"/>
+        <Column :header="t('Bonus')" :sortable="true" field="bonus" style="width: 5rem"
                 v-if="![META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
-        <Column :header="t('Scale')" :sortable="true" field="scale" style="width: 60px"
+        <Column :header="t('Scale')" :sortable="true" field="scale" style="width: 5rem"
                 v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
-        <Column :header="t('Image')" style="width: 40px"/>
-        <Column :header="t('File')" style="width: 40px"/>
+        <Column :header="t('Image')" style="width: 3.5rem"/>
+        <Column :header="t('File')" style="width: 3.5rem"/>
       </Row>
     </ColumnGroup>
 
-    <Column selectionMode="multiple" style="width: 35px" exportable/>
-    <Column style="width: 45px">
+    <Column selectionMode="multiple" style="width: 3rem" exportable class="text-center"/>
+    <Column style="width: 3rem">
       <template #body="slotProps">
         <Button variant="text" outlined size="small" @click="loadEditor(slotProps.data, dialog)">
           <template #icon>
-            <span style="font-size: 15px" class="material-symbols-outlined">edit_square</span>
+            <span style="font-size: 1.5rem" class="material-symbols-outlined">edit_square</span>
           </template>
         </Button>
       </template>
@@ -253,21 +258,19 @@ const exportCSV = () => {
     <Column field="name" filterField="keyword" :showFilterMenu="false" showClearButton
             exportHeader="name" :sortable="true" style="flex: 0 0 5rem">
       <template #body="{data}">
-        <a :href="`${API.ITEM_DETAIL_PATH}/${data.id}`">
-          <div :title="data.name"
-               style="width: 300px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis">
-            {{ data!.name }}
-          </div>
+        <a :href="`${API.ITEM_DETAIL_PATH}/${data.id}`" :title="data.name"
+           class="text-ellipsis" style="width: 30rem">
+          {{ data!.name }}
         </a>
       </template>
       <template #filter="{filterModel,filterCallback}">
-        <InputText style="width: 90%" size="small" type="text" v-model="filterModel.value"
+        <InputText style="width: 90%" size="large" type="text" v-model="filterModel.value"
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
     <Column v-if="![META.ITEM_TYPE.ALBUM, META.ITEM_TYPE.DISC].includes(store.itemCurrent)" bodyClass="text-center" :bodyStyle="{padding: 0}">
       <template #body="{data}">
-        <Tag :value="data.subType.label" style="padding: 0 .5rem;font-size: 11px;font-weight: normal"/>
+        <Tag :value="data.subType.label" style="padding: 0 .5rem;font-size: 1.1rem;font-weight: normal"/>
       </template>
     </Column>
     <Column field="catalogId"
@@ -280,13 +283,13 @@ const exportCSV = () => {
       </template>
     </Column>
     <Column bodyClass="text-center">
-      <template #body="slotProps">
-        <span :class="`fi fi-${slotProps.data.region}`"/>
+      <template #body="{data}">
+        <span :class="`fi fi-${data.region}`"/>
       </template>
     </Column>
     <Column>
       <template #body="{data}">
-        <Tag :value="data.releaseType.label" style="padding: 0 .5rem;font-size: 11px;font-weight: normal"/>
+        <Tag :value="data.releaseType.label" style="padding: 0 .5rem;font-size: 1.1rem;font-weight: normal"/>
       </template>
     </Column>
     <Column dataType="boolean" bodyClass="text-center"
@@ -296,8 +299,8 @@ const exportCSV = () => {
       </template>
     </Column>
     <Column field="scale" v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
-    <Column field="imageCount"/>
-    <Column field="fileCount"/>
+    <Column field="imageCount" class="text-center"/>
+    <Column field="fileCount" class="text-center"/>
     <Column v-for="(col, index) of param.selectedColumns" :field="col.field"
             :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
   </DataTable>

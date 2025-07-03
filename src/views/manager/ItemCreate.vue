@@ -34,8 +34,8 @@ const dto = ref(new ItemAdvanceCreateDTO());
 const relatedEntry = reactive<RelatedEntry>(new RelatedEntry())
 
 
-onBeforeMount(async () => {
-  await store.fetchOptions();
+onBeforeMount(() => {
+  store.fetchOptions();
   itemType.value = META.ITEM_TYPE_SET[dto.value.item.type - 1];
 })
 

@@ -86,12 +86,12 @@ export const META = {
         {icon: 'distance', value: '6', label: 'Event'}
     ],
     ITEM_TYPE_SET: [
-        { icon: 'genres', value: '1', disabled: false },
-        { icon: 'book_5', value: '2', disabled: false },
-        { icon: 'hangout_video', value: '3', disabled: false },
-        { icon: 'stadia_controller', value: '4', disabled: true },
-        { icon: 'package_2', value: '5', disabled: false },
-        { icon: 'accessibility_new', value: '6', disabled: false }
+        {icon: 'genres', value: '1', disabled: false},
+        {icon: 'book_5', value: '2', disabled: false},
+        {icon: 'hangout_video', value: '3', disabled: false},
+        {icon: 'stadia_controller', value: '4', disabled: true},
+        {icon: 'package_2', value: '5', disabled: false},
+        {icon: 'accessibility_new', value: '6', disabled: false}
     ],
     FILE_CREATE_TYPE_SET: [
         {icon: 'upload_file', value: '0'},
@@ -105,16 +105,25 @@ export const META = {
         {icon: 'diamond', value: '5'},
         {icon: 'distance', value: '6'}
     ],
-    GENDER_ICON_SET: {
-        0: "question",
-        1: "mars",
-        2: "venus"
-    },
     ENTITY_TYPE_SET: {
         O: 'item',
         1: 'entry'
-    }
+    },
+    RELATION_CONFIG: [
+        {key: [0, 1], type: 1, subTypeSets: [[1]]},
+        {key: [0, 2], type: 1, subTypeSets: [[1]]},
+        {key: [0, 3], type: 1, subTypeSets: [[1]]},
+        {key: [0, 5], type: 1, subTypeSets: [[1], [3]]},
+        {key: [0, 6], type: 1, subTypeSets: [[1], [3]]},
+        {key: [1, 1], type: 1, subTypeSets: [[1], [3], [4, 5, 6]]},
+        {key: [1, 2], type: 1, subTypeSets: [[1], [3], [4, 5, 6]]},
+        {key: [1, 3], type: 1, subTypeSets: [[1], [3], [4, 5, 6]]},
+        {key: [1, 4], type: 1, subTypeSets: [[]]},
+        {key: [1, 5], type: 1, subTypeSets: [[]]},
+        {key: [1, 6], type: 1, subTypeSets: [[]]}
+    ]
 }
+
 export class Attribute {
     label: string = "";
     value: any;

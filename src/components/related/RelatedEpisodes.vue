@@ -1,90 +1,86 @@
 <template>
-  <div class="mt-2 entity-detail-side-panel">
-    <Panel>
-      <template #header>
-        <span>
-            <i class="pi pi-list"/><span><strong>{{ t('RelatedEpisode') }}</strong></span>
-        </span>
-      </template>
-      <div class="relative">
-        <div v-if="!loading">
+  <Panel class="entity-detail-side-panel">
+    <template #header>
+        <span><i class="pi pi-list"/><strong>{{ t('RelatedEpisode') }}</strong></span>
+    </template>
+    <div class="relative">
+      <div v-if="!loading">
 
-          <div class="flex flex-wrap p-1">
-            <div class="grid" style="border-radius: 5px;background: #18181b">
-              <div class="col-fixed p-1" style="width: 45px">
-                <div class="entry-thumb">
-                  <img role="presentation" :alt="parent.name" :src="parent.thumb"/>
-                </div>
+        <div class="flex flex-wrap p-1">
+          <div class="grid" style="border-radius: 5px;background: #18181b">
+            <div class="col-fixed p-1" style="width: 45px">
+              <div class="entry-thumb">
+                <img role="presentation" :alt="parent.name" :src="parent.thumb"/>
               </div>
-              <div class="col p-1" style="width: 240px">
+            </div>
+            <div class="col p-1" style="width: 240px">
                 <span class="block data-table-field-text-overflow-hidden">
                   <a :href="`/db/${parent.tableName}/${parent.id}`" :title="parent.name">{{ parent.name }}</a>
                 </span>
-                <small style="color: gray" class="block data-table-field-text-overflow-hidden">
-                  {{ parent.subName }}
-                </small>
-              </div>
+              <small style="color: gray" class="block data-table-field-text-overflow-hidden">
+                {{ parent.subName }}
+              </small>
             </div>
           </div>
-
-
-          <table class="episode-list-table table table-sm">
-            <tbody>
-            <tr v-for="ep in eps">
-              <th :class="{ 'episode-list-current-th': ep.id === props.id }">
-                {{ ep.serial }}
-              </th>
-              <td nowrap="nowrap" v-if="ep.id === props.id" class="episode-list-current-td">
-                <span>{{ ep.name }}</span>
-              </td>
-              <td nowrap="nowrap" v-else>
-                <router-link :to="`${API.EPISODE_DETAIL}/${ep.id}`">
-                  <span>{{ ep.name }}</span>
-                </router-link>
-              </td>
-              <!--              <td class="album-track-duration">-->
-              <!--                <span>{{ ep.duration }}</span>-->
-              <!--              </td>-->
-            </tr>
-            </tbody>
-          </table>
         </div>
-        <div v-else>
 
-          <div class="flex flex-wrap p-1">
-            <div class="grid" style="border-radius: 5px;background: #18181b">
-              <div class="col-fixed p-1" style="width: 50px">
-                <div class="entry-thumb">
-                  <Skeleton size="40px"/>
-                </div>
+
+        <table class="episode-list-table table table-sm">
+          <tbody>
+          <tr v-for="ep in eps">
+            <th :class="{ 'episode-list-current-th': ep.id === props.id }">
+              {{ ep.serial }}
+            </th>
+            <td nowrap="nowrap" v-if="ep.id === props.id" class="episode-list-current-td">
+              <span>{{ ep.name }}</span>
+            </td>
+            <td nowrap="nowrap" v-else>
+              <router-link :to="`${API.EPISODE_DETAIL}/${ep.id}`">
+                <span>{{ ep.name }}</span>
+              </router-link>
+            </td>
+            <!--              <td class="album-track-duration">-->
+            <!--                <span>{{ ep.duration }}</span>-->
+            <!--              </td>-->
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-else>
+
+        <div class="flex flex-wrap p-1">
+          <div class="grid" style="border-radius: 5px;background: #18181b">
+            <div class="col-fixed p-1" style="width: 50px">
+              <div class="entry-thumb">
+                <Skeleton size="40px"/>
               </div>
-              <div class="col p-1" style="width: 240px">
+            </div>
+            <div class="col p-1" style="width: 240px">
                 <span class="block data-table-field-text-overflow-hidden">
                   <Skeleton class="mt-1"/>
                 </span>
-                <small style="color: gray" class="block data-table-field-text-overflow-hidden">
-                  <Skeleton class="mt-2"/>
-                </small>
-              </div>
+              <small style="color: gray" class="block data-table-field-text-overflow-hidden">
+                <Skeleton class="mt-2"/>
+              </small>
             </div>
           </div>
-
-          <table class="episode-list-table table table-sm table-hover">
-            <tbody>
-            <tr v-for="index in 10" :key="index">
-              <th>
-                <Skeleton width="15px"/>
-              </th>
-              <td nowrap="nowrap">
-                <Skeleton width="255px" class="mt-1"/>
-              </td>
-            </tr>
-            </tbody>
-          </table>
         </div>
+
+        <table class="episode-list-table table table-sm table-hover">
+          <tbody>
+          <tr v-for="index in 10" :key="index">
+            <th>
+              <Skeleton width="15px"/>
+            </th>
+            <td nowrap="nowrap">
+              <Skeleton width="255px" class="mt-1"/>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
-    </Panel>
-  </div>
+    </div>
+  </Panel>
 </template>
 
 <script setup lang="ts">

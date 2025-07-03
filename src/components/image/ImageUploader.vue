@@ -29,8 +29,8 @@ const props = defineProps({
   }
 });
 
-onBeforeMount(async () => {
-  await store.fetchOptions();
+onBeforeMount(() => {
+  store.fetchOptions();
   images.value = props.images;
   generateThumb.value = props.generateThumb;
 })

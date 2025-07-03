@@ -84,14 +84,10 @@ export const loadEditor = (item: any, dialog: {
         props: {
             header: t('Edit'),
             style: {
-                width: '800px',
-            },
-            breakpoints: {
-                '960px': '80vw',
-                '640px': '70vw'
+                width: '60rem',
             },
             modal: true,
-            closable: false
+            closable: true
         },
         data: {
             item: item

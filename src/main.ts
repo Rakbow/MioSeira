@@ -1,12 +1,14 @@
+//region css
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
 import "@/assets/font.css";
 import "@/assets/global.css";
 import "@/assets/search.css";
-import "@/assets/topbar.css";
 import "@/assets/general.scss";
+//endregion
 
-import App from "./App.vue";
+
+import App from "./App.vue";//vue
 import {createMetaManager} from "vue-meta";
 import {createApp} from "vue";
 import router from "./router.js";// vue-router

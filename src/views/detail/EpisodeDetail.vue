@@ -2,7 +2,7 @@
   <Toast/>
   <div class="flex flex-wrap justify-content-center gap-3">
     <div class="entity-detail-main-col">
-      <div class="entity-header-title">
+      <div class="entity-detail-header-title">
         <h1 style="display: inline;">{{ episode.name }}</h1>
         <div v-if="episode.nameEn">
           <span>{{ episode.nameEn }}</span>
@@ -13,7 +13,7 @@
           <div class="entity-image-cover-200">
             <img :src="episode.cover" alt="main"/>
           </div>
-          <div class="infobox_container">
+          <div class="infobox-container">
             <EpisodeInfo :entity="episode"/>
             <div v-if="userStore.user && userStore.user.type > 1">
               <Button class="p-button-link" icon="pi pi-pen-to-square"
@@ -26,7 +26,7 @@
         </div>
         <div class="col py-0">
           <DetailPad :header="t('Description')" :text="episode.detail"/>
-          <RelatedFiles />
+          <RelatedFiles :type="META.ENTITY.EPISODE" :id="episode.id" />
         </div>
       </div>
     </div>
@@ -39,7 +39,6 @@
 
 <script setup lang="ts">
 import '@/assets/entity-detail.scss';
-import '@/assets/item-detail.css';
 import "@/assets/entity-global.scss";
 import "@/assets/entry-detail.scss";
 import '@/assets/bootstrap/myBootstrap.min.css';
