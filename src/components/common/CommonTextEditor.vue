@@ -47,6 +47,7 @@ import {API} from '@/config/Web_Helper_Strs';
 import {EntityInfo} from '@/config/Web_Const';
 import { useRoute } from 'vue-router';
 import {useI18n} from "vue-i18n";
+import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
 const toast = useToast();
@@ -80,11 +81,11 @@ const submit = () => {
   axios.post(API.ENTITY_UPDATE_DETAIL, json)
       .then(res => {
         if (res.state === axios.SUCCESS) {
-          toast.add({severity: 'success', detail: res.message, life: 3000});
+          toast.add(new PToast().success(res.message));
           isUpdate.value = true;
           close();
         } else {
-          toast.add({severity: 'error', detail: res.message, life: 3000});
+          toast.add(new PToast().error(res.message));
         }
         editBlock.value = false;
       })

@@ -85,7 +85,7 @@ const submitByUpload = async () => {
   editBlock.value = true;
   const res = await axios.form(API.FILE_UPLOAD, fd);
   if (res.state === axios.SUCCESS)
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();
   fileInfos.value = [];
@@ -101,7 +101,7 @@ const submitByCould = async () => {
   editBlock.value = true;
   const res = await axios.post(API.FILE_RELATED_CREATE, param);
   if (res.state === axios.SUCCESS)
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
   isUpdate.value = true;
   close();
   fileInfos.value = [];

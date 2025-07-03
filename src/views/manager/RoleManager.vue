@@ -132,11 +132,11 @@ const create = async () => {
   param.value.load();
   const res = await axios.post(API.ROLE_CREATE, createDTO.value);
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     closeAddDialog();
     await load();
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   param.value.endLoad();
 }
@@ -145,11 +145,11 @@ const update = async () => {
   param.value.load();
   const res = await axios.post(API.ROLE_UPDATE, updateDTO.value);
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     closeEditDialog();
     await load();
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   param.value.endLoad();
 }
@@ -159,9 +159,9 @@ const refresh = async () => {
   const res = await axios.post(API.ROLE_REFRESH);
   if (res.state === axios.SUCCESS) {
     store.clear();
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   param.value.endLoad();
 }

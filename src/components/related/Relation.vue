@@ -124,7 +124,7 @@ const openBrowser = () => {
     </template>
     <i v-if="loading" class="pi pi-spin pi-spinner" style="font-size: 2rem"/>
     <div v-else>
-      <div v-if="entities" v-for="entity in entities">
+      <div v-if="entities?.length" v-for="entity in entities">
         <RelationEntity :entity="entity" :showRole="showRole"/>
       </div>
       <div v-else>

@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="col py-0">
-          <DetailPad :header="t('Description')" :text="episode.detail"/>
+          <DetailPad :text="episode.detail"/>
           <RelatedFiles :type="META.ENTITY.EPISODE" :id="episode.id" />
         </div>
       </div>

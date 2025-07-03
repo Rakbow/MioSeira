@@ -39,9 +39,9 @@ const updateStatus = async () => {
   };
   const res = await axios.post(API.ENTITY_UPDATE_STATUS, json);
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   editBlock.value = false;
 };

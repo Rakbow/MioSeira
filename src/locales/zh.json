@@ -70,7 +70,6 @@
   "MediaFormat": "媒体格式",
   "Region": "地区",
   "Language": "语言",
-  "Summary": "简介",
   "Spec": "规格",
   "Scale": "规格",
   "Description": "描述",
@@ -185,7 +184,6 @@
   "Product": "作品",
 
   "ItemDetailPlayListTitle": "播放列表",
-  "ItemDetailSummaryTitle": "简介",
   "ItemDetailCompaniesTitle": "相关企业",
 
   "ItemDetailMessageNoArtistInfo": "暂无创作信息",
@@ -194,7 +192,6 @@
   "ItemDetailMessageNoRelatedItem": "暂无相关条目",
   "ItemDetailMessageNoSpec": "暂无规格信息",
   "ItemDetailMessageNoCompanies": "暂无相关企业信息",
-  "ItemDetailMessageNoSummary": "暂无简介",
   "ItemDetailMessageNoOrganization": "暂无关联组织信息",
 
   "MessageDeleted": "已删除",

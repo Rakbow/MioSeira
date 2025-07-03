@@ -120,7 +120,7 @@ const getEntries = async () => {
     searchResult.value.total = res.data.total;
     searchResult.value.time = res.data.searchTime;
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   loading.value = false;
 }

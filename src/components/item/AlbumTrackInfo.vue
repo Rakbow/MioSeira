@@ -12,7 +12,7 @@
 
         <div v-if="!loading">
           <div v-if="!info.discs.length">
-            <span class="emptyInfo"><em>{{ t('NoTrackInfo') }}</em></span>
+            <span class="empty-search-result">{{ t('NoTrackInfo') }}</span>
           </div>
           <div v-else>
             <p class="album-track-header">
@@ -225,7 +225,7 @@ const uploadAudioFile = async () => {
   editBlock.value = true;
   const res = await axios.form(API.ALBUM_TRACK_FILES_UPLOAD, fd);
   if (res.state === axios.SUCCESS)
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
   audioUploadDisplay.value = false;
   fileInfos.value = [];
   editBlock.value = false;

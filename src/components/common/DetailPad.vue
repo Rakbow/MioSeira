@@ -3,21 +3,21 @@
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-align-left"/>
-        <b>{{ props.header }}</b>
+        <b>{{ t('Description') }}</b>
       </template>
       <div class="relative">
-        <Button v-if="userStore.user && userStore.user.type > 1" class="p-button-link absolute top-0"
-                @click="openEditDialog" style="right: 4%"
-                v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
-          <template #icon>
-            <span style="font-size: 2.4rem" class="material-symbols-outlined">edit_square</span>
-          </template>
-        </Button>
         <Button v-if="!empty" class="p-button-link absolute top-0"
-                @click="openTextTingle" style="right: 0" icon="pi pi-external-link"
+                @click="openTextTingle" style="right: 4%" icon="pi pi-external-link"
                 v-tooltip.bottom="{value: t('FullScreen'), class: 'short-tooltip'}">
           <template #icon>
             <span style="font-size: 2.4rem" class="material-symbols-outlined">arrows_output</span>
+          </template>
+        </Button>
+        <Button v-if="userStore.user && userStore.user.type > 1" class="p-button-link absolute top-0"
+                @click="openEditDialog" style="right: 0"
+                v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
+          <template #icon>
+            <span style="font-size: 2.4rem" class="material-symbols-outlined">edit_square</span>
           </template>
         </Button>
         <article style="width: 90%;font-size: 1.2rem" ref="html" class="entity-detail-markdown"/>
@@ -45,7 +45,7 @@ const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/
 const {t} = useI18n();
 const editBlock = ref(false);
 const empty = ref(false);
-const maxLength = ref(200);
+const maxLength = ref(400);
 const isCollapsed = ref(true);
 // 可见行
 const visibleText = computed(() => {
@@ -59,10 +59,6 @@ const toggleCollapse = () => {
 
 const props = defineProps({
   text: {
-    type: String,
-    required: true
-  },
-  header: {
     type: String,
     required: true
   }
@@ -104,7 +100,7 @@ const openEditDialog = () => {
 
 const text2Markdown = () => {
   if (visibleText.value == null || visibleText.value === '') {
-    html.value.innerHTML = marked('<span class="emptyInfo"><em>' + t('NoDescription') + '</em></span>');
+    html.value.innerHTML = marked(`<span class="empty-search-result">${t('NoDescription')}</span>`);
     empty.value = true;
   } else {
     empty.value = false;

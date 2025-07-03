@@ -31,8 +31,7 @@
           </div>
         </div>
         <div class="col py-0">
-          <DetailPad v-if="entry.subType.value !== META.ENTRY_SUB_TYPE.MAIN_SERIES"
-                     :header="t('Description')" :text="entry.detail"/>
+          <DetailPad v-if="entry.subType.value !== META.ENTRY_SUB_TYPE.MAIN_SERIES" :text="entry.detail"/>
           <RelatedPersons :type="META.ENTITY.ENTRY" :id="entry.id" :subType="entry.type.value"
               v-if="entry.type.value === META.ENTRY_TYPE.PRODUCT && entry.subType.value !== META.ENTRY_SUB_TYPE.MAIN_SERIES"/>
           <RelatedItems v-if="entry.subType.value !== META.ENTRY_SUB_TYPE.MAIN_SERIES"/>

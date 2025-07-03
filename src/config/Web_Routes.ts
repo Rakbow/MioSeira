@@ -141,7 +141,7 @@ export const DATABASE_ROUTER: Array<RouteRecordRaw> = [
 
 
             {
-                path: 'item/add',
+                path: 'item/submit',
                 component: () => import('@/views/manager/ItemCreate.vue')
             }
         ],

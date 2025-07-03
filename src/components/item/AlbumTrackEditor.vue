@@ -47,11 +47,11 @@ const submit = async () => {
     tracks: tracks.value
   });
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   editBlock.value = false;
 }

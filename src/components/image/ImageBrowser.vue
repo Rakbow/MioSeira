@@ -122,7 +122,7 @@ const getImages = async () => {
     images.value = res.data.data;
     totalRecords.value = res.data.total
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   loading.value = false;
   first.value = queryParams.value.first;

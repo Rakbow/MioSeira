@@ -151,6 +151,7 @@ import {useI18n} from "vue-i18n";
 import {EntityInfo} from "@/config/Web_Const";
 import {useEntityStore} from "@/logic/entityService";
 import {loadEditor} from "@/logic/itemService";
+import {PToast} from "@/logic/frame";
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 
@@ -202,11 +203,11 @@ const filters = ref({
   'type': {value: -1}
 });
 
-const onPage = (ev) => {
+const onPage = (ev: any) => {
   queryParams.value = ev;
   load();
 };
-const onSort = (ev) => {
+const onSort = (ev: any) => {
   queryParams.value = ev;
   load();
 };
@@ -252,8 +253,8 @@ const load = async () => {
 
 const upload = async () => {
   const fd = new FormData();
-  fd.append('entityType', entityInfo.value?.type);
-  fd.append('entityId', entityInfo.value?.id);
+  fd.append('entityType', entityInfo.value!.type.toString());
+  fd.append('entityId', entityInfo.value!.id.toString());
   let infos: any[] = [];
   addImages.value.forEach(i => {
     infos.push({
@@ -264,15 +265,15 @@ const upload = async () => {
     fd.append('files', i.file)
   })
   fd.append('infos', JSON.stringify(infos));
-  fd.append('generateThumb', generateThumb.value);
+  fd.append('generateThumb', generateThumb!.value);
   editBlock.value = true;
   const res = await axios.form(API.IMAGE_UPLOAD, fd);
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     displayAddDialog.value = false;
     await load();
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   editBlock.value = false;
 }
@@ -290,23 +291,31 @@ const update = async () => {
   if (res.state === axios.SUCCESS) {
     closeEditDialog();
     await load();
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   editBlock.value = false;
 };
 
 const remove = async () => {
   editBlock.value = true;
-  const res = await axios.delete(API.IMAGE_DELETE, selectedItems.value);
+  let param = [];
+  for(let i of selectedItems.value as any[]) {
+    param.push({
+      id: i.id,
+      url: i.url
+    })
+  }
+
+  const res = await axios.delete(API.IMAGE_DELETE, param);
   if (res.state === axios.SUCCESS) {
     selectedItems.value = [];
     displayDeleteDialog.value = false;
     await load();
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   editBlock.value = false;
 }
@@ -314,7 +323,7 @@ const remove = async () => {
 
 const activeIndex = ref(0)
 const displayCustom = ref(false)
-const imageClick = (index) => {
+const imageClick = (index: number) => {
   activeIndex.value = index;
   displayCustom.value = true;
 };

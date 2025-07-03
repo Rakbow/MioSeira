@@ -50,7 +50,7 @@ const getDisplayImages = async () => {
     images.value = res.data.images;
     count.value = res.data.count;
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   loading.value = false;
 }

@@ -9,7 +9,7 @@ export const API = {
 
     //region item
     ITEM_SEARCH_PATH: '/db/item',
-    ITEM_CREATE_PATH: 'item/add',
+    ITEM_CREATE_PATH: 'item/submit',
     ITEM_SEARCH: '/api/db/item/search',
     ITEM_DETAIL_PATH: '/db/item',
     ITEM_GET_DETAIL: '/api/db/item/detail',

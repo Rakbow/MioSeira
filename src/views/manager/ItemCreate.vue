@@ -93,7 +93,7 @@ const submit = async () => {
   if (res.state === axios.SUCCESS)
     await router.push(`${API.ITEM_DETAIL_PATH}/${res.data}`);
   else
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   block.value = false;
 }
 
@@ -315,11 +315,6 @@ const handleTracks = () => {
                 <InputText v-model="dto.item.size"/>
               </FloatLabel>
             </div>
-
-            <FloatLabel class="field" variant="on" v-if="dto.item.type === META.ITEM_TYPE.BOOK">
-              <label>{{ t('Summary') }}</label>
-              <Textarea v-model="dto.item.summary" rows="4" cols="20"/>
-            </FloatLabel>
 
             <InputGroup class="field">
               <InputText v-model="itemSpec"/>

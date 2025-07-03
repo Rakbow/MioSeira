@@ -8,6 +8,7 @@ import {API} from "@/config/Web_Helper_Strs";
 import {useToast} from "primevue/usetoast";
 import {useEntityStore} from "@/logic/entityService";
 import {ItemSpecParams, parseItemSpecParams} from "@/logic/itemService";
+import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
 const dialogRef = inject<any>("dialogRef");
@@ -31,11 +32,11 @@ const submit = async () => {
   block.value = true;
   const res = await axios.post(API.ITEM_UPDATE, item.value);
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   block.value = false;
 }
@@ -129,20 +130,16 @@ const parseItemSpec = () => {
     <template v-if="item.type === META.ITEM_TYPE.BOOK">
       <div class="grid">
         <FloatLabel variant="on">
-          <label class="mb-3">{{ t('BookType') }}<i class="pi pi-asterisk"/></label>
+          <label>{{ t('BookType') }}<i class="pi pi-asterisk"/></label>
           <Select size="large" v-model="item.subType" :options="store.options.bookTypeSet"
                   optionLabel="label" optionValue="value"/>
         </FloatLabel>
         <FloatLabel variant="on">
-          <label class="mb-3">{{ t('Language') }}<i class="pi pi-asterisk"/></label>
+          <label>{{ t('Language') }}<i class="pi pi-asterisk"/></label>
           <Select size="large" v-model="item.lang" :options="store.options.languageSet"
                   optionLabel="label" optionValue="value"/>
         </FloatLabel>
       </div>
-      <FloatLabel variant="on">
-        <label>{{ t('Summary') }}</label>
-        <Textarea size="large" v-model="item.summary" rows="4" cols="20"/>
-      </FloatLabel>
     </template>
 
     <Divider align="center"><b>{{ t('Dimensions') }}</b></Divider>
@@ -252,5 +249,4 @@ const parseItemSpec = () => {
 </template>
 
 <style scoped lang="scss">
-@import "@/assets/entity-manager";
 </style>

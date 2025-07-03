@@ -7,6 +7,7 @@ import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 import {useToast} from "primevue/usetoast";
 import {useEntityStore} from "@/logic/entityService";
+import {PToast} from "@/logic/frame";
 const ImageEditor = defineAsyncComponent(() => import('@/components/image/EntryImageEditor.vue'));
 
 const {t} = useI18n();
@@ -31,11 +32,11 @@ const submit = async () => {
   block.value = true;
   const res = await axios.post(API.ENTRY_UPDATE, entry.value);
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   block.value = false;
 }

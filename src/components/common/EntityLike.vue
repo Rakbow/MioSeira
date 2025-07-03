@@ -47,9 +47,9 @@ const like = async () => {
   if (res.state === axios.SUCCESS) {
     likeCount.value++;
     liked.value = true;
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   editBlock.value = false;
 };

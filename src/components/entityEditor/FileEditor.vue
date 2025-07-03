@@ -27,11 +27,11 @@ const submit = async () => {
   entity.value.name = `${entity.value.name}.${entity.value.extension}`;
   const res = await axios.post(API.FILE_UPDATE, entity.value);
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   editBlock.value = false;
 }
@@ -87,5 +87,4 @@ const close = () => {
 </template>
 
 <style scoped lang="scss">
-@use "@/assets/entity-manager";
 </style>

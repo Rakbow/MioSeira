@@ -83,7 +83,7 @@ const openFilesUpload = () => {
       </template>
       <div class="relative">
         <Edit :func="openFilesUpload" icon="note_add" label="Upload"/>
-        <table class="related-file-table table table-sm table-hover" style="width: 70rem">
+        <table v-if="files.length" class="related-file-table table table-sm table-hover" style="width: 70rem">
           <tbody>
           <tr v-for="(file, index) in (files as any[])">
             <td style="width: 2rem">{{ index + 1 }}</td>
@@ -96,8 +96,8 @@ const openFilesUpload = () => {
           </tr>
           </tbody>
         </table>
+        <span v-else class="empty-search-result">{{ t('NoFile') }}</span>
       </div>
-
 
     </Fieldset>
   </BlockUI>

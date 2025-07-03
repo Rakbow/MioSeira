@@ -71,7 +71,7 @@ const login = async () => {
     userStore.login(res.data.user, res.data.token);
     location.reload();
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
     editBlock.value = false;
   }
 }

@@ -37,7 +37,6 @@
   "MediaFormat": "媒体格式",
   "Region": "地区",
   "Language": "语言",
-  "Summary": "简介",
   "Spec": "规格",
   "Description": "描述",
   "Role": "职位",
@@ -151,7 +150,6 @@
   "FranchiseEnglishName": "名称(英)",
 
   "ItemDetailPlayListTitle": "播放列表",
-  "ItemDetailSummaryTitle": "简介",
   "ItemDetailCompaniesTitle": "相关企业",
 
 
@@ -164,7 +162,6 @@
   "ItemDetailMessageNoRelatedItem": "暂无相关条目",
   "ItemDetailMessageNoSpec": "暂无规格信息",
   "ItemDetailMessageNoCompanies": "暂无相关企业信息",
-  "ItemDetailMessageNoSummary": "暂无简介",
   "ItemDetailMessageNoOrganization": "暂无关联组织信息",
 
   "AlbumDetailMessageNoTrackInfo": "暂无音轨信息",

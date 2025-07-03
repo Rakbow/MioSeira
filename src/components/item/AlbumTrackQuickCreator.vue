@@ -50,7 +50,7 @@ const submit = async () => {
     block.value = true;
     const res = await axios.post(API.ALBUM_TRACK_QUICK_CREATE, disc.value);
     if (res.state === axios.SUCCESS) {
-      toast.add({severity: 'success', detail: res.message, life: 3000});
+      toast.add(new PToast().success(res.message));
       upload.value = true;
       close();
     }

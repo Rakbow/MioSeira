@@ -28,10 +28,9 @@
         </div>
       </div>
       <div class="m-3">
-        <DetailPad v-if="itemType === META.ITEM_TYPE.BOOK" :header="t('Summary')" :text="item.summary" />
         <RelatedPersons :type="META.ENTITY.ITEM" :id="item.id" :subType="item.type" />
         <AlbumTrack v-if="itemType === META.ITEM_TYPE.ALBUM" />
-        <DetailPad :header="t('Description')" :text="item.detail" />
+        <DetailPad :text="item.detail" />
         <RelatedFiles :type="META.ENTITY.ITEM" :id="item.id" />
       </div>
     </div>
@@ -46,6 +45,8 @@
 <script setup lang="ts">
 import '@/assets/entity-detail.scss';
 import "@/assets/entity-global.scss";
+import "@/assets/entry-detail.scss";
+import '@/assets/entity-manager.scss';
 import '@/assets/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
@@ -55,7 +56,6 @@ import {useToast} from "primevue/usetoast";
 import {useUserStore} from "@/store/user";
 import {useDialog} from "primevue/usedialog";
 import SideImages from "@/components/image/SideImages.vue";
-import RelatedEntities from "@/components/related/RelatedEntities.vue";
 import RelatedPersons from "@/components/related/RelatedPersons.vue";
 import DetailPad from "@/components/common/DetailPad.vue";
 import AlbumTrack from "@/components/item/AlbumTrackInfo.vue";

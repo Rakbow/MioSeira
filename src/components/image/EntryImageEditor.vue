@@ -68,12 +68,12 @@ const upload = async () => {
   formData.append('imageType', image.value.type);
   const res = await axios.form(API.ENTRY_UPLOAD_IMAGE, formData);
   if (res.state === axios.SUCCESS) {
-    toast.add({severity: 'success', detail: res.message, life: 3000});
+    toast.add(new PToast().success(res.message));
     if (image.value.type === META.IMAGE_TYPE.MAIN) cover.value = res.data;
     else if (image.value.type === META.IMAGE_TYPE.THUMB) thumb.value = res.data;
     uploadDialogDisplay.value = false;
   } else {
-    toast.add({severity: 'error', detail: res.message, life: 3000});
+    toast.add(new PToast().error(res.message));
   }
   loading.value = false;
 };

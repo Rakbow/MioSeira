@@ -110,7 +110,7 @@ const toggleCollapse = () => {
               <template v-for="(chunk) in chunkArray((item as any).persons, 10)">
                 <div>
                   <template v-for="(person, index) in chunk">
-                    <router-link :to="`${API.ENTRY_DETAIL_PATH}/${(person as any).entityId}`">
+                    <router-link :to="`${API.ENTRY_DETAIL_PATH}/${(person as any).id}`">
                       <span>{{ (person as any).name }}</span>
                     </router-link>
                     <span v-if="(person as any).remark">&nbsp;({{ (person as any).remark }})</span>
@@ -123,7 +123,7 @@ const toggleCollapse = () => {
           </tbody>
         </table>
         <div v-else>
-          <span class="emptyInfo"><em>{{ t('NoPerson') }}</em></span>
+          <span class="empty-search-result">{{ t('NoPerson') }}</span>
         </div>
         <Button v-if="personnel.length > maxRows" @click="toggleCollapse" class="p-button-link" size="small">
           <span v-if="isCollapsed">{{ t('Expand') }}&nbsp;<i class="pi pi-sort-down-fill"/></span>

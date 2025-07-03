@@ -5,6 +5,11 @@ import "@/assets/font.css";
 import "@/assets/global.css";
 import "@/assets/search.css";
 import "@/assets/general.scss";
+
+import '@/assets/entity-detail.scss';
+import "@/assets/entity-global.scss";
+import "@/assets/entry-detail.scss";
+import '@/assets/entity-manager.scss';
 //endregion
 
 
