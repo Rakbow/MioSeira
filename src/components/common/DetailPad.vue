@@ -49,7 +49,7 @@ const maxLength = ref(200);
 const isCollapsed = ref(true);
 // 可见行
 const visibleText = computed(() => {
-  return isCollapsed.value ? text.value.slice(0, maxLength.value) + '......' : text.value;
+  return isCollapsed.value ? text.value.slice(0, maxLength.value) : text.value;
 });
 // 切换折叠状态
 const toggleCollapse = () => {

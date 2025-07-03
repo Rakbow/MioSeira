@@ -151,6 +151,7 @@ export const useEntityStore = defineStore('options', {
                 this.options.figureTypeSet = i18nConst.figureTypeSet![locale.value];
                 this.options.releaseTypeSet = i18nConst.releaseTypeSet![locale.value];
                 this.options.entrySubTypeSet = i18nConst.entrySubTypeSet![locale.value];
+                this.options.languageSet = i18nConst.languageSet![locale.value];
             }
         },
         clear() {

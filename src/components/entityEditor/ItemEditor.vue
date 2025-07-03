@@ -50,7 +50,7 @@ const close = () => {
 
 const ISBNInterConvert = async (isbn10: string) => {
   block.value = true;
-  const res = await axios.post(API.ITEM_CONVERT_ISBN, isbn10)
+  const res = await axios.post(API.ITEM_CONVERT_ISBN, {isbn10: isbn10})
   if (res.state === axios.SUCCESS)
     item.value.ean13 = res.data;
   block.value = false;
@@ -107,7 +107,7 @@ const parseItemSpec = () => {
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('ReleasePrice') }}</label>
-        <InputNumber size="large" v-model="item!.price"/>
+        <InputNumber size="large" :minFractionDigits="0" :maxFractionDigits="2" v-model="item!.price"/>
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('Region') }}</label>
@@ -252,4 +252,5 @@ const parseItemSpec = () => {
 </template>
 
 <style scoped lang="scss">
+@import "@/assets/entity-manager";
 </style>
