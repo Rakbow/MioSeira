@@ -59,45 +59,33 @@ const displayEntrySelector = ref(false);
         </template>
       </Button>
     </template>
-    <template #grid="slotProps">
-      <div class="flex flex-wrap">
-        <div v-for="(entry, index) in slotProps.items" :key="index" class="p-3">
-          <div class="grid" style="border: 1px solid gray;border-radius: 5px;">
-            <div class="col-fixed p-1" style="width: 45px">
-              <div class="entry-thumb">
-                <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
-              </div>
-            </div>
-            <div class="col p-1" style="width: 120px">
-                    <span class="mt-1 block data-table-field-text-overflow-hidden text-sm">
-                      {{ entry.name }}
-                    </span>
-              <small style="color: gray" class="mt-1 block data-table-field-text-overflow-hidden">
-                {{ (entry as any).subName }}
-              </small>
-            </div>
-            <Divider type="dashed" class="mt-0 mb-0"/>
-            <div class="col p-1">
-              <Select
-                  v-if="type === META.ENTRY_TYPE.PERSON || type === META.ENTRY_TYPE.CHARACTER"
-                  size="small"
-                  v-model="entry.role" :options="store.options.roleSet" optionLabel="label" filter
-                  :placeholder="t('Role')" style="width: 100px;" class="w-full">
-                <template #option="slotProps">
-                  {{ slotProps.option.label }}
-                </template>
-              </Select>
-            </div>
-            <div class="col-fixed p-1">
-              <Button size="small" icon="pi pi-trash" severity="danger" variant="text"
-                      @click="removeRelatedEntry(index)"/>
-            </div>
-          </div>
+    <template #grid="{items}">
+      <div class="related-create-entity" style="margin: 1rem" v-for="(entry, index) in items as any[]" :key="index">
+        <div class="related-create-entity-thumb">
+          <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
+        </div>
+        <div class="related-create-entity-info">
+          <span :title="entry.name">{{ entry.name }}</span><br>
+          <small :title="entry.subName">{{ entry.subName }}</small>
+        </div>
+        <Divider type="dashed"/>
+        <div class="related-create-entity-action">
+          <Select v-model="entry.role" :placeholder="t('Role')" size="small"
+              v-if="type === META.ENTRY_TYPE.PERSON || type === META.ENTRY_TYPE.CHARACTER"
+              :options="store.options.roleSet" optionLabel="label" filter>
+            <template #option="{option}">
+              {{ option!.label }}
+            </template>
+          </Select>
+        </div>
+        <div class="fixed-col">
+          <Button size="small" icon="pi pi-trash" severity="danger" variant="text"
+                  @click="removeRelatedEntry(index)"/>
         </div>
       </div>
     </template>
   </DataView>
-  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="t('Add')">
+  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '60rem'}" :header="t('Add')">
     <EntrySelector :type="type" :entries="relatedEntries"/>
   </Dialog>
 </template>

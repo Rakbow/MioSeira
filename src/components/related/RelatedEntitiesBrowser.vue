@@ -13,7 +13,7 @@
       <div v-if="param.loading" v-for="(index) in items" :key="index">
         <div class="related-entity">
           <div class="related-entity-thumb">
-            <Skeleton size="35px"/>
+            <Skeleton size="3.5rem"/>
           </div>
           <div class="related-entity-info">
             <Skeleton width="30rem" class="mt-2" height="1.5rem"/>

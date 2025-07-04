@@ -15,6 +15,7 @@ import {PublicHelper} from "@/toolkit/publicHelper";
 
 import 'md-editor-v3/lib/style.css';
 import {useDraftStore} from "@/store/draft";
+import {PToast} from "@/logic/frame";
 
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const RelatedEntriesPicker = defineAsyncComponent(() => import('@/components/related/RelatedEntriesPicker.vue'));
@@ -185,16 +186,15 @@ const handleTracks = () => {
     <div class="grid manager-panel">
       <div class="col-7">
         <div class="col-12">
-          <Panel>
+          <Panel class="entity-editor">
             <template #header>
               <span><i class="pi pi-tag"/><strong>{{ t('Category') }}</strong></span>
             </template>
             <template #icons>
-              <Button size="small" @click="submit" icon="pi pi-save"/>
+              <Button @click="submit" icon="pi pi-save"/>
             </template>
-            <div class="field">
-              <label>{{ t('Type') }}<i class="required-label pi pi-asterisk"/></label>
-              <SelectButton class="w-full" size="small" v-model="itemType" :options="META.ITEM_TYPE_SET"
+            <div class="text-center pt-4">
+              <SelectButton v-model="itemType" :options="META.ITEM_TYPE_SET"
                             @change="switchItemType"
                             optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
                 <template #option="slotProps">
@@ -357,7 +357,7 @@ const handleTracks = () => {
             <template #icons>
               <Button class="p-button-link" @click="openAlbumTrackQuickCreatorDialog">
                 <template #icon>
-                  <span class="material-symbols-outlined">music_note_add</span>
+                  <span class="material-symbols-outlined" style="font-size: 2rem">music_note_add</span>
                 </template>
               </Button>
             </template>
@@ -394,15 +394,15 @@ const handleTracks = () => {
         </div>
       </div>
       <div class="col-12">
-        <Panel>
+        <Panel class="entity-editor">
           <template #header>
             <span><i class="pi pi-objects-column"/><strong>{{ t('Relation') }}</strong></span>
           </template>
           <template #icons>
-            <Button size="small" severity="info" @click="saveDraft" icon="pi pi-save" class="mr-1"/>
-            <Button size="small" severity="info" @click="getDraft" icon="pi pi-file"/>
+            <Button severity="info" @click="saveDraft" icon="pi pi-save" class="mr-1"/>
+            <Button severity="info" @click="getDraft" icon="pi pi-file"/>
           </template>
-          <Divider class="mb-0" align="left"><i class="pi pi-th-large"/><b class="ml-1">{{ t('Product') }}</b>
+          <Divider class="my-0" align="left"><i class="pi pi-th-large"/><b class="ml-1">{{ t('Product') }}</b>
           </Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.products"
                                 :type="META.ENTRY_TYPE.PRODUCT"/>

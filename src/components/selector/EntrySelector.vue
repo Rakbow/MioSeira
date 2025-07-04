@@ -24,24 +24,22 @@
             {{ t('NoSearchResult') }}
         </span>
       </template>
-      <template #list="slotProps">
-        <div v-if="!loading" v-for="(entry, index) in slotProps.items" :key="index">
-          <div class="grid entity-search-result-block">
-            <div class="col-fixed p-1" style="width: 45px">
-              <div class="entry-thumb">
-                <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
-              </div>
+      <template #list="{items}">
+        <div v-if="!loading" v-for="(entry, index) in items as any[]" :key="index">
+          <div class="related-entity">
+            <div class="related-entity-thumb">
+              <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
             </div>
-            <div class="col p-1">
-              <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" class="text-overflow-hidden-one"
-                 :title="entry.name">{{ entry.name }}</a>
-              <!--              <div>{{ entry.name }}</div>-->
-              <small style="color: gray" class="text-xs text-overflow-hidden-one" :title="(entry as any).subName">
-                <span v-if="entry.info">({{ entry.info }})&nbsp;</span>
-                <span>{{ (entry as any).subName }}</span>
+            <div class="related-entity-info">
+              <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" :title="entry.name">
+                {{ entry.name }}
+              </a>
+              <small :title="entry.subName">
+                {{ entry.subName }}
               </small>
             </div>
-            <div class="col-1 flex align-items-center justify-content-center" style="width: 35px">
+
+            <div class="related-entity-role">
               <Button v-if="!entry.isPicked || type === META.ENTRY_TYPE.PERSON" text @click="select(entry)">
                 <template #icon>
                   <span class="material-symbols-outlined">add_box</span>
@@ -53,18 +51,18 @@
                 </template>
               </Button>
             </div>
+
           </div>
         </div>
         <div v-if="loading" v-for="(index) in 7" :key="index">
-          <div class="grid entity-search-result-block">
-            <div class="col ml-1" style="height: 45px;max-width: 45px">
-              <Skeleton size="34px"/>
+          <div class="related-entity">
+            <div class="related-entity-thumb">
+              <Skeleton size="3.5rem"/>
             </div>
-            <div class="col-9">
-              <Skeleton width="10rem"/>
-              <Skeleton width="15rem"/>
+            <div class="related-entity-info">
+              <Skeleton width="30rem" class="mt-2" height="1.5rem"/>
+              <Skeleton width="20rem" class="mt-1"/>
             </div>
-            <div class="col flex align-items-center justify-content-center"/>
           </div>
         </div>
       </template>
@@ -110,7 +108,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['pick']);
 
-const pickedEntries = ref([]);
+const pickedEntries = ref<any[]>();
 const dt = ref();
 const {t} = useI18n();
 const dialogRef = inject('dialogRef');
@@ -129,7 +127,7 @@ const searchResult = ref({
   data: []
 });
 
-const switchEntryType = (ev) => {
+const switchEntryType = (ev: any) => {
   if (ev.value === null)
     selectEntityType.value = META.ENTRY_TYPE_SET[0];
   queryParam.value.type = parseInt(selectEntityType.value.value);
