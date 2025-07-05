@@ -8,6 +8,7 @@ import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 import {i18nConst} from "@/config/i18nConst";
 import {PColumn} from "@/logic/frame";
+import {PublicHelper} from "@/toolkit/publicHelper";
 
 const {t} = i18n.global;
 let editor: any = null;
@@ -38,13 +39,57 @@ export class FileInfoCreateDTO {
     remark: string = "";
 }
 
+export class EntitySelectorParam {
+    loading: boolean = false;
+
+    keyword: string = "";
+    keywords: string[] = [];
+
+    first: number = 0;
+
+    type: number = 0;
+    page: number = 1;
+    size: number = 7;
+
+    data: any[] = [];
+    total: number = 0;
+    time: string = "";
+
+    loadResult: void = (searchResult: any) => {
+        this.data = searchResult.data;
+        this.total = searchResult.total;
+        this.time = searchResult.searchTime;
+    }
+
+    initPage: void = () => {
+        this.page = 1;
+        this.first = 0;
+    }
+
+    initFirst: void = () => {
+        this.first = (this.page - 1) * this.size;
+    }
+
+    handleKeyword: void = () => {
+        this.keywords = PublicHelper.splitAndTrim(this.keyword);
+    }
+
+    load(): void {
+        this.loading = true;
+    }
+
+    endLoad(): void {
+        this.loading = false;
+    }
+
+}
+
 export class EntityManageQueryParams {
     first: number = 0;
     rows: number = 15;
     sortField: string | null = null;
     sortOrder: number = 1;
     filters: any | null = null;
-
 }
 
 export class EntityManageParam {

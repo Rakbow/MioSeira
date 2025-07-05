@@ -25,6 +25,7 @@ $item-color-6-14: #a4a;
   max-height: 100%;
   object-fit: contain;
 }
+
 @mixin common-entity-image {
   display: flex;
   justify-content: center;
@@ -114,62 +115,80 @@ $item-color-6-14: #a4a;
     padding: 0.05rem;
     @include common-entity-image-img;
   }
+
   border: .2rem solid;
 
   &-1-0 {
     border-color: $item-color-1-0;
   }
+
   &-2-0 {
     border-color: $item-color-2-0;
   }
+
   &-3-0 {
     border-color: $item-color-3-0;
   }
+
   &-4-0 {
     border-color: $item-color-4-0;
   }
+
   &-5 {
     &-1 {
       border-color: $item-color-5-1;
     }
+
     &-2 {
       border-color: $item-color-5-2;
     }
+
     &-3 {
       border-color: $item-color-5-3;
     }
+
     &-4 {
       border-color: $item-color-5-4;
     }
+
     &-5 {
       border-color: $item-color-5-5;
     }
+
     &-6 {
       border-color: $item-color-5-6;
     }
+
     &-7 {
       border-color: $item-color-5-7;
     }
+
     &-8 {
       border-color: $item-color-5-8;
     }
   }
+
   &-6 {
     &-9 {
       border-color: $item-color-6-9;
     }
+
     &-10 {
       border-color: $item-color-6-10;
     }
+
     &-11 {
       border-color: $item-color-6-11;
     }
+
     &-12 {
       border-color: $item-color-6-12;
     }
+
     &-13 {
       border-color: $item-color-6-13;
     }
+
     &-14 {
       border-color: $item-color-6-14;
     }
@@ -218,8 +237,10 @@ $item-color-6-14: #a4a;
 
 .p-select {
   font-size: 1rem;
+
   .p-select-option {
     font-size: 1rem;
+
     .p-select-option-label {
       font-size: 1rem;
     }
@@ -262,7 +283,7 @@ $item-color-6-14: #a4a;
     white-space: nowrap !important;
     text-overflow: ellipsis !important;
 
-    a,small {
+    a, small {
       overflow: hidden;
       white-space: nowrap !important;
       text-overflow: ellipsis !important;
@@ -284,6 +305,7 @@ $item-color-6-14: #a4a;
 
   .p-tag {
     padding: .1rem .4rem;
+
     .p-tag-label {
       font-size: 1.1rem !important;
       font-weight: 350;
@@ -300,11 +322,37 @@ $item-color-6-14: #a4a;
 
 .entity-selector {
   .p-iconfield {
-    margin-top: 0.5rem;
-
+    margin: .5rem 0;
     .p-inputtext {
       width: 100%;
     }
 
   }
+
+  .P-inputicon {
+    .pi {
+      font-size: 2rem;
+    }
+  }
+
+  .p-button {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+
+  .p-dataview {
+    &-empty-message {
+      color: gray;
+      font-style: italic;
+      margin-top: .5rem;
+      margin-bottom: .5rem;
+      margin-left: 0.5rem;
+      align-items: flex-start;
+      justify-content: flex-start;
+      display: flex;
+      font-weight: 400;
+    }
+  }
+
 }

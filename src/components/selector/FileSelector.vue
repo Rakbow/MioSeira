@@ -1,33 +1,30 @@
 <template>
   <div class="entity-selector">
-    <BlockUI :blocked="loading">
+    <BlockUI :blocked="param.loading">
       <IconField>
-        <InputIcon class="pi pi-search" v-if="!queryParam.keyword"/>
-        <InputText class="w-full" v-model="queryParam.keyword" @keyup.enter="search"/>
-        <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="queryParam.keyword"/>
+        <InputIcon class="pi pi-search" v-if="!param.keyword"/>
+        <InputText size="large" v-model="param.keyword" @keyup.enter="search"/>
+        <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="param.keyword"/>
       </IconField>
     </BlockUI>
-    <DataView class="mt-2" :value="searchResult.data" lazy paginator @page="page($event)"
-              :rows="queryParam.size" :totalRecords="searchResult.total">
+    <DataView :value="param.data">
       <template #empty>
-        <span class="empty-search-result">
-            {{ t('NoSearchResult') }}
-        </span>
+        <span>{{ t('NoSearchResult') }}</span>
       </template>
-      <template #list="slotProps">
-        <div v-if="!loading" v-for="(file, index) in slotProps.items" :key="index">
-          <div class="grid entity-search-result-block">
-            <div class="col-fixed p-1" style="width: 3.5rem">
-              <div v-html="getIcon(file.name).svg"/>
+      <template #list="{items}">
+        <div v-if="!param.loading" v-for="(entity, index) in items" :key="index">
+          <div class="related-entity">
+            <div class="related-entity-thumb">
+              <div style="width: 2.5rem;height: 2.5rem" v-html="getIcon(entity.name).svg"/>
             </div>
-            <div class="col p-1">
-              {{ file.name }}
-              <small style="color: gray" class="text-sm text-overflow-hidden-one">
-                <span>{{ file.size }}</span>
+            <div class="related-entity-info">
+              {{ entity.name }}
+              <small :title="entity.size">
+                {{ entity.size }}
               </small>
             </div>
-            <div class="col-1 flex align-items-center justify-content-center" style="width: 3.5rem">
-              <Button v-if="!file.isPicked" text @click="select(file)">
+            <div class="related-entity-role">
+              <Button v-if="!entity.isPicked" text @click="select(entity)">
                 <template #icon>
                   <span class="material-symbols-outlined">add_box</span>
                 </template>
@@ -40,38 +37,49 @@
             </div>
           </div>
         </div>
-        <div v-if="loading" v-for="(index) in 7" :key="index">
-          <div class="grid entity-search-result-block">
-            <div class="col ml-1">
-              <Skeleton size="3.5rem"/>
+        <div v-if="param.loading" v-for="(index) in param.size" :key="index">
+          <div class="related-entity">
+            <div class="related-entity-thumb">
+              <Skeleton size="2.5rem"/>
             </div>
-            <div class="col-9">
-              <Skeleton class="mt-1 mb-2" width="10rem"/>
-              <Skeleton width="15rem"/>
+            <div class="related-entity-info">
+              <Skeleton width="30rem" class="mt-2" height="1.5rem"/>
+              <Skeleton width="20rem" class="mt-1"/>
             </div>
-            <div class="col flex align-items-center justify-content-center"/>
           </div>
         </div>
+      </template>
+      <template #footer>
+        <BlockUI :blocked="param.loading">
+          <Paginator v-model:first="param.first" :rows="param.size" :totalRecords="param.total"
+                     @page="page($event)" :alwaysShow="param.total !== 0">
+            <template #start>
+              search in {{ param.time }}s
+            </template>
+            <template #end>
+              {{ param.total }} items
+            </template>
+          </Paginator>
+        </BlockUI>
       </template>
     </DataView>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps, onBeforeMount} from "vue";
+import {ref, onMounted, defineProps} from "vue";
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
 import {API} from "@/config/Web_Helper_Strs";
-import {inject} from "vue";
-import {PublicHelper} from "@/toolkit/publicHelper";
 import { getIcon } from 'material-file-icons';
 import {useI18n} from "vue-i18n";
+import {EntitySelectorParam} from "@/logic/entityService";
 
-onBeforeMount(() => {
-});
+const emit = defineEmits(['pick']);
 
 onMounted(() => {
   pickedFiles.value = props.entries;
-  loadFiles();
+  load();
+  param.value.initFirst();
 });
 
 const props = defineProps({
@@ -86,65 +94,46 @@ const props = defineProps({
     default: true
   },
 });
-const emit = defineEmits(['pick']);
+
 
 const {t} = useI18n();
 const pickedFiles = ref([]);
-const dialogRef = inject('dialogRef');
-const loading = ref(false);
-const queryParam = ref({
-  searchType: props.type,
-  keyword: "",
-  keywords: [],
-  page: 0,
-  size: 7
-})
-const searchResult = ref({
-  total: 0,
-  time: 0,
-  data: []
-});
+const param = ref<EntitySelectorParam>(new EntitySelectorParam());
 
-const select = (item) => {
-  item.isPicked = true;
-  pickedFiles.value.push(item);
-  emit('pick', item);
-  // if (!props.multiSelect) close()
+const select = (entity) => {
+  entity.isPicked = true;
+  pickedFiles.value.push(entity);
+  emit('pick', entity);
 }
 
 const page = (ev) => {
-  queryParam.value.page = ev.page + 1;
-  loadFiles();
+  param.value.page = ev.page + 1;
+  load();
 }
 
 const search = () => {
-  queryParam.value.page = 1;
-  loadFiles();
+  param.value.initPage();
+  load();
 }
 const clearSearch = () => {
-  queryParam.value.page = 1;
-  queryParam.value.keyword = '';
-  loadFiles();
+  param.value.initPage();
+  param.value.keyword = '';
+  load();
 }
 
-const loadFiles = async () => {
-  loading.value = true;
-  searchResult.value.data = Array.from({length: 7});
-  queryParam.value.keywords = PublicHelper.splitAndTrim(queryParam.value.keyword);
-  const res = await axios.post(API.FILE_SEARCH, queryParam.value);
+const load = async () => {
+  param.value.load();
+  param.value.handleKeyword();
+  const res = await axios.post(API.FILE_SEARCH, param.value);
   if (res.state === axios.SUCCESS) {
-    searchResult.value.total = res.data.total;
-    searchResult.value.data = res.data.data;
-    searchResult.value.time = res.data.searchTime;
-  } else {
-    searchResult.value.data = [];
+    param.value.loadResult(res.data);
   }
-  searchResult.value.data = markPickedFiles();
-  loading.value = false;
+  param.value.data = markPickedFiles();
+  param.value.endLoad();
 };
 
 const markPickedFiles = () => {
-  return searchResult.value.data.map(entry => {
+  return param.value.data.map(entry => {
     const picked = pickedFiles.value
         .some(f => f.id === entry.id);
     if (picked) {
@@ -157,10 +146,4 @@ const markPickedFiles = () => {
 
 <style lang="scss" scoped>
 @use "@/assets/entity-global";
-
-.p-button {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
 </style>

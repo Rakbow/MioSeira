@@ -216,5 +216,4 @@ const switchCreateType = (ev: any) => {
 </template>
 
 <style scoped lang="scss">
-
 </style>

@@ -1,46 +1,42 @@
 <template>
-  <div class="card">
-    <BlockUI :blocked="loading">
+  <div class="entity-selector">
+    <BlockUI :blocked="param.loading">
       <SelectButton v-if="props.all" class="w-full" size="small" v-model="selectEntityType"
                     :options="META.ENTRY_TYPE_SET" @change="switchEntryType($event)"
-                    optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
-        <template #option="slotProps">
-          <span class="material-symbols-outlined"
-                v-tooltip.bottom="{value: t(slotProps.option.label), class: 'short-tooltip'}">
-            {{ slotProps.option.icon }}
+                    optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+        <template #option="{option}">
+          <span class="material-symbols-outlined" v-tooltip.bottom="{value: t(option!.label), class: 'short-tooltip'}">
+            {{ option!.icon }}
           </span>
         </template>
       </SelectButton>
-      <IconField class="mt-2">
-        <InputIcon class="pi pi-search" v-if="!queryParam.keyword"/>
-        <InputText class="w-full" v-model="queryParam.keyword" @keyup.enter="search"/>
-        <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="queryParam.keyword"/>
+      <IconField>
+        <InputIcon class="pi pi-search" v-if="!param.keyword"/>
+        <InputText size="large" v-model="param.keyword" @keyup.enter="search"/>
+        <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="param.keyword"/>
       </IconField>
     </BlockUI>
-    <DataView ref="dt" class="mt-2" :value="searchResult.data" lazy paginator @page="page($event)"
-              :rows="queryParam.size" :totalRecords="searchResult.total">
+    <DataView :value="param.data">
       <template #empty>
-        <span class="empty-search-result">
-            {{ t('NoSearchResult') }}
-        </span>
+        <span>{{ t('NoSearchResult') }}</span>
       </template>
       <template #list="{items}">
-        <div v-if="!loading" v-for="(entry, index) in items as any[]" :key="index">
+        <div v-if="!param.loading" v-for="(entity, index) in items as any[]" :key="index">
           <div class="related-entity">
             <div class="related-entity-thumb">
-              <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
+              <img role="presentation" :alt="entity.name" :src="entity.thumb"/>
             </div>
             <div class="related-entity-info">
-              <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" :title="entry.name">
-                {{ entry.name }}
+              <a :href="`${API.ENTRY_DETAIL_PATH}/${entity.id}`" :title="entity.name">
+                {{ entity.name }}
               </a>
-              <small :title="entry.subName">
-                {{ entry.subName }}
+              <small :title="entity.subName">
+                {{ entity.subName }}
               </small>
             </div>
 
             <div class="related-entity-role">
-              <Button v-if="!entry.isPicked || type === META.ENTRY_TYPE.PERSON" text @click="select(entry)">
+              <Button v-if="!entity.isPicked || type === META.ENTRY_TYPE.PERSON" text @click="select(entity)">
                 <template #icon>
                   <span class="material-symbols-outlined">add_box</span>
                 </template>
@@ -51,10 +47,9 @@
                 </template>
               </Button>
             </div>
-
           </div>
         </div>
-        <div v-if="loading" v-for="(index) in 7" :key="index">
+        <div v-if="param.loading" v-for="(index) in 7" :key="index">
           <div class="related-entity">
             <div class="related-entity-thumb">
               <Skeleton size="3.5rem"/>
@@ -66,6 +61,19 @@
           </div>
         </div>
       </template>
+      <template #footer>
+        <BlockUI :blocked="param.loading">
+          <Paginator v-model:first="param.first" :rows="param.size" :totalRecords="param.total"
+                     @page="page($event)" :alwaysShow="param.total !== 0">
+            <template #start>
+              search in {{ param.time }}s
+            </template>
+            <template #end>
+              {{ param.total }} items
+            </template>
+          </Paginator>
+        </BlockUI>
+      </template>
     </DataView>
   </div>
 </template>
@@ -75,13 +83,13 @@ import {ref, onMounted, defineProps} from "vue";
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
 import {META} from "@/config/Web_Const";
 import {API} from "@/config/Web_Helper_Strs";
-import {inject} from "vue";
-import {PublicHelper} from "@/toolkit/publicHelper";
 import {useI18n} from "vue-i18n";
+import {EntitySelectorParam} from "@/logic/entityService";
 
 onMounted(() => {
   pickedEntries.value = props.entries;
-  getEntries();
+  load();
+  param.value.initFirst();
 });
 
 const props = defineProps({
@@ -108,73 +116,56 @@ const props = defineProps({
 });
 const emit = defineEmits(['pick']);
 
-const pickedEntries = ref<any[]>();
-const dt = ref();
 const {t} = useI18n();
-const dialogRef = inject('dialogRef');
+const pickedEntries = ref<any[]>([]);
+const dt = ref();
 const selectEntityType = ref();
 const loading = ref(false);
-const queryParam = ref({
-  type: props.type,
-  keyword: "",
-  keywords: [],
-  page: 0,
-  size: 7
-})
-const searchResult = ref({
-  total: 0,
-  time: 0,
-  data: []
-});
+const param = ref<EntitySelectorParam>(new EntitySelectorParam());
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null)
     selectEntityType.value = META.ENTRY_TYPE_SET[0];
-  queryParam.value.type = parseInt(selectEntityType.value.value);
-  getEntries();
+  param.value.type = parseInt(selectEntityType.value.value);
+  load();
 }
 
-const select = (entry) => {
-  entry.isPicked = true;
-  pickedEntries.value.push(entry);
-  emit('pick', entry);
+const select = (entity: any) => {
+  entity.isPicked = true;
+  pickedEntries.value!.push(entity);
+  emit('pick', entity);
 }
 
-const page = (ev) => {
-  queryParam.value.page = ev.page + 1;
-  getEntries();
+const page = (ev: any) => {
+  param.value.page = ev.page + 1;
+  load();
 }
 
 const search = () => {
-  console.log(dt.value.first);
-  queryParam.value.page = 1;
-  getEntries();
+  param.value.initPage();
+  load();
 }
 const clearSearch = () => {
-  queryParam.value.page = 1;
-  queryParam.value.keyword = '';
-  getEntries();
+  param.value.initPage();
+  param.value.keyword = '';
+  load();
 }
 
-const getEntries = async () => {
-  loading.value = true;
-  searchResult.value.data = Array.from({length: 7});
-  queryParam.value.keywords = PublicHelper.splitAndTrim(queryParam.value.keyword);
-  const res = await axios.post(API.ENTRY_SEARCH, queryParam.value);
+const load = async () => {
+  param.value.load();
+  param.value.handleKeyword();
+  param.value.type = props.type;
+  const res = await axios.post(API.ENTRY_SEARCH, param.value);
   if (res.state === axios.SUCCESS) {
-    searchResult.value.total = res.data.total;
-    searchResult.value.data = res.data.data;
-    searchResult.value.time = res.data.searchTime;
-  } else {
-    searchResult.value.data = [];
+    param.value.loadResult(res.data);
   }
-  searchResult.value.data = markPickedEntries();
-  loading.value = false;
+  param.value.data = markPickedEntries();
+  param.value.endLoad();
 };
 
 const markPickedEntries = () => {
-  return searchResult.value.data.map(entry => {
-    const picked = pickedEntries.value
+  return param.value.data.map(entry => {
+    const picked = pickedEntries.value!
         .some(pickedEntry => pickedEntry.id === entry.id && pickedEntry.type === entry.type);
     if (picked) {
       return {...entry, isPicked: true};
@@ -186,10 +177,4 @@ const markPickedEntries = () => {
 
 <style lang="scss" scoped>
 @use "@/assets/entity-global";
-
-.p-button {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
 </style>
