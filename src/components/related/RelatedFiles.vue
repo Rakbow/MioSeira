@@ -82,11 +82,14 @@ const openCreator = () => {
           <tbody>
           <tr v-for="(file, index) in (files as any[])">
             <td style="width: 2rem">{{ index + 1 }}</td>
-            <td style="width: 60rem" nowrap="nowrap">
-              {{ file.name }}
+            <td style="width: 50rem" nowrap="nowrap">
+              <span class="text-overflow-ellipsis">{{ file.name }}</span>
             </td>
             <td>
               {{ file.size }}
+            </td>
+            <td style="color: gray" class="text-end">
+              {{ file.editedTime }}
             </td>
           </tr>
           </tbody>

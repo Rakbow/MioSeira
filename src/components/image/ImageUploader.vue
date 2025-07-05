@@ -44,6 +44,7 @@ const selectFile = async (ev: any) => {
     image.type = store.options.imageTypeSet[image.name === 'Cover' ? 2 : 0].value;
     image.size = PublicHelper.formatSize(file.size);
     image.file = file;
+    image.objectURL = file.objectURL;
     images.value.push(image)
   }
   emit('update:images', images.value);
@@ -102,7 +103,7 @@ const changeGenerateThumb = () => {
       <span class="empty-search-result">{{ t('DragFile') }}</span>
     </template>
     <template #content>
-      <DataTable v-if="images.length > 0" :value="images" class="p-datatable-sm"
+      <DataTable v-if="images.length > 0" :value="images"
                  :alwaysShowPaginator="images.length !== 0" paginator :rows="8"
                  editMode="cell" @cellEditComplete="onImageCellEdite"
                  scrollable scrollHeight="flex" size="small" @rowReorder="onImageReorder"
@@ -111,23 +112,23 @@ const changeGenerateThumb = () => {
                  currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
         <Column rowReorder headerStyle="width: 3rem" />
         <Column style="width: 6rem">
-          <template #body="slotProps">
+          <template #body="{data}">
             <div class="image-thumb-50">
-              <img role="presentation" :alt="slotProps.data.name" :src="slotProps.data.file.objectURL"/>
+              <img role="presentation" :alt="data!.name" :src="data.objectURL"/>
             </div>
           </template>
         </Column>
         <Column :header="t('Name')" field="name" style="max-width: 10rem">
-          <template #body="slotProps">
-            <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.name }}</div>
+          <template #body="{data}">
+            <div class="data-table-field-text-overflow-hidden">{{ data!.name }}</div>
           </template>
           <template #editor="{ data, field }">
             <InputText v-model="data[field]" fluid/>
           </template>
         </Column>
         <Column :header="t('Type')" field="type" style="width: 8rem">
-          <template #body="slotProps">
-            <Tag :value="PublicHelper.value2Label(slotProps.data.type, store.options.imageTypeSet)"/>
+          <template #body="{data}">
+            <Tag :value="PublicHelper.value2Label(data.type, store.options.imageTypeSet)"/>
           </template>
           <template #editor="{ data, field }">
             <Select v-model="data[field]" :options="store.options.imageTypeSet"
@@ -140,8 +141,8 @@ const changeGenerateThumb = () => {
         </Column>
         <Column :header="t('ImageSize')" field="size" style="width: 6rem"/>
         <Column v-if="props.showDetail" :header="t('Description')" field="detail">
-          <template #body="slotProps">
-            <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.detail }}</div>
+          <template #body="{data}">
+            <div class="data-table-field-text-overflow-hidden">{{ data!.detail }}</div>
           </template>
           <template #editor="{ data, field }">
             <InputText v-model="data[field]" fluid/>

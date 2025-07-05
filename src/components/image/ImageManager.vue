@@ -1,7 +1,7 @@
 <template>
   <Toast/>
   <BlockUI :blocked="editBlock">
-    <DataTable ref="dt" :value="images" class="p-datatable-sm" :alwaysShowPaginator="images.length !== 0"
+    <DataTable ref="dt" :value="images" :alwaysShowPaginator="images.length !== 0"
                lazy :totalRecords="totalRecords" :loading="loading" size="small"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
                filterDisplay="row" v-model:filters="filters"

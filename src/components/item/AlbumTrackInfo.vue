@@ -97,7 +97,7 @@
           <span class="empty-search-result">{{ t('DragFile') }}</span>
         </template>
         <template #content>
-          <DataTable v-if="fileInfos.length > 0" ref="dt" :value="fileInfos" class="p-datatable-sm"
+          <DataTable v-if="fileInfos.length > 0" ref="dt" :value="fileInfos"
                      :alwaysShowPaginator="fileInfos.length !== 0" paginator :rows="5"
                      scrollable scrollHeight="flex" size="small"
                      paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink

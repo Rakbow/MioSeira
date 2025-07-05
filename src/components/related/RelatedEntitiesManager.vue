@@ -197,7 +197,7 @@ const load = async () => {
 
 <template>
   <BlockUI :blocked="param.blocking">
-    <DataTable ref="dt" :value="param.data" class="p-datatable-sm" :loading="param.loading"
+    <DataTable ref="dt" :value="param.data" :loading="param.loading"
                :alwaysShowPaginator="param.data.length !== 0"
                lazy :totalRecords="param.total" paginator
                :rows="param.query.rows" :first="param.query.first"

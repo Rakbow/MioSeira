@@ -29,6 +29,7 @@ export class ImageDTO {
     detail: string = "";
     size: string = "";
     file: File | null = null;
+    objectURL: string = "";
 }
 
 export class FileInfoCreateDTO {

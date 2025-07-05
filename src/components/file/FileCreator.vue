@@ -51,7 +51,11 @@ const removeFile = (index: number) => {
   fileInfos.value!.splice(index, 1);
 };
 
-const onCellEdite = (ev: any) => {
+const onReorder = (ev) => {
+  fileInfos.value = ev.value;
+};
+
+const onCellEdit = (ev: any) => {
   let {data, newValue, field} = ev;
   switch (field) {
     case 'type':
@@ -135,10 +139,10 @@ const switchCreateType = (ev: any) => {
         <span style="font-size: 1.5rem">{{ t(option!.label) }}</span>
       </template>
     </SelectButton>
-    <DataTable ref="dt" :value="fileInfos" class="p-datatable-sm"
+    <DataTable ref="dt" :value="fileInfos"
                :alwaysShowPaginator="fileInfos.length !== 0"
-               paginator :rows="10" editMode="cell" @cellEditComplete="onCellEdite"
-               scrollable scrollHeight="flex" size="small"
+               paginator :rows="10" editMode="cell" @cellEditComplete="onCellEdit"
+               scrollable scrollHeight="flex" size="small" @rowReorder="onReorder"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
@@ -184,6 +188,7 @@ const switchCreateType = (ev: any) => {
             {{ t('NoFile') }}
         </span>
       </template>
+      <Column rowReorder headerStyle="width: 3rem" />
       <Column style="width: 3rem">
         <template #body="{data}">
           <div v-html="getIcon(data!.name).svg"/>

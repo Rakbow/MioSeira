@@ -75,7 +75,7 @@ const submit = async () => {
                 @click="parseDisc" :title="t('Analysis')"/>
       </div>
     </div>
-    <DataTable ref="dt" :value="tracks" class="p-datatable-sm" :loading="loading"
+    <DataTable ref="dt" :value="tracks" :loading="loading"
                alwaysShowPaginator paginator :rows="50" stripedRows size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
