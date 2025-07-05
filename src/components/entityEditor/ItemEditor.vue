@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {META} from "@/config/Web_Const";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {useToast} from "primevue/usetoast";
-import {useEntityStore} from "@/logic/entityService";
-import {ItemSpecParams, parseItemSpecParams} from "@/logic/itemService";
+import {useOptionStore} from "@/store/modules/option";
+import {parseItemSpecParams} from "@/logic/itemService";
 import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
@@ -16,7 +14,7 @@ const item = ref<any>({});
 const isUpdate = ref(false);
 const block = ref(false);
 const toast = useToast();
-const store = useEntityStore();
+const store = useOptionStore();
 const itemSpec = ref('');
 
 onBeforeMount(() => {
@@ -30,8 +28,8 @@ onMounted(() => {
 
 const submit = async () => {
   block.value = true;
-  const res = await axios.post(API.ITEM_UPDATE, item.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ITEM_UPDATE, item.value);
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();
@@ -51,8 +49,8 @@ const close = () => {
 
 const ISBNInterConvert = async (isbn10: string) => {
   block.value = true;
-  const res = await axios.post(API.ITEM_CONVERT_ISBN, {isbn10: isbn10})
-  if (res.state === axios.SUCCESS)
+  const res = await Axios.post(API.ITEM_CONVERT_ISBN, {isbn10: isbn10})
+  if (res.success())
     item.value.ean13 = res.data;
   block.value = false;
 };
@@ -83,7 +81,7 @@ const parseItemSpec = () => {
     <div class="grid">
       <FloatLabel variant="on">
         <label>{{ t('Barcode') }}</label>
-        <InputText size="large" v-if="item.type !== META.ITEM_TYPE.BOOK" v-model="item!.barcode"/>
+        <InputText size="large" v-if="item.type !== $const.ITEM_TYPE.BOOK" v-model="item!.barcode"/>
         <InputGroup v-else>
           <InputText size="large" v-model="item!.barcode"/>
           <Button size="large" icon="pi pi-sync" class="p-button-warning"
@@ -92,7 +90,7 @@ const parseItemSpec = () => {
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('CatalogId') }}</label>
-        <InputText size="large" v-model="item.catalogId" :disabled="item.type == META.ITEM_TYPE.BOOK"/>
+        <InputText size="large" v-model="item.catalogId" :disabled="item.type == $const.ITEM_TYPE.BOOK"/>
       </FloatLabel>
     </div>
 
@@ -112,7 +110,7 @@ const parseItemSpec = () => {
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('Region') }}</label>
-        <Select v-model="item.region" :options="META.RegionSet" optionLabel="label"
+        <Select v-model="item.region" :options="$const.RegionSet" optionLabel="label"
                 size="large" optionValue="value">
           <template #value="slotProps">
             <span :class="`fi fi-${slotProps.value}`"/>
@@ -127,7 +125,7 @@ const parseItemSpec = () => {
                     offIcon="pi pi-times-circle" :offLabel="t('BonusExclusion')"/>
     </div>
 
-    <template v-if="item.type === META.ITEM_TYPE.BOOK">
+    <template v-if="item.type === $const.ITEM_TYPE.BOOK">
       <div class="grid">
         <FloatLabel variant="on">
           <label>{{ t('BookType') }}<i class="pi pi-asterisk"/></label>
@@ -145,7 +143,7 @@ const parseItemSpec = () => {
     <Divider align="center"><b>{{ t('Dimensions') }}</b></Divider>
 
     <div class="grid">
-      <template v-if="item.type === META.ITEM_TYPE.BOOK">
+      <template v-if="item.type === $const.ITEM_TYPE.BOOK">
         <FloatLabel variant="on">
           <label>{{ t('Pages') }}</label>
           <InputNumber size="large" v-model="item.pages"/>
@@ -155,8 +153,8 @@ const parseItemSpec = () => {
           <InputText size="large" v-model="item.size"/>
         </FloatLabel>
       </template>
-      <template v-if="item.type === META.ITEM_TYPE.ALBUM || item.type === META.ITEM_TYPE.DISC">
-        <FloatLabel variant="on" v-if="item.type === META.ITEM_TYPE.DISC">
+      <template v-if="item.type === $const.ITEM_TYPE.ALBUM || item.type === $const.ITEM_TYPE.DISC">
+        <FloatLabel variant="on" v-if="item.type === $const.ITEM_TYPE.DISC">
           <label>{{ t('MediaFormat') }}<i class="pi pi-asterisk"/></label>
           <MultiSelect showClear v-model="item.mediaFormat" :options="store.options.mediaFormatSet"
                        optionLabel="label" optionValue="value" display="chip"/>
@@ -166,11 +164,11 @@ const parseItemSpec = () => {
           <InputNumber size="large" v-model="item.discs"/>
         </FloatLabel>
         <FloatLabel variant="on">
-          <template v-if="item.type === META.ITEM_TYPE.ALBUM">
+          <template v-if="item.type === $const.ITEM_TYPE.ALBUM">
             <label>{{ t('Tracks') }}</label>
             <InputNumber size="large" v-model="item.tracks"/>
           </template>
-          <template v-if="item.type === META.ITEM_TYPE.DISC">
+          <template v-if="item.type === $const.ITEM_TYPE.DISC">
             <label>{{ t('Episodes') }}</label>
             <InputNumber size="large" v-model="item.episodes"/>
           </template>
@@ -206,7 +204,7 @@ const parseItemSpec = () => {
       </InputGroup>
     </div>
 
-    <template v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(item.type)">
+    <template v-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)">
       <Divider align="center"><b>{{ t('Other') }}</b></Divider>
       <div class="grid">
         <FloatLabel variant="on">

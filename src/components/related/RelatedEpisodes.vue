@@ -85,9 +85,8 @@
 
 <script setup lang="ts">
 import {defineProps, onBeforeMount, onMounted, ref} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useI18n} from "vue-i18n";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 
 const {t} = useI18n();
 
@@ -123,7 +122,7 @@ const loading = ref(false);
 
 const getRelatedData = async () => {
   loading.value = true;
-  const res = await axios.post(
+  const res = await Axios.post(
       API.EPISODE_GET_RELATED,
       {
         relatedType: props.relatedType,
@@ -131,7 +130,7 @@ const getRelatedData = async () => {
         id: props.id
       }
   );
-  if (res.state === axios.SUCCESS)
+  if (res.success())
     eps.value = res.data.eps;
   parent.value = res.data.parent;
   loading.value = false;
@@ -140,7 +139,7 @@ const getRelatedData = async () => {
 </script>
 
 <style lang="scss" scoped>
-@use '@/assets/general' as general;
+@use '@/styles/general' as general;
 
 .episode-list {
   &-duration {

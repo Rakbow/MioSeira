@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useRoute, useRouter} from "vue-router";
-import {API} from '@/config/Web_Helper_Strs';
+import { API, Axios } from '@/api';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
 import {EntityManageParam} from "@/logic/entityService";
@@ -88,8 +87,8 @@ const onFilter = () => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await axios.post(API.EPISODE_GET_LIST, param.value.query);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.EPISODE_GET_LIST, param.value.query);
+  if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
   }
@@ -191,5 +190,5 @@ const exportCSV = () => {
 </template>
 
 <style lang="scss" scoped>
-@use "@/assets/entity-manager";
+@use "@/styles/entity-manager";
 </style>

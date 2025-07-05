@@ -68,8 +68,7 @@
 
 <script setup lang="ts">
 import {ref, onMounted, defineProps} from "vue";
-import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import { getIcon } from 'material-file-icons';
 import {useI18n} from "vue-i18n";
 import {EntitySelectorParam} from "@/logic/entityService";
@@ -124,8 +123,8 @@ const clearSearch = () => {
 const load = async () => {
   param.value.load();
   param.value.handleKeyword();
-  const res = await axios.post(API.FILE_SEARCH, param.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.FILE_SEARCH, param.value);
+  if (res.success()) {
     param.value.loadResult(res.data);
   }
   param.value.data = markPickedFiles();
@@ -145,5 +144,5 @@ const markPickedFiles = () => {
 </script>
 
 <style lang="scss" scoped>
-@use "@/assets/entity-global";
+@use "@/styles/entity-global";
 </style>

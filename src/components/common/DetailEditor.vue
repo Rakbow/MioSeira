@@ -13,9 +13,8 @@
 import {MdEditor} from "md-editor-v3";
 import {onMounted, ref, inject, onBeforeMount} from "vue";
 import {PublicHelper} from '@/toolkit/publicHelper';
-import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
 import {useToast} from "primevue/usetoast";
-import {API} from '@/config/Web_Helper_Strs';
+import { API, Axios } from '@/api';
 import {EntityInfo} from '@/config/Web_Const';
 import { useRoute } from 'vue-router';
 import {useI18n} from "vue-i18n";
@@ -50,9 +49,9 @@ const submit = () => {
     entityId: entityInfo.value?.id,
     text: text.value
   };
-  axios.post(API.ENTITY_UPDATE_DETAIL, json)
+  Axios.post(API.ENTITY_UPDATE_DETAIL, json)
       .then(res => {
-        if (res.state === axios.SUCCESS) {
+        if (res.success()) {
           toast.add(new PToast().success(res.message));
           isUpdate.value = true;
           close();

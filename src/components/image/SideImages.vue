@@ -5,21 +5,20 @@ import {useDialog} from 'primevue/usedialog';
 const manager = defineAsyncComponent(() => import('@/components/image/ImageManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/image/ImageBrowser.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/modules/user";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import {useI18n} from "vue-i18n";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {EntityInfo} from "@/config/Web_Const";
+import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
 const userStore = useUserStore();
 const route = useRoute();
 const dialog = useDialog();
 const toast = useToast();
-const editBlock = ref(false);
 const loading = ref(false);
 const entityInfo = ref<EntityInfo>();
 const images = ref([]);
@@ -45,8 +44,8 @@ const getDisplayImages = async () => {
   entityType: entityInfo.value?.type,
   entityId: entityInfo.value?.id
   }
-  const res = await axios.post(API.IMAGES_DEFAULT_DISPLAYED, param);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.IMAGES_DEFAULT_DISPLAYED, param);
+  if (res.success()) {
     images.value = res.data.images;
     count.value = res.data.count;
   } else {
@@ -106,7 +105,7 @@ const openEditDialog = () => {
     <ScrollPanel v-else style="max-height: 300px;max-width: 265px">
       <div v-if="images" class="grid justify-content-evenly justify-content-start" style="width: 260px">
         <div class="col-4 mt-2 mb-2" id="panel-image-div"
-             v-for="(image, index) of images" :key="index">
+             v-for="(image, index) of images as any" :key="index">
           <img class="sidebar-panel-image-middle" :src="image.thumb"
                draggable="false"
                oncontextmenu="return false"
@@ -122,5 +121,4 @@ const openEditDialog = () => {
 </template>
 
 <style lang="scss" scoped>
-@use '@/assets/bootstrap/myBootstrap.min.css';
 </style>

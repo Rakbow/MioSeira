@@ -1,5 +1,4 @@
 <template>
-  <Toast/>
   <BlockUI :blocked="editBlock">
     <DataTable ref="dt" :value="images" :alwaysShowPaginator="images.length !== 0"
                lazy :totalRecords="totalRecords" :loading="loading" size="small"
@@ -143,13 +142,12 @@
 <script setup lang="ts">
 import {useToast} from 'primevue/usetoast';
 import {ref, onMounted, defineAsyncComponent, onBeforeMount} from "vue";
-import {API} from '@/config/Web_Helper_Strs';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import { API, Axios } from '@/api';
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntityInfo} from "@/config/Web_Const";
-import {useEntityStore} from "@/logic/entityService";
+import {useOptionStore} from "@/store/modules/option";
 import {PToast} from "@/logic/frame";
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
@@ -171,7 +169,7 @@ const displayEditDialog = ref(false);
 const displayDeleteDialog = ref(false);
 const dt = ref();
 const generateThumb = ref(false);
-const store = useEntityStore();
+const store = useOptionStore();
 const entityInfo = ref<EntityInfo>();
 
 onBeforeMount(() => {
@@ -241,8 +239,8 @@ const closeEditDialog = () => {
 //region CRUD
 const load = async () => {
   loading.value = true;
-  const res = await axios.post(API.IMAGE_LIST, queryParams.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.IMAGE_LIST, queryParams.value);
+  if (res.success()) {
     images.value = res.data.data;
     totalRecords.value = res.data.total
   }
@@ -267,7 +265,7 @@ const upload = async () => {
   fd.append('generateThumb', generateThumb!.value);
   editBlock.value = true;
   const res = await axios.form(API.IMAGE_UPLOAD, fd);
-  if (res.state === axios.SUCCESS) {
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
     displayAddDialog.value = false;
     await load();
@@ -286,8 +284,8 @@ const update = async () => {
     nameZh: imageEdit.value.nameZh,
     detail: imageEdit.value.detail,
   };
-  const res = await axios.post(API.IMAGE_UPDATE, json);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.IMAGE_UPDATE, json);
+  if (res.success()) {
     closeEditDialog();
     await load();
     toast.add(new PToast().success(res.message));
@@ -308,7 +306,7 @@ const remove = async () => {
   }
 
   const res = await axios.delete(API.IMAGE_DELETE, param);
-  if (res.state === axios.SUCCESS) {
+  if (res.success()) {
     selectedItems.value = [];
     displayDeleteDialog.value = false;
     await load();

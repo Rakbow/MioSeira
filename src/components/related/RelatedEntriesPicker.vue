@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {defineAsyncComponent, defineProps, onBeforeMount, ref, toRef, watch} from "vue";
-import {META} from "@/config/Web_Const";
-import {useEntityStore} from "@/logic/entityService";
+import {useOptionStore} from "@/store/modules/option";
 import {useI18n} from "vue-i18n";
 
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
@@ -17,7 +16,7 @@ const props = defineProps({
   }
 });
 const {t} = useI18n();
-const store = useEntityStore();
+const store = useOptionStore();
 const emit = defineEmits(['update:relatedEntries']);
 const relatedEntries = toRef(props, 'relatedEntries')
 
@@ -71,7 +70,7 @@ const displayEntrySelector = ref(false);
         <Divider type="dashed"/>
         <div class="related-create-entity-action">
           <Select v-model="entry.role" :placeholder="t('Role')" size="small"
-              v-if="type === META.ENTRY_TYPE.PERSON || type === META.ENTRY_TYPE.CHARACTER"
+              v-if="type === $const.ENTRY_TYPE.PERSON || type === $const.ENTRY_TYPE.CHARACTER"
               :options="store.options.roleSet" optionLabel="label" filter>
             <template #option="{option}">
               {{ option!.label }}
@@ -91,6 +90,6 @@ const displayEntrySelector = ref(false);
 </template>
 
 <style scoped lang="scss">
-@use "@/assets/entity-manager";
-@use "@/assets/entity-global";
+@use "@/styles/entity-manager";
+@use "@/styles/entity-global";
 </style>

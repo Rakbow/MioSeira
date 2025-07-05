@@ -2,7 +2,7 @@
 import {defineProps, onBeforeMount, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {META} from "@/config/Web_Const";
+
 const {t} = useI18n();
 const entry = ref();
 
@@ -35,12 +35,12 @@ onBeforeMount(() => {
         </li>
       </ul>
     </li>
-    <li v-if="entry.type.value === META.ENTRY_TYPE.PERSON || entry.type.value === META.ENTRY_TYPE.CHARACTER">
+    <li v-if="entry.type.value === $const.ENTRY_TYPE.PERSON || entry.type.value === $const.ENTRY_TYPE.CHARACTER">
       <span class="tip">{{ t('Gender') }}:&nbsp;</span>
       <i :class="PublicHelper.getGenderIcon(entry.gender.value)" style="font-size: 12px"
          v-tooltip.right="{value: entry.gender.label, class: 'short-tooltip'}" />
     </li>
-    <li v-if="entry.type.value !== META.ENTRY_TYPE.CLASSIFICATION && entry.type.value !== META.ENTRY_TYPE.MATERIAL">
+    <li v-if="entry.type.value !== $const.ENTRY_TYPE.CLASSIFICATION && entry.type.value !== $const.ENTRY_TYPE.MATERIAL">
       <span class="tip">{{ t('Date') }}:&nbsp;</span>{{ (entry as any).date }}
     </li>
     <li v-if="entry.links.length" class="sub_container">

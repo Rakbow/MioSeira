@@ -2,8 +2,7 @@
 import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {useToast} from "primevue/usetoast";
 import {PToast} from "@/logic/frame";
 
@@ -25,8 +24,8 @@ onMounted(() => {
 const submit = async () => {
   editBlock.value = true;
   entity.value.name = `${entity.value.name}.${entity.value.extension}`;
-  const res = await axios.post(API.FILE_UPDATE, entity.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.FILE_UPDATE, entity.value);
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();

@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
-import {META, RelatedEntry} from "@/config/Web_Const";
-import {defineAsyncComponent, onBeforeMount, reactive, ref} from "vue";
-import {useEntityStore} from "@/logic/entityService";
+import {RelatedEntry} from "@/config/Web_Const";
+import {defineAsyncComponent, getCurrentInstance, onBeforeMount, reactive, ref} from "vue";
+import {useOptionStore} from "@/store/modules/option";
 import {useToast} from "primevue/usetoast";
 import "flag-icons/css/flag-icons.min.css";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
-import {ItemAdvanceCreateDTO, ItemSpecParams, parseItemSpecParams} from "@/logic/itemService";
+import {API, Axios} from "@/api";
+import {ItemAdvanceCreateDTO, parseItemSpecParams} from "@/logic/itemService";
 import {MdEditor} from "md-editor-v3";
 import {useDialog} from "primevue/usedialog";
 import {useRouter} from "vue-router";
 import {PublicHelper} from "@/toolkit/publicHelper";
 
 import 'md-editor-v3/lib/style.css';
-import {useDraftStore} from "@/store/draft";
+import {useDraftStore} from "@/store/modules/draft";
 import {PToast} from "@/logic/frame";
 
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
@@ -26,26 +25,27 @@ const router = useRouter();
 const dialog = useDialog();
 const {t} = useI18n();
 const toast = useToast();
-const store = useEntityStore();
+const store = useOptionStore();
 const draft = useDraftStore();
 const itemType = ref();
 const itemSpec = ref('');
 const dto = ref(new ItemAdvanceCreateDTO());
+const { proxy } = getCurrentInstance();
 
 const relatedEntry = reactive<RelatedEntry>(new RelatedEntry())
 
 
 onBeforeMount(() => {
   store.fetchOptions();
-  itemType.value = META.ITEM_TYPE_SET[dto.value.item.type - 1];
+  itemType.value = proxy.$const.ITEM_TYPE_SET[dto.value.item.type - 1];
 })
 
 const switchItemType = () => {
   dto.value.item.type = parseInt(itemType.value.value);
 }
 const ISBNInterConvert = async (isbn10: string) => {
-  const res = await axios.post(API.ITEM_CONVERT_ISBN, {isbn10: isbn10})
-  if (res.state === axios.SUCCESS)
+  const res = await Axios.post(API.ITEM_CONVERT_ISBN, {isbn10: isbn10})
+  if (res.success())
     dto.value.item.barcode = res.data;
 };
 
@@ -62,13 +62,13 @@ const parseItemSpec = () => {
 const handleRelatedEntry = () => {
   const entities: any[] = [
     ...relatedEntry.products.map(e => ({
-      relatedEntitySubType: META.ENTRY_TYPE.PRODUCT,
-      relatedEntityType: META.ENTITY.ENTRY,
+      relatedEntitySubType: proxy.$const.ENTRY_TYPE.PRODUCT,
+      relatedEntityType: proxy.$const.ENTITY.ENTRY,
       relatedEntityId: e.id
     })),
     ...relatedEntry.persons.map(e => ({
-      relatedEntitySubType: META.ENTRY_TYPE.PERSON,
-      relatedEntityType: META.ENTITY.ENTRY,
+      relatedEntitySubType: proxy.$const.ENTRY_TYPE.PERSON,
+      relatedEntityType: proxy.$const.ENTITY.ENTRY,
       relatedEntityId: e.id,
       relatedRoleId: e.role.value
     }))
@@ -81,7 +81,7 @@ const handleRelatedEntry = () => {
 const submit = async () => {
   block.value = true;
   handleRelatedEntry();
-  if(dto.value.item.type === META.ITEM_TYPE.ALBUM) handleTracks();
+  if(dto.value.item.type === proxy.$const.ITEM_TYPE.ALBUM) handleTracks();
   // await handleImage();
 
   const fd = new FormData();
@@ -91,7 +91,7 @@ const submit = async () => {
   });
   fd.append('param', JSON.stringify(dto.value));
   const res = await axios.form(API.ITEM_CREATE, fd);
-  if (res.state === axios.SUCCESS)
+  if (res.success())
     await router.push(`${API.ITEM_DETAIL_PATH}/${res.data}`);
   else
     toast.add(new PToast().error(res.message));
@@ -194,7 +194,7 @@ const handleTracks = () => {
               <Button @click="submit" icon="pi pi-save"/>
             </template>
             <div class="text-center pt-4">
-              <SelectButton v-model="itemType" :options="META.ITEM_TYPE_SET"
+              <SelectButton v-model="itemType" :options="$const.ITEM_TYPE_SET"
                             @change="switchItemType"
                             optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
                 <template #option="{option}">
@@ -202,7 +202,7 @@ const handleTracks = () => {
                 </template>
               </SelectButton>
             </div>
-            <div v-if="dto.item.type === META.ITEM_TYPE.BOOK" class="field">
+            <div v-if="dto.item.type === $const.ITEM_TYPE.BOOK" class="field">
               <label>{{ t('BookType') }}<i class="required-label pi pi-asterisk"/></label>
               <div class="flex flex-wrap flex-col gap-3">
                 <div v-for="format of store.options.bookTypeSet" class="flex gap-2">
@@ -245,7 +245,7 @@ const handleTracks = () => {
               </FloatLabel>
               <FloatLabel variant="on">
                 <label>{{ t('Region') }}</label>
-                <Select v-model="dto.item.region" :options="META.RegionSet" optionLabel="label" optionValue="value">
+                <Select v-model="dto.item.region" :options="$const.RegionSet" optionLabel="label" optionValue="value">
                   <template #value="slotProps">
                     <span :class="`fi fi-${slotProps.value}`"/>
                   </template>
@@ -261,21 +261,21 @@ const handleTracks = () => {
             <div class="grid">
               <FloatLabel variant="on">
                 <label>{{ t('Barcode') }}</label>
-                <InputText v-if="dto.item.type !== META.ITEM_TYPE.BOOK" v-model="dto.item!.barcode"/>
+                <InputText v-if="dto.item.type !== $const.ITEM_TYPE.BOOK" v-model="dto.item!.barcode"/>
                 <InputGroup v-else>
                   <InputText v-model="dto.item!.barcode"/>
                   <Button icon="pi pi-sync" class="p-button-warning"
                           @click="ISBNInterConvert(dto.item.barcode)" :title="t('TooltipGenerateBookISBN13')"/>
                 </InputGroup>
               </FloatLabel>
-              <FloatLabel variant="on" v-if="dto.item.type !== META.ITEM_TYPE.BOOK">
+              <FloatLabel variant="on" v-if="dto.item.type !== $const.ITEM_TYPE.BOOK">
                 <label>{{ t('CatalogId') }}</label>
                 <InputText v-model="dto.item.catalogId"/>
               </FloatLabel>
             </div>
 
-            <div class="grid" v-if="dto.item.type === META.ITEM_TYPE.ALBUM || dto.item.type === META.ITEM_TYPE.DISC">
-              <FloatLabel variant="on" v-if="dto.item.type === META.ITEM_TYPE.DISC">
+            <div class="grid" v-if="dto.item.type === $const.ITEM_TYPE.ALBUM || dto.item.type === $const.ITEM_TYPE.DISC">
+              <FloatLabel variant="on" v-if="dto.item.type === $const.ITEM_TYPE.DISC">
                 <label>{{ t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
                 <MultiSelect showClear v-model="dto.item.mediaFormat" :options="store.options.mediaFormatSet"
                              optionLabel="label" optionValue="value" display="chip"/>
@@ -285,11 +285,11 @@ const handleTracks = () => {
                 <InputNumber v-model="dto.item.discs"/>
               </FloatLabel>
               <FloatLabel variant="on">
-                <template v-if="dto.item.type === META.ITEM_TYPE.ALBUM">
+                <template v-if="dto.item.type === $const.ITEM_TYPE.ALBUM">
                   <label>{{ t('Tracks') }}</label>
                   <InputNumber v-model="dto.item.tracks"/>
                 </template>
-                <template v-if="dto.item.type === META.ITEM_TYPE.DISC">
+                <template v-if="dto.item.type === $const.ITEM_TYPE.DISC">
                   <label>{{ t('Episodes') }}</label>
                   <InputNumber v-model="dto.item.episodes"/>
                 </template>
@@ -300,7 +300,7 @@ const handleTracks = () => {
               </FloatLabel>
             </div>
 
-            <div class="grid" v-if="dto.item.type === META.ITEM_TYPE.BOOK">
+            <div class="grid" v-if="dto.item.type === $const.ITEM_TYPE.BOOK">
               <FloatLabel variant="on">
                 <label class="mb-3">{{ t('Language') }}<i class="required-label pi pi-asterisk"/></label>
                 <Select v-model="dto.item.lang" :options="store.options.languageSet"
@@ -349,7 +349,7 @@ const handleTracks = () => {
           </Panel>
         </div>
 
-        <div class="col-12" v-if="dto.item.type === META.ITEM_TYPE.ALBUM">
+        <div class="col-12" v-if="dto.item.type === $const.ITEM_TYPE.ALBUM">
           <Panel>
             <template #header>
               <span><i class="pi pi-list"/><strong>{{ t('TrackInfo') }}</strong></span>
@@ -405,33 +405,33 @@ const handleTracks = () => {
           <Divider class="my-0" align="left"><i class="pi pi-th-large"/><b class="ml-1">{{ t('Product') }}</b>
           </Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.products"
-                                :type="META.ENTRY_TYPE.PRODUCT"/>
+                                :type="$const.ENTRY_TYPE.PRODUCT"/>
           <Divider class="mb-0" align="left"><i class="pi pi-users"/><b class="ml-1">{{ t('Person') }}</b></Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.persons"
-                                :type="META.ENTRY_TYPE.PERSON"/>
-          <div v-if="dto.item.type !== META.ITEM_TYPE.ALBUM && dto.item.type !== META.ITEM_TYPE.BOOK">
+                                :type="$const.ENTRY_TYPE.PERSON"/>
+          <div v-if="dto.item.type !== $const.ITEM_TYPE.ALBUM && dto.item.type !== $const.ITEM_TYPE.BOOK">
             <Divider class="mb-0" align="left"><i class="pi pi-users"/><b class="ml-1">{{ t('Character') }}</b>
             </Divider>
             <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.characters"
-                                  :type="META.ENTRY_TYPE.CHARACTER"/>
+                                  :type="$const.ENTRY_TYPE.CHARACTER"/>
           </div>
           <Divider class="mb-0" align="left"><i class="pi pi-folder-open"/><b class="ml-1">{{
               t('Classification')
             }}</b>
           </Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.classifications"
-                                :type="META.ENTRY_TYPE.CLASSIFICATION"/>
-          <div v-if="dto.item.type === META.ITEM_TYPE.GOODS || dto.item.type === META.ITEM_TYPE.FIGURE">
+                                :type="$const.ENTRY_TYPE.CLASSIFICATION"/>
+          <div v-if="dto.item.type === $const.ITEM_TYPE.GOODS || dto.item.type === $const.ITEM_TYPE.FIGURE">
             <Divider class="mb-0" align="left">
               <MaterialIcon name="diamond" size="1" />
               <b class="ml-1">{{ t('Material') }}</b>
             </Divider>
             <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.materials"
-                                  :type="META.ENTRY_TYPE.MATERIAL"/>
+                                  :type="$const.ENTRY_TYPE.MATERIAL"/>
           </div>
           <Divider class="mb-0" align="left"><i class="pi pi-calendar"/><b class="ml-1">{{ t('Event') }}</b></Divider>
           <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.events"
-                                :type="META.ENTRY_TYPE.EVENT"/>
+                                :type="$const.ENTRY_TYPE.EVENT"/>
         </Panel>
       </div>
       <div class="col-12">
@@ -450,6 +450,6 @@ const handleTracks = () => {
 </template>
 
 <style lang="scss" scoped>
-@use "@/assets/entity-manager";
-@use "@/assets/entity-global";
+@use "@/styles/entity-manager";
+@use "@/styles/entity-global";
 </style>

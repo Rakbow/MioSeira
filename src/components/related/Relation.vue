@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {defineAsyncComponent, defineProps, ref} from 'vue';
-import {useUserStore} from "@/store/user";
+import {defineAsyncComponent, defineProps, getCurrentInstance, ref} from 'vue';
+import {useUserStore} from "@/store/modules/user";
 import {useDialog} from "primevue/usedialog";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
@@ -9,7 +9,6 @@ import {META} from "@/config/Web_Const";
 const RelationEntity = defineAsyncComponent(() => import('@/components/related/RelatedEntity.vue'));
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesBrowser.vue'));
-
 const {t} = useI18n();
 const route = useRoute();
 const dialog = useDialog();

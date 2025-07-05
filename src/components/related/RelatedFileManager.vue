@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
-import {EntityInfo, META} from "@/config/Web_Const";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {EntityInfo} from "@/config/Web_Const";
+import {API, Axios} from "@/api";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {loadEditor} from "@/logic/entityService";
 import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
+
 const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const fileUploader = defineAsyncComponent(() => import('@/components/file/FileCreator.vue'));
 
@@ -63,8 +63,8 @@ const getRelatedFiles = async () => {
   queryParams.value.filters.entityType.value = entityInfo.value?.type;
   queryParams.value.filters.entityId.value = entityInfo.value?.id;
   loading.value = true;
-  const res = await axios.post(API.FILE_LIST, queryParams.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.FILE_LIST, queryParams.value);
+  if (res.success()) {
     files.value = res.data.data;
     records.value = res.data.total
   }
@@ -123,7 +123,7 @@ const openFilesUpload = () => {
 
         <Column style="width: 3rem">
           <template #body="{data}">
-            <Button variant="text" outlined size="small" @click="loadEditor(META.ENTITY.FILE, data, dialog)">
+            <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data, dialog)">
               <template #icon>
                 <MaterialIcon size="1.5" name="edit_square" />
               </template>

@@ -17,7 +17,7 @@ export const API = {
     ITEM_CREATE: '/api/db/item/create',
     ITEM_UPDATE: '/api/db/item/update',
 
-    ITEM_EXTRA_INFO: '/api/db/item/get-extra-info',
+    ITEM_EXTRA_INFO: '/api/db/entry/get-extra-info',
     ITEM_CONVERT_ISBN: '/api/db/item/convert-isbn',
 
     ALBUM_TRACK_QUICK_CREATE: '/api/db/item/album-track-quick-create',

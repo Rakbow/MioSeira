@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import {defineAsyncComponent, defineProps, onBeforeMount, onMounted, ref} from 'vue';
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/modules/user";
 import {useDialog} from "primevue/usedialog";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {API} from "@/config/Web_Helper_Strs";
-import {EntityInfo, META, QueryParams} from "@/config/Web_Const";
+import {API, Axios} from "@/api";
+import {EntityInfo, QueryParams} from "@/config/Web_Const";
 
 const RelationEntity = defineAsyncComponent(() => import('@/components/related/RelatedEntity.vue'));
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
@@ -45,7 +44,7 @@ const props = defineProps({
   targetType: {
     type: Number,
     required: false,
-    default: META.ENTITY.ENTRY
+    default: $const.ENTITY.ENTRY
   },
   targetSubTypes: {
     type: Array,
@@ -126,8 +125,8 @@ const openBrowser = () => {
 
 const load = async () => {
   loading.value = true;
-  const res = await axios.post(API.RELATION_LIST, queryParams.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.RELATION_LIST, queryParams.value);
+  if (res.success()) {
     relatedEntities.value = res.data.data;
     total = res.data.total;
   }

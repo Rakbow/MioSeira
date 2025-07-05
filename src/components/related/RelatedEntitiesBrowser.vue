@@ -27,8 +27,7 @@
 
 <script setup lang="ts">
 import {ref, onMounted, onBeforeMount, defineAsyncComponent} from "vue";
-import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {inject} from "vue";
 import {useI18n} from "vue-i18n";
 import {EntityManageParam} from "@/logic/entityService";
@@ -62,8 +61,8 @@ const page = (ev: any) => {
 const load = async () => {
   param.value.load();
   param.value.data = Array.from({length: param.value.query.rows});
-  const res = await axios.post(API.RELATION_LIST, param.value.query);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.RELATION_LIST, param.value.query);
+  if (res.success()) {
     param.value.total = res.data.total;
     param.value.data = res.data.data;
   }

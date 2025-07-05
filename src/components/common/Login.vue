@@ -1,5 +1,4 @@
 <template>
-  <Toast/>
   <BlockUI :blocked="editBlock">
     <div class="text-center mb-5">
       <img src="https://blocks.primevue.org/images/blocks/logos/hyper.svg" alt="Image" height="50" class="mb-3">
@@ -43,9 +42,9 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import $ from 'jquery';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {useUserStore} from "@/store/user";
-import {API} from '@/config/Web_Helper_Strs.ts';
+import {Axios as axios} from "@/api/http.ts";
+import {useUserStore} from "@/store/modules/user.js";
+import {API} from '@/api/api.ts';
 import {useToast} from "primevue/usetoast";
 import {useI18n} from "vue-i18n";
 
@@ -66,8 +65,8 @@ const refreshKaptcha = () => {
 
 const login = async () => {
   editBlock.value = true;
-  const res = await axios.post(API.LOGIN, param.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.LOGIN, param.value);
+  if (res.success()) {
     userStore.login(res.data.user, res.data.token);
     location.reload();
   } else {

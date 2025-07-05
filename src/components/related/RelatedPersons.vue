@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, defineProps, onMounted, ref} from 'vue';
+import {computed, defineAsyncComponent, defineProps, getCurrentInstance, onMounted, ref} from 'vue';
 import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
-import {META} from "@/config/Web_Const";
-import {PersonnelGroup} from "@/logic/relationService";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 
 const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
@@ -14,6 +11,7 @@ const {t} = useI18n();
 const dialog = useDialog();
 const personnel = ref<PersonnelGroup[]>([]);
 const loading = ref(false);
+const { proxy } = getCurrentInstance();
 
 onMounted(() => {
   load()
@@ -48,8 +46,8 @@ const openEditDialog = () => {
       entityType: props.type,
       entityId: props.id,
       entitySubType: props.subType,
-      type: META.ENTITY.ENTRY,
-      subTypes: [META.ENTRY_TYPE.PERSON]
+      type: proxy.$const.ENTITY.ENTRY,
+      subTypes: [proxy.$const.ENTRY_TYPE.PERSON]
     },
     onClose: (options: any) => {
       if (options.data !== undefined) {
@@ -63,11 +61,11 @@ const openEditDialog = () => {
 
 const load = async () => {
   loading.value = true;
-  const res = await axios.post(API.RELATION_PERSONNEL, {
+  const res = await Axios.post(API.RELATION_PERSONNEL, {
     entityType: props.type,
     entityId: props.id
   });
-  if (res.state === axios.SUCCESS)
+  if (res.success())
     personnel.value = res.data;
   loading.value = false;
 }
@@ -135,7 +133,7 @@ const toggleCollapse = () => {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/general' as g;
+@use '@/styles/general' as g;
 
 .person-table {
   position: relative !important;

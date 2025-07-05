@@ -3,12 +3,11 @@ import {inject, onBeforeMount, ref} from "vue";
 import {useToast} from "primevue/usetoast";
 import {useRoute} from "vue-router";
 import {EntityInfo} from '@/config/Web_Const';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useI18n} from "vue-i18n";
 import {AlbumDisc, parseAlbumTracks} from "@/logic/itemService";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {API} from "@/config/Web_Helper_Strs";
-import {useEntityStore} from "@/logic/entityService";
+import {API, Axios} from "@/api";
+import {useOptionStore} from "@/store/modules/option";
 
 const entityInfo = ref<EntityInfo>();
 const {t} = useI18n();
@@ -19,7 +18,7 @@ const block = ref(false);
 const upload = ref(false);
 const loading = ref();
 const analysisInput = ref();
-const store = useEntityStore();
+const store = useOptionStore();
 const disc = ref(new AlbumDisc());
 
 onBeforeMount(() => {
@@ -48,8 +47,8 @@ const close = () => {
 const submit = async () => {
   if (dr.value.data.mode === 'normal') {
     block.value = true;
-    const res = await axios.post(API.ALBUM_TRACK_QUICK_CREATE, disc.value);
-    if (res.state === axios.SUCCESS) {
+    const res = await Axios.post(API.ALBUM_TRACK_QUICK_CREATE, disc.value);
+    if (res.success()) {
       toast.add(new PToast().success(res.message));
       upload.value = true;
       close();

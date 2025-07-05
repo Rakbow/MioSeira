@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import "@/assets/entity-global.scss";
-import "@/assets/entity-search.scss";
-import '@/assets/bootstrap/myBootstrap.min.css';
+import "@/styles/entity-search.scss";
+import '@/styles/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 import "flag-icons/css/flag-icons.min.css";
 
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {defineAsyncComponent, onBeforeMount, onMounted, ref, watch} from "vue";
 import {LocationQueryValue, useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {useToast} from "primevue/usetoast";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {useEntityStore} from "@/logic/entityService";
+import {useOptionStore} from "@/store/modules/option";
 import {ItemQueryParams} from "@/logic/itemService";
-import {META} from "@/config/Web_Const";
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
@@ -22,7 +20,7 @@ const {t} = useI18n();
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
-const store = useEntityStore();
+const store = useOptionStore();
 
 //region data view and paginator
 const first = ref(0);
@@ -203,8 +201,8 @@ const getItems = async () => {
   queryParams.entries = entries.value.map(e => e.id)
   updateQueryParam();
   loading.value = true;
-  const res = await axios.post(API.ITEM_SEARCH, queryParams);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ITEM_SEARCH, queryParams);
+  if (res.success()) {
     if (res.data.data === null)
       searchResult.value.data = [];
     else
@@ -220,8 +218,8 @@ const getItems = async () => {
 const getRelatedEntries = async () => {
   if (queryParams.entries.length) {
     entryLoading.value = true;
-    const res = await axios.post(API.ENTRY_GET_MINI, queryParams.entries);
-    if (res.state === axios.SUCCESS) {
+    const res = await Axios.post(API.ENTRY_GET_MINI, queryParams.entries);
+    if (res.success()) {
       entries.value = res.data;
     }
     entryLoading.value = false;
@@ -284,7 +282,6 @@ const endHover = () => {
 </script>
 
 <template>
-  <Toast/>
   <div class="flex flex-wrap justify-content-center gap-3">
     <div class="entity-search-main-col">
       <DataView :value="searchResult.data" :layout="layout">
@@ -334,7 +331,7 @@ const endHover = () => {
                 <a :href="`${API.ITEM_DETAIL_PATH}/${item.id}`" class="text-overflow-hidden-one"
                    :title="item.name">{{ item.name }}</a>
                 <Tag :value="item.type.label"/>
-                <span v-if="item.type.value !== META.ITEM_TYPE.ALBUM">
+                <span v-if="item.type.value !== $const.ITEM_TYPE.ALBUM">
                   <i class="pi pi-caret-right"/><Tag :value="item.subType.label"/>
                 </span>
                 <div>
@@ -410,7 +407,7 @@ const endHover = () => {
             <div class="field col">
               <FloatLabel variant="on">
                 <label>{{ t('Region') }}</label>
-                <Select v-model="queryParams.region" :options="META.RegionSet" optionLabel="label"
+                <Select v-model="queryParams.region" :options="$const.RegionSet" optionLabel="label"
                         size="small" optionValue="value" class="static w-full">
                   <template #value="slotProps">
                     <span :class="`fi fi-${slotProps.value}`"/>

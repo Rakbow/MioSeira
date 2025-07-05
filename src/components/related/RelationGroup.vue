@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {defineProps, onBeforeMount, onMounted, ref} from "vue";
+import {defineProps, getCurrentInstance, onMounted, ref} from "vue";
 import {findRelationConfig} from "@/logic/entityService";
-import {META, QueryParams} from "@/config/Web_Const";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {QueryParams} from "@/config/Web_Const";
+import {API, Axios} from "@/api";
 import Relation from "@/components/related/Relation.vue";
 import {useI18n} from "vue-i18n";
 
+const { proxy } = getCurrentInstance();
 const {t} = useI18n();
 const queryParams = ref(new QueryParams());
 const config = ref<any>();
@@ -40,7 +40,7 @@ onMounted(() => {
     filters: {
       entityType: {value: props.type},
       entityId: {value: props.id},
-      targetEntityType: {value: META.ENTITY.ENTRY},
+      targetEntityType: {value: proxy.$const.ENTITY.ENTRY},
       targetEntitySubTypes: {value: []}
     }
   }
@@ -49,9 +49,9 @@ onMounted(() => {
 })
 
 const getData = async () => {
-  const requests = config.value.subTypeSets.map(async subTypes => {
-        queryParams.value.filters.targetEntitySubTypes.value = subTypes;
-        return axios.post(API.RELATION_LIST, queryParams.value);
+  const requests = config.value.subConfigs.map(async subConfig => {
+        queryParams.value.filters.targetEntitySubTypes.value = subConfig.value;
+        return Axios.post(API.RELATION_LIST, queryParams.value);
       }
   );
   const responses = await Promise.all(requests);
@@ -69,9 +69,9 @@ const getData = async () => {
 </script>
 
 <template>
-  <div v-if="resultSet.length" v-for="(subTypes, index) of config.subTypeSets">
-    <Relation :header="t('RelatedEntry')" :type="props.type" :id="props.id" :subType="props.subType"
-              :targetSubTypes="subTypes" :total="resultSet[index].total" :entities="resultSet[index].data"
+  <div v-if="resultSet.length" v-for="(subConfig, index) of config.subConfigs">
+    <Relation :header="t(subConfig.label)" :type="props.type" :id="props.id" :subType="props.subType"
+              :targetSubTypes="subConfig.value" :total="resultSet[index].total" :entities="resultSet[index].data"
               :showRole="props.showRole"/>
   </div>
 </template>

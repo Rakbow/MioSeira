@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {defineProps, onMounted, ref} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {useI18n} from "vue-i18n";
 
 const loading = ref(false);
@@ -25,8 +24,8 @@ const props = defineProps({
 
 const loadExtraInfo = async () => {
   loading.value = true;
-  const res = await axios.post(API.ITEM_EXTRA_INFO, {id: props.id});
-  if (res.state === axios.SUCCESS) extraInfo.value = res.data;
+  const res = await Axios.post(API.ITEM_EXTRA_INFO, {id: props.id});
+  if (res.success()) extraInfo.value = res.data;
   loading.value = false;
 }
 
@@ -40,8 +39,8 @@ const loadExtraInfo = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(c, index) in extraInfo.classifications">
-          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${c.target.value}`">
-            <span style="white-space: nowrap;">{{ c.target.label }}</span>
+          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${c.target.entityId}`">
+            <span style="white-space: nowrap;">{{ c.target.name }}</span>
           </router-link>
           <span v-if="index < extraInfo.classifications.length - 1">, </span>
         </template>
@@ -55,8 +54,8 @@ const loadExtraInfo = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(e, index) in extraInfo.events">
-          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${e.target.value}`">
-            <span style="white-space: nowrap;">{{ e.target.label }}</span>
+          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${e.target.entityId}`">
+            <span style="white-space: nowrap;">{{ e.target.name }}</span>
           </router-link>
           <span v-if="e.remark">&nbsp;({{ (e as any).remark }})</span>
           <span v-if="index < extraInfo.events.length - 1">, </span>
@@ -71,8 +70,8 @@ const loadExtraInfo = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(m, index) in extraInfo.materials">
-          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${m.target.value}`">
-            <span style="white-space: nowrap;">{{ m.target.label }}</span>
+          <router-link :to="`${API.ENTRY_DETAIL_PATH}/${m.target.entityId}`">
+            <span style="white-space: nowrap;">{{ m.target.name }}</span>
           </router-link>
           <span v-if="m.remark">&nbsp;({{ (m as any).remark }})</span>
           <span v-if="index < extraInfo.materials.length - 1">, </span>

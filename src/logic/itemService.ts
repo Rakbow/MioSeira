@@ -1,8 +1,7 @@
 import editor from "@/components/entityEditor/ItemEditor.vue";
 import i18n from "@/config/i18n";
-import {DynamicDialogInstance, DynamicDialogOptions} from "primevue/dynamicdialogoptions";
 import {META} from "@/config/Web_Const";
-import {ImageDTO} from "@/logic/entityService";
+import {DialogServiceMethods} from "primevue/dialogservice";
 
 const {t} = i18n.global;
 
@@ -68,17 +67,7 @@ export class ItemQueryParams {
     sortOrder: number | null = null;
 }
 
-// 定义商品参数接口
-export interface ItemSpecParams {
-    length: number; // 长度（单位 mm）
-    width: number;  // 宽度（单位 mm）
-    height: number; // 高度（单位 mm）
-    weight: number; // 重量（单位 g）
-}
-
-export const loadEditor = (item: any, dialog: {
-    open: (content: any, options?: (DynamicDialogOptions | undefined)) => DynamicDialogInstance
-}) => {
+export const loadEditor = (item: any, dialog: DialogServiceMethods) => {
     dialog.open(editor, {
         props: {
             header: t('Edit'),
@@ -147,7 +136,6 @@ export const parseItemSpecParams = (input: string): ItemSpecParams => {
 
 export class AlbumTrack {
     id = 0;
-    discId= 0;
     serial= 0;
     name = '';
     duration = '';

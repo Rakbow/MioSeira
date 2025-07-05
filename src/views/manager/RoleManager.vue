@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {API} from "@/config/Web_Helper_Strs";
-import {EntityManageParam, useEntityStore} from "@/logic/entityService";
+import {API, Axios} from "@/api";
+import {EntityManageParam} from "@/logic/entityService";
+import {useOptionStore} from "@/store/modules/option";
 import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
@@ -14,7 +14,7 @@ const dt = ref();
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
-const store = useEntityStore();
+const store = useOptionStore();
 const param = ref(new EntityManageParam());
 const createDTO = ref<any>();
 const updateDTO = ref<any>();
@@ -87,8 +87,8 @@ const onFilter = () => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await axios.post(API.ROLE_LIST, param.value.query);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ROLE_LIST, param.value.query);
+  if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
   }
@@ -131,8 +131,8 @@ const confirmDeleteSelected = () => {
 
 const create = async () => {
   param.value.load();
-  const res = await axios.post(API.ROLE_CREATE, createDTO.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ROLE_CREATE, createDTO.value);
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
     closeAddDialog();
     await load();
@@ -144,8 +144,8 @@ const create = async () => {
 
 const update = async () => {
   param.value.load();
-  const res = await axios.post(API.ROLE_UPDATE, updateDTO.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ROLE_UPDATE, updateDTO.value);
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
     closeEditDialog();
     await load();
@@ -157,8 +157,8 @@ const update = async () => {
 
 const refresh = async () => {
   param.value.load();
-  const res = await axios.post(API.ROLE_REFRESH);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ROLE_REFRESH);
+  if (res.success()) {
     store.clear();
     toast.add(new PToast().success(res.message));
   } else {

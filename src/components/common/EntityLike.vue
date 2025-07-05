@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {defineProps, onBeforeMount, onMounted, ref} from "vue";
-import {API} from '@/config/Web_Helper_Strs';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import { API, Axios } from '@/api';
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useToast} from 'primevue/usetoast';
 import {useI18n} from "vue-i18n";
 import {EntityInfo} from "@/config/Web_Const";
+import {PToast} from "@/logic/frame";
 
 const entityInfo = ref<EntityInfo>();
 const {t} = useI18n();
@@ -43,8 +43,8 @@ const like = async () => {
     entityType: entityInfo.value?.type,
     entityId: entityInfo.value?.id
   };
-  const res = await axios.post(API.ENTITY_LIKE, param);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ENTITY_LIKE, param);
+  if (res.success()) {
     likeCount.value++;
     liked.value = true;
     toast.add(new PToast().success(res.message));

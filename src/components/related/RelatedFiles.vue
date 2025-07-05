@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {defineAsyncComponent, defineProps, onMounted, ref} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
 
@@ -31,7 +30,7 @@ const props = defineProps({
 
 const load = async () => {
   loading.value = true;
-  const res = await axios.post(API.FILE_LIST, {
+  const res = await Axios.post(API.FILE_LIST, {
     first: 0,
     rows: 0,
     filters: {
@@ -39,7 +38,7 @@ const load = async () => {
       entityId: {value: props.id}
     }
   });
-  if (res.state === axios.SUCCESS) {
+  if (res.success()) {
     files.value = res.data.data;
     records.value = res.data.total
   }
@@ -102,7 +101,7 @@ const openCreator = () => {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/general' as g;
+@use '@/styles/general' as g;
 
 .related-file {
 

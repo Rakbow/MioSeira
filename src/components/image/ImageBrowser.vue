@@ -1,5 +1,4 @@
 <template>
-  <Toast/>
   <BlockUI :blocked="editBlock">
     <DataTable ref="dt" :value="images" :alwaysShowPaginator="images.length !== 0"
                lazy :totalRecords="totalRecords" :loading="loading"
@@ -53,13 +52,12 @@
 <script setup lang="ts">
 import {useToast} from 'primevue/usetoast';
 import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
-import {API} from '@/config/Web_Helper_Strs';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import { API, Axios } from '@/api';
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntityInfo} from "@/config/Web_Const";
-import {useEntityStore} from "@/logic/entityService";
+import {useOptionStore} from "@/store/modules/option";
 
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 
@@ -74,7 +72,7 @@ const queryParams = ref({});
 const first = ref(0);
 const dt = ref();
 const entityInfo = ref<EntityInfo>();
-const store = useEntityStore();
+const store = useOptionStore();
 
 onBeforeMount(() => {
   store.fetchOptions();
@@ -117,8 +115,8 @@ const onFilter = () => {
 
 const getImages = async () => {
   loading.value = true;
-  const res = await axios.post(API.IMAGE_LIST, queryParams.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.IMAGE_LIST, queryParams.value);
+  if (res.success()) {
     images.value = res.data.data;
     totalRecords.value = res.data.total
   } else {

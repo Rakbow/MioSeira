@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {defineAsyncComponent, defineProps, inject, onMounted, ref} from "vue";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
-import {META} from "@/config/Web_Const";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useToast} from "primevue/usetoast";
 import {useRoute} from "vue-router";
 
@@ -67,10 +65,10 @@ const upload = async () => {
   formData.append('file', image.value.file);
   formData.append('imageType', image.value.type);
   const res = await axios.form(API.ENTRY_UPLOAD_IMAGE, formData);
-  if (res.state === axios.SUCCESS) {
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
-    if (image.value.type === META.IMAGE_TYPE.MAIN) cover.value = res.data;
-    else if (image.value.type === META.IMAGE_TYPE.THUMB) thumb.value = res.data;
+    if (image.value.type === $const.IMAGE_TYPE.MAIN) cover.value = res.data;
+    else if (image.value.type === $const.IMAGE_TYPE.THUMB) thumb.value = res.data;
     uploadDialogDisplay.value = false;
   } else {
     toast.add(new PToast().error(res.message));
@@ -106,14 +104,14 @@ const openCropper = () => {
   <div class="flex flex-wrap justify-content-center gap-3">
     <div class="flex align-items-center justify-content-center image-container">
       <Button class="absolute bottom-0 right-0" size="small"
-              @click="openUploadDialog(META.IMAGE_TYPE.MAIN)" icon="pi pi-cloud-upload" severity="info"
+              @click="openUploadDialog($const.IMAGE_TYPE.MAIN)" icon="pi pi-cloud-upload" severity="info"
               v-tooltip.bottom="{value: t('Upload'), class: 'short-tooltip'}"/>
       <img v-if="cover" :src="`${API.STATIC_DOMAIN}${cover}`" alt="cover"/>
       <img v-else :src="API.COMMON_EMPTY_COVER_IMAGE" alt="cover"/>
     </div>
     <div class="flex align-items-center justify-content-center image-container">
       <Button class="absolute bottom-0 right-0" size="small"
-              @click="openUploadDialog(META.IMAGE_TYPE.THUMB)" icon="pi pi-cloud-upload" severity="info"
+              @click="openUploadDialog($const.IMAGE_TYPE.THUMB)" icon="pi pi-cloud-upload" severity="info"
               v-tooltip.bottom="{value: t('Upload'), class: 'short-tooltip'}"/>
       <img v-if="thumb" :src="`${API.STATIC_DOMAIN}${thumb}`" alt="thumb"/>
       <img v-else :src="API.COMMON_EMPTY_THUMB_IMAGE" alt="cover"/>

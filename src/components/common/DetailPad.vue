@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import {ref, onMounted, defineProps, defineAsyncComponent, computed} from "vue";
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/modules/user";
 import tingle from 'tingle.js';
 import 'tingle.js/src/tingle.css';
 import {marked} from 'marked';

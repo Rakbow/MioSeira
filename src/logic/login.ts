@@ -1,5 +1,5 @@
-import {AxiosHelper} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {Axios} from "@/api/http";
+import {API, Axios} from "@/api";
 const logout = async () => {
     // const res = await AxiosHelper.post(API.LOGOUT, null);
     // if(res.state === 1) {

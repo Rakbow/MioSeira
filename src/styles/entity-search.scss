@@ -1,5 +1,5 @@
-@use '@/assets/general' as general;
-@use '@/assets/entity-global' as e-general;
+@use 'general' as general;
+@use 'entity-global' as e-general;
 
 .entity-search {
   &-main-col {

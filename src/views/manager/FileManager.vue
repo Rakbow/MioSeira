@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useRoute, useRouter} from "vue-router";
 import {useDialog} from "primevue/usedialog";
-import {META} from "@/config/Web_Const";
-import {API} from '@/config/Web_Helper_Strs';
+import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
 import {EntityManageParam, loadEditor} from "@/logic/entityService";
@@ -91,8 +89,8 @@ const onFilter = () => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await axios.post(API.FILE_LIST, param.value.query);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.FILE_LIST, param.value.query);
+  if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
   }
@@ -162,7 +160,7 @@ const exportCSV = () => {
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
-        <Button variant="text" outlined size="small" @click="loadEditor(META.ENTITY.FILE, data, dialog)">
+        <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data, dialog)">
           <template #icon>
             <MaterialIcon name="edit_square" />
           </template>
@@ -194,5 +192,5 @@ const exportCSV = () => {
 </template>
 
 <style scoped lang="scss" >
-@use "@/assets/entity-manager";
+@use "@/styles/entity-manager";
 </style>

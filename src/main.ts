@@ -1,47 +1,44 @@
 //region css
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
-import "@/assets/font.css";
-import "@/assets/global.css";
-import "@/assets/search.css";
-import "@/assets/general.scss";
+import "@/styles/font.css";
+import "@/styles/global.css";
+import "@/styles/general.scss";
 
-import '@/assets/entity-detail.scss';
-import "@/assets/entity-global.scss";
-import "@/assets/entry-detail.scss";
-import '@/assets/entity-manager.scss';
+import '@/styles/entity-detail.scss';
+import "@/styles/entity-global.scss";
+import "@/styles/entry-detail.scss";
+import '@/styles/entity-manager.scss';
 //endregion
 
 
-import App from "./App.vue";//vue
+import App from "@/App.vue";//vue
 import {createMetaManager} from "vue-meta";
 import {createApp} from "vue";
-import router from "./router.js";// vue-router
-import {createPinia} from 'pinia';
-import piniaPersistedState from 'pinia-plugin-persistedstate';
+import router from "@/router";// vue-router
+import pinia from '@/store';
 import 'material-symbols';
 import i18n from '@/config/i18n';// vue-i18n
 import {registerPrimeVue} from '@/config/primeVueConfig';
-
-//region global
-import MaterialIcon from '@/components/icons/MaterialIcon.vue'
-//endregion
+import {API} from "@/api";
+import {META} from "@/config/Web_Const";
+import MaterialIcon from '@/components/icons/MaterialIcon.vue';
 
 // import {useCookies} from '@vueuse/integrations/useCookies';
 
 const app = createApp(App);
 const metaManager = createMetaManager();
-const pinia = createPinia();
-pinia.use(piniaPersistedState); // 使用持久化插件
 // const cookie = useCookies();
 // const locale = cookie.get('locale') || 'zh';
+
+// 全局挂载 $api
+app.config.globalProperties.$api = API
+app.config.globalProperties.$const = META
 
 registerPrimeVue(app);
 app.use(router);
 app.use(metaManager);
 app.use(i18n);
 app.use(pinia);
-
 app.component('MaterialIcon', MaterialIcon)
-
 app.mount("#app");

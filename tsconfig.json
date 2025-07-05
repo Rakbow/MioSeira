@@ -14,8 +14,9 @@
     "paths": {
       "@vitejs/plugin-vue": ["node_modules/@vitejs/plugin-vue"],
       "@/*": ["src/*"]
-    }
+    },
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src", "vite.config.ts", "src/**/*.ts", "src/**/*.vue", "src/global.d.ts"],
+  "include": ["src", "vite.config.ts", "src/**/*.ts", "src/**/*.vue", "src/**/*.d.ts"],
   "exclude": ["node_modules"]
 }

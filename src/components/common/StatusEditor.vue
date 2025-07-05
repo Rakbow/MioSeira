@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/modules/user";
 import {defineProps, onBeforeMount, onMounted, ref} from "vue";
-import {API} from '@/config/Web_Helper_Strs';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import { API, Axios } from '@/api'
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useToast} from 'primevue/usetoast';
@@ -38,8 +37,8 @@ const updateStatus = async () => {
     ids: [entityInfo.value?.id],
     status: !status.value
   };
-  const res = await axios.post(API.ENTITY_UPDATE_STATUS, json);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ENTITY_UPDATE_STATUS, json);
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
   } else {
     toast.add(new PToast().error(res.message));

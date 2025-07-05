@@ -3,7 +3,7 @@
 <!--    <Menubar :model="items">-->
     <Menubar>
       <template #start>
-        <img alt="logo" :src="`${META.STATIC_DOMAIN}common/logo.png`" height="40" class="mr-2" />
+        <img alt="logo" :src="`${$const.STATIC_DOMAIN}common/logo.png`" height="40" class="mr-2" />
       </template>
       <template #end>
         <Avatar v-if="userStore.isAuthenticated" :image="userStore.user.headerUrl" class="mr-2" shape="circle" />
@@ -27,12 +27,12 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineAsyncComponent, onBeforeMount} from "vue";
-import { useDialog } from 'primevue/usedialog';
-import { logout } from '@/logic/login';
-import {useUserStore} from "@/store/user";
+import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
+import {useDialog} from 'primevue/usedialog';
+import {logout} from '@/logic/login';
+import {useUserStore} from "@/store/modules/user";
 import {useI18n} from "vue-i18n";
-import {META} from "@/config/Web_Const";
+
 const {t} = useI18n();
 const Login = defineAsyncComponent(() => import('@/components/common/Login.vue'));
 

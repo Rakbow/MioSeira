@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
 import {useToast} from "primevue/usetoast";
-import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, getCurrentInstance, inject, onBeforeMount, onMounted, ref} from "vue";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
-import {EntityInfo, META} from "@/config/Web_Const";
+import {API, Axios} from "@/api";
+import {EntityInfo} from "@/config/Web_Const";
 import {useRoute} from "vue-router";
 import {getIcon} from 'material-file-icons';
 import {PToast} from "@/logic/frame";
@@ -24,13 +23,14 @@ const FileSelector = defineAsyncComponent(() => import('@/components/selector/Fi
 const displaySelector = ref(false);
 const createType = ref();
 const currentCreateType = ref(0);
+const {proxy} = getCurrentInstance()!;
 
 onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
 })
 
 onMounted(() => {
-  createType.value = META.FILE_CREATE_TYPE_SET[0]
+  createType.value = $const.FILE_CREATE_TYPE_SET[0]
 })
 
 const selectFile = (ev: any) => {
@@ -87,7 +87,7 @@ const submitByUpload = async () => {
   });
   block.value = true;
   const res = await axios.form(API.FILE_UPLOAD, fd);
-  if (res.state === axios.SUCCESS)
+  if (res.success())
     toast.add(new PToast().success(res.message));
   else
     toast.add(new PToast().error(res.message));
@@ -104,8 +104,8 @@ const submitByCould = async () => {
     fileIds: fileInfos.value!.map(f => f.id)
   }
   block.value = true;
-  const res = await axios.post(API.FILE_RELATED_CREATE, param);
-  if (res.state === axios.SUCCESS)
+  const res = await Axios.post(API.FILE_RELATED_CREATE, param);
+  if (res.success())
     toast.add(new PToast().success(res.message));
   isUpdate.value = true;
   close();
@@ -123,7 +123,7 @@ const close = () => {
 
 const switchCreateType = (ev: any) => {
   if (ev.value === null)
-    createType.value = parseInt(META.FILE_CREATE_TYPE_SET[0].value);
+    createType.value = parseInt(proxy.$const.FILE_CREATE_TYPE_SET[0].value);
   currentCreateType.value = parseInt(createType.value.value);
   fileInfos.value = [];
 }
@@ -132,7 +132,7 @@ const switchCreateType = (ev: any) => {
 </script>
 <template>
   <BlockUI :blocked="block">
-    <SelectButton size="small" v-model="createType" :options="META.FILE_CREATE_TYPE_SET"
+    <SelectButton size="small" v-model="createType" :options="$const.FILE_CREATE_TYPE_SET"
                   @change="switchCreateType($event)"
                   optionLabel="value" dataKey="value" ariaLabelledby="custom">
       <template #option="{option}">

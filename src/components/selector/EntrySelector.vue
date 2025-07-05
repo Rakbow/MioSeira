@@ -2,7 +2,7 @@
   <div class="entity-selector">
     <BlockUI :blocked="param.loading">
       <SelectButton v-if="props.all" class="w-full" size="small" v-model="selectEntityType"
-                    :options="META.ENTRY_TYPE_SET" @change="switchEntryType($event)"
+                    :options="$const.ENTRY_TYPE_SET" @change="switchEntryType($event)"
                     optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
         <template #option="{option}">
           <MaterialIcon :name="option.icon" v-tooltip.bottom="{value: t(option!.label), class: 'short-tooltip'}"/>
@@ -34,7 +34,7 @@
             </div>
 
             <div class="related-entity-role">
-              <Button v-if="!entity.isPicked || type === META.ENTRY_TYPE.PERSON" text @click="select(entity)">
+              <Button v-if="!entity.isPicked || type === $const.ENTRY_TYPE.PERSON" text @click="select(entity)">
                 <template #icon>
                   <MaterialIcon name="add_box" />
                 </template>
@@ -77,10 +77,9 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps} from "vue";
-import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
+import {ref, onMounted, defineProps, getCurrentInstance} from "vue";
 import {META} from "@/config/Web_Const";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {useI18n} from "vue-i18n";
 import {EntitySelectorParam} from "@/logic/entityService";
 
@@ -113,7 +112,7 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(['pick']);
-
+const { proxy } = getCurrentInstance();
 const {t} = useI18n();
 const pickedEntries = ref<any[]>([]);
 const dt = ref();
@@ -123,7 +122,7 @@ const param = ref<EntitySelectorParam>(new EntitySelectorParam());
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null)
-    selectEntityType.value = META.ENTRY_TYPE_SET[0];
+    selectEntityType.value = proxy.$const.ENTRY_TYPE_SET[0];
   param.value.type = parseInt(selectEntityType.value.value);
   load();
 }
@@ -153,8 +152,8 @@ const load = async () => {
   param.value.load();
   param.value.handleKeyword();
   param.value.type = props.type;
-  const res = await axios.post(API.ENTRY_SEARCH, param.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ENTRY_SEARCH, param.value);
+  if (res.success()) {
     param.value.loadResult(res.data);
   }
   param.value.data = markPickedEntries();
@@ -174,5 +173,5 @@ const markPickedEntries = () => {
 </script>
 
 <style lang="scss" scoped>
-@use "@/assets/entity-global";
+@use "@/styles/entity-global";
 </style>

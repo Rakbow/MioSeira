@@ -8,6 +8,8 @@
   <footer>
     <PageFooter/>
   </footer>
+
+  <Toast/>
   <DynamicDialog @scroll="handleScroll"/>
   <ConfirmDialog group="templating">
     <template #message="slotProps">
@@ -19,8 +21,8 @@
 
 <script setup lang="ts">
 import {onMounted, onBeforeUnmount, ref} from "vue";
-import PageHeader from "@/components/page/PageHeader.vue";
-import PageFooter from "@/components/page/PageFooter.vue";
+import PageHeader from "@/layouts/PageHeader.vue";
+import PageFooter from "@/layouts/PageFooter.vue";
 import {useDialog} from 'primevue/usedialog';
 
 const dialog = useDialog();

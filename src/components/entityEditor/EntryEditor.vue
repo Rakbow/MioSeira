@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {META} from "@/config/Web_Const";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {useToast} from "primevue/usetoast";
-import {useEntityStore} from "@/logic/entityService";
+import {useOptionStore} from "@/store/modules/option";
 import {PToast} from "@/logic/frame";
+
 const ImageEditor = defineAsyncComponent(() => import('@/components/image/EntryImageEditor.vue'));
 
 const {t} = useI18n();
@@ -17,7 +16,7 @@ const isUpdate = ref(false);
 const block = ref(false);
 const toast = useToast();
 ref([]);
-const store = useEntityStore();
+const store = useOptionStore();
 
 onBeforeMount(() => {
   store.fetchOptions();
@@ -30,8 +29,8 @@ onMounted(() => {
 
 const submit = async () => {
   block.value = true;
-  const res = await axios.post(API.ENTRY_UPDATE, entry.value);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ENTRY_UPDATE, entry.value);
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();
@@ -75,19 +74,19 @@ const close = () => {
       <AutoComplete size="large" v-model="entry.aliases" separator="," multiple :typeahead="false"/>
     </FloatLabel>
 
-    <div class="grid" v-if="entry.type !== META.ENTRY_TYPE.CLASSIFICATION && entry.type !== META.ENTRY_TYPE.MATERIAL">
+    <div class="grid" v-if="entry.type !== $const.ENTRY_TYPE.CLASSIFICATION && entry.type !== $const.ENTRY_TYPE.MATERIAL">
       <FloatLabel variant="on">
         <label>{{ t('Date') }}</label>
         <InputText size="large" v-model="entry.date"/>
       </FloatLabel>
       <FloatLabel variant="on">
-        <template v-if="entry.type === META.ENTRY_TYPE.CHARACTER || entry.type === META.ENTRY_TYPE.PERSON">
+        <template v-if="entry.type === $const.ENTRY_TYPE.CHARACTER || entry.type === $const.ENTRY_TYPE.PERSON">
           <label>{{ t('Gender') }}</label>
           <Select v-model="entry.gender" :options="store.options.genderSet"
                   size="large" optionLabel="label" optionValue="value"/>
 
         </template>
-        <template v-if="entry.type === META.ENTRY_TYPE.PRODUCT">
+        <template v-if="entry.type === $const.ENTRY_TYPE.PRODUCT">
           <label>{{ t('Category') }}</label>
           <Select v-model="entry.type" :options="store.options.entrySubTypeSet" disabled
                   size="large" optionLabel="label" optionValue="value"/>

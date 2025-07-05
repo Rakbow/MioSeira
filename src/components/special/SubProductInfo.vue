@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import {defineAsyncComponent, onBeforeMount, onMounted, ref} from 'vue';
-import {useUserStore} from "@/store/user";
+import {defineAsyncComponent, getCurrentInstance, onBeforeMount, onMounted, ref} from 'vue';
+import {useUserStore} from "@/store/modules/user";
 import {useDialog} from "primevue/usedialog";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {EntityInfo, META} from "@/config/Web_Const";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {EntityInfo} from "@/config/Web_Const";
+import {API, Axios} from "@/api";
 
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 const {t} = useI18n();
@@ -17,6 +16,7 @@ const dialog = useDialog();
 const userStore = useUserStore();
 const subProducts = ref<any>([]);
 const editBlock = ref(false);
+const { proxy } = getCurrentInstance();
 
 onBeforeMount(() => {
   entityInfo.value = PublicHelper.getEntityInfo(route);
@@ -38,7 +38,7 @@ const openEditDialog = () => {
       closable: true
     },
     data: {
-      direction: META.RELATION_RELATED_DIRECTION.NEGATIVE
+      direction: proxy.$const.RELATION_RELATED_DIRECTION.NEGATIVE
     },
     onClose: (options) => {
       if (options.data !== undefined) {
@@ -52,8 +52,8 @@ const openEditDialog = () => {
 
 const getSubProduct = async () => {
   editBlock.value = true;
-  const res = await axios.post(API.ENTRY_GET_SUB_PRODUCTS, {id: entityInfo.value?.id});
-  if (res.state === axios.SUCCESS)
+  const res = await Axios.post(API.ENTRY_GET_SUB_PRODUCTS, {id: entityInfo.value?.id});
+  if (res.success())
     subProducts.value = res.data;
   editBlock.value = false;
 }

@@ -2,14 +2,25 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
+class ApiResult {
+    state: number = 1;
+    data: any = null;
+    total: number = 0;
+    message: string = '';
+
+    success(): boolean {
+        return this.state === Axios.SUCCESS;
+    }
+}
+
 //axios拦截器
 axios.interceptors.response.use(function (res) {
-    if (res.data.state === AxiosHelper.SUCCESS) {
+    if (res.data.state === Axios.SUCCESS) {
         if (res.data.message !== '') {
             console.log(res.data.message);
         }
     }
-    if (res.data.state === AxiosHelper.ERROR) {
+    if (res.data.state === Axios.ERROR) {
         if (res.data.message !== '') {
             console.error(res.data.message);
         }
@@ -18,13 +29,13 @@ axios.interceptors.response.use(function (res) {
 });
 
 //axios封装post请求
-export class AxiosHelper {
+export class Axios {
 
     static SUCCESS = 1;
     static ERROR = 0;
 
     // @ts-ignore
-    static async post(url: string, data: any = null) {
+    static async post(url: string, data: any = null) : Promise<ApiResult> {
         try {
             let res = await axios({
                 method: 'post',
@@ -35,10 +46,9 @@ export class AxiosHelper {
                     'X-Requested-With': 'XMLHttpRequest'
                 },
             });
-            if (res.data.state === this.SUCCESS) {
-                return res.data;
-            }
-            return res.data;
+            const result = new ApiResult()
+            Object.assign(result, res.data)
+            return result
         } catch (error) {
             // console.log(error);
         }

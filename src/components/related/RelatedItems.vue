@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
 import {EntityInfo} from "@/config/Web_Const";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
@@ -33,8 +32,8 @@ const getRelatedItems = async () => {
     sortField: 'releaseDate',
     sortOrder: -1
   }
-  const res = await axios.post(API.ITEM_SEARCH, param);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ITEM_SEARCH, param);
+  if (res.success()) {
     if (res.data.data === null)
       relatedItems.value = [];
     else

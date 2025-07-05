@@ -1,29 +1,28 @@
 <script setup lang="ts">
-import {onBeforeMount, onMounted, ref, watch} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import {getCurrentInstance, onBeforeMount, onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useDialog} from "primevue/usedialog";
-import {META} from "@/config/Web_Const";
-import {API} from '@/config/Web_Helper_Strs';
+import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/logic/itemService";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam, useEntityStore} from '@/logic/entityService';
+import {EntityManageParam} from '@/logic/entityService';
+import {useOptionStore} from "@/store/modules/option";
 import {PColumn} from "@/logic/frame";
 
 const {t} = useI18n();
 const dt = ref();
 const dialog = useDialog();
-const store = useEntityStore();
+const store = useOptionStore();
 const route = useRoute();
 const router = useRouter();
 const param = ref(new EntityManageParam());
-
+const { proxy } = getCurrentInstance();
 const basicColumnCount = ref(0);
 const itemType = ref();
 
 onBeforeMount(async () => {
-  itemType.value = META.ITEM_TYPE_SET[store.itemCurrent === 0 ? 0 : store.itemCurrent - 1];
+  itemType.value = proxy.$const.ITEM_TYPE_SET[store.itemCurrent === 0 ? 0 : store.itemCurrent - 1];
   param.value.initFilters({
     type: {value: store.itemCurrent},
     keyword: {value: ''}
@@ -57,7 +56,7 @@ watch(
 
 const switchItemType = (ev: any) => {
   if (ev.value === null)
-    itemType.value = META.ITEM_TYPE_SET[0];
+    itemType.value = proxy.$const.ITEM_TYPE_SET[0];
   store.itemCurrent = parseInt(itemType.value.value);
   param.value.query.filters.type.value = store.itemCurrent;
   param.value.clearSort();
@@ -126,8 +125,8 @@ const onToggle = (val: PColumn[]) => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await axios.post(API.ITEM_LIST, param.value.query);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ITEM_LIST, param.value.query);
+  if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
   }
@@ -176,7 +175,7 @@ const exportCSV = () => {
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <SelectButton size="small" v-model="itemType" :options="META.ITEM_TYPE_SET" @change="switchItemType($event)"
+        <SelectButton size="small" v-model="itemType" :options="$const.ITEM_TYPE_SET" @change="switchItemType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
           <template #option="{option}">
             <MaterialIcon :name="option!.icon" />
@@ -232,18 +231,18 @@ const exportCSV = () => {
       </Row>
       <Row>
         <Column :header="t('Type')" :sortable="true" field="subType" style="width: 7.5rem"
-                v-if="![META.ITEM_TYPE.ALBUM, META.ITEM_TYPE.DISC].includes(store.itemCurrent)"/>
+                v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(store.itemCurrent)"/>
         <Column :header="t('CatalogId')" :sortable="true" field="catalogId" style="width: 11rem"
-                v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
+                v-if="![$const.ITEM_TYPE.BOOK, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
         <Column :header="t('Barcode')" :sortable="true" field="barcode" style="width: 9rem"/>
         <Column :header="t('ReleaseDate')" :sortable="true" field="releaseDate" style="width: 7.5rem"/>
         <Column :header="t('Price')" :sortable="true" field="price" style="width: 8rem"/>
         <Column :header="t('Region')" :sortable="true" field="region" style="width: 5rem"/>
         <Column :header="t('ReleaseType')" :sortable="true" field="releaseType" style="width: 7rem"/>
         <Column :header="t('Bonus')" :sortable="true" field="bonus" style="width: 5rem"
-                v-if="![META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
+                v-if="![$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
         <Column :header="t('Scale')" :sortable="true" field="scale" style="width: 5rem"
-                v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
+                v-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
         <Column :header="t('Image')" style="width: 3.5rem"/>
         <Column :header="t('File')" style="width: 3.5rem"/>
       </Row>
@@ -273,12 +272,12 @@ const exportCSV = () => {
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column v-if="![META.ITEM_TYPE.ALBUM, META.ITEM_TYPE.DISC].includes(store.itemCurrent)" bodyClass="text-center" :bodyStyle="{padding: 0}">
+    <Column v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(store.itemCurrent)" bodyClass="text-center" :bodyStyle="{padding: 0}">
       <template #body="{data}">
         <Tag :value="data.subType.label"/>
       </template>
     </Column>
-    <Column field="catalogId" v-if="![META.ITEM_TYPE.BOOK, META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
+    <Column field="catalogId" v-if="![$const.ITEM_TYPE.BOOK, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
     <Column field="barcode"/>
     <Column field="releaseDate"/>
     <Column field="price">
@@ -297,12 +296,12 @@ const exportCSV = () => {
       </template>
     </Column>
     <Column dataType="boolean" bodyClass="text-center"
-            v-if="![META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)">
+            v-if="![$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)">
       <template #body="{data}">
         <i class="pi pi-check-circle" v-if="data.bonus"/>
       </template>
     </Column>
-    <Column field="scale" v-if="[META.ITEM_TYPE.GOODS, META.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
+    <Column field="scale" v-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
     <Column field="imageCount" class="text-center"/>
     <Column field="fileCount" class="text-center"/>
     <Column v-for="(col, index) of param.selectedColumns" :field="col.field"

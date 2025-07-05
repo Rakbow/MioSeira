@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import {inject, onBeforeMount, onMounted, ref} from "vue";
+import {inject, onBeforeMount, ref} from "vue";
 import {useToast} from "primevue/usetoast";
 import {useDialog} from "primevue/usedialog";
 import {useRoute} from "vue-router";
-import {EntityInfo, META} from '@/config/Web_Const.ts';
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import {EntityInfo} from '@/config/Web_Const.ts';
 import {useI18n} from "vue-i18n";
-import {AlbumTrack, AlbumDisc, parseAlbumTracks} from "@/logic/itemService";
+import {AlbumTrack, parseAlbumTracks} from "@/logic/itemService";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 
 const entityInfo = ref<EntityInfo>();
 const {t} = useI18n();
@@ -42,11 +41,11 @@ const close = () => {
 
 const submit = async () => {
   editBlock.value = true;
-  const res = await axios.post(API.ALBUM_TRACK_QUICK_CREATE, {
+  const res = await Axios.post(API.ALBUM_TRACK_QUICK_CREATE, {
     id: entityInfo.value?.id,
     tracks: tracks.value
   });
-  if (res.state === axios.SUCCESS) {
+  if (res.success()) {
     toast.add(new PToast().success(res.message));
     isUpdate.value = true;
     close();

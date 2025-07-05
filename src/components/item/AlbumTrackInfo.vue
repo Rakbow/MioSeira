@@ -126,9 +126,8 @@
 import {computed, defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {useDialog} from "primevue/usedialog";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {useI18n} from "vue-i18n";
-import {API} from "@/config/Web_Helper_Strs";
+import {API, Axios} from "@/api";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useToast} from "primevue/usetoast";
 
@@ -157,8 +156,8 @@ const info = ref({
 const reloadTrackInfo = async () => {
   editBlock.value = true;
   loading.value = true;
-  const res = await axios.post(API.ALBUM_TRACK_LIST, {id: route.params.id});
-  if (res.state === axios.SUCCESS)
+  const res = await Axios.post(API.ALBUM_TRACK_LIST, {id: route.params.id});
+  if (res.success())
     info.value = res.data;
   editBlock.value = false;
   loading.value = false;
@@ -224,7 +223,7 @@ const uploadAudioFile = async () => {
   fileInfos.value.forEach(f => fd.append('files', f.file));
   editBlock.value = true;
   const res = await axios.form(API.ALBUM_TRACK_FILES_UPLOAD, fd);
-  if (res.state === axios.SUCCESS)
+  if (res.success())
     toast.add(new PToast().success(res.message));
   audioUploadDisplay.value = false;
   fileInfos.value = [];
@@ -233,7 +232,7 @@ const uploadAudioFile = async () => {
 </script>
 
 <style lang="scss" scoped>
-@use '@/assets/general' as g;
+@use '@/styles/general' as g;
 
 .album-track {
   position: relative !important;

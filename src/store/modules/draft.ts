@@ -1,13 +1,13 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import {useLocalStorage, useStorage} from "@vueuse/core";
 import {RelatedEntry} from "@/config/Web_Const";
 
-interface ItemRelatedDraft {
+interface ItemCreateRelatedDraft {
     relatedEntry: RelatedEntry | null
 }
 
 export const useDraftStore = defineStore('draft', {
-    state: ():ItemRelatedDraft => ({
+    state: (): ItemCreateRelatedDraft => ({
         relatedEntry: useLocalStorage('relatedEntry', null).value
     }),
     actions: {

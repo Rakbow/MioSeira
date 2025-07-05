@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {defineProps, onBeforeMount, ref} from "vue";
-import {META} from "@/config/Web_Const";
-import {ImageDTO, useEntityStore} from "@/logic/entityService";
+import {useOptionStore} from "@/store/modules/option";
 import {useI18n} from "vue-i18n";
 
 const {t} = useI18n();
 const emit = defineEmits(['update:images', 'update:generateThumb']);
-const store = useEntityStore();
+const store = useOptionStore();
 const images = ref<ImageDTO[]>([]);
 const generateThumb = ref(false);
 const dt = ref();
@@ -39,12 +38,15 @@ const selectFile = async (ev: any) => {
   if (!ev.files as File[]) return;
   let files = ev.files.filter(f => !images.value.some(i => i.file.objectURL === f.objectURL))
   for (let file: File of files) {
-    let image = new ImageDTO();
-    image.name = file.name.replace(/\.[^/.]+$/, '');
-    image.type = store.options.imageTypeSet[image.name === 'Cover' ? 2 : 0].value;
-    image.size = PublicHelper.formatSize(file.size);
-    image.file = file;
-    image.objectURL = file.objectURL;
+
+    let image: ImageDTO = {
+      name: file.name.replace(/\.[^/.]+$/, ''),
+      type: store.options.imageTypeSet[this.name === 'Cover' ? 2 : 0].value,
+      size: PublicHelper.formatSize(file.size),
+      detail: '',
+      file: file,
+      objectURL: file.objectURL
+    }
     images.value.push(image)
   }
   emit('update:images', images.value);
@@ -160,5 +162,5 @@ const changeGenerateThumb = () => {
 </template>
 
 <style scoped lang="scss">
-@use "@/assets/entity-global";
+@use "@/styles/entity-global";
 </style>

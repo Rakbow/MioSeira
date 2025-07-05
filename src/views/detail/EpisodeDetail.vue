@@ -1,5 +1,4 @@
 <template>
-  <Toast/>
   <div class="flex flex-wrap justify-content-center gap-3">
     <div class="entity-detail-main-col">
       <div class="entity-detail-header-title">
@@ -17,7 +16,7 @@
             <EpisodeInfo :entity="episode"/>
             <div v-if="userStore.user && userStore.user.type > 1">
               <Button class="p-button-link" icon="pi pi-pen-to-square"
-                      @click="loadEditor(META.ENTITY.EPISODE, episode, dialog)"
+                      @click="loadEditor($const.ENTITY.EPISODE, episode, dialog)"
                       v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}"/>
               <Like :likeCount="episode.traffic.likeCount" :liked="episode.traffic.liked" />
 
@@ -26,7 +25,7 @@
         </div>
         <div class="col py-0">
           <DetailPad :text="episode.detail"/>
-          <RelatedFiles :type="META.ENTITY.EPISODE" :id="episode.id" />
+          <RelatedFiles :type="$const.ENTITY.EPISODE" :id="episode.id" />
         </div>
       </div>
     </div>
@@ -38,27 +37,26 @@
 </template>
 
 <script setup lang="ts">
-import '@/assets/entity-detail.scss';
-import "@/assets/entity-global.scss";
-import "@/assets/entry-detail.scss";
-import '@/assets/bootstrap/myBootstrap.min.css';
+import '@/styles/entity-detail.scss';
+import "@/styles/entity-global.scss";
+import "@/styles/entry-detail.scss";
+import '@/styles/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
 import {useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/modules/user";
 import {useDialog} from "primevue/usedialog";
 import TrafficInfo from "@/components/common/PageTraffic.vue";
 import DetailPad from "@/components/common/DetailPad.vue";
 import {loadEditor} from "@/logic/entryService";
 import {useI18n} from "vue-i18n";
 import {defineAsyncComponent, onBeforeMount, ref} from "vue";
-import {META} from "@/config/Web_Const";
 import Like from "@/components/common/EntityLike.vue";
+import RelatedFiles from "@/components/related/RelatedFiles.vue";
 
 const {t} = useI18n();
 
-import RelatedFiles from "@/components/related/RelatedFiles.vue";
 const EpisodeInfo = defineAsyncComponent(() => import('@/views/detail/info/EpisodeDetailInfo.vue'));
 const RelatedEpisodes = defineAsyncComponent(() => import('@/components/related/RelatedEpisodes.vue'));
 

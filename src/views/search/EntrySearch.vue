@@ -1,26 +1,25 @@
 <script setup lang="ts">
 import "@/assets/entity-global.scss";
-import "@/assets/entity-search.scss";
-import '@/assets/bootstrap/myBootstrap.min.css';
+import "@/styles/entity-search.scss";
+import '@/styles/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 import "flag-icons/css/flag-icons.min.css";
 
-import {API} from "@/config/Web_Helper_Strs";
-import {onBeforeMount, onMounted, ref} from "vue";
+import {API, Axios} from "@/api";
+import {getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
 import {LocationQueryValue, useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {useToast} from "primevue/usetoast";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {useEntityStore} from "@/logic/entityService";
+import {useOptionStore} from "@/store/modules/option";
 import {EntryQueryParams} from "@/logic/entryService";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {META} from "@/config/Web_Const";
 
 const {t} = useI18n();
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
-const store = useEntityStore();
+const store = useOptionStore();
+const { proxy } = getCurrentInstance();
 
 //region data view and paginator
 const first = ref(0);
@@ -69,7 +68,7 @@ const initQueryParam = async () => {
   }
 
   if (queryParams.type) {
-    entryType.value = META.ENTRY_TYPE_SET.find(i => i.value === queryParams.type?.toString())
+    entryType.value = proxy.$const.ENTRY_TYPE_SET.find(i => i.value === queryParams.type?.toString())
   }
   // queryParams.size = getNumberValue(route.query.size, 60);
 }
@@ -111,8 +110,8 @@ const getEntries = async () => {
   queryParams.keywords = PublicHelper.splitAndTrim(queryParams.keyword);
   updateQueryParam();
   loading.value = true;
-  const res = await axios.post(API.ENTRY_SEARCH, queryParams);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ENTRY_SEARCH, queryParams);
+  if (res.success()) {
     if (res.data.data === null)
       searchResult.value.data = [];
     else
@@ -148,7 +147,6 @@ const resetFilter = () => {
 </script>
 
 <template>
-  <Toast/>
   <div class="flex flex-wrap justify-content-center gap-3">
     <div class="entity-search-main-col">
       <DataView :value="searchResult.data" :layout="layout">
@@ -184,9 +182,9 @@ const resetFilter = () => {
                 <span v-if="entry.date" style="display: inline">&nbsp;({{ entry.date }})</span>
               </div>
               <div class="flex align-items-center justify-content-center" style="width: 100px">
-                <span class="small-font" style="color:gray;">{{ t(META.ENTRY_TYPE_SET[entry.type-1].label) }}</span>
+                <span class="small-font" style="color:gray;">{{ t($const.ENTRY_TYPE_SET[entry.type-1].label) }}</span>
                 <Tag class="ml-2">
-                  <MaterialIcon :name="META.ENTRY_TYPE_SET[entry.type-1].icon" size="2" />
+                  <MaterialIcon :name="$const.ENTRY_TYPE_SET[entry.type-1].icon" size="2" />
                 </Tag>
               </div>
             </div>
@@ -213,7 +211,7 @@ const resetFilter = () => {
         <BlockUI :blocked="loading">
           <div class="field">
             <SelectButton class="w-full justify justify-content-center" size="small" v-model="entryType"
-                          :options="META.ENTRY_TYPE_SET"
+                          :options="$const.ENTRY_TYPE_SET"
                           @change="switchItemType"
                           optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
               <template #option="{option}">

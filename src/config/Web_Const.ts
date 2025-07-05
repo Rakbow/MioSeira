@@ -110,17 +110,87 @@ export const META = {
         1: 'entry'
     },
     RELATION_CONFIG: [
-        {key: [0, 1], type: 1, subTypeSets: [[1]]},
-        {key: [0, 2], type: 1, subTypeSets: [[1]]},
-        {key: [0, 3], type: 1, subTypeSets: [[1]]},
-        {key: [0, 5], type: 1, subTypeSets: [[1], [3]]},
-        {key: [0, 6], type: 1, subTypeSets: [[1], [3]]},
-        {key: [1, 1], type: 1, subTypeSets: [[1], [3], [4, 5, 6]]},
-        {key: [1, 2], type: 1, subTypeSets: [[1], [3], [4, 5, 6]]},
-        {key: [1, 3], type: 1, subTypeSets: [[1], [3], [4, 5, 6]]},
-        {key: [1, 4], type: 1, subTypeSets: [[]]},
-        {key: [1, 5], type: 1, subTypeSets: [[]]},
-        {key: [1, 6], type: 1, subTypeSets: [[]]}
+        {
+            key: [0, 1], type: 1, subConfigs: [
+                {
+                    label: 'RelatedProduct',
+                    value: [1]
+                }
+            ]
+        },
+        {
+            key: [0, 2], type: 1, subConfigs: [
+                {
+                    label: 'RelatedProduct',
+                    value: [1]
+                }
+            ]
+        },
+        {
+            key: [0, 3], type: 1, subConfigs: [
+                {
+                    label: 'RelatedProduct',
+                    value: [1]
+                }
+            ]
+        },
+        {
+            key: [0, 5], type: 1, subConfigs: [{
+                label: 'RelatedProduct',
+                value: [1]
+            }, {
+                label: 'RelatedCharacter',
+                value: [3]
+            }]
+        },
+        {
+            key: [0, 6], type: 1, subConfigs: [{
+                label: 'RelatedProduct',
+                value: [1]
+            }, {
+                label: 'RelatedCharacter',
+                value: [3]
+            }]
+        },
+        {
+            key: [1, 1], type: 1, subConfigs: [{
+                label: 'RelatedProduct',
+                value: [1]
+            }, {
+                label: 'RelatedCharacter',
+                value: [3]
+            }, {
+                label: 'RelatedEntry',
+                value: [4, 5, 6]
+            }]
+        },
+        {
+            key: [1, 2], type: 1, subConfigs: [{
+                label: 'RelatedProduct',
+                value: [1]
+            }, {
+                label: 'RelatedCharacter',
+                value: [3]
+            }, {
+                label: 'RelatedEntry',
+                value: [4, 5, 6]
+            }]
+        },
+        {
+            key: [1, 3], type: 1, subConfigs: [{
+                label: 'RelatedProduct',
+                value: [1]
+            }, {
+                label: 'RelatedCharacter',
+                value: [3]
+            }, {
+                label: 'RelatedEntry',
+                value: [4, 5, 6]
+            }]
+        },
+        {key: [1, 4], type: 1, subConfigs: []},
+        {key: [1, 5], type: 1, subConfigs: []},
+        {key: [1, 6], type: 1, subConfigs: []}
     ]
 }
 

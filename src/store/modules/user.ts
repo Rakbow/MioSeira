@@ -1,25 +1,13 @@
 import { defineStore } from 'pinia';
 import { useLocalStorage, useStorage } from '@vueuse/core';
 
-interface User {
-    id: string;
-    name: string;
-    type: number;
-    headerUrl: string;
-}
-
-interface State {
-    user: User | null;
-    ticket: string | null;
-}
-
 export const useUserStore = defineStore('user', {
-    state: (): State => ({
+    state: (): UserState => ({
         user: JSON.parse(useLocalStorage('user', 'null').value) as User | null,
         ticket: useLocalStorage('ticket', 'null').value
     }),
     getters: {
-        isAuthenticated(state: State): boolean {
+        isAuthenticated(state: UserState): boolean {
             return state.user !== null;
         }
     },

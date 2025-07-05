@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import {onBeforeMount, onMounted, ref} from "vue";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
+import {getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useDialog} from "primevue/usedialog";
-import {META} from "@/config/Web_Const";
-import {API} from '@/config/Web_Helper_Strs';
+import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/logic/entryService";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam, useEntityStore} from '@/logic/entityService';
+import {EntityManageParam} from '@/logic/entityService';
+import {useOptionStore} from "@/store/modules/option";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {PColumn} from "@/logic/frame";
 
 const dt = ref();
 const {t} = useI18n();
 const dialog = useDialog();
-const store = useEntityStore();
+const store = useOptionStore();
 const route = useRoute();
 const router = useRouter();
 const param = ref(new EntityManageParam());
 const entryType = ref();
+const { proxy } = getCurrentInstance();
 
 onBeforeMount(async () => {
-  entryType.value = META.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
+  entryType.value = proxy.$const.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
   param.value.initFilters({
     type: {value: store.entryCurrent},
     keyword: {value: ''}
@@ -41,7 +41,7 @@ onMounted(() => {
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null)
-    entryType.value = META.ENTRY_TYPE_SET[0];
+    entryType.value = proxy.$const.ENTRY_TYPE_SET[0];
   store.entryCurrent = parseInt(entryType.value.value);
   param.value.query.filters.type.value = store.entryCurrent;
   param.value.clearSort();
@@ -110,8 +110,8 @@ const onToggle = (val: PColumn[]) => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await axios.post(API.ENTRY_GET_LIST, param.value.query);
-  if (res.state === axios.SUCCESS) {
+  const res = await Axios.post(API.ENTRY_GET_LIST, param.value.query);
+  if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
   }
@@ -156,7 +156,7 @@ const exportCSV = () => {
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <SelectButton size="small" v-model="entryType" :options="META.ENTRY_TYPE_SET"
+        <SelectButton size="small" v-model="entryType" :options="$const.ENTRY_TYPE_SET"
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
           <template #option="{option}">
@@ -233,19 +233,19 @@ const exportCSV = () => {
       </template>
     </Column>
     <Column :header="t('Date')" :sortable="true" field="date"
-            v-if="![META.ENTRY_TYPE.CLASSIFICATION, META.ENTRY_TYPE.MATERIAL].includes(store.entryCurrent)"
+            v-if="![$const.ENTRY_TYPE.CLASSIFICATION, $const.ENTRY_TYPE.MATERIAL].includes(store.entryCurrent)"
             :style="`width: ${
-              [META.ENTRY_TYPE.PRODUCT, META.ENTRY_TYPE.PERSON].includes(store.entryCurrent) ? '7.5' :
-              store.entryCurrent === META.ENTRY_TYPE.CHARACTER ? '15' : '16'
+              [$const.ENTRY_TYPE.PRODUCT, $const.ENTRY_TYPE.PERSON].includes(store.entryCurrent) ? '7.5' :
+              store.entryCurrent === $const.ENTRY_TYPE.CHARACTER ? '15' : '16'
             }rem`"/>
     <Column :header="t('Type')" :sortable="true" field="subType"
-            v-if="store.entryCurrent === META.ENTRY_TYPE.PRODUCT" style="width: 6rem" class="text-center">
+            v-if="store.entryCurrent === $const.ENTRY_TYPE.PRODUCT" style="width: 6rem" class="text-center">
       <template #body="{data}">
         <Tag v-if="data.subType.value" :value="data.subType.label"/>
       </template>
     </Column>
     <Column :header="t('Gender')" :sortable="true" field="gender" class="text-center"
-            v-if="[META.ENTRY_TYPE.PERSON, META.ENTRY_TYPE.CHARACTER].includes(store.entryCurrent)" style="width: 5rem">
+            v-if="[$const.ENTRY_TYPE.PERSON, $const.ENTRY_TYPE.CHARACTER].includes(store.entryCurrent)" style="width: 5rem">
       <template #body="{data}">
         <i style="font-size: 1.4rem" :class="PublicHelper.getGenderIcon(data.gender.value)" />
       </template>

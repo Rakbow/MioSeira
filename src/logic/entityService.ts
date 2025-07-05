@@ -2,34 +2,14 @@ import {DynamicDialogInstance, DynamicDialogOptions} from "primevue/dynamicdialo
 import fileEditor from "@/components/entityEditor/FileEditor.vue";
 import {META} from "@/config/Web_Const";
 import i18n from "@/config/i18n";
-import {defineStore} from "pinia";
-import {useI18n} from "vue-i18n";
-import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
-import {API} from "@/config/Web_Helper_Strs";
-import {i18nConst} from "@/config/i18nConst";
 import {PColumn} from "@/logic/frame";
 import {PublicHelper} from "@/toolkit/publicHelper";
 
 const {t} = i18n.global;
 let editor: any = null;
 
-export interface RelationConfig {
-    key: number[];
-    type: number;
-    subTypeSets: number[][];
-}
-
 export const findRelationConfig = (key: [number, number]): RelationConfig | undefined => {
     return META.RELATION_CONFIG.find(cfg => cfg.key[0] === key[0] && cfg.key[1] === key[1]);
-}
-
-export class ImageDTO {
-    type: number = 0;
-    name: string = "";
-    detail: string = "";
-    size: string = "";
-    file: File | null = null;
-    objectURL: string = "";
 }
 
 export class FileInfoCreateDTO {
@@ -56,26 +36,26 @@ export class EntitySelectorParam {
     total: number = 0;
     time: string = "";
 
-    loadResult: void = (searchResult: any) => {
+    loadResult = (searchResult: any): void => {
         this.data = searchResult.data;
         this.total = searchResult.total;
         this.time = searchResult.searchTime;
     }
 
-    initPage: void = () => {
+    initPage = (): void => {
         this.page = 1;
         this.first = 0;
     }
 
-    initFirst: void = () => {
+    initFirst = (): void => {
         this.first = (this.page - 1) * this.size;
     }
 
-    handleKeyword: void = () => {
+    handleKeyword = (): void => {
         this.keywords = PublicHelper.splitAndTrim(this.keyword);
     }
 
-    load(): void {
+    load = (): void => {
         this.loading = true;
     }
 
@@ -153,7 +133,7 @@ export const loadEditor = (type: number, data: any, dialog: {
     open: (content: any, options?: (DynamicDialogOptions | undefined)) => DynamicDialogInstance
 }) => {
 
-    if(type === META.ENTITY.FILE) editor = fileEditor;
+    if (type === META.ENTITY.FILE) editor = fileEditor;
 
     dialog.open(editor, {
         props: {
@@ -178,39 +158,3 @@ export const loadEditor = (type: number, data: any, dialog: {
         }
     });
 }
-
-export const useEntityStore = defineStore('options', {
-    state: () => ({
-        options: {} as Record<string, any>, // 全局缓存的选项数据
-        itemCurrent: 1,
-        entryCurrent: 1,
-    }),
-    actions: {
-        async fetchOptions() {
-            if (Object.keys(this.options).length === 0) {
-                console.log('Fetching options...');
-                const {locale} = useI18n();
-                this.$reset();
-
-                const res = await axios.get(API.ENTITY_GET_OPTION);
-                this.options = res.data;
-
-                this.itemCurrent = META.ITEM_TYPE.ALBUM;
-                this.entryCurrent = META.ENTRY_TYPE.PRODUCT;
-
-                this.options.genderSet = i18nConst.genderSet[locale.value];
-                this.options.imageTypeSet = i18nConst.imageTypeSet![locale.value];
-                this.options.bookTypeSet = i18nConst.bookTypeSet![locale.value];
-                this.options.goodsTypeSet = i18nConst.goodsTypeSet![locale.value];
-                this.options.figureTypeSet = i18nConst.figureTypeSet![locale.value];
-                this.options.releaseTypeSet = i18nConst.releaseTypeSet![locale.value];
-                this.options.entrySubTypeSet = i18nConst.entrySubTypeSet![locale.value];
-                this.options.languageSet = i18nConst.languageSet![locale.value];
-            }
-        },
-        clear() {
-            this.options = {};
-        }
-    },
-    persist: true, // 开启持久化
-});

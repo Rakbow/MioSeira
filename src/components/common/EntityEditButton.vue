@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useUserStore} from "@/store/user";
+import {useUserStore} from "@/store/modules/user";
 import {defineProps} from "vue";
 import {useI18n} from "vue-i18n";
 
