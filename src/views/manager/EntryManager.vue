@@ -8,7 +8,6 @@ import {API} from '@/config/Web_Helper_Strs';
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/logic/entryService";
 import "flag-icons/css/flag-icons.min.css";
-import 'material-icons'
 import {EntityManageParam, useEntityStore} from '@/logic/entityService';
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {PColumn} from "@/logic/frame";
@@ -144,38 +143,36 @@ const exportCSV = () => {
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
              currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll">
     <template #paginatorfirstpagelinkicon>
-      <span class="material-symbols-outlined">first_page</span>
+      <MaterialIcon name="first_page" />
     </template>
     <template #paginatorprevpagelinkicon>
-      <span class="material-symbols-outlined">chevron_left</span>
+      <MaterialIcon name="chevron_left" />
     </template>
     <template #paginatornextpagelinkicon>
-      <span class="material-symbols-outlined">chevron_right</span>
+      <MaterialIcon name="chevron_right" />
     </template>
     <template #paginatorlastpagelinkicon>
-      <span class="material-symbols-outlined">last_page</span>
+      <MaterialIcon name="last_page" />
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
         <SelectButton size="small" v-model="entryType" :options="META.ENTRY_TYPE_SET"
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
-          <template #option="slotProps">
-            <span class="material-symbols-outlined" :title="t(slotProps.option.label)">
-            {{ slotProps.option.icon }}
-          </span>
+          <template #option="{option}">
+            <MaterialIcon :name="option.icon" :title="t(option.label)"/>
           </template>
         </SelectButton>
         <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
                 outlined @click="confirmDeleteSelected">
           <template #icon>
-            <span class="material-symbols-outlined">delete_forever</span>
+            <MaterialIcon name="delete_forever" />
           </template>
         </Button>
         <Button variant="text" severity="help" :disabled="param.data.length"
                 outlined @click="exportCSV">
           <template #icon>
-            <span class="material-symbols-outlined">file_export</span>
+            <MaterialIcon name="file_export" />
           </template>
         </Button>
         <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
@@ -196,7 +193,7 @@ const exportCSV = () => {
       <template #body="{data}">
         <Button variant="text" outlined size="small" @click="loadEditor(data, dialog)">
           <template #icon>
-            <span class="material-symbols-outlined">edit_square</span>
+            <MaterialIcon name="edit_square" />
           </template>
         </Button>
       </template>

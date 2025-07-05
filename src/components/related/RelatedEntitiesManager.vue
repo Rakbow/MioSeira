@@ -212,23 +212,20 @@ const load = async () => {
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
           <template #option="{option}">
-            <span class="material-symbols-outlined" style="font-size: 2rem"
-                  v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}">
-              {{ option!.icon }}
-            </span>
+            <MaterialIcon :name="option!.icon" size="2" v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}"/>
           </template>
         </SelectButton>
 
         <Button size="small" variant="text" outlined @click="openCreate" :disabled="param.blocking">
           <template #icon>
-            <span class="material-symbols-outlined">add_box</span>
+            <MaterialIcon name="add_box" />
           </template>
         </Button>
         <Button variant="text" severity="danger"
                 :disabled="!param.selectedData || !param.selectedData.length || param.blocking"
                 outlined @click="openDelete">
           <template #icon>
-            <span class="material-symbols-outlined">delete_forever</span>
+            <MaterialIcon name="delete_forever" />
           </template>
         </Button>
       </template>
@@ -246,7 +243,7 @@ const load = async () => {
         <template #body="{data}">
           <Button variant="text" outlined size="small" @click="openUpdate(data)" style="padding: 0">
             <template #icon>
-              <span style="font-size: 1.5rem" class="material-symbols-outlined">edit_square</span>
+              <MaterialIcon size="1.5" name="edit_square" />
             </template>
           </Button>
         </template>
@@ -286,13 +283,13 @@ const load = async () => {
         <template #header>
           <Button variant="text" outlined @click="openEntrySelector">
             <template #icon>
-              <span class="material-symbols-outlined">add_box</span>
+              <MaterialIcon name="add_box" />
             </template>
           </Button>
           <Button v-if="createdDTO.entities.length" variant="text" severity="danger"
                   outlined @click="clearRelatedEntry">
             <template #icon>
-              <span class="material-symbols-outlined">delete_forever</span>
+              <MaterialIcon name="delete_forever" />
             </template>
           </Button>
         </template>

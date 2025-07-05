@@ -16,13 +16,13 @@
         <BlockUI :blocked="editBlock" class="grid">
           <Button variant="text" outlined @click="openAddDialog">
             <template #icon>
-              <span class="material-symbols-outlined">add_box</span>
+              <MaterialIcon name="add_box"/>
             </template>
           </Button>
           <Button variant="text" severity="danger" :disabled="!selectedItems.length"
                   outlined @click="confirmDeleteSelected">
             <template #icon>
-              <span class="material-symbols-outlined">delete_forever</span>
+              <MaterialIcon name="delete_forever"/>
             </template>
           </Button>
         </BlockUI>
@@ -41,7 +41,7 @@
         <template #body="{data}">
           <Button variant="text" outlined size="small" @click="openEditDialog(data)">
             <template #icon>
-              <span style="font-size: 15px" class="material-symbols-outlined">edit_square</span>
+              <MaterialIcon name="edit_square" size="1.5"/>
             </template>
           </Button>
         </template>

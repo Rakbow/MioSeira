@@ -144,7 +144,7 @@ const load = async () => {
     <template #icons>
       <Button v-if="userStore.user && userStore.user.type > 1" text
               @click="openManager" v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
-        <span class="material-symbols-outlined">edit_square</span>
+        <MaterialIcon name="edit_square"/>
       </Button>
       <Button severity="success" outlined @click="openBrowser" :disabled="!relatedEntities"
               v-tooltip.bottom="{value: t('ViewAll'), class: 'common-tooltip', disabled: !relatedEntities}">

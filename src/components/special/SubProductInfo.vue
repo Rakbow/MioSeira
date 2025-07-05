@@ -73,7 +73,7 @@ const getSubProduct = async () => {
                   @click="openEditDialog" style="right: 0"
                   v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
             <template #icon>
-              <span class="material-symbols-outlined">edit_note</span>
+              <MaterialIcon name="edit_note" />
             </template>
           </Button>
         </div>

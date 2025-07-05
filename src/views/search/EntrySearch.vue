@@ -186,9 +186,7 @@ const resetFilter = () => {
               <div class="flex align-items-center justify-content-center" style="width: 100px">
                 <span class="small-font" style="color:gray;">{{ t(META.ENTRY_TYPE_SET[entry.type-1].label) }}</span>
                 <Tag class="ml-2">
-                  <span class="material-symbols-outlined" style="font-size: 20px">
-                    {{ META.ENTRY_TYPE_SET[entry.type-1].icon }}
-                  </span>
+                  <MaterialIcon :name="META.ENTRY_TYPE_SET[entry.type-1].icon" size="2" />
                 </Tag>
               </div>
             </div>
@@ -217,12 +215,9 @@ const resetFilter = () => {
             <SelectButton class="w-full justify justify-content-center" size="small" v-model="entryType"
                           :options="META.ENTRY_TYPE_SET"
                           @change="switchItemType"
-                          optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
-              <template #option="slotProps">
-                <span class="material-symbols-outlined"
-                      v-tooltip.bottom="{value: t(slotProps.option.label), class: 'short-tooltip'}">
-                  {{ slotProps.option.icon }}
-                </span>
+                          optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+              <template #option="{option}">
+                <MaterialIcon :name="option.icon" v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}" />
               </template>
             </SelectButton>
           </div>

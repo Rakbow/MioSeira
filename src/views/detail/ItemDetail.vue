@@ -17,7 +17,7 @@
                   @click="loadEditor(item, dialog)" style="right: 8%"
                   v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}" >
             <template #icon>
-              <span class="material-symbols-outlined">edit_note</span>
+              <MaterialIcon name="edit_note" />
             </template>
           </Button>
           <ItemInfo :item="item" />

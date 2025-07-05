@@ -23,6 +23,10 @@ import 'material-symbols';
 import i18n from '@/config/i18n';// vue-i18n
 import {registerPrimeVue} from '@/config/primeVueConfig';
 
+//region global
+import MaterialIcon from '@/components/icons/MaterialIcon.vue'
+//endregion
+
 // import {useCookies} from '@vueuse/integrations/useCookies';
 
 const app = createApp(App);
@@ -37,5 +41,7 @@ app.use(router);
 app.use(metaManager);
 app.use(i18n);
 app.use(pinia);
+
+app.component('MaterialIcon', MaterialIcon)
 
 app.mount("#app");

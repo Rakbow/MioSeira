@@ -10,14 +10,14 @@
                 @click="openTextTingle" style="right: 4%" icon="pi pi-external-link"
                 v-tooltip.bottom="{value: t('FullScreen'), class: 'short-tooltip'}">
           <template #icon>
-            <span style="font-size: 2.4rem" class="material-symbols-outlined">arrows_output</span>
+            <MaterialIcon name="arrows_output" />
           </template>
         </Button>
         <Button v-if="userStore.user && userStore.user.type > 1" class="p-button-link absolute top-0"
                 @click="openEditDialog" style="right: 0"
                 v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
           <template #icon>
-            <span style="font-size: 2.4rem" class="material-symbols-outlined">edit_square</span>
+            <MaterialIcon name="edit_square" />
           </template>
         </Button>
         <article style="width: 90%;font-size: 1.2rem" ref="html" class="entity-detail-markdown"/>
@@ -41,7 +41,7 @@ import 'md-editor-v3/lib/style.css';
 import {useDialog} from 'primevue/usedialog';
 import {useI18n} from "vue-i18n";
 
-const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/CommonTextEditor.vue'));
+const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/DetailEditor.vue'));
 const {t} = useI18n();
 const editBlock = ref(false);
 const empty = ref(false);

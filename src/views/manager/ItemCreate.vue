@@ -197,8 +197,8 @@ const handleTracks = () => {
               <SelectButton v-model="itemType" :options="META.ITEM_TYPE_SET"
                             @change="switchItemType"
                             optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
-                <template #option="slotProps">
-                  <span class="material-symbols-outlined">{{ slotProps.option.icon }}</span>
+                <template #option="{option}">
+                  <MaterialIcon :name="option.icon" />
                 </template>
               </SelectButton>
             </div>
@@ -357,7 +357,7 @@ const handleTracks = () => {
             <template #icons>
               <Button class="p-button-link" @click="openAlbumTrackQuickCreatorDialog">
                 <template #icon>
-                  <span class="material-symbols-outlined" style="font-size: 2rem">music_note_add</span>
+                  <MaterialIcon name="music_note_add" size="2" />
                 </template>
               </Button>
             </template>
@@ -423,7 +423,7 @@ const handleTracks = () => {
                                 :type="META.ENTRY_TYPE.CLASSIFICATION"/>
           <div v-if="dto.item.type === META.ITEM_TYPE.GOODS || dto.item.type === META.ITEM_TYPE.FIGURE">
             <Divider class="mb-0" align="left">
-              <span style="font-size: 1rem" class="material-symbols-outlined">diamond</span>
+              <MaterialIcon name="diamond" size="1" />
               <b class="ml-1">{{ t('Material') }}</b>
             </Divider>
             <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.materials"

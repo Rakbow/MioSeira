@@ -26,12 +26,12 @@
             <div class="related-entity-role">
               <Button v-if="!entity.isPicked" text @click="select(entity)">
                 <template #icon>
-                  <span class="material-symbols-outlined">add_box</span>
+                  <MaterialIcon name="add_box" />
                 </template>
               </Button>
               <Button v-else text disabled severity="info">
                 <template #icon>
-                  <span class="material-symbols-outlined">check_box</span>
+                  <MaterialIcon name="check_box" />
                 </template>
               </Button>
             </div>

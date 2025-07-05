@@ -34,7 +34,7 @@ const userStore = useUserStore();
             @click="props.func" :style="position" size="small"
             v-tooltip.bottom="{value: t(label), class: 'short-tooltip'}">
       <template #icon>
-        <span class="material-symbols-outlined">{{ icon }}</span>
+        <MaterialIcon :name="icon" />
       </template>
     </Button>
   </div>

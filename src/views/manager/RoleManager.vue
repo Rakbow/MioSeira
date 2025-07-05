@@ -183,39 +183,39 @@ const refresh = async () => {
              currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
              responsiveLayout="scroll">
     <template #paginatorfirstpagelinkicon>
-      <span class="material-symbols-outlined">first_page</span>
+      <MaterialIcon name="first_page" />
     </template>
     <template #paginatorprevpagelinkicon>
-      <span class="material-symbols-outlined">chevron_left</span>
+      <MaterialIcon name="chevron_left" />
     </template>
     <template #paginatornextpagelinkicon>
-      <span class="material-symbols-outlined">chevron_right</span>
+      <MaterialIcon name="chevron_right" />
     </template>
     <template #paginatorlastpagelinkicon>
-      <span class="material-symbols-outlined">last_page</span>
+      <MaterialIcon name="last_page" />
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
         <Button variant="text" outlined @click="openAddDialog">
           <template #icon>
-            <span class="material-symbols-outlined">add_box</span>
+            <MaterialIcon name="add_box" />
           </template>
         </Button>
         <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
                 outlined @click="confirmDeleteSelected">
           <template #icon>
-            <span class="material-symbols-outlined">delete_forever</span>
+            <MaterialIcon name="delete_forever" />
           </template>
         </Button>
         <Button variant="text" severity="help" :disabled="!param.data.length"
                 outlined @click="exportCSV">
           <template #icon>
-            <span class="material-symbols-outlined">file_export</span>
+            <MaterialIcon name="file_export" />
           </template>
         </Button>
         <Button variant="text" severity="info" outlined @click="refresh">
           <template #icon>
-            <span class="material-symbols-outlined">cloud_sync</span>
+            <MaterialIcon name="cloud_sync" />
           </template>
         </Button>
       </BlockUI>
@@ -232,7 +232,7 @@ const refresh = async () => {
       <template #body="{data}">
         <Button variant="text" outlined size="small" @click="openEditDialog(data)">
           <template #icon>
-            <span class="material-symbols-outlined">edit_square</span>
+            <MaterialIcon name="edit_square" />
           </template>
         </Button>
       </template>

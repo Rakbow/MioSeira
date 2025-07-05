@@ -374,8 +374,8 @@ const endHover = () => {
                           :options="itemTypeSet"
                           @change="switchItemType"
                           optionLabel="value" dataKey="value" ariaLabelledby="custom" optionDisabled="disabled">
-              <template #option="slotProps">
-                <span class="material-symbols-outlined">{{ slotProps.option.icon }}</span>
+              <template #option="{option}">
+                <MaterialIcon :name="option.icon" />
               </template>
             </SelectButton>
           </div>
@@ -437,13 +437,13 @@ const endHover = () => {
           <Divider align="left"><i class="pi pi-th-large"/><b>{{ t('RelatedEntity') }}</b></Divider>
           <Button variant="text" outlined @click="displayEntrySelector = true">
             <template #icon>
-              <span class="material-symbols-outlined">add_box</span>
+              <MaterialIcon name="add_box" />
             </template>
           </Button>
           <Button v-if="entries.length" variant="text" severity="danger"
                   outlined @click="clearEntries">
             <template #icon>
-              <span class="material-symbols-outlined">delete_forever</span>
+              <MaterialIcon name="delete_forever" />
             </template>
           </Button>
           <div class="search-entities grid" v-if="entries">

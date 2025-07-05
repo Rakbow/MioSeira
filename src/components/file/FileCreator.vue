@@ -84,12 +84,13 @@ const submitByUpload = async () => {
   fileInfos.value!.forEach(f => {
     fd.append('files', f.file);
     fd.append('names', f.name);
-    fd.append('remarks', f.remark);
   });
   block.value = true;
   const res = await axios.form(API.FILE_UPLOAD, fd);
   if (res.state === axios.SUCCESS)
     toast.add(new PToast().success(res.message));
+  else
+    toast.add(new PToast().error(res.message));
   isUpdate.value = true;
   close();
   fileInfos.value = [];
@@ -135,7 +136,7 @@ const switchCreateType = (ev: any) => {
                   @change="switchCreateType($event)"
                   optionLabel="value" dataKey="value" ariaLabelledby="custom">
       <template #option="{option}">
-        <span class="material-symbols-outlined">{{ option!.icon }}</span>
+        <MaterialIcon :name="option!.icon" />
         <span style="font-size: 1.5rem">{{ t(option!.label) }}</span>
       </template>
     </SelectButton>
@@ -157,12 +158,12 @@ const switchCreateType = (ev: any) => {
 
             <Button variant="text" outlined @click="chooseCallback()">
               <template #icon>
-                <span class="material-symbols-outlined">upload_file</span>
+                <MaterialIcon name="upload_file"/>
               </template>
             </Button>
             <Button variant="text" outlined @click="clearFile" severity="danger" :disabled="!fileInfos.length">
               <template #icon>
-                <span class="material-symbols-outlined">scan_delete</span>
+                <MaterialIcon name="scan_delete"/>
               </template>
             </Button>
           </template>
@@ -173,12 +174,12 @@ const switchCreateType = (ev: any) => {
         <div v-show="currentCreateType === 1">
           <Button variant="text" outlined @click="displaySelector = true">
             <template #icon>
-              <span class="material-symbols-outlined">backup</span>
+              <MaterialIcon name="backup"/>
             </template>
           </Button>
           <Button variant="text" outlined @click="clearFile" severity="danger" :disabled="!fileInfos.length">
             <template #icon>
-              <span class="material-symbols-outlined">scan_delete</span>
+              <MaterialIcon name="scan_delete"/>
             </template>
           </Button>
         </div>

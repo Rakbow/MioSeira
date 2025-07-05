@@ -11,13 +11,13 @@
         <Button v-if="!userStore.isAuthenticated" text rounded @click="openLogin"
                 v-tooltip.bottom="{value: t('SignIn'), class: 'short-tooltip'}">
           <template #icon>
-            <span class="material-symbols-outlined">login</span>
+            <MaterialIcon name="login"/>
           </template>
         </Button>
         <Button v-if="userStore.isAuthenticated" text rounded @click="logout"
                 v-tooltip.bottom="{value: t('SignOut'), class: 'short-tooltip'}">
           <template #icon>
-            <span class="material-symbols-outlined">logout</span>
+            <MaterialIcon name="logout"/>
           </template>
         </Button>
         <!--        <InputText placeholder="Search" type="text" class="mr-2" />-->

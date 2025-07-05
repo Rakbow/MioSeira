@@ -23,7 +23,7 @@
                       @click="loadEditor(entry, dialog)"
                       v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
                 <template #icon>
-                  <span style="font-size: 2.4rem" class="material-symbols-outlined">edit_square</span>
+                  <MaterialIcon name="edit_square"/>
                 </template>
               </Button>
               <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked"/>

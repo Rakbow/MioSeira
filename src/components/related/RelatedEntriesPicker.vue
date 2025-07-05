@@ -49,13 +49,13 @@ const displayEntrySelector = ref(false);
     <template #header>
       <Button variant="text" outlined @click="displayEntrySelector = true">
         <template #icon>
-          <span class="material-symbols-outlined">add_box</span>
+          <MaterialIcon name="add_box" />
         </template>
       </Button>
       <Button v-if="relatedEntries.length" variant="text" severity="danger"
               outlined @click="clearRelatedEntry()">
         <template #icon>
-          <span class="material-symbols-outlined">delete_forever</span>
+          <MaterialIcon name="delete_forever" />
         </template>
       </Button>
     </template>

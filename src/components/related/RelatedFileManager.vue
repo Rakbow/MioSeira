@@ -125,7 +125,7 @@ const openFilesUpload = () => {
           <template #body="{data}">
             <Button variant="text" outlined size="small" @click="loadEditor(META.ENTITY.FILE, data, dialog)">
               <template #icon>
-                <span style="font-size: 1.5rem" class="material-symbols-outlined">edit_square</span>
+                <MaterialIcon size="1.5" name="edit_square" />
               </template>
             </Button>
           </template>
