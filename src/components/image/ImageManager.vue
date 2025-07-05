@@ -150,7 +150,6 @@ import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntityInfo} from "@/config/Web_Const";
 import {useEntityStore} from "@/logic/entityService";
-import {loadEditor} from "@/logic/itemService";
 import {PToast} from "@/logic/frame";
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));

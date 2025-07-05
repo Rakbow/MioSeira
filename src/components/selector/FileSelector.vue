@@ -1,7 +1,7 @@
 <template>
-  <div class="card">
+  <div class="entity-selector">
     <BlockUI :blocked="loading">
-      <IconField class="mt-2">
+      <IconField>
         <InputIcon class="pi pi-search" v-if="!queryParam.keyword"/>
         <InputText class="w-full" v-model="queryParam.keyword" @keyup.enter="search"/>
         <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="queryParam.keyword"/>
@@ -17,7 +17,7 @@
       <template #list="slotProps">
         <div v-if="!loading" v-for="(file, index) in slotProps.items" :key="index">
           <div class="grid entity-search-result-block">
-            <div class="col-fixed p-1" style="width: 45px">
+            <div class="col-fixed p-1" style="width: 3.5rem">
               <div v-html="getIcon(file.name).svg"/>
             </div>
             <div class="col p-1">
@@ -26,7 +26,7 @@
                 <span>{{ file.size }}</span>
               </small>
             </div>
-            <div class="col-1 flex align-items-center justify-content-center" style="width: 35px">
+            <div class="col-1 flex align-items-center justify-content-center" style="width: 3.5rem">
               <Button v-if="!file.isPicked" text @click="select(file)">
                 <template #icon>
                   <span class="material-symbols-outlined">add_box</span>
@@ -43,7 +43,7 @@
         <div v-if="loading" v-for="(index) in 7" :key="index">
           <div class="grid entity-search-result-block">
             <div class="col ml-1">
-              <Skeleton size="35px"/>
+              <Skeleton size="3.5rem"/>
             </div>
             <div class="col-9">
               <Skeleton class="mt-1 mb-2" width="10rem"/>
@@ -60,11 +60,11 @@
 <script setup lang="ts">
 import {ref, onMounted, defineProps, onBeforeMount} from "vue";
 import {AxiosHelper as axios} from '@/toolkit/axiosHelper';
-import {META} from "@/config/Web_Const";
 import {API} from "@/config/Web_Helper_Strs";
 import {inject} from "vue";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import { getIcon } from 'material-file-icons';
+import {useI18n} from "vue-i18n";
 
 onBeforeMount(() => {
 });
@@ -88,6 +88,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['pick']);
 
+const {t} = useI18n();
 const pickedFiles = ref([]);
 const dialogRef = inject('dialogRef');
 const loading = ref(false);
@@ -116,7 +117,7 @@ const page = (ev) => {
   loadFiles();
 }
 
-const search = (ev) => {
+const search = () => {
   queryParam.value.page = 1;
   loadFiles();
 }

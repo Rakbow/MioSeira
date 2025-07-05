@@ -7,17 +7,19 @@ import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 import {EntityInfo, META} from "@/config/Web_Const";
 import {useRoute} from "vue-router";
-import { getIcon } from 'material-file-icons';
+import {getIcon} from 'material-file-icons';
+import {PToast} from "@/logic/frame";
+import {FileInfoCreateDTO} from "@/logic/entityService";
 
 const {t} = useI18n();
 const toast = useToast();
-const dt = ref();
-const editBlock = ref(false);
+const fu = ref();
+const block = ref(false);
 const isUpdate = ref(false);
-const fileInfos = ref([]);
+const fileInfos = ref<FileInfoCreateDTO[]>([]);
 const entityInfo = ref<EntityInfo>();
 const route = useRoute();
-const dialogRef = inject("dialogRef");
+const dialogRef = inject<any>("dialogRef");
 const FileSelector = defineAsyncComponent(() => import('@/components/selector/FileSelector.vue'));
 const displaySelector = ref(false);
 const createType = ref();
@@ -31,27 +33,25 @@ onMounted(() => {
   createType.value = META.FILE_CREATE_TYPE_SET[0]
 })
 
-const selectFile = async (ev) => {
+const selectFile = (ev: any) => {
   if (!ev.files) return;
-  fileInfos.value = [];
   for (let file of ev.files) {
-    let info = {
-      name: file.name,
-      size: PublicHelper.formatSize(file.size),
-      file: file
-    }
+    let info = new FileInfoCreateDTO();
+    info.name = file.name;
+    info.size = PublicHelper.formatSize(file.size);
+    info.file = file;
     fileInfos.value.push(info)
   }
+  fu.value.files = [];
 };
 const clearFile = () => {
-  dt.value.files = [];
   fileInfos.value = [];
 };
 const removeFile = (index: number) => {
-  fileInfos.value.splice(index, 1);
+  fileInfos.value!.splice(index, 1);
 };
 
-const onCellEdite = (ev) => {
+const onCellEdite = (ev: any) => {
   let {data, newValue, field} = ev;
   switch (field) {
     case 'type':
@@ -67,45 +67,45 @@ const onCellEdite = (ev) => {
 };
 
 const submit = () => {
-  if(parseInt(createType.value.value) === 0)
+  if (parseInt(createType.value.value) === 0)
     submitByUpload()
-  if(parseInt(createType.value.value) === 1)
+  if (parseInt(createType.value.value) === 1)
     submitByCould()
 }
 
 const submitByUpload = async () => {
   const fd = new FormData();
-  fd.append('entityType', entityInfo.value?.type);
-  fd.append('entityId', entityInfo.value?.id);
-  fileInfos.value.forEach(f => {
+  fd.append('entityType', entityInfo.value!.type.toString());
+  fd.append('entityId', entityInfo.value!.id.toString());
+  fileInfos.value!.forEach(f => {
     fd.append('files', f.file);
     fd.append('names', f.name);
     fd.append('remarks', f.remark);
   });
-  editBlock.value = true;
+  block.value = true;
   const res = await axios.form(API.FILE_UPLOAD, fd);
   if (res.state === axios.SUCCESS)
     toast.add(new PToast().success(res.message));
-    isUpdate.value = true;
-    close();
+  isUpdate.value = true;
+  close();
   fileInfos.value = [];
-  editBlock.value = false;
+  block.value = false;
 }
 
 const submitByCould = async () => {
   let param = {
     entityType: entityInfo.value?.type,
     entityId: entityInfo.value?.id,
-    fileIds: fileInfos.value.map(f => f.id)
+    fileIds: fileInfos.value!.map(f => f.id)
   }
-  editBlock.value = true;
+  block.value = true;
   const res = await axios.post(API.FILE_RELATED_CREATE, param);
   if (res.state === axios.SUCCESS)
     toast.add(new PToast().success(res.message));
   isUpdate.value = true;
   close();
   fileInfos.value = [];
-  editBlock.value = false;
+  block.value = false;
 }
 
 const close = () => {
@@ -113,16 +113,10 @@ const close = () => {
       {
         isUpdate: isUpdate.value
       }
-  );
+  )
 }
 
-const handleSize = (size) => {
-  if(size instanceof Number)
-    return PublicHelper.formatSize(size)
-  return size
-}
-
-const switchCreateType = (ev) => {
+const switchCreateType = (ev: any) => {
   if (ev.value === null)
     createType.value = parseInt(META.FILE_CREATE_TYPE_SET[0].value);
   currentCreateType.value = parseInt(createType.value.value);
@@ -130,80 +124,93 @@ const switchCreateType = (ev) => {
 }
 
 
-
 </script>
 <template>
-  <BlockUI :blocked="editBlock">
+  <BlockUI :blocked="block">
     <SelectButton size="small" v-model="createType" :options="META.FILE_CREATE_TYPE_SET"
                   @change="switchCreateType($event)"
                   optionLabel="value" dataKey="value" ariaLabelledby="custom">
-      <template #option="slotProps">
-        <span class="material-symbols-outlined">{{ slotProps.option.icon }}</span>
+      <template #option="{option}">
+        <span class="material-symbols-outlined">{{ option!.icon }}</span>
+        <span style="font-size: 1.5rem">{{ t(option!.label) }}</span>
       </template>
     </SelectButton>
-    <FileUpload v-show="currentCreateType === 0" ref="dt" auto multiple :customUpload="true"
-                :showUploadButton="false"
-                :showCancelButton="false"
-                chooseIcon="pi pi-image" @select="selectFile"
-                :maxFileSize="1000000000" :previewWidth="100"
-                :invalidFileSizeMessage="t('ImageInvalidFileSizeMessage')">
-      <template #header="{ chooseCallback }">
-        <Button @click="chooseCallback()" icon="pi pi-file" rounded outlined/>
-        <Button @click="clearFile" icon="pi pi-times" rounded outlined severity="danger"
-                :disabled="!fileInfos || fileInfos.length === 0"/>
-      </template>
-      <template #empty>
-        <span class="empty-search-result">{{ t('DragImage') }}</span>
-      </template>
-    </FileUpload>
-    <Button v-show="currentCreateType === 1" variant="text" outlined @click="displaySelector = true">
-      <template #icon>
-        <span class="material-symbols-outlined">add_box</span>
-      </template>
-    </Button>
-
     <DataTable ref="dt" :value="fileInfos" class="p-datatable-sm"
                :alwaysShowPaginator="fileInfos.length !== 0"
-               paginator :rows="5" editMode="cell" @cellEditComplete="onCellEdite"
+               paginator :rows="10" editMode="cell" @cellEditComplete="onCellEdite"
                scrollable scrollHeight="flex" size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
+      <template #header>
+        <FileUpload v-show="currentCreateType === 0" ref="fu" auto multiple
+                    :showUploadButton="false"
+                    :showCancelButton="false"
+                    chooseIcon="pi pi-image" @select="selectFile"
+                    :maxFileSize="1000000000" :previewWidth="100"
+                    :invalidFileSizeMessage="t('InvalidFileSizeMessage')">
+          <template #header="{ chooseCallback }">
+
+            <Button variant="text" outlined @click="chooseCallback()">
+              <template #icon>
+                <span class="material-symbols-outlined">upload_file</span>
+              </template>
+            </Button>
+            <Button variant="text" outlined @click="clearFile" severity="danger" :disabled="!fileInfos.length">
+              <template #icon>
+                <span class="material-symbols-outlined">scan_delete</span>
+              </template>
+            </Button>
+          </template>
+          <template #content>
+            <span class="empty-search-result">{{ t('DragFile') }}</span>
+          </template>
+        </FileUpload>
+        <div v-show="currentCreateType === 1">
+          <Button variant="text" outlined @click="displaySelector = true">
+            <template #icon>
+              <span class="material-symbols-outlined">backup</span>
+            </template>
+          </Button>
+          <Button variant="text" outlined @click="clearFile" severity="danger" :disabled="!fileInfos.length">
+            <template #icon>
+              <span class="material-symbols-outlined">scan_delete</span>
+            </template>
+          </Button>
+        </div>
+      </template>
       <template #empty>
         <span class="emptyInfo">
-            {{ t('CommonDataTableEmptyInfo') }}
+            {{ t('NoFile') }}
         </span>
       </template>
-      <Column style="width: 40px">
-        <template #body="slotProps">
-          <div v-html="getIcon(slotProps.data.name).svg"/>
+      <Column style="width: 3rem">
+        <template #body="{data}">
+          <div v-html="getIcon(data!.name).svg"/>
         </template>
       </Column>
-      <Column :header="t('Name')" field="name" style="width: 300px">
-        <template #body="slotProps">
-          <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.name }}</div>
+      <Column :header="t('Name')" field="name">
+        <template #body="{data}">
+          <div class="text-ellipsis">{{ data!.name }}</div>
         </template>
         <template #editor="{ data, field }">
-          <InputText v-model="data[field]" fluid/>
+          <InputText v-model="data[field]" autofocus fluid/>
         </template>
       </Column>
-      <Column :header="t('Size')" field="size" style="width: 80px">
-        <template #body="slotProps">{{handleSize(slotProps.data.size)}}</template>
-      </Column>
+      <Column :header="t('Size')" field="size" style="width: 8rem"/>
       <Column style="width: 1rem">
         <template #body="{ index }">
-          <Button size="small" icon="pi pi-times" outlined rounded severity="danger"
+          <Button icon="pi pi-trash" severity="danger" variant="text"
                   @click="removeFile(index)"/>
         </template>
       </Column>
     </DataTable>
-    <Button icon="pi pi-times" :label="t('Cancel')" @click="close"
-            class="p-button-text"/>
-    <Button icon="pi pi-save" :label="t('Save')" @click="submit" :disabled="!fileInfos.length" />
+    <div class="mt-3">
+      <Button icon="pi pi-times" :label="t('Cancel')" @click="close" variant="text"/>
+      <Button icon="pi pi-save" :label="t('Save')" @click="submit" :disabled="!fileInfos.length"/>
+    </div>
   </BlockUI>
-
-
-  <Dialog :modal="true" v-model:visible="displaySelector" :style="{width: '600px'}" :header="t('Add')">
+  <Dialog :modal="true" v-model:visible="displaySelector" style="width: 60rem" :header="t('Add')">
     <FileSelector :entries="fileInfos"/>
   </Dialog>
 </template>

@@ -6,7 +6,7 @@ import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
 
 const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
-const fileUploader = defineAsyncComponent(() => import('@/components/file/FileCreator.vue'));
+const creator = defineAsyncComponent(() => import('@/components/file/FileCreator.vue'));
 
 const {t} = useI18n();
 const records = ref(0);
@@ -46,17 +46,12 @@ const load = async () => {
   loading.value = false;
 }
 
-const openFilesUpload = () => {
-  dialog.open(fileUploader, {
+const openCreator = () => {
+  dialog.open(creator, {
     props: {
       header: t('Upload'),
       style: {
-        width: '40vw',
-        minWidth: '40vw'
-      },
-      breakpoints: {
-        '960px': '40vw',
-        '640px': '40vw'
+        width: '80rem'
       },
       modal: true,
       closable: true
@@ -82,7 +77,7 @@ const openFilesUpload = () => {
         <b>{{ t('RelatedFiles') }}</b>
       </template>
       <div class="relative">
-        <Edit :func="openFilesUpload" icon="note_add" label="Upload"/>
+        <Edit :func="openCreator" icon="note_add" label="Upload"/>
         <table v-if="files.length" class="related-file-table table table-sm table-hover" style="width: 70rem">
           <tbody>
           <tr v-for="(file, index) in (files as any[])">

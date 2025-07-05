@@ -297,3 +297,14 @@ $item-color-6-14: #a4a;
     max-width: 60rem !important;
   }
 }
+
+.entity-selector {
+  .p-iconfield {
+    margin-top: 0.5rem;
+
+    .p-inputtext {
+      width: 100%;
+    }
+
+  }
+}

@@ -86,7 +86,7 @@
                   :showCancelButton="false"
                   chooseIcon="pi pi-image" @select="selectFile"
                   :maxFileSize="100000000" :previewWidth="100"
-                  :invalidFileSizeMessage="t('ImageInvalidFileSizeMessage')">
+                  :invalidFileSizeMessage="t('InvalidFileSizeMessage')">
         <template #header="{ chooseCallback }">
           <Button @click="chooseCallback()" icon="pi pi-file" rounded outlined/>
           <Button @click="clearFile" icon="pi pi-times" rounded outlined severity="danger"
@@ -94,7 +94,7 @@
           <Button @click="uploadAudioFile" icon="pi pi-save" rounded outlined v-if="fileInfos.length"/>
         </template>
         <template #empty>
-          <span class="empty-search-result">{{ t('DragImage') }}</span>
+          <span class="empty-search-result">{{ t('DragFile') }}</span>
         </template>
         <template #content>
           <DataTable v-if="fileInfos.length > 0" ref="dt" :value="fileInfos" class="p-datatable-sm"

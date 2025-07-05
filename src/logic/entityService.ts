@@ -30,6 +30,14 @@ export class ImageDTO {
     file: File | null = null;
 }
 
+export class FileInfoCreateDTO {
+    id: number = 0;
+    name: string = "";
+    size: string = "";
+    file: File | null = null;
+    remark: string = "";
+}
+
 export class EntityManageQueryParams {
     first: number = 0;
     rows: number = 15;
@@ -108,7 +116,7 @@ export const loadEditor = (type: number, data: any, dialog: {
                 width: '45rem',
             },
             modal: true,
-            closable: false
+            closable: true
         },
         data: {
             entity: data

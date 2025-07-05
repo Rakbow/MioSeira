@@ -90,18 +90,18 @@ const changeGenerateThumb = () => {
               :showCancelButton="false"
               chooseIcon="pi pi-image" @select="selectFile($event)"
               :maxFileSize="30000000" :previewWidth="100"
-              :invalidFileSizeMessage="t('ImageInvalidFileSizeMessage')">
+              :invalidFileSizeMessage="t('InvalidFileSizeMessage')">
     <template #header="{ chooseCallback }">
       <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined/>
       <Button @click="onImageClear()" icon="pi pi-times" rounded outlined severity="danger"
-              :disabled="!images || images.length === 0"/>
+              :disabled="!images || images.length"/>
       <Checkbox v-model="generateThumb" binary @change="changeGenerateThumb" />
       <small class="label-title">{{ t('ImageGenerateThumb') }}</small>
     </template>
     <template #empty>
-      <span class="empty-search-result">{{ t('DragImage') }}</span>
+      <span class="empty-search-result">{{ t('DragFile') }}</span>
     </template>
-    <template #content="{ files, removeUploadedFileCallback, removeFileCallback }">
+    <template #content>
       <DataTable v-if="images.length > 0" :value="images" class="p-datatable-sm"
                  :alwaysShowPaginator="images.length !== 0" paginator :rows="8"
                  editMode="cell" @cellEditComplete="onImageCellEdite"

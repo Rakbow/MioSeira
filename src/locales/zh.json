@@ -223,7 +223,7 @@
   "CommonDataTableLoadingInfo": "加载中",
   "RequiredInfo": "请完善必填项",
 
-  "DragImage": "拖动或选择图片上传",
+  "DragFile": "拖动或选择文件上传",
   "ImageUploadSuccess": "图片已上传！",
   "ConfirmDeleteImage": "确定删除所选的图片？",
   "ConfirmDeleteSelected": "确定删除所选的数据？",
@@ -233,7 +233,7 @@
   "NotImageNameZh": "未填写图片名(中)",
   "NotImageNameEn": "未填写图片名(英)",
   "UploadImage": "上传图片",
-  "ImageInvalidFileSizeMessage": "{0}大小已超过{1}",
+  "InvalidFileSizeMessage": "{0}大小已超过{1}",
   "ImageGenerateThumb": "生成缩略图",
   "ImageNameZh": "图片名(中)",
   "ImageNameEn": "图片名(英)",
@@ -258,5 +258,8 @@
 
   "PremiereDate": "首播时间",
   "EpisodeType0": "音轨",
-  "EpisodeType1": "剧集"
+  "EpisodeType1": "剧集",
+
+  "LocalFile": "本地文件",
+  "CloudFile": "云端文件"
 }

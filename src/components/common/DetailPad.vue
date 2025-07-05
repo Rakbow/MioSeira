@@ -82,7 +82,7 @@ const openEditDialog = () => {
         width: '100rem'
       },
       modal: true,
-      closable: false
+      closable: true
     },
     data: {
       text: text.value

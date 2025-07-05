@@ -68,13 +68,8 @@ const close = () => {
       <label>{{ t('Remark') }}</label>
       <Textarea v-model="entity!.remark" rows="4" cols="20"/>
     </FloatLabel>
-    <div class="relative">
-      <div class="bottom-0 right-0">
-        <Button icon="pi pi-times" :label="t('Cancel')" @click="close"
-                class="p-button-text"/>
-        <Button icon="pi pi-save" :label="t('Save')" @click="submit"/>
-      </div>
-    </div>
+    <Button icon="pi pi-times" :label="t('Cancel')" @click="close" variant="text"/>
+    <Button icon="pi pi-save" :label="t('Save')" @click="submit"/>
   </BlockUI>
 </template>
 

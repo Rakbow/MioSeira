@@ -94,8 +94,8 @@ export const META = {
         {icon: 'accessibility_new', value: '6', disabled: false}
     ],
     FILE_CREATE_TYPE_SET: [
-        {icon: 'upload_file', value: '0'},
-        {icon: 'cloud_done', value: '1'}
+        {icon: 'upload_file', label: 'LocalFile', value: '0'},
+        {icon: 'cloud_done', label: 'CloudFile', value: '1'}
     ],
     RELATED_GROUP_SET: [
         {icon: 'list', value: '1'},

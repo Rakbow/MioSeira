@@ -266,7 +266,7 @@
   "NotImageNameZh": "未填写图片名(中)",
   "NotImageNameEn": "未填写图片名(英)",
   "UploadImage": "上传图片",
-  "ImageInvalidFileSizeMessage": "{0}大小已超过{1}",
+  "InvalidFileSizeMessage": "{0}大小已超过{1}",
   "ImageNameZh": "图片名(中)",
   "ImageNameEn": "图片名(英)",
   "ImageTypes": [

@@ -128,14 +128,14 @@ const openCropper = () => {
                   :showCancelButton="false"
                   chooseIcon="pi pi-image" @select="select"
                   :maxFileSize="2000000" :previewWidth="100"
-                  :invalidFileSizeMessage="t('ImageInvalidFileSizeMessage')">
+                  :invalidFileSizeMessage="t('InvalidFileSizeMessage')">
         <template #header="{ chooseCallback }">
           <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined/>
           <Button @click="clear" icon="pi pi-times" rounded outlined severity="danger" :disabled="!image.file"/>
           <Button @click="upload" icon="pi pi-cloud-upload" rounded outlined severity="info" :disabled="!image.file"/>
         </template>
         <template #empty>
-          <span class="empty-search-result">{{ t('DragImage') }}</span>
+          <span class="empty-search-result">{{ t('DragFile') }}</span>
         </template>
         <template #content>
           <div class="flex flex-wrap justify-content-center gap-3">
