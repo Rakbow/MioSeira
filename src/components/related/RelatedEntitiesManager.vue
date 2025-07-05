@@ -205,7 +205,7 @@ const load = async () => {
                v-model:selection="param.selectedData" stripedRows size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               currentPageReportTemplate="{first} to {last} of {totalRecords}"
+               currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                scrollable scrollHeight="40rem" responsiveLayout="scroll">
       <template #header>
         <SelectButton size="small" v-model="curEntryType" :options="META.ENTRY_TYPE_SET"

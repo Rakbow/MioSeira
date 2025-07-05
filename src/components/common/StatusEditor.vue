@@ -7,6 +7,7 @@ import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useToast} from 'primevue/usetoast';
 import {EntityInfo} from "@/config/Web_Const.js";
+import {PToast} from "@/logic/frame";
 
 const route = useRoute();
 const userStore = useUserStore();

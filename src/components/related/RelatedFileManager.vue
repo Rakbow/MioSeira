@@ -115,7 +115,7 @@ const openFilesUpload = () => {
                  scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
                  paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-                 currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
+                 currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll">
         <template #loading>
           <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
           <span>{{ t('CommonDataTableLoadingInfo') }}</span>

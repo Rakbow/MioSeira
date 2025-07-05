@@ -168,7 +168,7 @@ const switchCreateType = (ev) => {
                scrollable scrollHeight="flex" size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               currentPageReportTemplate="{first} to {last} of {totalRecords}">
+               currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
       <template #empty>
         <span class="emptyInfo">
             {{ t('CommonDataTableEmptyInfo') }}

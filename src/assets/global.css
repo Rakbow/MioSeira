@@ -52,7 +52,6 @@ input[type="number"]::-webkit-inner-spin-button {
     justify-content: center;
     font-weight: 400;
     display: flex;
-    /*color: #B0C4DE;*/
 }
 
 .time-tooltip .p-tooltip-text {

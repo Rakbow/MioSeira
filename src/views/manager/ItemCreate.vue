@@ -365,7 +365,7 @@ const handleTracks = () => {
                        alwaysShowPaginator paginator :rows="50" stripedRows size="small"
                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-                       currentPageReportTemplate="{first} to {last} of {totalRecords}"
+                       currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                        scrollable scrollHeight="400px" responsiveLayout="scroll">
               <template #empty>
         <span class="emptyInfo">

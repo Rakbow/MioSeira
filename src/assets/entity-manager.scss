@@ -125,6 +125,7 @@
     &-action {
       margin: .5rem 0;
       @extend .col;
+
       .p-inputtext {
         width: 16rem;
       }
@@ -140,4 +141,53 @@
 
   }
 
+}
+
+.entity-manager {
+  &-datatable {
+    @extend .small-font;
+
+    .p-tag {
+      padding: 0 .5rem;
+      font-size: 1.1rem;
+      font-weight: normal;
+    }
+
+    .p-datatable {
+      &-header {
+        .p-selectbutton {
+          .material-symbols-outlined {
+            font-size: 2rem;
+          }
+        }
+
+        .p-multiselect {
+          width: 20rem;
+          right: 0;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+
+      &-empty-message {
+        span {
+          align-items: center;
+          justify-content: center;
+          font-weight: 400;
+          display: flex;
+        }
+      }
+    }
+    &-select-column {
+      width: 3rem;
+      text-align: center !important;
+    }
+    &-edit-column {
+      width: 3rem;
+      .material-symbols-outlined {
+        font-size: 1.5rem !important;
+      }
+    }
+  }
 }

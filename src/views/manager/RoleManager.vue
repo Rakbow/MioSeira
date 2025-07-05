@@ -7,6 +7,7 @@ import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {API} from "@/config/Web_Helper_Strs";
 import {EntityManageParam, useEntityStore} from "@/logic/entityService";
+import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
 const dt = ref();
@@ -170,7 +171,7 @@ const refresh = async () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="param.data" class="p-datatable-sm small-font" size="small"
+  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable" size="small"
              :alwaysShowPaginator="param.data.length !== 0"
              lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
@@ -179,10 +180,22 @@ const refresh = async () => {
              scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="{first} to {last} of {totalRecords}"
+             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
              responsiveLayout="scroll">
+    <template #paginatorfirstpagelinkicon>
+      <span class="material-symbols-outlined">first_page</span>
+    </template>
+    <template #paginatorprevpagelinkicon>
+      <span class="material-symbols-outlined">chevron_left</span>
+    </template>
+    <template #paginatornextpagelinkicon>
+      <span class="material-symbols-outlined">chevron_right</span>
+    </template>
+    <template #paginatorlastpagelinkicon>
+      <span class="material-symbols-outlined">last_page</span>
+    </template>
     <template #header>
-      <BlockUI :blocked="param.blocking" class="relative">
+      <BlockUI :blocked="param.blocking">
         <Button variant="text" outlined @click="openAddDialog">
           <template #icon>
             <span class="material-symbols-outlined">add_box</span>
@@ -208,20 +221,18 @@ const refresh = async () => {
       </BlockUI>
     </template>
     <template #empty>
-        <span class="emptyInfo">
-            {{ t('CommonDataTableEmptyInfo') }}
-        </span>
+        <span>{{ t('CommonDataTableEmptyInfo') }}</span>
     </template>
     <template #loading>
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"/>
       <span>{{ t('CommonDataTableLoadingInfo') }}</span>
     </template>
-    <Column selectionMode="multiple" style="width: 3rem" exportable class="text-center"/>
-    <Column style="width: 3rem">
+    <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
+    <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
         <Button variant="text" outlined size="small" @click="openEditDialog(data)">
           <template #icon>
-            <span style="font-size: 1.5rem" class="material-symbols-outlined">edit_square</span>
+            <span class="material-symbols-outlined">edit_square</span>
           </template>
         </Button>
       </template>

@@ -134,7 +134,7 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="param.data" class="p-datatable-sm small-font" :alwaysShowPaginator="param.data.length !== 0"
+  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable" :alwaysShowPaginator="param.data.length != 0"
              lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
              paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small"
@@ -142,14 +142,26 @@ const exportCSV = () => {
              scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll">
+             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll">
+    <template #paginatorfirstpagelinkicon>
+      <span class="material-symbols-outlined">first_page</span>
+    </template>
+    <template #paginatorprevpagelinkicon>
+      <span class="material-symbols-outlined">chevron_left</span>
+    </template>
+    <template #paginatornextpagelinkicon>
+      <span class="material-symbols-outlined">chevron_right</span>
+    </template>
+    <template #paginatorlastpagelinkicon>
+      <span class="material-symbols-outlined">last_page</span>
+    </template>
     <template #header>
-      <BlockUI :blocked="param.blocking" class="relative">
+      <BlockUI :blocked="param.blocking">
         <SelectButton size="small" v-model="entryType" :options="META.ENTRY_TYPE_SET"
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
           <template #option="slotProps">
-            <span class="material-symbols-outlined" style="font-size: 2rem" :title="t(slotProps.option.label)">
+            <span class="material-symbols-outlined" :title="t(slotProps.option.label)">
             {{ slotProps.option.icon }}
           </span>
           </template>
@@ -168,26 +180,23 @@ const exportCSV = () => {
         </Button>
         <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
                      @update:modelValue="onToggle" class="text-end" size="small"
-                     :placeholder="t('SelectedDisplayColumns')"
-                     style="width: 20rem;right: 0;position: absolute;top: 50%;transform: translateY(-50%)"/>
+                     :placeholder="t('SelectedDisplayColumns')"/>
       </BlockUI>
     </template>
     <template #empty>
-        <span class="emptyInfo">
-            {{ t('CommonDataTableEmptyInfo') }}
-        </span>
+        <span>{{ t('CommonDataTableEmptyInfo') }}</span>
     </template>
     <template #loading>
       <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
       <span>{{ t('CommonDataTableLoadingInfo') }}</span>
     </template>
 
-    <Column selectionMode="multiple" style="width: 3rem" exportable class="text-center"/>
-    <Column style="width: 3rem">
+    <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
+    <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
         <Button variant="text" outlined size="small" @click="loadEditor(data, dialog)">
           <template #icon>
-            <span style="font-size: 1.5rem" class="material-symbols-outlined">edit_square</span>
+            <span class="material-symbols-outlined">edit_square</span>
           </template>
         </Button>
       </template>
@@ -226,9 +235,6 @@ const exportCSV = () => {
         </div>
       </template>
     </Column>
-
-
-
     <Column :header="t('Date')" :sortable="true" field="date"
             v-if="![META.ENTRY_TYPE.CLASSIFICATION, META.ENTRY_TYPE.MATERIAL].includes(store.entryCurrent)"
             :style="`width: ${
@@ -255,5 +261,4 @@ const exportCSV = () => {
 </template>
 
 <style lang="scss" scoped>
-@use "@/assets/entity-manager";
 </style>

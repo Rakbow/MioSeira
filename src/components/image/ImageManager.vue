@@ -10,7 +10,7 @@
                scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" showGridlines
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-               currentPageReportTemplate="{first} to {last} of {totalRecords}"
+               currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                responsiveLayout="scroll" tableStyle="font-size: 11px">
       <template #header>
         <BlockUI :blocked="editBlock" class="grid">

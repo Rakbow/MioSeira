@@ -108,7 +108,7 @@ const changeGenerateThumb = () => {
                  scrollable scrollHeight="flex" size="small" @rowReorder="onImageReorder"
                  paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-                 currentPageReportTemplate="{first} to {last} of {totalRecords}">
+                 currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
         <Column rowReorder headerStyle="width: 3rem" />
         <Column style="width: 6rem">
           <template #body="slotProps">

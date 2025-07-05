@@ -102,7 +102,7 @@
                      scrollable scrollHeight="flex" size="small"
                      paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-                     currentPageReportTemplate="{first} to {last} of {totalRecords}">
+                     currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
             <Column :header="t('Name')" style="max-width: 10rem">
               <template #body="slotProps">
                 <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.name }}</div>

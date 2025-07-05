@@ -5,11 +5,11 @@ import {PublicHelper} from "@/toolkit/publicHelper";
 import {AxiosHelper as axios} from "@/toolkit/axiosHelper";
 import {API} from "@/config/Web_Helper_Strs";
 import {useToast} from "primevue/usetoast";
-import {META} from "@/config/Web_Const";
+import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
-const dialogRef = inject("dialogRef");
-const entity = ref<any>({});
+const dialogRef = inject<any>("dialogRef");
+const entity = ref<any>();
 const isUpdate = ref(false);
 const editBlock = ref(false);
 const toast = useToast();
@@ -49,33 +49,25 @@ const close = () => {
 <template>
   <BlockUI :blocked="editBlock" class="entity-editor">
     <Divider align="center"><b>{{ t('BasicInfo') }}</b></Divider>
-    <div class="field">
-      <FloatLabel variant="on">
-        <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>
-        <InputGroup>
-          <InputText size="small" v-model="entity.name" class="static w-full"/>
-          <InputGroupAddon>{{ entity.extension }}</InputGroupAddon>
-        </InputGroup>
-      </FloatLabel>
-    </div>
-    <div class="field">
-      <FloatLabel variant="on">
-        <label>{{ t('Size') }}<i class="required-label pi pi-asterisk"/></label>
-        <InputText size="small" v-model="entity.size" class="static w-full" disabled/>
-      </FloatLabel>
-    </div>
-    <div class="field">
-      <FloatLabel variant="on">
-        <label>{{ t('Path') }}</label>
-        <InputText size="small" v-model="entity.path" class="static w-full" disabled/>
-      </FloatLabel>
-    </div>
-    <div class="field">
-      <FloatLabel variant="on">
-        <label>{{ t('Remark') }}</label>
-        <Textarea size="small" v-model="entity!.remark" rows="4" cols="20" class="static w-full"/>
-      </FloatLabel>
-    </div>
+    <FloatLabel class="field" variant="on">
+      <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>
+      <InputGroup>
+        <InputText v-model="entity.name"/>
+        <InputGroupAddon>{{ entity!.extension }}</InputGroupAddon>
+      </InputGroup>
+    </FloatLabel>
+    <FloatLabel class="field" variant="on">
+      <label>{{ t('Size') }}<i class="required-label pi pi-asterisk"/></label>
+      <InputText v-model="entity.size" disabled/>
+    </FloatLabel>
+    <FloatLabel class="field" variant="on">
+      <label>{{ t('Path') }}</label>
+      <InputText v-model="entity.path" disabled/>
+    </FloatLabel>
+    <FloatLabel class="field" variant="on">
+      <label>{{ t('Remark') }}</label>
+      <Textarea v-model="entity!.remark" rows="4" cols="20"/>
+    </FloatLabel>
     <div class="relative">
       <div class="bottom-0 right-0">
         <Button icon="pi pi-times" :label="t('Cancel')" @click="close"

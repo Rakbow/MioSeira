@@ -6,7 +6,6 @@ import {API} from '@/config/Web_Helper_Strs';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
 import 'material-icons'
-import {PublicHelper} from "@/toolkit/publicHelper";
 import {EntityManageParam} from "@/logic/entityService";
 import {PColumn} from "@/logic/frame";
 
@@ -17,7 +16,7 @@ const router = useRouter();
 const param = ref(new EntityManageParam());
 
 onBeforeMount(async () => {
-  param.value.query.initFilters({
+  param.value.initFilters({
     keyword: {value: ''}
   });
   param.value.initColumns([
@@ -33,55 +32,61 @@ onMounted(() => {
 })
 
 const initQueryParam = async () => {
-  let page: number = PublicHelper.isNotUndefined(route.query.page) ? parseInt(route.query.page!.toString()) : 1;
+  const { query } = route;
+  const page = parseInt(query.page?.toString() ?? '1');
 
-  param.value.query.first = (page - 1) * dt.value.rows;
-  param.value.query.rows = dt.value.rows;
-  param.value.query.filters.keyword.value = PublicHelper.isNotUndefined(route.query.keyword) ? route.query.keyword!.toString() : '';
+  if (query.sort) {
+    param.value.query.sortField = query.sort.toString();
+    if (query.order) {
+      param.value.query.sortOrder = query.order.toString() === 'desc' ? -1 : 1;
+    }
+  }
+
+  param.value.countPage(page, dt.value.rows);
+  param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
 }
 
 const updateQueryParam = () => {
-  const currentQueryParams = {...route.query};
-  currentQueryParams.page = (param.value.query.first / dt.value.rows + 1).toString();
-  currentQueryParams.size = dt.value.rows;
+  const { query: { filters, sortField, sortOrder, first }} = param.value;
+  const curQuery = {...route.query};
 
-  if (PublicHelper.isNotEmpty(param.value.query.filters.keyword.value)) {
-    currentQueryParams.keyword = param.value.query.filters.keyword.value;
-  }else {
-    delete currentQueryParams.keyword;
+  curQuery.page = ((first / dt.value.rows) + 1).toString();
+
+  ['keyword'].forEach(key => {
+    if (filters[key]?.value) {
+      curQuery[key] = filters[key].value;
+    } else {
+      delete curQuery[key];
+    }
+  });
+
+  if (sortField) {
+    curQuery.sort = sortField;
+    curQuery.order = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : null;
+  } else {
+    delete curQuery.sort;
+    delete curQuery.order;
   }
 
-  if (PublicHelper.isNotEmpty(param.value.query.sortField)) {
-    currentQueryParams.sortField = param.value.query.sortField;
-    currentQueryParams.sortOrder = param.value.query.sortOrder.toString();
-  }else {
-    delete currentQueryParams.sortField;
-    delete currentQueryParams.sortOrder;
-  }
-
-  // 使用 router.push 更新 URL
-  router.push({path: route.path, query: currentQueryParams});
+  router.push({path: route.path, query: curQuery});
 };
 //endregion
 
 const onPage = (ev: any) => {
-  param.value.query.first = ev.first;
-  param.value.query.rows = ev.rows;
+  param.value.initPage(ev.first, ev.rows);
   load();
 };
 const onSort = (ev: any) => {
-  param.value.query.initPage(dt.value.rows);
-  param.value.query.sortField = ev.sortField;
-  param.value.query.sortOrder = ev.sortOrder;
+  param.value.initPage(0, dt.value.rows);
+  param.value.initSort(ev.sortField, ev.sortOrder);
   load();
 };
 const onFilter = () => {
-  param.value.query.initPage(dt.value.rows);
+  param.value.initPage(0, dt.value.rows);
   load();
 };
 
 const load = async () => {
-  param.value.first = param.value.query.first;
   updateQueryParam();
   param.value.load();
   const res = await axios.post(API.EPISODE_GET_LIST, param.value.query);
@@ -99,18 +104,30 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="param.data" class="p-datatable-sm small-font" :alwaysShowPaginator="param.data.length !== 0"
+  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable" :alwaysShowPaginator="param.data.length != 0"
              lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
-             paginator :rows="10" :first="param.first" stripedRows size="small"
-             v-model:selection="param.selectedData" dataKey="id" removableSort
+             paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small"
+             v-model:selection="param.selectedData" dataKey="id" removableSort showGridlines
              scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="{first} to {last} of {totalRecords}" responsiveLayout="scroll"
+             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll"
              rowGroupMode="rowspan" groupRowsBy="parent.name">
+    <template #paginatorfirstpagelinkicon>
+      <span class="material-symbols-outlined">first_page</span>
+    </template>
+    <template #paginatorprevpagelinkicon>
+      <span class="material-symbols-outlined">chevron_left</span>
+    </template>
+    <template #paginatornextpagelinkicon>
+      <span class="material-symbols-outlined">chevron_right</span>
+    </template>
+    <template #paginatorlastpagelinkicon>
+      <span class="material-symbols-outlined">last_page</span>
+    </template>
     <template #header>
-      <BlockUI :blocked="param.blocking" class="relative">
+      <BlockUI :blocked="param.blocking">
         <Button variant="text" severity="help" :disabled="param.selectedData.length"
                 outlined @click="exportCSV">
           <template #icon>
@@ -120,20 +137,19 @@ const exportCSV = () => {
       </BlockUI>
     </template>
     <template #empty>
-        <span class="emptyInfo">
-            {{ t('CommonDataTableEmptyInfo') }}
-        </span>
+        <span>{{ t('CommonDataTableEmptyInfo') }}</span>
     </template>
     <template #loading>
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"/>
       <span>{{ t('CommonDataTableLoadingInfo') }}</span>
     </template>
 
-    <Column style="width: 45px">
+    <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
+    <Column class="entity-manager-datatable-edit-column">
       <template #body>
         <Button variant="text" outlined size="small">
           <template #icon>
-            <span style="font-size: 15px" class="material-symbols-outlined">edit_square</span>
+            <span class="material-symbols-outlined">edit_square</span>
           </template>
         </Button>
       </template>
@@ -148,30 +164,30 @@ const exportCSV = () => {
         </a>
       </template>
       <template #filter="{filterModel,filterCallback}">
-        <InputText style="width: 70%" size="small" type="text" v-model="filterModel.value"
+        <InputText style="width: 70%" size="large" type="text" v-model="filterModel.value"
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column :header="t('Duration')" field="duration" :showFilterMenu="false" :sortable="true" style="width: 60px" />
-    <Column :header="t('Index')" :showFilterMenu="false" style="width: 50px">
+    <Column :header="t('Duration')" field="duration" :showFilterMenu="false" :sortable="true" style="width: 6rem" />
+    <Column :header="t('Index')" :showFilterMenu="false" style="width: 5rem">
       <template #body="{data}">
         {{ `${data!.discNo}-${data!.serial}` }}
       </template>
     </Column>
 
-    <Column field="parent.name" header="Parent" style="width: 300px" :bodyStyle="{position: 'relative'}">
+    <Column field="parent.name" header="Parent" style="width: 30rem" :bodyStyle="{position: 'relative'}">
       <template #body="{data}">
         <a :title="data.parent.name"
            :href="`/db/${data.parent.tableName}/${data.parent.id}`"
-           style="width: 280px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
-           position: absolute;margin-top: 10px;top: 0">
+           style="width: 28rem;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
+           position: absolute;margin-top: 1rem;top: 0">
           {{ data!.parent.name }}
         </a>
       </template>
     </Column>
-    <Column :header="t('AddedTime')" field="addedTime" :showFilterMenu="false" :sortable="true" style="width: 140px" />
-    <Column :header="t('EditedTime')" field="editedTime" :showFilterMenu="false" :sortable="true" style="width: 140px" />
-    <Column :header="t('File')" field="fileCount" style="width: 40px" />
+    <Column :header="t('AddedTime')" field="addedTime" :showFilterMenu="false" :sortable="true" style="width: 14rem" />
+    <Column :header="t('EditedTime')" field="editedTime" :showFilterMenu="false" :sortable="true" style="width: 14rem" />
+    <Column :header="t('File')" field="fileCount" class="text-center" style="width: 4rem" />
   </DataTable>
 </template>
 
