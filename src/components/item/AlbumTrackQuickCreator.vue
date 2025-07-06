@@ -1,30 +1,25 @@
 <script setup lang="ts">
 import {inject, onBeforeMount, ref} from "vue";
-import {useToast} from "primevue/usetoast";
-import {useRoute} from "vue-router";
-import {EntityInfo} from '@/config/Web_Const';
 import {useI18n} from "vue-i18n";
-import {AlbumDisc, parseAlbumTracks} from "@/logic/itemService";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {AlbumDisc, parseAlbumTracks} from "@/service/itemService";
 import {API, Axios} from "@/api";
 import {useOptionStore} from "@/store/modules/option";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
-const entityInfo = ref<EntityInfo>();
+const entity = inject<Entity>('entity')!;
 const {t} = useI18n();
-const toast = useToast();
 const dr = inject<any>("dialogRef");
-const route = useRoute();
-const block = ref(false);
 const upload = ref(false);
 const loading = ref();
 const analysisInput = ref();
 const store = useOptionStore();
 const disc = ref(new AlbumDisc());
+const param = ref(new EditParam());
 
 onBeforeMount(() => {
   if (dr.value.data.mode === 'normal'){
-    entityInfo.value = PublicHelper.getEntityInfo(route);
-    disc.value.itemId = entityInfo.value!.id;
+    disc.value.itemId = entity!.id;
   }
   disc.value.mediaFormat = store.options.mediaFormatSet[1].value
   disc.value.albumFormat = [store.options.albumFormatSet[0].value]
@@ -46,14 +41,14 @@ const close = () => {
 
 const submit = async () => {
   if (dr.value.data.mode === 'normal') {
-    block.value = true;
+    param.value.block = true;
     const res = await Axios.post(API.ALBUM_TRACK_QUICK_CREATE, disc.value);
     if (res.success()) {
-      toast.add(new PToast().success(res.message));
+      bs!.toast.success(res.message);
       upload.value = true;
       close();
     }
-    block.value = false;
+    param.value.block = false;
   } else if (dr.value.data.mode === 'advance') {
     dr.value.close(
         {
@@ -68,7 +63,7 @@ const submit = async () => {
 </script>
 
 <template>
-  <BlockUI :blocked="block">
+  <BlockUI :blocked="param.block">
     <div class="formgrid grid">
     </div>
     <DataTable ref="dt" :value="disc.tracks" :loading="loading"

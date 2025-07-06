@@ -35,7 +35,7 @@
               <span>{{ ep.name }}</span>
             </td>
             <td nowrap="nowrap" v-else>
-              <router-link :to="`${API.EPISODE_DETAIL}/${ep.id}`">
+              <router-link :to="`${$api.EPISODE_DETAIL}/${ep.id}`">
                 <span>{{ ep.name }}</span>
               </router-link>
             </td>

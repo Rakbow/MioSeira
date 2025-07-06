@@ -25,7 +25,7 @@
               <img role="presentation" :alt="entity.name" :src="entity.thumb"/>
             </div>
             <div class="related-entity-info">
-              <a :href="`${API.ENTRY_DETAIL_PATH}/${entity.id}`" :title="entity.name">
+              <a :href="`${$api.ENTRY_DETAIL_PATH}/${entity.id}`" :title="entity.name">
                 {{ entity.name }}
               </a>
               <small :title="entity.subName">
@@ -81,7 +81,7 @@ import {ref, onMounted, defineProps, getCurrentInstance} from "vue";
 import {META} from "@/config/Web_Const";
 import {API, Axios} from "@/api";
 import {useI18n} from "vue-i18n";
-import {EntitySelectorParam} from "@/logic/entityService";
+import {EntitySelectorParam} from "@/service/entityService";
 
 onMounted(() => {
   pickedEntries.value = props.entries;
@@ -112,17 +112,15 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(['pick']);
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
 const {t} = useI18n();
 const pickedEntries = ref<any[]>([]);
-const dt = ref();
 const selectEntityType = ref();
-const loading = ref(false);
 const param = ref<EntitySelectorParam>(new EntitySelectorParam());
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null)
-    selectEntityType.value = proxy.$const.ENTRY_TYPE_SET[0];
+    selectEntityType.value = proxy!.$const.ENTRY_TYPE_SET[0];
   param.value.type = parseInt(selectEntityType.value.value);
   load();
 }

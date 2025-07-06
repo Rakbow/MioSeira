@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineAsyncComponent, defineProps, getCurrentInstance, ref} from 'vue';
+import {defineAsyncComponent, defineProps, getCurrentInstance, inject, ref} from 'vue';
 import {useUserStore} from "@/store/modules/user";
 import {useDialog} from "primevue/usedialog";
 import {useRoute} from "vue-router";
@@ -11,26 +11,15 @@ const manager = defineAsyncComponent(() => import('@/components/related/RelatedE
 const browser = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesBrowser.vue'));
 const {t} = useI18n();
 const route = useRoute();
-const dialog = useDialog();
 const userStore = useUserStore();
 const relatedEntities = ref<any>([]);
 const loading = ref(false);
+const entity = inject<Entity>('entity');
+import {bs} from '@/service/baseService';
 
 const props = defineProps({
   header: {
     type: String,
-    required: true
-  },
-  type: {
-    type: Number,
-    required: true
-  },
-  id: {
-    type: Number,
-    required: true
-  },
-  subType: {
-    type: Number,
     required: true
   },
   targetType: {
@@ -58,7 +47,7 @@ const props = defineProps({
 });
 
 const openManager = () => {
-  dialog.open(manager, {
+  bs!.dialog.open(manager, {
     props: {
       header: `${t('RelatedEntity')}-${t('Edit')}`,
       style: {
@@ -68,9 +57,9 @@ const openManager = () => {
       closable: true
     },
     data: {
-      entityType: props.type,
-      entitySubType: props.subType,
-      entityId: props.id,
+      entityType: entity!.type,
+      entitySubType: entity!.subType,
+      entityId: entity!.id,
       type: props.targetType,
       subTypes: props.targetSubTypes
     },
@@ -84,7 +73,7 @@ const openManager = () => {
 }
 
 const openBrowser = () => {
-  dialog.open(browser, {
+  bs!.dialog.open(browser, {
     props: {
       header: props.header,
       style: {
@@ -94,8 +83,8 @@ const openBrowser = () => {
       closable: true
     },
     data: {
-      entityType: props.type,
-      entityId: props.id,
+      entityType: entity!.type,
+      entityId: entity!.id,
       type: props.targetType,
       subTypes: props.targetSubTypes
     }

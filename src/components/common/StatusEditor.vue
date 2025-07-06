@@ -1,23 +1,14 @@
 <script setup lang="ts">
 import {useUserStore} from "@/store/modules/user";
-import {defineProps, onBeforeMount, onMounted, ref} from "vue";
-import { API, Axios } from '@/api'
-import {PublicHelper} from "@/toolkit/publicHelper";
-import {useRoute} from "vue-router";
-import {useToast} from 'primevue/usetoast';
-import {EntityInfo} from "@/config/Web_Const.js";
-import {PToast} from "@/logic/frame";
+import {defineProps, inject, onMounted, ref} from "vue";
+import {API, Axios} from '@/api'
+import {bs} from '@/service/baseService';
+import {EditParam} from "@/service/entityService";
 
-const route = useRoute();
 const userStore = useUserStore();
-const toast = useToast();
-const editBlock = ref(false);
+const param = ref(new EditParam());
 const status = ref();
-const entityInfo = ref<EntityInfo>();
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-})
+const entity = inject<Entity>('entity')!;
 
 onMounted(() => {
   status.value = props.status;
@@ -31,26 +22,26 @@ const props = defineProps({
 });
 
 const updateStatus = async () => {
-  editBlock.value = true;
-  let json = {
-    entity: entityInfo.value?.type,
-    ids: [entityInfo.value?.id],
+  param.value.block = true;
+  param.value.data = {
+    entity: entity!.type,
+    ids: [entity!.id],
     status: !status.value
   };
-  const res = await Axios.post(API.ENTITY_UPDATE_STATUS, json);
+  const res = await Axios.post(API.ENTITY_UPDATE_STATUS, param.value.data);
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  editBlock.value = false;
+  param.value.block = false;
 };
 </script>
 
 <template>
   <div v-if="userStore.user">
     <div class="item_status_edit" style="top: .5rem;right: .5rem" v-if="userStore.user.type > 2 || userStore.user.type === 0">
-      <ToggleSwitch v-model="status" @click="updateStatus" />
+      <ToggleSwitch v-model="status" @click="updateStatus" :disabled="param.block" />
     </div>
   </div>
 </template>

@@ -1,32 +1,21 @@
 <script setup lang="ts">
-import {ref, defineAsyncComponent, onMounted, onBeforeMount} from 'vue';
-import {useDialog} from 'primevue/usedialog';
+import {defineAsyncComponent, inject, onMounted, ref} from 'vue';
+import {useUserStore} from "@/store/modules/user";
+import {useI18n} from "vue-i18n";
+import {API, Axios} from "@/api";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
 const manager = defineAsyncComponent(() => import('@/components/image/ImageManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/image/ImageBrowser.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
-import {useUserStore} from "@/store/modules/user";
-import {PublicHelper} from "@/toolkit/publicHelper";
-import {useRoute} from "vue-router";
-import {useToast} from "primevue/usetoast";
-import {useI18n} from "vue-i18n";
-import {API, Axios} from "@/api";
-import {EntityInfo} from "@/config/Web_Const";
-import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
 const userStore = useUserStore();
-const route = useRoute();
-const dialog = useDialog();
-const toast = useToast();
-const loading = ref(false);
-const entityInfo = ref<EntityInfo>();
+const entity = inject<Entity>('entity')!;
 const images = ref([]);
 const count = ref(0);
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-});
+const param = ref(new EditParam());
 
 onMounted(() => {
   getDisplayImages();
@@ -39,35 +28,39 @@ const imageClick = (index: number) => {
   displayCustom.value = true;
 };
 const getDisplayImages = async () => {
-  loading.value = true;
-  let param = {
-  entityType: entityInfo.value?.type,
-  entityId: entityInfo.value?.id
+  param.value.block = true;
+  param.value.data = {
+  entityType: entity!.type,
+  entityId: entity!.id
   }
-  const res = await Axios.post(API.IMAGES_DEFAULT_DISPLAYED, param);
+  const res = await Axios.post(API.IMAGES_DEFAULT_DISPLAYED, param.value.data);
   if (res.success()) {
     images.value = res.data.images;
     count.value = res.data.count;
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  loading.value = false;
+  param.value.block = false;
 }
 
 const openLoader = () => {
-  dialog.open(browser, {
+  bs!.dialog.open(browser, {
     props: {
       header: t('Images'),
       style: {
         width: '40vw',
       },
       modal: true
+    },
+    data: {
+      type: entity!.type,
+      id: entity!.id,
     }
   });
 }
 
 const openEditDialog = () => {
-  dialog.open(manager, {
+  bs!.dialog.open(manager, {
     props: {
       header: `${t('Images')}${t('Edit')}`,
       style: {
@@ -75,6 +68,10 @@ const openEditDialog = () => {
       },
       modal: true,
       closable: true
+    },
+    data: {
+      type: entity!.type,
+      id: entity!.id,
     }
   });
 }

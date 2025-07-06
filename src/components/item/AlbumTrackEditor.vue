@@ -1,64 +1,53 @@
 <script setup lang="ts">
-import {inject, onBeforeMount, ref} from "vue";
-import {useToast} from "primevue/usetoast";
-import {useDialog} from "primevue/usedialog";
-import {useRoute} from "vue-router";
-import {EntityInfo} from '@/config/Web_Const.ts';
+import {inject, ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {AlbumTrack, parseAlbumTracks} from "@/logic/itemService";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {AlbumTrack, parseAlbumTracks} from "@/service/itemService";
 import {API, Axios} from "@/api";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
-const entityInfo = ref<EntityInfo>();
+const entity = inject<Entity>('entity')!;
 const {t} = useI18n();
-const toast = useToast();
-const dialog = useDialog();
-const dialogRef = inject("dialogRef");
-const route = useRoute();
-const editBlock = ref(false);
-const isUpdate = ref(false);
+const dialogRef = inject<any>("dialogRef");
+const param = ref(new EditParam());
 const tracks = ref<AlbumTrack[]>([]);
 const discNo = ref(1);
 const loading = ref();
-const analysisInput = ref();
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-});
+const analysisInput = ref<string>('');
 const parseDisc = () => {
   loading.value = true;
-  tracks.value.push(...parseAlbumTracks(discNo.value, analysisInput.value));
+  tracks.value.push(...parseAlbumTracks(analysisInput.value));
   loading.value = false;
 }
 
 const close = () => {
   dialogRef.value.close(
       {
-        isUpdate: isUpdate.value
+        isUpdate: param.value.isUpdate
       }
   );
 }
 
 const submit = async () => {
-  editBlock.value = true;
+  param.value.block = true;
   const res = await Axios.post(API.ALBUM_TRACK_QUICK_CREATE, {
-    id: entityInfo.value?.id,
+    id: entity!.id,
     tracks: tracks.value
   });
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
-    isUpdate.value = true;
+    bs!.toast.success(res.message);
+    param.value.isUpdate = true;
     close();
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  editBlock.value = false;
+  param.value.block = false;
 }
 
 </script>
 
 <template>
-  <BlockUI :blocked="editBlock">
+  <BlockUI :blocked="param.block">
     <div class="field">
       <Textarea class="w-full" size="small" rows="6" v-model="analysisInput"/>
     </div>

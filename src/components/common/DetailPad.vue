@@ -1,5 +1,5 @@
 <template>
-  <BlockUI :blocked="editBlock" class="entity-fieldset">
+  <BlockUI :blocked="param.block" class="entity-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-align-left"/>
@@ -8,14 +8,14 @@
       <div class="relative">
         <Button v-if="!empty" class="p-button-link absolute top-0"
                 @click="openTextTingle" style="right: 4%" icon="pi pi-external-link"
-                v-tooltip.bottom="{value: t('FullScreen'), class: 'short-tooltip'}">
+                v-tooltip="{value: t('FullScreen'), class: 'short-tooltip'}">
           <template #icon>
             <MaterialIcon name="arrows_output" />
           </template>
         </Button>
         <Button v-if="userStore.user && userStore.user.type > 1" class="p-button-link absolute top-0"
                 @click="openEditDialog" style="right: 0"
-                v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
+                v-tooltip="{value: t('Edit'), class: 'short-tooltip'}">
           <template #icon>
             <MaterialIcon name="edit_square" />
           </template>
@@ -32,18 +32,18 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps, defineAsyncComponent, computed} from "vue";
+import {computed, defineAsyncComponent, defineProps, onMounted, ref} from "vue";
 import {useUserStore} from "@/store/modules/user";
 import tingle from 'tingle.js';
 import 'tingle.js/src/tingle.css';
 import {marked} from 'marked';
 import 'md-editor-v3/lib/style.css';
-import {useDialog} from 'primevue/usedialog';
 import {useI18n} from "vue-i18n";
+import {EditParam} from "@/service/entityService";
 
 const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/DetailEditor.vue'));
 const {t} = useI18n();
-const editBlock = ref(false);
+const param = ref(new EditParam());
 const empty = ref(false);
 const maxLength = ref(400);
 const isCollapsed = ref(true);
@@ -69,13 +69,12 @@ onMounted(() => {
   text2Markdown();
 })
 
-const dialog = useDialog();
 const userStore = useUserStore();
 const html = ref();
 const text = ref('');
 
 const openEditDialog = () => {
-  dialog.open(CommonTextEditor, {
+  bs!.dialog.open(CommonTextEditor, {
     props: {
       header: t('Description'),
       style: {

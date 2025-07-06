@@ -24,9 +24,12 @@ import {onMounted, onBeforeUnmount, ref} from "vue";
 import PageHeader from "@/layouts/PageHeader.vue";
 import PageFooter from "@/layouts/PageFooter.vue";
 import {useDialog} from 'primevue/usedialog';
+import { registerPrimevueService } from '@/service/baseService'
+import {useToast} from "primevue/usetoast";
 
+const toast = useToast();
 const dialog = useDialog();
-
+registerPrimevueService(dialog, toast);
 const mainContent = ref();
 
 const handleScroll = (event) => {

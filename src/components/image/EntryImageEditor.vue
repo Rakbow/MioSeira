@@ -1,23 +1,18 @@
 <script setup lang="ts">
-import {defineAsyncComponent, defineProps, inject, onMounted, ref} from "vue";
+import {defineAsyncComponent, defineProps, getCurrentInstance, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
-import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
-import {useToast} from "primevue/usetoast";
-import {useRoute} from "vue-router";
+import {bs} from '@/service/baseService';
 
 const cropper = defineAsyncComponent(() => import('@/components/image/ImageCropper.vue'));
 
-const route = useRoute();
 const {t} = useI18n();
-const toast = useToast();
-const dialog = useDialog();
-const dialogRef = inject("dialogRef");
 const cover = ref();
 const thumb = ref();
 const uploadDialogDisplay = ref(false);
 const loading = ref(false);
 const image = ref();
+const {proxy} = getCurrentInstance()!;
 
 const props = defineProps({
   id: {
@@ -39,14 +34,14 @@ onMounted(() => {
   thumb.value = props.thumb;
 });
 
-const openUploadDialog = (type) => {
+const openUploadDialog = (type: number) => {
   image.value = {
     type: type
   }
   uploadDialogDisplay.value = true;
 }
 
-const select = async (ev) => {
+const select = async (ev: any) => {
   if (!ev.files) return;
   for (let file of ev.files) {
     image.value.file = file;
@@ -61,23 +56,23 @@ const clear = () => {
 const upload = async () => {
   loading.value = true;
   const formData = new FormData();
-  formData.append('id', props.id);
+  formData.append('id', props.id?.toString());
   formData.append('file', image.value.file);
   formData.append('imageType', image.value.type);
-  const res = await axios.form(API.ENTRY_UPLOAD_IMAGE, formData);
+  const res = await Axios.form(API.ENTRY_UPLOAD_IMAGE, formData);
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
-    if (image.value.type === $const.IMAGE_TYPE.MAIN) cover.value = res.data;
-    else if (image.value.type === $const.IMAGE_TYPE.THUMB) thumb.value = res.data;
+    bs!.toast.success(res.message);
+    if (image.value.type === proxy!.$const.IMAGE_TYPE.MAIN) cover.value = res.data;
+    else if (image.value.type === proxy!.$const.IMAGE_TYPE.THUMB) thumb.value = res.data;
     uploadDialogDisplay.value = false;
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   loading.value = false;
 };
 
 const openCropper = () => {
-  dialog.open(cropper, {
+  bs!.dialog.open(cropper, {
     props: {
       header: t('Edit'),
       style: {
@@ -88,7 +83,7 @@ const openCropper = () => {
     },
     data: {
     },
-    onClose: async (options) => {
+    onClose: async (options: any) => {
       if (options.data !== undefined) {
         if (options.data.isUpdate) {
 
@@ -106,14 +101,14 @@ const openCropper = () => {
       <Button class="absolute bottom-0 right-0" size="small"
               @click="openUploadDialog($const.IMAGE_TYPE.MAIN)" icon="pi pi-cloud-upload" severity="info"
               v-tooltip.bottom="{value: t('Upload'), class: 'short-tooltip'}"/>
-      <img v-if="cover" :src="`${API.STATIC_DOMAIN}${cover}`" alt="cover"/>
+      <img v-if="cover" :src="`${$api.STATIC_DOMAIN}${cover}`" alt="cover"/>
       <img v-else :src="API.COMMON_EMPTY_COVER_IMAGE" alt="cover"/>
     </div>
     <div class="flex align-items-center justify-content-center image-container">
       <Button class="absolute bottom-0 right-0" size="small"
               @click="openUploadDialog($const.IMAGE_TYPE.THUMB)" icon="pi pi-cloud-upload" severity="info"
               v-tooltip.bottom="{value: t('Upload'), class: 'short-tooltip'}"/>
-      <img v-if="thumb" :src="`${API.STATIC_DOMAIN}${thumb}`" alt="thumb"/>
+      <img v-if="thumb" :src="`${$api.STATIC_DOMAIN}${thumb}`" alt="thumb"/>
       <img v-else :src="API.COMMON_EMPTY_THUMB_IMAGE" alt="cover"/>
     </div>
   </div>

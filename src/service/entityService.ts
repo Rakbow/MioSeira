@@ -1,9 +1,10 @@
-import {DynamicDialogInstance, DynamicDialogOptions} from "primevue/dynamicdialogoptions";
 import fileEditor from "@/components/entityEditor/FileEditor.vue";
 import {META} from "@/config/Web_Const";
 import i18n from "@/config/i18n";
-import {PColumn} from "@/logic/frame";
+import {PColumn} from "@/service/frame";
 import {PublicHelper} from "@/toolkit/publicHelper";
+
+import {bs} from '@/service/baseService'
 
 const {t} = i18n.global;
 let editor: any = null;
@@ -129,13 +130,17 @@ export class EntityManageParam {
     }
 }
 
-export const loadEditor = (type: number, data: any, dialog: {
-    open: (content: any, options?: (DynamicDialogOptions | undefined)) => DynamicDialogInstance
-}) => {
+export class EditParam {
+    block: boolean = false;
+    isUpdate: boolean = false;
+    data: any = null;
+}
+
+export const loadEditor = (type: number, data: any) => {
 
     if (type === META.ENTITY.FILE) editor = fileEditor;
 
-    dialog.open(editor, {
+    bs!.dialog.open(editor, {
         props: {
             header: t('Edit'),
             style: {
@@ -148,13 +153,14 @@ export const loadEditor = (type: number, data: any, dialog: {
             entity: data
         },
         onClose: (options) => {
-            // @ts-ignore
-            if (options.data !== undefined) {
-                // @ts-ignore
-                if (options.data.isUpdate) {
+            if (options!.data !== undefined) {
+                if (options!.data.isUpdate) {
                     location.reload();
                 }
             }
         }
     });
+}
+
+export class updateEntityDetail {
 }

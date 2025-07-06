@@ -1,25 +1,21 @@
 <script setup lang="ts">
 import {defineAsyncComponent, getCurrentInstance, inject, onBeforeMount, onMounted, ref} from "vue";
-import {useToast} from "primevue/usetoast";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {useOptionStore} from "@/store/modules/option";
-import {EntityManageParam} from "@/logic/entityService";
-import {PToast} from "@/logic/frame";
+import {EntityManageParam} from "@/service/entityService";
 import {useConfirm} from "primevue";
 
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
 const store = useOptionStore();
 const {t} = useI18n();
-const toast = useToast();
 const confirm = useConfirm();
 const dialogRef = inject<any>("dialogRef");
 const param = ref(new EntityManageParam());
-const isUpdate = ref(false);
 const dt = ref();
-const entryType = ref(proxy.$const.ENTRY_TYPE.PRODUCT);
+const entryType = ref(proxy!.$const.ENTRY_TYPE.PRODUCT);
 const curEntryType = ref<any>(null);
 
 
@@ -34,7 +30,7 @@ onBeforeMount(() => {
   if (dialogRef.value.data.subTypes.length) {
     entryType.value = dialogRef.value.data.subTypes[0];
     param.value.query.filters.targetEntitySubTypes.value = [entryType.value];
-    curEntryType.value = proxy.$const.ENTRY_TYPE_SET[entryType.value - 1];
+    curEntryType.value = proxy!.$const.ENTRY_TYPE_SET[entryType.value - 1];
   }
 })
 
@@ -45,7 +41,7 @@ onMounted(() => {
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null) {
-    entryType.value = proxy.$const.ENTRY_TYPE.PRODUCT;
+    entryType.value = proxy!.$const.ENTRY_TYPE.PRODUCT;
     param.value.query.filters.targetEntitySubTypes.value = [];
   } else {
     entryType.value = parseInt(curEntryType.value.value);
@@ -72,7 +68,7 @@ const createdDTO = ref({
   entityType: dialogRef.value.data.entityType,
   entitySubType: dialogRef.value.data.entitySubType,
   entityId: dialogRef.value.data.entityId,
-  relatedEntityType: proxy.$const.ENTITY.ENTRY,
+  relatedEntityType: proxy!.$const.ENTITY.ENTRY,
   relatedEntitySubType: entryType.value,
   roleId: 0,
   relatedRoleId: 0,
@@ -93,12 +89,12 @@ const create = async () => {
   createdDTO.value.relatedEntries = createdDTO.value.entities.map(i => ({id: i.id, remark: i.remark}));
   const res = await Axios.post(API.RELATION_CREATE, createdDTO.value);
   if (res.success()) {
-    isUpdate.value = true;
+    param.value.isUpdate = true;
     createDialog.value = false;
     await load();
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 }
@@ -121,12 +117,12 @@ const update = async () => {
     direction: updateDTO.value.direction
   });
   if (res.success()) {
-    isUpdate.value = true;
+    param.value.isUpdate = true;
     updateDialog.value = false;
     await load();
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 }
@@ -159,13 +155,13 @@ const openDelete = () => {
 };
 
 const remove = async () => {
-  const res = await axios.delete(API.RELATION_DELETE, {ids: param.value.selectedData.map(i => i.id)});
+  const res = await Axios.delete(API.RELATION_DELETE, {ids: param.value.selectedData.map(i => i.id)});
   if (res.success()) {
-    isUpdate.value = true;
-    toast.add(new PToast().success(res.message));
+    param.value.isUpdate = true;
+    bs!.toast.success(res.message);
     await load();
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 }
@@ -254,7 +250,7 @@ const load = async () => {
       <Column :header="t('RelatedEntity')">
         <template #body="{data}">
           <router-link class="common-link" :title="data.target.name"
-                       :to="`${API.ENTRY_DETAIL_PATH}/${data.target.entityId}`">
+                       :to="`${$api.ENTRY_DETAIL_PATH}/${data.target.entityId}`">
             {{ data!.target.name }}
           </router-link>
         </template>

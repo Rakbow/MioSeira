@@ -37,7 +37,7 @@
                 <tr v-for="track in disc.tracks">
                   <th>{{ track.serial }}</th>
                   <td nowrap="nowrap">
-                    <router-link :to="`${API.EPISODE_DETAIL}/${track.id}`">
+                    <router-link :to="`${$api.EPISODE_DETAIL}/${track.id}`">
                       <span>{{ track.name }}</span>
                     </router-link>
                   </td>
@@ -80,7 +80,7 @@
     </Fieldset>
   </div>
   <Dialog :modal="true" v-model:visible="audioUploadDisplay" :style="{width: '600px'}" :header="t('Upload')">
-    <BlockUI :blocked="editBlock">
+    <BlockUI :blocked="param.block">
       <FileUpload ref="dt" auto multiple :customUpload="true"
                   :showUploadButton="false"
                   :showCancelButton="false"
@@ -123,16 +123,15 @@
 </template>
 
 <script setup lang="ts">
-import {computed, defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
-import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {useToast} from "primevue/usetoast";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
 const {t} = useI18n();
-const toast = useToast();
 const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const quickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
 
@@ -144,8 +143,7 @@ onBeforeMount(() => {
 })
 
 const route = useRoute();
-const dialog = useDialog();
-const editBlock = ref(false);
+const param = ref(new EditParam());
 const loading = ref(false);
 const info = ref({
   discs: [],
@@ -154,17 +152,17 @@ const info = ref({
 });
 
 const reloadTrackInfo = async () => {
-  editBlock.value = true;
+  param.value.block = true;
   loading.value = true;
   const res = await Axios.post(API.ALBUM_TRACK_LIST, {id: route.params.id});
   if (res.success())
     info.value = res.data;
-  editBlock.value = false;
+  param.value.block = false;
   loading.value = false;
 }
 
 const openQuickCreatorDialog = () => {
-  dialog.open(quickCreator, {
+  bs!.dialog.open(quickCreator, {
     props: {
       header: t('TrackInfo'),
       style: {
@@ -181,7 +179,7 @@ const openQuickCreatorDialog = () => {
     data: {
       mode: 'normal'
     },
-    onClose: (options) => {
+    onClose: (options: any) => {
       if (options.data !== undefined) {
         if (options.data.upload) {
           reloadTrackInfo();
@@ -193,12 +191,12 @@ const openQuickCreatorDialog = () => {
 
 //file upload
 const dt = ref();
-const fileInfos = ref([]);
+const fileInfos = ref<any[]>([]);
 const audioUploadDisplay = ref(false);
 const openAudioUpload = () => {
   audioUploadDisplay.value = true;
 }
-const selectFile = async (ev) => {
+const selectFile = async (ev: any) => {
   if (!ev.files) return;
   fileInfos.value = [];
   for (let file of ev.files) {
@@ -219,15 +217,15 @@ const removeFile = (index: number) => {
 };
 const uploadAudioFile = async () => {
   const fd = new FormData();
-  fd.append('albumId', route.params.id);
+  fd.append('albumId', route.params.id.toString());
   fileInfos.value.forEach(f => fd.append('files', f.file));
-  editBlock.value = true;
-  const res = await axios.form(API.ALBUM_TRACK_FILES_UPLOAD, fd);
+  param.value.block = true;
+  const res = await Axios.form(API.ALBUM_TRACK_FILES_UPLOAD, fd);
   if (res.success())
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   audioUploadDisplay.value = false;
   fileInfos.value = [];
-  editBlock.value = false;
+  param.value.block = false;
 }
 </script>
 

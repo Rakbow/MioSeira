@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import "@/assets/entity-global.scss";
 import "@/styles/entity-search.scss";
 import '@/styles/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
@@ -9,15 +8,14 @@ import {API, Axios} from "@/api";
 import {defineAsyncComponent, onBeforeMount, onMounted, ref, watch} from "vue";
 import {LocationQueryValue, useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {useToast} from "primevue/usetoast";
 import {useOptionStore} from "@/store/modules/option";
-import {ItemQueryParams} from "@/logic/itemService";
+import {ItemQueryParams} from "@/service/itemService";
+import {bs} from '@/service/baseService';
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
 const {t} = useI18n();
-const toast = useToast();
 const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
@@ -210,7 +208,7 @@ const getItems = async () => {
     searchResult.value.total = res.data.total;
     searchResult.value.time = res.data.searchTime;
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   loading.value = false;
 }
@@ -307,7 +305,7 @@ const endHover = () => {
               </div>
             </div>
             <div v-else v-for="(item, index) in slotProps.items" :key="index">
-              <a :href="`${API.ITEM_DETAIL_PATH}/${item.id}`"
+              <a :href="`${$api.ITEM_DETAIL_PATH}/${item.id}`"
                  @pointerover="startHover($event, item)" @pointerleave="endHover"
                  :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
                 <img role="presentation" :alt="item.id" :src="(item as any).thumb"/>
@@ -322,13 +320,13 @@ const endHover = () => {
             </div>
             <div v-if="!loading" v-for="(item, index) in slotProps.items" :key="index" class="grid">
               <div class="item-search-list-thumb col-fixed">
-                <a :href="`${API.ITEM_DETAIL_PATH}/${item.id}`"
+                <a :href="`${$api.ITEM_DETAIL_PATH}/${item.id}`"
                    :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
                   <img role="presentation" :alt="item.id" :src="(item as any).thumb"/>
                 </a>
               </div>
               <div class="item-search-list-info col">
-                <a :href="`${API.ITEM_DETAIL_PATH}/${item.id}`" class="text-overflow-hidden-one"
+                <a :href="`${$api.ITEM_DETAIL_PATH}/${item.id}`" class="text-overflow-hidden-one"
                    :title="item.name">{{ item.name }}</a>
                 <Tag :value="item.type.label"/>
                 <span v-if="item.type.value !== $const.ITEM_TYPE.ALBUM">
@@ -456,7 +454,7 @@ const endHover = () => {
                 </div>
                 <div class="col" style="width: 212px;">
                     <span class="data-table-field-text-overflow-hidden">
-                      <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" :title="entry.name">{{ entry.name }}</a>
+                      <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" :title="entry.name">{{ entry.name }}</a>
                     </span>
                   <small style="color: gray" class="data-table-field-text-overflow-hidden">
                     {{ (entry as any).subName }}

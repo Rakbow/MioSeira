@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {useDialog} from "primevue/usedialog";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam, loadEditor} from "@/logic/entityService";
+import {EntityManageParam, loadEditor} from "@/service/entityService";
 import {getIcon} from "material-file-icons";
-import {PColumn} from "@/logic/frame";
+import {PColumn} from "@/service/frame";
 
 const {t} = useI18n();
 const route = useRoute();
 const router = useRouter();
-const dialog = useDialog();
 const dt = ref();
 const param = ref(new EntityManageParam());
 
@@ -141,7 +139,7 @@ const exportCSV = () => {
             <MaterialIcon name="delete_forever" />
           </template>
         </Button>
-        <Button variant="text" severity="help" :disabled="param.data.length"
+        <Button variant="text" severity="help" :disabled="param.data.length === 0"
                 outlined @click="exportCSV">
           <template #icon>
             <MaterialIcon name="open_in_new"/>
@@ -160,7 +158,7 @@ const exportCSV = () => {
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
-        <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data, dialog)">
+        <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data)">
           <template #icon>
             <MaterialIcon name="edit_square" />
           </template>

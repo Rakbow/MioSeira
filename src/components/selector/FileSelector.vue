@@ -71,7 +71,7 @@ import {ref, onMounted, defineProps} from "vue";
 import {API, Axios} from "@/api";
 import { getIcon } from 'material-file-icons';
 import {useI18n} from "vue-i18n";
-import {EntitySelectorParam} from "@/logic/entityService";
+import {EntitySelectorParam} from "@/service/entityService";
 
 const emit = defineEmits(['pick']);
 

@@ -5,22 +5,16 @@ import {useDialog} from "primevue/usedialog";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {EntityInfo} from "@/config/Web_Const";
 import {API, Axios} from "@/api";
 
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 const {t} = useI18n();
-const entityInfo = ref<EntityInfo>();
+const entity = inject<Entity>('entity')!;
 const route = useRoute();
-const dialog = useDialog();
 const userStore = useUserStore();
 const subProducts = ref<any>([]);
-const editBlock = ref(false);
-const { proxy } = getCurrentInstance();
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-});
+const param = ref(new EditParam());
+const { proxy } = getCurrentInstance()!;
 
 onMounted(() => {
   getSubProduct()
@@ -28,7 +22,7 @@ onMounted(() => {
 
 
 const openEditDialog = () => {
-  dialog.open(manager, {
+  bs!.dialog.open(manager, {
     props: {
       header: `${t('RelatedEntity')}-${t('Edit')}`,
       style: {
@@ -38,7 +32,7 @@ const openEditDialog = () => {
       closable: true
     },
     data: {
-      direction: proxy.$const.RELATION_RELATED_DIRECTION.NEGATIVE
+      direction: proxy!.$const.RELATION_RELATED_DIRECTION.NEGATIVE
     },
     onClose: (options) => {
       if (options.data !== undefined) {
@@ -51,17 +45,17 @@ const openEditDialog = () => {
 }
 
 const getSubProduct = async () => {
-  editBlock.value = true;
-  const res = await Axios.post(API.ENTRY_GET_SUB_PRODUCTS, {id: entityInfo.value?.id});
+  param.value.block = true;
+  const res = await Axios.post(API.ENTRY_GET_SUB_PRODUCTS, {id: entity!.id});
   if (res.success())
     subProducts.value = res.data;
-  editBlock.value = false;
+  param.value.block = false;
 }
 
 </script>
 
 <template>
-  <BlockUI :blocked="editBlock" class="entity-fieldset">
+  <BlockUI :blocked="param.block" class="entity-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-th-large"/>
@@ -88,7 +82,7 @@ const getSubProduct = async () => {
             <tr v-for="entry in subProducts">
               <td style="color: #788990;">{{ (entry as any).date }}</td>
               <td class="a_with_underline">
-                <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" :key="entry.id">
+                <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" :key="entry.id">
                   <span style="white-space: nowrap;" :class="'product-type-' + entry.subType.value">{{ entry.name }}</span>
                 </a>
                 <small>&nbsp;({{ (entry as any).subType.label }})</small>

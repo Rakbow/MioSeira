@@ -30,7 +30,7 @@ import {ref, onMounted, onBeforeMount, defineAsyncComponent} from "vue";
 import {API, Axios} from "@/api";
 import {inject} from "vue";
 import {useI18n} from "vue-i18n";
-import {EntityManageParam} from "@/logic/entityService";
+import {EntityManageParam} from "@/service/entityService";
 
 const RelationEntity = defineAsyncComponent(() => import('@/components/related/RelatedEntity.vue'));
 

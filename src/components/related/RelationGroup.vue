@@ -1,29 +1,18 @@
 <script setup lang="ts">
-import {defineProps, getCurrentInstance, onMounted, ref} from "vue";
-import {findRelationConfig} from "@/logic/entityService";
+import {defineProps, getCurrentInstance, inject, onMounted, ref} from "vue";
+import {findRelationConfig} from "@/service/entityService";
 import {QueryParams} from "@/config/Web_Const";
 import {API, Axios} from "@/api";
 import Relation from "@/components/related/Relation.vue";
 import {useI18n} from "vue-i18n";
 
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
 const {t} = useI18n();
 const queryParams = ref(new QueryParams());
 const config = ref<any>();
 const resultSet = ref<any>([]);
+const entity = inject<Entity>('entity');
 const props = defineProps({
-  id: {
-    type: Number,
-    required: true
-  },
-  type: {
-    type: Number,
-    required: true
-  },
-  subType: {
-    type: Number,
-    required: true
-  },
   showRole: {
     type: Boolean,
     required: false,
@@ -38,13 +27,13 @@ onMounted(() => {
     sortField: null,
     sortOrder: null,
     filters: {
-      entityType: {value: props.type},
-      entityId: {value: props.id},
-      targetEntityType: {value: proxy.$const.ENTITY.ENTRY},
+      entityType: {value: entity!.type},
+      entityId: {value: entity!.id},
+      targetEntityType: {value: proxy!.$const.ENTITY.ENTRY},
       targetEntitySubTypes: {value: []}
     }
   }
-  config.value = findRelationConfig([props.type, props.subType]);
+  config.value = findRelationConfig([entity!.type, entity!.subType]);
   getData();
 })
 
@@ -70,9 +59,8 @@ const getData = async () => {
 
 <template>
   <div v-if="resultSet.length" v-for="(subConfig, index) of config.subConfigs">
-    <Relation :header="t(subConfig.label)" :type="props.type" :id="props.id" :subType="props.subType"
-              :targetSubTypes="subConfig.value" :total="resultSet[index].total" :entities="resultSet[index].data"
-              :showRole="props.showRole"/>
+    <Relation :header="t(subConfig.label)" :targetSubTypes="subConfig.value" :total="resultSet[index].total"
+              :entities="resultSet[index].data" :showRole="props.showRole"/>
   </div>
 </template>
 

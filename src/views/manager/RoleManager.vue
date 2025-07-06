@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
-import {useToast} from "primevue/usetoast";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
-import {EntityManageParam} from "@/logic/entityService";
+import {EntityManageParam} from "@/service/entityService";
 import {useOptionStore} from "@/store/modules/option";
-import {PToast} from "@/logic/frame";
 
 const {t} = useI18n();
 const dt = ref();
-const toast = useToast();
 const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
@@ -133,11 +130,11 @@ const create = async () => {
   param.value.load();
   const res = await Axios.post(API.ROLE_CREATE, createDTO.value);
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
     closeAddDialog();
     await load();
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   param.value.endLoad();
 }
@@ -146,11 +143,11 @@ const update = async () => {
   param.value.load();
   const res = await Axios.post(API.ROLE_UPDATE, updateDTO.value);
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
     closeEditDialog();
     await load();
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   param.value.endLoad();
 }
@@ -160,9 +157,9 @@ const refresh = async () => {
   const res = await Axios.post(API.ROLE_REFRESH);
   if (res.success()) {
     store.clear();
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   param.value.endLoad();
 }

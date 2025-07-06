@@ -1,5 +1,5 @@
 <template>
-  <BlockUI :blocked="editBlock">
+  <BlockUI :blocked="param.block">
     <div class="text-center mb-5">
       <img src="https://blocks.primevue.org/images/blocks/logos/hyper.svg" alt="Image" height="50" class="mb-3">
       <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
@@ -39,24 +39,22 @@
   </BlockUI>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {onMounted, ref} from "vue";
 import $ from 'jquery';
-import {Axios as axios} from "@/api/http.ts";
-import {useUserStore} from "@/store/modules/user.js";
-import {API} from '@/api/api.ts';
-import {useToast} from "primevue/usetoast";
+import {API, Axios} from "@/api";
+import {useUserStore} from "@/store/modules/user";
 import {useI18n} from "vue-i18n";
+import {bs} from '@/service/baseService';
+import {EditParam} from "@/service/entityService";
 
-const userStore = useUserStore();
-const toast = useToast();
 const {t} = useI18n();
+const userStore = useUserStore();
+const param = ref(new EditParam());
 
 onMounted(() => {
   refreshKaptcha();
 });
-
-const editBlock = ref(false);
 
 const refreshKaptcha = () => {
   const path = API.VERIFY_CODE + "?p=" + Math.random();
@@ -64,14 +62,14 @@ const refreshKaptcha = () => {
 }
 
 const login = async () => {
-  editBlock.value = true;
+  param.value.block = true;
   const res = await Axios.post(API.LOGIN, param.value);
   if (res.success()) {
     userStore.login(res.data.user, res.data.token);
     location.reload();
   } else {
-    toast.add(new PToast().error(res.message));
-    editBlock.value = false;
+    bs!.toast.error(res.message);
+    param.value.block = false;
   }
 }
 
@@ -84,6 +82,5 @@ const param = ref({
 
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
 </style>

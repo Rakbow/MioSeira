@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import "@/assets/entity-global.scss";
 import "@/styles/entity-search.scss";
 import '@/styles/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
@@ -9,17 +8,16 @@ import {API, Axios} from "@/api";
 import {getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
 import {LocationQueryValue, useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {useToast} from "primevue/usetoast";
 import {useOptionStore} from "@/store/modules/option";
-import {EntryQueryParams} from "@/logic/entryService";
+import {EntryQueryParams} from "@/service/entryService";
 import {PublicHelper} from "@/toolkit/publicHelper";
+import {bs} from '@/service/baseService';
 
 const {t} = useI18n();
-const toast = useToast();
 const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
 
 //region data view and paginator
 const first = ref(0);
@@ -68,7 +66,7 @@ const initQueryParam = async () => {
   }
 
   if (queryParams.type) {
-    entryType.value = proxy.$const.ENTRY_TYPE_SET.find(i => i.value === queryParams.type?.toString())
+    entryType.value = proxy!.$const.ENTRY_TYPE_SET.find(i => i.value === queryParams.type?.toString())
   }
   // queryParams.size = getNumberValue(route.query.size, 60);
 }
@@ -119,7 +117,7 @@ const getEntries = async () => {
     searchResult.value.total = res.data.total;
     searchResult.value.time = res.data.searchTime;
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   loading.value = false;
 }
@@ -171,12 +169,12 @@ const resetFilter = () => {
             </div>
             <div v-if="!loading" v-for="(entry, index) in slotProps.items" :key="index" class="grid">
               <div class="entry-search-list-thumb col-fixed">
-                <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" class="entry-thumb">
+                <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" class="entry-thumb">
                   <img role="presentation" :alt="entry.id" :src="(entry as any).thumb"/>
                 </a>
               </div>
               <div class="entry-search-list-info col">
-                <a :href="`${API.ENTRY_DETAIL_PATH}/${entry.id}`" class="text-overflow-hidden-one"
+                <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" class="text-overflow-hidden-one"
                    :title="entry.name">{{ entry.name }}</a>
                 <span class="text-overflow-hidden-one" style="display: inline" :title="entry.subName">{{ entry.subName }}</span>
                 <span v-if="entry.date" style="display: inline">&nbsp;({{ entry.date }})</span>

@@ -3,19 +3,17 @@ import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {API, Axios} from "@/api";
-import {useToast} from "primevue/usetoast";
 import {useOptionStore} from "@/store/modules/option";
-import {parseItemSpecParams} from "@/logic/itemService";
-import {PToast} from "@/logic/frame";
+import {parseItemSpecParams} from "@/service/itemService";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
 const {t} = useI18n();
 const dialogRef = inject<any>("dialogRef");
 const item = ref<any>({});
-const isUpdate = ref(false);
-const block = ref(false);
-const toast = useToast();
 const store = useOptionStore();
 const itemSpec = ref('');
+const param = ref(new EditParam());
 
 onBeforeMount(() => {
   store.fetchOptions();
@@ -27,32 +25,32 @@ onMounted(() => {
 })
 
 const submit = async () => {
-  block.value = true;
+  param.value.block = true;
   const res = await Axios.post(API.ITEM_UPDATE, item.value);
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
-    isUpdate.value = true;
+    bs!.toast.success(res.message);
+    param.value.isUpdate = true;
     close();
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  block.value = false;
+  param.value.block = false;
 }
 
 const close = () => {
   dialogRef.value.close(
       {
-        isUpdate: isUpdate.value
+        isUpdate: param.value.isUpdate
       }
   );
 }
 
 const ISBNInterConvert = async (isbn10: string) => {
-  block.value = true;
+  param.value.block = true;
   const res = await Axios.post(API.ITEM_CONVERT_ISBN, {isbn10: isbn10})
   if (res.success())
     item.value.ean13 = res.data;
-  block.value = false;
+  param.value.block = false;
 };
 
 const parseItemSpec = () => {
@@ -66,7 +64,7 @@ const parseItemSpec = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="block" class="entity-editor">
+  <BlockUI :blocked="param.block" class="entity-editor">
     <Divider align="center"><b>{{ t('BasicInfo') }}</b></Divider>
 
     <FloatLabel class="field" variant="on">

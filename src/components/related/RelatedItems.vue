@@ -1,38 +1,32 @@
 <script setup lang="ts">
-import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
-import {EntityInfo} from "@/config/Web_Const";
+import {defineAsyncComponent, inject, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
-import {PublicHelper} from "@/toolkit/publicHelper";
-import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
+import {EditParam} from "@/service/entityService";
+
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
 
 const {t} = useI18n();
 const records = ref(0);
 const page = ref(1);
 const size = ref(24);
-const entityInfo = ref<EntityInfo>();
-const loading = ref(false);
-const route = useRoute();
+const entity = inject<Entity>('entity')!;
 const relatedItems = ref([]);
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-});
+const param = ref(new EditParam());
 
 onMounted(() => {
   getRelatedItems();
 });
 const getRelatedItems = async () => {
-  loading.value = true;
-  let param = {
-    entries: [entityInfo.value?.id],
+  param.value.block = true;
+  param.value.data = {
+    entries: [entity!.id],
     page: page.value,
     size: size.value,
     sortField: 'releaseDate',
     sortOrder: -1
   }
-  const res = await Axios.post(API.ITEM_SEARCH, param);
+  const res = await Axios.post(API.ITEM_SEARCH, param.value.data);
   if (res.success()) {
     if (res.data.data === null)
       relatedItems.value = [];
@@ -40,7 +34,7 @@ const getRelatedItems = async () => {
       relatedItems.value = res.data.data;
     records.value = res.data.total;
   }
-  loading.value = false;
+  param.value.block = false;
 }
 
 //region pop
@@ -60,13 +54,13 @@ const endHover = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="loading" class="entity-fieldset">
+  <BlockUI :blocked="param.block" class="entity-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-th-large"/>
         <b>{{ t('RelatedItem') }}</b>
       </template>
-      <RouterLink v-if="records" class="ml-4" :to="`${API.ITEM_SEARCH_PATH}?entry=${entityInfo?.id}`">
+      <RouterLink v-if="records" class="ml-4" :to="`${$api.ITEM_SEARCH_PATH}?entry=${entity.id}`">
         <span>{{records}}&nbsp;<i class="pi pi-angle-double-right" style="font-size: 1.3rem" /></span>
       </RouterLink>
       <DataView :value="relatedItems" layout="grid">
@@ -76,7 +70,7 @@ const endHover = () => {
         <template #grid="slotProps">
           <div class="flex flex-wrap">
             <div v-for="(item, index) in slotProps.items" :key="index" class="p-2">
-              <a :href="`${API.ITEM_DETAIL_PATH}/${item.id}`" :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
+              <a :href="`${$api.ITEM_DETAIL_PATH}/${item.id}`" :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
                 <img role="presentation" :alt="item.id" :src="(item as any).thumb"
                      @pointerover="startHover($event, item)" @pointerleave="endHover"/>
               </a>

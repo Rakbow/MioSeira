@@ -1,7 +1,7 @@
 import editor from "@/components/entityEditor/ItemEditor.vue";
 import i18n from "@/config/i18n";
 import {META} from "@/config/Web_Const";
-import {DialogServiceMethods} from "primevue/dialogservice";
+import { bs } from '@/service/baseService'
 
 const {t} = i18n.global;
 
@@ -65,31 +65,6 @@ export class ItemQueryParams {
     size: number | null = 60;
     sortField: string | null = null;
     sortOrder: number | null = null;
-}
-
-export const loadEditor = (item: any, dialog: DialogServiceMethods) => {
-    dialog.open(editor, {
-        props: {
-            header: t('Edit'),
-            style: {
-                width: '60rem',
-            },
-            modal: true,
-            closable: true
-        },
-        data: {
-            item: item
-        },
-        onClose: (options) => {
-            // @ts-ignore
-            if (options.data !== undefined) {
-                // @ts-ignore
-                if (options.data.isUpdate) {
-                    location.reload();
-                }
-            }
-        }
-    });
 }
 
 /**
@@ -167,5 +142,28 @@ export const parseAlbumTracks = (input: string): AlbumTrack[] => {
         track.name = name;
         track.duration = duration;
         return track;
+    });
+}
+
+export const loadEditor = (item: any) => {
+    bs!.dialog.open(editor, {
+        props: {
+            header: t('Edit'),
+            style: {
+                width: '60rem',
+            },
+            modal: true,
+            closable: true
+        },
+        data: {
+            item: item
+        },
+        onClose: (options) => {
+            if (options!.data !== undefined) {
+                if (options!.data.isUpdate) {
+                    location.reload();
+                }
+            }
+        }
     });
 }

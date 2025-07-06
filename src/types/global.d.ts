@@ -14,3 +14,9 @@ interface UserState {
     user: User | null;
     ticket: string | null;
 }
+
+interface Entity {
+    type: number;
+    subType: number;
+    id: number;
+}

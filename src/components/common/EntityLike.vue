@@ -1,24 +1,16 @@
 <script setup lang="ts">
-import {defineProps, onBeforeMount, onMounted, ref} from "vue";
-import { API, Axios } from '@/api';
-import {PublicHelper} from "@/toolkit/publicHelper";
-import {useRoute} from "vue-router";
-import {useToast} from 'primevue/usetoast';
+import {defineProps, inject, onMounted, ref} from "vue";
+import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {EntityInfo} from "@/config/Web_Const";
-import {PToast} from "@/logic/frame";
 
-const entityInfo = ref<EntityInfo>();
+import {bs} from '@/service/baseService';
+import {EditParam} from "@/service/entityService";
+
 const {t} = useI18n();
-const route = useRoute();
-const toast = useToast();
-const editBlock = ref(false);
+const entity = inject<Entity>('entity')!;
+const param = ref(new EditParam());
 const liked = ref(false);
 const likeCount = ref(0);
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-});
 
 onMounted(() => {
   liked.value = props.liked;
@@ -38,26 +30,26 @@ const props = defineProps({
 });
 
 const like = async () => {
-  editBlock.value = true;
-  let param = {
-    entityType: entityInfo.value?.type,
-    entityId: entityInfo.value?.id
+  param.value.block = true;
+  param.value.data = {
+    entityType: entity.type,
+    entityId: entity.id
   };
-  const res = await Axios.post(API.ENTITY_LIKE, param);
+  const res = await Axios.post(API.ENTITY_LIKE, param.value.data);
   if (res.success()) {
     likeCount.value++;
     liked.value = true;
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  editBlock.value = false;
+  param.value.block = false;
 };
 </script>
 
 <template>
   <div class="justify-content-center mt-1">
-    <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: t('Like'), class: 'short-tooltip'}">
+    <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: t('Like'), class: 'short-tooltip'}" :disabled="param.block">
       <i style="font-size: 1.7rem" class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"/>
     </Button>
     <span style="font-size: 1.4rem">{{ likeCount }}</span>

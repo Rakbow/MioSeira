@@ -11,7 +11,6 @@ const {t} = useI18n();
 const records = ref(0);
 const loading = ref(false);
 const files = ref([]);
-const dialog = useDialog();
 
 onMounted((() => {
   load();
@@ -46,7 +45,7 @@ const load = async () => {
 }
 
 const openCreator = () => {
-  dialog.open(creator, {
+  bs!.dialog.open(creator, {
     props: {
       header: t('Upload'),
       style: {

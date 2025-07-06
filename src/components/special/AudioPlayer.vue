@@ -2,7 +2,7 @@
 import { reactive,nextTick, onBeforeUnmount,getCurrentInstance, onMounted, defineProps, ref } from 'vue'
 import ColorThief from 'colorthief';
 import APlayer from 'aplayer';
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
 
 const props = defineProps({
   audios: {

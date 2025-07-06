@@ -1,5 +1,5 @@
 <template>
-  <BlockUI :blocked="editBlock">
+  <BlockUI :blocked="param.block">
     <DataTable ref="dt" :value="images" :alwaysShowPaginator="images.length !== 0"
                lazy :totalRecords="totalRecords" :loading="loading" size="small"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
@@ -12,7 +12,7 @@
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                responsiveLayout="scroll" tableStyle="font-size: 11px">
       <template #header>
-        <BlockUI :blocked="editBlock" class="grid">
+        <BlockUI :blocked="param.block" class="grid">
           <Button variant="text" outlined @click="openAddDialog">
             <template #icon>
               <MaterialIcon name="add_box"/>
@@ -82,14 +82,14 @@
   </Dialog>
   <Dialog :modal="true" v-model:visible="displayAddDialog" :header="t('Add')"
           :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}">
-    <BlockUI :blocked="editBlock">
+    <BlockUI :blocked="param.block">
       <ImageUploader v-model:images="addImages" v-model:generateThumb="generateThumb" />
     </BlockUI>
     <template #footer>
       <Button :label="t('Cancel')" icon="pi pi-times" class="p-button-text"
-              @click="displayAddDialog = false" :disabled="editBlock"/>
+              @click="displayAddDialog = false" :disabled="param.block"/>
       <Button :label="t('Save')" icon="pi pi-check" class="p-button-text"
-              @click="upload" :disabled="editBlock || addImages.length === 0"/>
+              @click="upload" :disabled="param.block || addImages.length === 0"/>
     </template>
   </Dialog>
   <Dialog :modal="true" v-model:visible="displayEditDialog" :header="t('Edit')" class="p-fluid">
@@ -140,23 +140,19 @@
 </template>
 
 <script setup lang="ts">
-import {useToast} from 'primevue/usetoast';
-import {ref, onMounted, defineAsyncComponent, onBeforeMount} from "vue";
-import { API, Axios } from '@/api';
-import {PublicHelper} from "@/toolkit/publicHelper";
-import {useRoute} from "vue-router";
+import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
+import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {EntityInfo} from "@/config/Web_Const";
 import {useOptionStore} from "@/store/modules/option";
-import {PToast} from "@/logic/frame";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
+
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 
 const addImages = ref([]);
-const route = useRoute();
 const {t} = useI18n();
-const toast = useToast();
-const editBlock = ref(false);
+const param = ref(new EditParam());
 const imageEdit = ref<any>({});
 const images = ref<any>([]);
 const totalRecords = ref(0);
@@ -170,16 +166,15 @@ const displayDeleteDialog = ref(false);
 const dt = ref();
 const generateThumb = ref(false);
 const store = useOptionStore();
-const entityInfo = ref<EntityInfo>();
+const dialogRef = inject<any>('dialogRef');
 
 onBeforeMount(() => {
   store.fetchOptions();
-  entityInfo.value = PublicHelper.getEntityInfo(route);
 });
 
 onMounted(async () => {
-  filters.value.entityType.value = entityInfo.value?.type;
-  filters.value.entityId.value = entityInfo.value?.id;
+  filters.value.entityType.value = dialogRef.value.data.type;
+  filters.value.entityId.value = dialogRef.value.data.id;
   queryParams.value = {
     first: 0,
     rows: dt.value.rows,
@@ -195,8 +190,8 @@ const confirmDeleteSelected = () => {
 }
 
 const filters = ref({
-  'entityType': {value: entityInfo.value?.type},
-  'entityId': {value: entityInfo.value?.id},
+  'entityType': {value: 0},
+  'entityId': {value: 0},
   'type': {value: -1}
 });
 
@@ -250,8 +245,8 @@ const load = async () => {
 
 const upload = async () => {
   const fd = new FormData();
-  fd.append('entityType', entityInfo.value!.type.toString());
-  fd.append('entityId', entityInfo.value!.id.toString());
+  fd.append('entityType', dialogRef.value.data.type.toString());
+  fd.append('entityId', dialogRef.value.data.id.toString());
   let infos: any[] = [];
   addImages.value.forEach(i => {
     infos.push({
@@ -263,20 +258,20 @@ const upload = async () => {
   })
   fd.append('infos', JSON.stringify(infos));
   fd.append('generateThumb', generateThumb!.value);
-  editBlock.value = true;
-  const res = await axios.form(API.IMAGE_UPLOAD, fd);
+  param.value.block = true;
+  const res = await Axios.form(API.IMAGE_UPLOAD, fd);
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
     displayAddDialog.value = false;
     await load();
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  editBlock.value = false;
+  param.value.block = false;
 }
 
 const update = async () => {
-  editBlock.value = true;
+  param.value.block = true;
   let json = {
     id: imageEdit.value.id,
     type: imageEdit.value.type.value,
@@ -288,33 +283,32 @@ const update = async () => {
   if (res.success()) {
     closeEditDialog();
     await load();
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  editBlock.value = false;
+  param.value.block = false;
 };
 
 const remove = async () => {
-  editBlock.value = true;
-  let param = [];
+  param.value.block = true;
   for(let i of selectedItems.value as any[]) {
-    param.push({
+    param.value.data.push({
       id: i.id,
       url: i.url
     })
   }
 
-  const res = await axios.delete(API.IMAGE_DELETE, param);
+  const res = await Axios.delete(API.IMAGE_DELETE, param.value.data);
   if (res.success()) {
     selectedItems.value = [];
     displayDeleteDialog.value = false;
     await load();
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  editBlock.value = false;
+  param.value.block = false;
 }
 //endregion
 

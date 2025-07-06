@@ -19,7 +19,7 @@
             <Info :entry="entry"/>
             <div v-if="userStore.user && userStore.user.type > 1" class="flex justify-content-end">
               <Button class="p-button-link"
-                      @click="loadEditor(entry, dialog)"
+                      @click="loadEditor(entry)"
                       v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
                 <template #icon>
                   <MaterialIcon name="edit_square"/>
@@ -31,8 +31,8 @@
         </div>
         <div class="col py-0">
           <DetailPad v-if="entry.subType.value !== $const.ENTRY_SUB_TYPE.MAIN_SERIES" :text="entry.detail"/>
-          <RelatedPersons :type="$const.ENTITY.ENTRY" :id="entry.id" :subType="entry.type.value"
-              v-if="entry.type.value === $const.ENTRY_TYPE.PRODUCT && entry.subType.value !== $const.ENTRY_SUB_TYPE.MAIN_SERIES"/>
+          <RelatedPersons v-if="entry.type.value === $const.ENTRY_TYPE.PRODUCT
+           && entry.subType.value !== $const.ENTRY_SUB_TYPE.MAIN_SERIES"/>
           <RelatedItems v-if="entry.subType.value !== $const.ENTRY_SUB_TYPE.MAIN_SERIES"/>
         </div>
       </div>
@@ -41,52 +41,46 @@
       </div>
     </div>
     <div class="entity-detail-side-col">
-      <RelationGroup :type="$const.ENTITY.ENTRY" :id="entry.id" :subType="entry.type.value" />
+      <RelationGroup />
       <TrafficInfo :info="pageInfo" :addedTime="entry.addedTime" :editedTime="entry.editedTime"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import '@/styles/entity-detail.scss';
-import "@/styles/entity-global.scss";
-import "@/styles/entry-detail.scss";
-import '@/styles/entity-manager.scss';
 import '@/styles/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
 import {useRouter} from "vue-router";
 import {useUserStore} from "@/store/modules/user";
-import {useDialog} from "primevue/usedialog";
-import TrafficInfo from "@/components/common/PageTraffic.vue";
-import RelatedPersons from "@/components/related/RelatedPersons.vue";
-import DetailPad from "@/components/common/DetailPad.vue";
-import {loadEditor} from "@/logic/entryService";
+import {loadEditor} from "@/service/entryService";
 import {useI18n} from "vue-i18n";
-import {defineAsyncComponent, onBeforeMount, ref} from "vue";
-import SubProductInfo from "@/components/special/SubProductInfo.vue";
-import RelatedItems from "@/components/related/RelatedItems.vue";
-import Like from "@/components/common/EntityLike.vue";
-import RelationGroup from "@/components/related/RelationGroup.vue";
+import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} from "vue";
 
 const {t} = useI18n();
-defineAsyncComponent(() => import('@/components/image/EntryImageEditor.vue'));
 const Info = defineAsyncComponent(() => import('@/views/detail/info/EntryDetailInfo.vue'));
+const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
+const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
+const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
+const RelatedItems = defineAsyncComponent(() => import('@/components/related/RelatedItems.vue'));
+const RelatedPersons = defineAsyncComponent(() => import('@/components/related/RelatedPersons.vue'));
+const SubProductInfo = defineAsyncComponent(() => import('@/components/special/SubProductInfo.vue'));
+const RelationGroup = defineAsyncComponent(() => import('@/components/related/RelationGroup.vue'));
 
 const meta = ref<any>();
 const router = useRouter();
 const userStore = useUserStore();
-const dialog = useDialog();
-
 const entry = ref();
 const pageInfo = ref<any>();
 const cover = ref();
+const {proxy} = getCurrentInstance()!;
 
 onBeforeMount(() => {
   meta.value = router.currentRoute.value.meta;
   entry.value = meta.value.info.entry;
   pageInfo.value = meta.value.info.traffic;
   cover.value = meta.value.info.cover;
+  provide('entity', {type: proxy!.$const.ENTITY.ENTRY, id: entry.value.id, subType: entry.value.type.value} as Entity);
 });
 </script>
 

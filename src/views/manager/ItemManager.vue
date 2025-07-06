@@ -1,28 +1,26 @@
 <script setup lang="ts">
 import {getCurrentInstance, onBeforeMount, onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {useDialog} from "primevue/usedialog";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {loadEditor} from "@/logic/itemService";
+import {loadEditor} from "@/service/itemService";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam} from '@/logic/entityService';
+import {EntityManageParam} from '@/service/entityService';
 import {useOptionStore} from "@/store/modules/option";
-import {PColumn} from "@/logic/frame";
+import {PColumn} from "@/service/frame";
 
 const {t} = useI18n();
 const dt = ref();
-const dialog = useDialog();
 const store = useOptionStore();
 const route = useRoute();
 const router = useRouter();
 const param = ref(new EntityManageParam());
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
 const basicColumnCount = ref(0);
 const itemType = ref();
 
 onBeforeMount(async () => {
-  itemType.value = proxy.$const.ITEM_TYPE_SET[store.itemCurrent === 0 ? 0 : store.itemCurrent - 1];
+  itemType.value = proxy!.$const.ITEM_TYPE_SET[store.itemCurrent === 0 ? 0 : store.itemCurrent - 1];
   param.value.initFilters({
     type: {value: store.itemCurrent},
     keyword: {value: ''}
@@ -56,7 +54,7 @@ watch(
 
 const switchItemType = (ev: any) => {
   if (ev.value === null)
-    itemType.value = proxy.$const.ITEM_TYPE_SET[0];
+    itemType.value = proxy!.$const.ITEM_TYPE_SET[0];
   store.itemCurrent = parseInt(itemType.value.value);
   param.value.query.filters.type.value = store.itemCurrent;
   param.value.clearSort();
@@ -189,7 +187,7 @@ const exportCSV = () => {
         <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
                 outlined @click="confirmDeleteSelected">
           <template #icon>
-            <MaterialIcon name="delete_forever" />
+            <MaterialIcon name="disabled_by_default" />
           </template>
         </Button>
         <Button variant="text" severity="help" :disabled="!param.data.length"
@@ -206,8 +204,10 @@ const exportCSV = () => {
         <span>{{ t('CommonDataTableEmptyInfo') }}</span>
     </template>
     <template #loading>
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"/>
-      <span>{{ t('CommonDataTableLoadingInfo') }}</span>
+      <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent"
+                       animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+<!--      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"/>-->
+<!--      <span>{{ t('CommonDataTableLoadingInfo') }}</span>-->
     </template>
 
     <ColumnGroup type="header">
@@ -251,7 +251,7 @@ const exportCSV = () => {
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
-        <Button variant="text" outlined size="small" @click="loadEditor(data, dialog)">
+        <Button variant="text" outlined size="small" @click="loadEditor(data)">
           <template #icon>
             <MaterialIcon name="edit_square" />
           </template>
@@ -262,7 +262,7 @@ const exportCSV = () => {
     <Column field="name" filterField="keyword" :showFilterMenu="false" showClearButton
             exportHeader="name" :sortable="true">
       <template #body="{data}">
-        <a :href="`${API.ITEM_DETAIL_PATH}/${data.id}`" :title="data.name"
+        <a :href="`${$api.ITEM_DETAIL_PATH}/${data.id}`" :title="data.name"
            class="text-ellipsis" style="width: 30rem">
           {{ data!.name }}
         </a>

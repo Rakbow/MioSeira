@@ -11,7 +11,7 @@ const DetailRouter: Array<RouteRecordRaw> = [
                 const res = await Axios.post(`${API.ENTRY_GET_DETAIL}/${to.params.id}`);
                 if (res.success()) {
                     to.meta.info = res.data;
-                    document.title = res.data.entry.name;
+                    to.meta.title = res.data.entry.name;
                     next();
                 } else {
                     console.log(res.message);
@@ -19,9 +19,6 @@ const DetailRouter: Array<RouteRecordRaw> = [
             } catch (e) {
                 console.error(e);
             }
-        },
-        meta: {
-            title: "Entry Detail"
         }
     },
     {
@@ -33,7 +30,7 @@ const DetailRouter: Array<RouteRecordRaw> = [
                 const res = await Axios.post(`${API.ITEM_GET_DETAIL}/${to.params.id}`);
                 if (res.success()) {
                     to.meta.info = res.data;
-                    document.title = res.data.item.name;
+                    to.meta.title = res.data.item.name;
                     next();
                 } else {
                     console.log(res.message);
@@ -41,9 +38,6 @@ const DetailRouter: Array<RouteRecordRaw> = [
             } catch (e) {
                 console.error(e);
             }
-        },
-        meta: {
-            title: "Item Detail"
         }
     },
     {
@@ -55,7 +49,7 @@ const DetailRouter: Array<RouteRecordRaw> = [
                 const res = await Axios.post(`${API.EPISODE_GET_DETAIL}/${to.params.id}`);
                 if (res.success()) {
                     to.meta.info = res.data;
-                    document.title = res.data.name;
+                    to.meta.title = res.data.name;
                     next();
                 } else {
                     console.log(res.message);
@@ -63,9 +57,6 @@ const DetailRouter: Array<RouteRecordRaw> = [
             } catch (e) {
                 console.error(e);
             }
-        },
-        meta: {
-            title: "Episode Detail"
         }
     }
 ];

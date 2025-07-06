@@ -13,10 +13,21 @@
             <img :src="episode.cover" alt="main"/>
           </div>
           <div class="infobox-container">
-            <EpisodeInfo :entity="episode"/>
+            <ul id="infobox">
+              <li>
+                <span class="tip">{{ t('Category') }}:&nbsp;</span>
+                <Tag v-if="episode.episodeType === 0" class="ml-1" :value="t('EpisodeType0')"/>
+                <Tag v-else class="ml-1" :value="t('EpisodeType1')"/>
+              </li>
+              <li v-if="episode.episodeType === 1">
+                <span class="tip">{{ t('PremiereDate') }}:&nbsp;&nbsp;</span>{{ episode.premiereDate }}
+              </li>
+              <li><span class="tip">{{ t('Index') }}:&nbsp;&nbsp;</span>{{ `${episode.discNo}-${episode.serial}` }}</li>
+              <li><span class="tip">{{ t('Duration') }}:&nbsp;&nbsp;</span>{{ episode.duration }}</li>
+            </ul>
             <div v-if="userStore.user && userStore.user.type > 1">
               <Button class="p-button-link" icon="pi pi-pen-to-square"
-                      @click="loadEditor($const.ENTITY.EPISODE, episode, dialog)"
+                      @click="loadEditor($const.ENTITY.EPISODE, episode)"
                       v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}"/>
               <Like :likeCount="episode.traffic.likeCount" :liked="episode.traffic.liked" />
 
@@ -37,40 +48,31 @@
 </template>
 
 <script setup lang="ts">
-import '@/styles/entity-detail.scss';
-import "@/styles/entity-global.scss";
-import "@/styles/entry-detail.scss";
 import '@/styles/bootstrap/myBootstrap.min.css';
 import '@/lib/bootstrap.bundle.min';
 
 import {useRouter} from "vue-router";
-import {useToast} from "primevue/usetoast";
 import {useUserStore} from "@/store/modules/user";
-import {useDialog} from "primevue/usedialog";
-import TrafficInfo from "@/components/common/PageTraffic.vue";
-import DetailPad from "@/components/common/DetailPad.vue";
-import {loadEditor} from "@/logic/entryService";
+import {loadEditor} from "@/service/entityService";
 import {useI18n} from "vue-i18n";
-import {defineAsyncComponent, onBeforeMount, ref} from "vue";
-import Like from "@/components/common/EntityLike.vue";
-import RelatedFiles from "@/components/related/RelatedFiles.vue";
+import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} from "vue";
 
 const {t} = useI18n();
 
-const EpisodeInfo = defineAsyncComponent(() => import('@/views/detail/info/EpisodeDetailInfo.vue'));
+const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
+const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
+const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
+const RelatedFiles = defineAsyncComponent(() => import('@/components/related/RelatedFiles.vue'));
 const RelatedEpisodes = defineAsyncComponent(() => import('@/components/related/RelatedEpisodes.vue'));
 
-const meta = ref<any>();
 const router = useRouter();
-const toast = useToast();
 const userStore = useUserStore();
-const dialog = useDialog();
-
 const episode = ref<any>({});
+const {proxy} = getCurrentInstance()!;
 
 onBeforeMount(() => {
-  meta.value = router.currentRoute.value.meta;
-  episode.value = meta.value.info;
+  episode.value = router.currentRoute.value.meta.info;
+  provide('entity', {type: proxy!.$const.ENTITY.EPISODE, id: episode.value.id} as Entity);
 });
 
 </script>

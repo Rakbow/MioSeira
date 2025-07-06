@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
-import {EntityInfo} from "@/config/Web_Const";
 import {API, Axios} from "@/api";
-import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
-import {loadEditor} from "@/logic/entityService";
+import {loadEditor} from "@/service/entityService";
 import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
 
@@ -13,18 +11,13 @@ const fileUploader = defineAsyncComponent(() => import('@/components/file/FileCr
 
 const {t} = useI18n();
 const records = ref(0);
-const entityInfo = ref<EntityInfo>();
+const entity = inject<Entity>('entity')!;
 const loading = ref(false);
 const route = useRoute();
 const first = ref();
 const files = ref([]);
 const queryParams = ref();
 const dt = ref();
-const dialog = useDialog();
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-})
 
 onMounted((() => {
   initQueryParam();
@@ -60,8 +53,8 @@ const initQueryParam = async () => {
 }
 
 const getRelatedFiles = async () => {
-  queryParams.value.filters.entityType.value = entityInfo.value?.type;
-  queryParams.value.filters.entityId.value = entityInfo.value?.id;
+  queryParams.value.filters.entityType.value = entity!.type;
+  queryParams.value.filters.entityId.value = entity!.id;
   loading.value = true;
   const res = await Axios.post(API.FILE_LIST, queryParams.value);
   if (res.success()) {
@@ -73,7 +66,7 @@ const getRelatedFiles = async () => {
 }
 
 const openFilesUpload = () => {
-  dialog.open(fileUploader, {
+  bs!.dialog.open(fileUploader, {
     props: {
       header: t('Upload'),
       style: {
@@ -123,7 +116,7 @@ const openFilesUpload = () => {
 
         <Column style="width: 3rem">
           <template #body="{data}">
-            <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data, dialog)">
+            <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data)">
               <template #icon>
                 <MaterialIcon size="1.5" name="edit_square" />
               </template>

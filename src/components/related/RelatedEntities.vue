@@ -2,29 +2,23 @@
 import {defineAsyncComponent, defineProps, onBeforeMount, onMounted, ref} from 'vue';
 import {useUserStore} from "@/store/modules/user";
 import {useDialog} from "primevue/usedialog";
-import {PublicHelper} from "@/toolkit/publicHelper";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
-import {EntityInfo, QueryParams} from "@/config/Web_Const";
+import {EntityInfo, META, QueryParams} from "@/config/Web_Const";
 
 const RelationEntity = defineAsyncComponent(() => import('@/components/related/RelatedEntity.vue'));
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesBrowser.vue'));
 
 const {t} = useI18n();
-const entityInfo = ref<EntityInfo>();
+const entity = inject<Entity>('entity')!;
 const route = useRoute();
-const dialog = useDialog();
 const userStore = useUserStore();
 const relatedEntities = ref<any>([]);
 const loading = ref(false);
 let total = 0;
 const queryParams = ref<QueryParams>(new QueryParams());
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-});
 
 onMounted((() => {
   initQueryParam();
@@ -44,7 +38,7 @@ const props = defineProps({
   targetType: {
     type: Number,
     required: false,
-    default: $const.ENTITY.ENTRY
+    default: META.ENTITY.ENTRY
   },
   targetSubTypes: {
     type: Array,
@@ -69,8 +63,8 @@ const initQueryParam = () => {
     sortField: null,
     sortOrder: null,
     filters: {
-      entityType: {value: entityInfo.value?.type},
-      entityId: {value: entityInfo.value?.id},
+      entityType: {value: entity!.type},
+      entityId: {value: entity!.id},
       targetEntityType: {value: props.targetType},
       targetEntitySubTypes: {value: props.targetSubTypes}
     }
@@ -78,7 +72,7 @@ const initQueryParam = () => {
 }
 
 const openManager = () => {
-  dialog.open(manager, {
+  bs!.dialog.open(manager, {
     props: {
       header: `${t('RelatedEntity')}-${t('Edit')}`,
       style: {
@@ -88,9 +82,9 @@ const openManager = () => {
       closable: true
     },
     data: {
-      entityType: entityInfo.value?.type,
+      entityType: entity!.type,
       entitySubType: props.subType,
-      entityId: entityInfo.value?.id,
+      entityId: entity!.id,
       type: props.targetType,
       subTypes: props.targetSubTypes
     },
@@ -105,7 +99,7 @@ const openManager = () => {
 }
 
 const openBrowser = () => {
-  dialog.open(browser, {
+  bs!.dialog.open(browser, {
     props: {
       header: props.header,
       style: {
@@ -115,8 +109,8 @@ const openBrowser = () => {
       closable: true
     },
     data: {
-      entityType: entityInfo.value?.type,
-      entityId: entityInfo.value?.id,
+      entityType: entity!.type,
+      entityId: entity!.id,
       type: props.targetType,
       subTypes: props.targetSubTypes
     }

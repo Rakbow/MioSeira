@@ -1,5 +1,5 @@
 <template>
-  <BlockUI :blocked="editBlock">
+  <BlockUI :blocked="param.block">
     <DataTable ref="dt" :value="images" :alwaysShowPaginator="images.length !== 0"
                lazy :totalRecords="totalRecords" :loading="loading"
                @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
@@ -50,38 +50,33 @@
 </template>
 
 <script setup lang="ts">
-import {useToast} from 'primevue/usetoast';
-import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
-import { API, Axios } from '@/api';
-import {PublicHelper} from "@/toolkit/publicHelper";
-import {useRoute} from "vue-router";
+import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
+import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {EntityInfo} from "@/config/Web_Const";
 import {useOptionStore} from "@/store/modules/option";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
 const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
 
-const route = useRoute();
 const {t} = useI18n();
-const toast = useToast();
-const editBlock = ref(false);
+const param = ref(new EditParam());
 const images = ref<any>([]);
 const totalRecords = ref(0);
 const loading = ref(false);
 const queryParams = ref({});
 const first = ref(0);
 const dt = ref();
-const entityInfo = ref<EntityInfo>();
+const dialogRef = inject<any>('dialogRef');
 const store = useOptionStore();
 
 onBeforeMount(() => {
   store.fetchOptions();
-  entityInfo.value = PublicHelper.getEntityInfo(route);
 })
 
 onMounted(async () => {
-  filters.value.entityType.value = entityInfo.value?.type;
-  filters.value.entityId.value = entityInfo.value?.id;
+  filters.value.entityType.value = dialogRef.value.data.type;
+  filters.value.entityId.value = dialogRef.value.data.id;
   queryParams.value = {
     first: 0,
     rows: dt.value.rows,
@@ -93,8 +88,8 @@ onMounted(async () => {
 });
 
 const filters = ref({
-  'entityType': {value: entityInfo.value?.type},
-  'entityId': {value: entityInfo.value?.id},
+  'entityType': {value: dialogRef.value.data.type},
+  'entityId': {value: dialogRef.value.data.id},
   'type': {value: -2}
 });
 
@@ -120,7 +115,7 @@ const getImages = async () => {
     images.value = res.data.data;
     totalRecords.value = res.data.total
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
   loading.value = false;
   first.value = queryParams.value.first;
@@ -128,7 +123,7 @@ const getImages = async () => {
 
 const activeIndex = ref(0)
 const displayCustom = ref(false)
-const imageClick = (index) => {
+const imageClick = (index: number) => {
   activeIndex.value = index;
   displayCustom.value = true;
 };

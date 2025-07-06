@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
 import {useDialog} from 'primevue/usedialog';
-import {logout} from '@/logic/login';
+import {logout} from '@/service/login';
 import {useUserStore} from "@/store/modules/user";
 import {useI18n} from "vue-i18n";
 
@@ -49,10 +49,9 @@ const userStore = useUserStore() as any;
 onBeforeMount(() => {
 })
 
-const dialog = useDialog();
 
 const openLogin = () => {
-  const dialogRef = dialog.open(Login, {
+  const dialogRef = bs!.dialog.open(Login, {
     props: {
       header: t('SignIn'),
       style: {

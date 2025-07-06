@@ -1,36 +1,26 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
-import {useToast} from "primevue/usetoast";
-import {defineAsyncComponent, getCurrentInstance, inject, onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, getCurrentInstance, inject, onMounted, ref} from "vue";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {API, Axios} from "@/api";
-import {EntityInfo} from "@/config/Web_Const";
-import {useRoute} from "vue-router";
 import {getIcon} from 'material-file-icons';
-import {PToast} from "@/logic/frame";
-import {FileInfoCreateDTO} from "@/logic/entityService";
+import {EditParam, FileInfoCreateDTO} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
 const {t} = useI18n();
-const toast = useToast();
 const fu = ref();
-const block = ref(false);
-const isUpdate = ref(false);
 const fileInfos = ref<FileInfoCreateDTO[]>([]);
-const entityInfo = ref<EntityInfo>();
-const route = useRoute();
+const entity = inject<Entity>('entity')!;
 const dialogRef = inject<any>("dialogRef");
 const FileSelector = defineAsyncComponent(() => import('@/components/selector/FileSelector.vue'));
 const displaySelector = ref(false);
 const createType = ref();
 const currentCreateType = ref(0);
 const {proxy} = getCurrentInstance()!;
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-})
+const param = ref(new EditParam());
 
 onMounted(() => {
-  createType.value = $const.FILE_CREATE_TYPE_SET[0]
+  createType.value = proxy!.$const.FILE_CREATE_TYPE_SET[0];
 })
 
 const selectFile = (ev: any) => {
@@ -51,7 +41,7 @@ const removeFile = (index: number) => {
   fileInfos.value!.splice(index, 1);
 };
 
-const onReorder = (ev) => {
+const onReorder = (ev: any) => {
   fileInfos.value = ev.value;
 };
 
@@ -79,51 +69,51 @@ const submit = () => {
 
 const submitByUpload = async () => {
   const fd = new FormData();
-  fd.append('entityType', entityInfo.value!.type.toString());
-  fd.append('entityId', entityInfo.value!.id.toString());
+  fd.append('entityType', entity!.type.toString());
+  fd.append('entityId', entity!.id.toString());
   fileInfos.value!.forEach(f => {
-    fd.append('files', f.file);
+    fd.append('files', f.file!);
     fd.append('names', f.name);
   });
-  block.value = true;
-  const res = await axios.form(API.FILE_UPLOAD, fd);
+  param.value.block = true;
+  const res = await Axios.form(API.FILE_UPLOAD, fd);
   if (res.success())
-    toast.add(new PToast().success(res.message));
+    bs!.toast.success(res.message);
   else
-    toast.add(new PToast().error(res.message));
-  isUpdate.value = true;
+    bs!.toast.error(res.message);
+  param.value.isUpdate = true;
   close();
   fileInfos.value = [];
-  block.value = false;
+  param.value.block = false;
 }
 
 const submitByCould = async () => {
-  let param = {
-    entityType: entityInfo.value?.type,
-    entityId: entityInfo.value?.id,
+  param.value.data = {
+    entityType: entity!.type,
+    entityId: entity!.id,
     fileIds: fileInfos.value!.map(f => f.id)
   }
-  block.value = true;
-  const res = await Axios.post(API.FILE_RELATED_CREATE, param);
+  param.value.block = true;
+  const res = await Axios.post(API.FILE_RELATED_CREATE, param.value.data);
   if (res.success())
-    toast.add(new PToast().success(res.message));
-  isUpdate.value = true;
+    bs!.toast.success(res.message);
+  param.value.isUpdate = true;
   close();
   fileInfos.value = [];
-  block.value = false;
+  param.value.block = false;
 }
 
 const close = () => {
   dialogRef.value.close(
       {
-        isUpdate: isUpdate.value
+        isUpdate: param.value.isUpdate
       }
   )
 }
 
 const switchCreateType = (ev: any) => {
   if (ev.value === null)
-    createType.value = parseInt(proxy.$const.FILE_CREATE_TYPE_SET[0].value);
+    createType.value = parseInt(proxy!.$const.FILE_CREATE_TYPE_SET[0].value);
   currentCreateType.value = parseInt(createType.value.value);
   fileInfos.value = [];
 }
@@ -131,7 +121,7 @@ const switchCreateType = (ev: any) => {
 
 </script>
 <template>
-  <BlockUI :blocked="block">
+  <BlockUI :blocked="param.block">
     <SelectButton size="small" v-model="createType" :options="$const.FILE_CREATE_TYPE_SET"
                   @change="switchCreateType($event)"
                   optionLabel="value" dataKey="value" ariaLabelledby="custom">

@@ -3,15 +3,13 @@ import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {API, Axios} from "@/api";
-import {useToast} from "primevue/usetoast";
-import {PToast} from "@/logic/frame";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
 const {t} = useI18n();
 const dialogRef = inject<any>("dialogRef");
 const entity = ref<any>();
-const isUpdate = ref(false);
-const editBlock = ref(false);
-const toast = useToast();
+const param = ref(new EditParam());
 
 onBeforeMount(async () => {
   entity.value = PublicHelper.deepCopy(dialogRef.value.data.entity);
@@ -22,23 +20,23 @@ onMounted(() => {
 })
 
 const submit = async () => {
-  editBlock.value = true;
+  param.value.block = true;
   entity.value.name = `${entity.value.name}.${entity.value.extension}`;
   const res = await Axios.post(API.FILE_UPDATE, entity.value);
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
-    isUpdate.value = true;
+    bs!.toast.success(res.message);
+    param.value.isUpdate = true;
     close();
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  editBlock.value = false;
+  param.value.block = false;
 }
 
 const close = () => {
   dialogRef.value.close(
       {
-        isUpdate: isUpdate.value
+        isUpdate: param.value.isUpdate
       }
   );
 }
@@ -46,7 +44,7 @@ const close = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="editBlock" class="entity-editor">
+  <BlockUI :blocked="param.block" class="entity-editor">
     <Divider align="center"><b>{{ t('BasicInfo') }}</b></Divider>
     <FloatLabel class="field" variant="on">
       <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>

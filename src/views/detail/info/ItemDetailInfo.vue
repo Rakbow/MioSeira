@@ -153,7 +153,7 @@ const props = defineProps({
           </div>
         </td>
       </tr>
-      <ItemExtraInfo :id="item.id" />
+      <ItemExtraInfo/>
     </template>
 
     <tr v-if="item.spec">

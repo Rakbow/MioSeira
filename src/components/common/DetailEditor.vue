@@ -1,5 +1,5 @@
 <template>
-  <BlockUI :blocked="editBlock">
+  <BlockUI :blocked="param.block">
     <MdEditor v-model="text" preview-theme="github"/>
     <div class="text-end mt-3 mb-2">
       <Button size="large" icon="pi pi-times" :label="t('Cancel')" @click="close"
@@ -11,62 +11,45 @@
 
 <script setup lang="ts">
 import {MdEditor} from "md-editor-v3";
-import {onMounted, ref, inject, onBeforeMount} from "vue";
-import {PublicHelper} from '@/toolkit/publicHelper';
-import {useToast} from "primevue/usetoast";
-import { API, Axios } from '@/api';
-import {EntityInfo} from '@/config/Web_Const';
-import { useRoute } from 'vue-router';
+import {inject, onMounted, ref} from "vue";
+import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {PToast} from "@/logic/frame";
+import {bs} from '@/service/baseService';
+import {EditParam} from "@/service/entityService";
 
 const {t} = useI18n();
-const toast = useToast();
+const param = ref(new EditParam())
 const dialogRef = inject<any>("dialogRef");
 const text = ref('');
 const type = ref('');
-// const emit = defineEmits(['update']);
-const isUpdate = ref(false);
-const route = useRoute();
-const entityInfo = ref<EntityInfo>();
-
-onBeforeMount(() => {
-  entityInfo.value = PublicHelper.getEntityInfo(route);
-})
+const entity = inject<Entity>('entity')!;
 
 onMounted(() => {
   text.value = dialogRef.value.data.text;
   type.value = dialogRef.value.data.type;
-  // loadImages();
 });
 
-const editBlock = ref(false);
-
-const submit = () => {
-  editBlock.value = true;
-  let json = {
-    entityType: entityInfo.value?.type,
-    entityId: entityInfo.value?.id,
+const submit = async () => {
+  param.value.block = true;
+  const res = await Axios.post(API.ENTITY_UPDATE_DETAIL, {
+    entityType: entity!.type,
+    entityId: entity!.id,
     text: text.value
-  };
-  Axios.post(API.ENTITY_UPDATE_DETAIL, json)
-      .then(res => {
-        if (res.success()) {
-          toast.add(new PToast().success(res.message));
-          isUpdate.value = true;
-          close();
-        } else {
-          toast.add(new PToast().error(res.message));
-        }
-        editBlock.value = false;
-      })
+  });
+  if (res.success()) {
+    bs!.toast.success(res.message);
+    param.value.isUpdate = true;
+    close();
+  } else {
+    bs!.toast.error(res.message);
+  }
+  param.value.block = false;
 }
 
 const close = () => {
-  // emit('update', isUpdate.value)
   dialogRef.value.close(
       {
-        isUpdate: isUpdate.value,
+        isUpdate: param.value.isUpdate,
         text: text.value
       }
   );

@@ -1,22 +1,19 @@
 <script setup lang="ts">
-import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, inject, onBeforeMount, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {API, Axios} from "@/api";
-import {useToast} from "primevue/usetoast";
 import {useOptionStore} from "@/store/modules/option";
-import {PToast} from "@/logic/frame";
+import {bs} from '@/service/baseService';
+import {EditParam} from "@/service/entityService";
 
 const ImageEditor = defineAsyncComponent(() => import('@/components/image/EntryImageEditor.vue'));
 
 const {t} = useI18n();
 const dialogRef = inject<any>("dialogRef");
 const entry = ref<any>({});
-const isUpdate = ref(false);
-const block = ref(false);
-const toast = useToast();
-ref([]);
 const store = useOptionStore();
+const param = ref(new EditParam());
 
 onBeforeMount(() => {
   store.fetchOptions();
@@ -24,26 +21,23 @@ onBeforeMount(() => {
   PublicHelper.handleAttributes(entry.value);
 })
 
-onMounted(() => {
-})
-
 const submit = async () => {
-  block.value = true;
+  param.value.block = true;
   const res = await Axios.post(API.ENTRY_UPDATE, entry.value);
   if (res.success()) {
-    toast.add(new PToast().success(res.message));
-    isUpdate.value = true;
+    bs!.toast.success(res.message);
+    param.value.isUpdate = true;
     close();
   } else {
-    toast.add(new PToast().error(res.message));
+    bs!.toast.error(res.message);
   }
-  block.value = false;
+  param.value.block = false;
 }
 
 const close = () => {
   dialogRef.value.close(
       {
-        isUpdate: isUpdate.value
+        isUpdate: param.value.isUpdate
       }
   );
 }
@@ -51,7 +45,7 @@ const close = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="block" class="entity-editor">
+  <BlockUI :blocked="param.block" class="entity-editor">
 
     <Divider align="center"><b>{{ t('Images') }}</b></Divider>
     <ImageEditor :id="entry.id" :cover="entry.cover" :thumb="entry.thumb" />
@@ -103,9 +97,9 @@ const close = () => {
       <label>{{ t('Remark') }}</label>
       <Textarea size="large" v-model="entry!.remark" rows="4" cols="20"/>
     </FloatLabel>
-    <Button icon="pi pi-times" @click="close" :disabled="block"
+    <Button icon="pi pi-times" @click="close" :disabled="param.block"
             class="p-button-text"/>
-    <Button icon="pi pi-save" @click="submit" :disabled="block" />
+    <Button icon="pi pi-save" @click="submit" :disabled="param.block" />
   </BlockUI>
 </template>
 

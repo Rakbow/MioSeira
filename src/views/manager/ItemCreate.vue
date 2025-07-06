@@ -3,10 +3,9 @@ import {useI18n} from "vue-i18n";
 import {RelatedEntry} from "@/config/Web_Const";
 import {defineAsyncComponent, getCurrentInstance, onBeforeMount, reactive, ref} from "vue";
 import {useOptionStore} from "@/store/modules/option";
-import {useToast} from "primevue/usetoast";
 import "flag-icons/css/flag-icons.min.css";
 import {API, Axios} from "@/api";
-import {ItemAdvanceCreateDTO, parseItemSpecParams} from "@/logic/itemService";
+import {ItemAdvanceCreateDTO, parseItemSpecParams} from "@/service/itemService";
 import {MdEditor} from "md-editor-v3";
 import {useDialog} from "primevue/usedialog";
 import {useRouter} from "vue-router";
@@ -14,30 +13,26 @@ import {PublicHelper} from "@/toolkit/publicHelper";
 
 import 'md-editor-v3/lib/style.css';
 import {useDraftStore} from "@/store/modules/draft";
-import {PToast} from "@/logic/frame";
 
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const RelatedEntriesPicker = defineAsyncComponent(() => import('@/components/related/RelatedEntriesPicker.vue'));
 const albumQuickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
 
-const block = ref(false);
 const router = useRouter();
-const dialog = useDialog();
 const {t} = useI18n();
-const toast = useToast();
 const store = useOptionStore();
 const draft = useDraftStore();
 const itemType = ref();
 const itemSpec = ref('');
 const dto = ref(new ItemAdvanceCreateDTO());
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
 
 const relatedEntry = reactive<RelatedEntry>(new RelatedEntry())
 
 
 onBeforeMount(() => {
   store.fetchOptions();
-  itemType.value = proxy.$const.ITEM_TYPE_SET[dto.value.item.type - 1];
+  itemType.value = proxy!.$const.ITEM_TYPE_SET[dto.value.item.type - 1];
 })
 
 const switchItemType = () => {
@@ -62,13 +57,13 @@ const parseItemSpec = () => {
 const handleRelatedEntry = () => {
   const entities: any[] = [
     ...relatedEntry.products.map(e => ({
-      relatedEntitySubType: proxy.$const.ENTRY_TYPE.PRODUCT,
-      relatedEntityType: proxy.$const.ENTITY.ENTRY,
+      relatedEntitySubType: proxy!.$const.ENTRY_TYPE.PRODUCT,
+      relatedEntityType: proxy!.$const.ENTITY.ENTRY,
       relatedEntityId: e.id
     })),
     ...relatedEntry.persons.map(e => ({
-      relatedEntitySubType: proxy.$const.ENTRY_TYPE.PERSON,
-      relatedEntityType: proxy.$const.ENTITY.ENTRY,
+      relatedEntitySubType: proxy!.$const.ENTRY_TYPE.PERSON,
+      relatedEntityType: proxy!.$const.ENTITY.ENTRY,
       relatedEntityId: e.id,
       relatedRoleId: e.role.value
     }))
@@ -79,9 +74,9 @@ const handleRelatedEntry = () => {
 //endregion
 
 const submit = async () => {
-  block.value = true;
+  param.value.block = true;
   handleRelatedEntry();
-  if(dto.value.item.type === proxy.$const.ITEM_TYPE.ALBUM) handleTracks();
+  if(dto.value.item.type === proxy!.$const.ITEM_TYPE.ALBUM) handleTracks();
   // await handleImage();
 
   const fd = new FormData();
@@ -90,12 +85,12 @@ const submit = async () => {
     i.file = null;
   });
   fd.append('param', JSON.stringify(dto.value));
-  const res = await axios.form(API.ITEM_CREATE, fd);
+  const res = await Axios.form(API.ITEM_CREATE, fd);
   if (res.success())
-    await router.push(`${API.ITEM_DETAIL_PATH}/${res.data}`);
+    await router.push(`${$api.ITEM_DETAIL_PATH}/${res.data}`);
   else
-    toast.add(new PToast().error(res.message));
-  block.value = false;
+    bs!.toast.error(res.message);
+  param.value.block = false;
 }
 
 const handlePasteDate = (ev: ClipboardEvent) => {
@@ -149,7 +144,7 @@ const parseBasicInfoText = (input: string) => {
 }
 
 const openAlbumTrackQuickCreatorDialog = () => {
-  dialog.open(albumQuickCreator, {
+  bs!.dialog.open(albumQuickCreator, {
     props: {
       header: t('TrackInfo'),
       style: {
@@ -182,7 +177,7 @@ const handleTracks = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="block">
+  <BlockUI :blocked="param.block">
     <div class="grid manager-panel">
       <div class="col-7">
         <div class="col-12">

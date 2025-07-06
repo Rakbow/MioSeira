@@ -1,39 +1,24 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, defineProps, getCurrentInstance, onMounted, ref} from 'vue';
-import {useDialog} from "primevue/usedialog";
+import {computed, defineAsyncComponent, getCurrentInstance, inject, onMounted, ref} from 'vue';
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
+import {bs} from '@/service/baseService';
 
 const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 
 const {t} = useI18n();
-const dialog = useDialog();
 const personnel = ref<PersonnelGroup[]>([]);
 const loading = ref(false);
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
+const entity = inject<Entity>('entity');
 
 onMounted(() => {
   load()
 });
 
-const props = defineProps({
-  type: {
-    type: Number,
-    required: true
-  },
-  id: {
-    type: Number,
-    required: true
-  },
-  subType: {
-    type: Number,
-    required: true
-  }
-});
-
 const openEditDialog = () => {
-  dialog.open(manager, {
+  bs!.dialog.open(manager, {
     props: {
       header: `${t('RelatedEntry')}-${t('Edit')}`,
       style: {
@@ -43,11 +28,11 @@ const openEditDialog = () => {
       closable: true
     },
     data: {
-      entityType: props.type,
-      entityId: props.id,
-      entitySubType: props.subType,
-      type: proxy.$const.ENTITY.ENTRY,
-      subTypes: [proxy.$const.ENTRY_TYPE.PERSON]
+      entityType: entity!.type,
+      entityId: entity!.id,
+      entitySubType: entity!.subType,
+      type: proxy!.$const.ENTITY.ENTRY,
+      subTypes: [proxy!.$const.ENTRY_TYPE.PERSON]
     },
     onClose: (options: any) => {
       if (options.data !== undefined) {
@@ -62,8 +47,8 @@ const openEditDialog = () => {
 const load = async () => {
   loading.value = true;
   const res = await Axios.post(API.RELATION_PERSONNEL, {
-    entityType: props.type,
-    entityId: props.id
+    entityType: entity!.type,
+    entityId: entity!.id
   });
   if (res.success())
     personnel.value = res.data;
@@ -108,7 +93,7 @@ const toggleCollapse = () => {
               <template v-for="(chunk) in chunkArray((item as any).persons, 10)">
                 <div>
                   <template v-for="(person, index) in chunk">
-                    <router-link :to="`${API.ENTRY_DETAIL_PATH}/${(person as any).id}`">
+                    <router-link :to="`${$api.ENTRY_DETAIL_PATH}/${(person as any).id}`">
                       <span>{{ (person as any).name }}</span>
                     </router-link>
                     <span v-if="(person as any).remark">&nbsp;({{ (person as any).remark }})</span>

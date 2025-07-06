@@ -1,28 +1,26 @@
 <script setup lang="ts">
 import {getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {useDialog} from "primevue/usedialog";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {loadEditor} from "@/logic/entryService";
+import {loadEditor} from "@/service/entryService";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam} from '@/logic/entityService';
+import {EntityManageParam} from '@/service/entityService';
 import {useOptionStore} from "@/store/modules/option";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import {PColumn} from "@/logic/frame";
+import {PColumn} from "@/service/frame";
 
 const dt = ref();
 const {t} = useI18n();
-const dialog = useDialog();
 const store = useOptionStore();
 const route = useRoute();
 const router = useRouter();
 const param = ref(new EntityManageParam());
 const entryType = ref();
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance()!;
 
 onBeforeMount(async () => {
-  entryType.value = proxy.$const.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
+  entryType.value = proxy!.$const.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
   param.value.initFilters({
     type: {value: store.entryCurrent},
     keyword: {value: ''}
@@ -41,7 +39,7 @@ onMounted(() => {
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null)
-    entryType.value = proxy.$const.ENTRY_TYPE_SET[0];
+    entryType.value = proxy!.$const.ENTRY_TYPE_SET[0];
   store.entryCurrent = parseInt(entryType.value.value);
   param.value.query.filters.type.value = store.entryCurrent;
   param.value.clearSort();
@@ -169,7 +167,7 @@ const exportCSV = () => {
             <MaterialIcon name="delete_forever" />
           </template>
         </Button>
-        <Button variant="text" severity="help" :disabled="param.data.length"
+        <Button variant="text" severity="help" :disabled="param.data.length === 0"
                 outlined @click="exportCSV">
           <template #icon>
             <MaterialIcon name="file_export" />
@@ -191,7 +189,7 @@ const exportCSV = () => {
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
-        <Button variant="text" outlined size="small" @click="loadEditor(data, dialog)">
+        <Button variant="text" outlined size="small" @click="loadEditor(data)">
           <template #icon>
             <MaterialIcon name="edit_square" />
           </template>
@@ -200,7 +198,7 @@ const exportCSV = () => {
     </Column>
     <Column class="text-center" style="width: 2.5rem">
       <template #body="prop">
-        <img v-if="prop.data.thumb" :alt="prop.data.name" :src="`${API.STATIC_DOMAIN}${prop.data.thumb}`"
+        <img v-if="prop.data.thumb" :alt="prop.data.name" :src="`${$api.STATIC_DOMAIN}${prop.data.thumb}`"
              style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto" />
         <img v-else :alt="prop.data.name" :src="API.COMMON_EMPTY_THUMB_IMAGE" style="width: 2.5rem" />
       </template>
@@ -209,7 +207,7 @@ const exportCSV = () => {
     <Column :header="t('Name')" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
             exportHeader="name" :sortable="true">
       <template #body="{data}">
-        <a :href="`${API.ENTRY_DETAIL_PATH}/${data.id}`" :title="data.name">
+        <a :href="`${$api.ENTRY_DETAIL_PATH}/${data.id}`" :title="data.name">
           {{ data!.name }}
         </a>
       </template>
