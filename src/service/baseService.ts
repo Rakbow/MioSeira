@@ -1,5 +1,5 @@
 import {DialogServiceMethods} from "primevue/dialogservice";
-import {ToastServiceMethods} from "primevue";
+import {ConfirmationServiceMethods, ToastServiceMethods} from "primevue";
 
 let bs: BaseService | null = null;
 
@@ -32,12 +32,14 @@ class PrimevueToast {
 interface BaseService {
     dialog: DialogServiceMethods;
     toast: PrimevueToast;
+    confirm: ConfirmationServiceMethods;
 
 }
 
-export function registerPrimevueService(dialog: DialogServiceMethods, toast:  ToastServiceMethods) {
+export function registerPrimevueService(dialog: DialogServiceMethods, toast:  ToastServiceMethods, confirm: ConfirmationServiceMethods) {
     bs = {
         dialog: dialog,
+        confirm: confirm,
         toast: new PrimevueToast(toast)
     };
 }

@@ -26,10 +26,12 @@ import PageFooter from "@/layouts/PageFooter.vue";
 import {useDialog} from 'primevue/usedialog';
 import { registerPrimevueService } from '@/service/baseService'
 import {useToast} from "primevue/usetoast";
+import {useConfirm} from "primevue";
 
 const toast = useToast();
 const dialog = useDialog();
-registerPrimevueService(dialog, toast);
+const confirm = useConfirm();
+registerPrimevueService(dialog, toast, confirm);
 const mainContent = ref();
 
 const handleScroll = (event) => {
