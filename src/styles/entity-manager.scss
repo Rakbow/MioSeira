@@ -145,6 +145,7 @@
 
 .entity-manager {
   &-datatable {
+
     @extend .small-font;
 
     .p-tag {
@@ -154,7 +155,12 @@
     }
 
     .p-datatable {
+
       &-header {
+
+        border-top-left-radius: 1rem !important;
+        border-top-right-radius: 1rem !important;
+
         .p-selectbutton {
           .material-symbols-outlined {
             font-size: 2rem;
@@ -170,14 +176,20 @@
         }
       }
 
+      &-tbody, &-paginator-bottom {
+        border-bottom-left-radius: 1rem !important;
+        border-bottom-right-radius: 1rem !important;
+      }
+
       &-empty-message {
         span {
           align-items: center;
           justify-content: center;
-          font-weight: 400;
           display: flex;
+          font-size: 1.5rem;
         }
       }
+
     }
     &-select-column {
       width: 3rem;
@@ -189,5 +201,21 @@
         font-size: 1.5rem !important;
       }
     }
+    &-empty {
+      &-icon {
+        padding-top: 3rem;
+        img {
+          width: 20rem;
+        }
+      }
+      &-text {
+        padding: 1rem 0 3rem 0;
+      }
+    }
+    .p-datatable .p-datatable-tbody > tr {
+      height: 50px; /* 固定高度 */
+    }
+
   }
+
 }

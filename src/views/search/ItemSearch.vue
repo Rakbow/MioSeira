@@ -438,7 +438,7 @@ const endHover = () => {
           <Button v-if="entries.length" variant="text" severity="danger"
                   outlined @click="clearEntries">
             <template #icon>
-              <MaterialIcon name="delete_forever" />
+              <MaterialIcon name="disabled_by_default" />
             </template>
           </Button>
           <div class="search-entities grid" v-if="entries">

@@ -102,7 +102,7 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable" :alwaysShowPaginator="param.data.length != 0"
+  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable"
              lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
              paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small"
@@ -126,7 +126,7 @@ const exportCSV = () => {
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <Button variant="text" severity="help" :disabled="param.selectedData.length"
+        <Button variant="text" severity="help" :disabled="param.selectedData.length === 0"
                 outlined @click="exportCSV">
           <template #icon>
             <MaterialIcon name="file_export" />
@@ -135,11 +135,11 @@ const exportCSV = () => {
       </BlockUI>
     </template>
     <template #empty>
-        <span>{{ t('CommonDataTableEmptyInfo') }}</span>
+      <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
+      <span class="entity-manager-datatable-empty-text">{{ t('CommonDataTableEmptyInfo') }}</span>
     </template>
     <template #loading>
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"/>
-      <span>{{ t('CommonDataTableLoadingInfo') }}</span>
+      <MaterialIcon class="pi-spin" name="autorenew" size="10rem"/>
     </template>
 
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>

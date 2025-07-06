@@ -150,7 +150,7 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable" :alwaysShowPaginator="param.data.length !== 0"
+  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable"
              lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
              paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small" showGridlines
@@ -170,6 +170,13 @@ const exportCSV = () => {
     </template>
     <template #paginatorlastpagelinkicon>
       <MaterialIcon name="last_page" />
+    </template>
+    <template #empty>
+      <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
+      <span class="entity-manager-datatable-empty-text">{{ t('CommonDataTableEmptyInfo') }}</span>
+    </template>
+    <template #loading>
+      <MaterialIcon class="pi-spin" name="autorenew" size="10rem"/>
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
@@ -199,15 +206,6 @@ const exportCSV = () => {
         <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
                      @update:modelValue="onToggle" :placeholder="t('SelectedDisplayColumns')" size="small"/>
       </BlockUI>
-    </template>
-    <template #empty>
-        <span>{{ t('CommonDataTableEmptyInfo') }}</span>
-    </template>
-    <template #loading>
-      <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent"
-                       animationDuration=".5s" aria-label="Custom ProgressSpinner" />
-<!--      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"/>-->
-<!--      <span>{{ t('CommonDataTableLoadingInfo') }}</span>-->
     </template>
 
     <ColumnGroup type="header">

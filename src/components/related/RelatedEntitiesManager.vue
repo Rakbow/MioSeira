@@ -221,7 +221,7 @@ const load = async () => {
                 :disabled="!param.selectedData || !param.selectedData.length || param.blocking"
                 outlined @click="openDelete">
           <template #icon>
-            <MaterialIcon name="delete_forever" />
+            <MaterialIcon name="disabled_by_default" />
           </template>
         </Button>
       </template>
@@ -285,7 +285,7 @@ const load = async () => {
           <Button v-if="createdDTO.entities.length" variant="text" severity="danger"
                   outlined @click="clearRelatedEntry">
             <template #icon>
-              <MaterialIcon name="delete_forever" />
+              <MaterialIcon name="disabled_by_default" />
             </template>
           </Button>
         </template>

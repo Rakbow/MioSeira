@@ -54,7 +54,7 @@ const displayEntrySelector = ref(false);
       <Button v-if="relatedEntries.length" variant="text" severity="danger"
               outlined @click="clearRelatedEntry()">
         <template #icon>
-          <MaterialIcon name="delete_forever" />
+          <MaterialIcon name="disabled_by_default" />
         </template>
       </Button>
     </template>
