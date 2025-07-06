@@ -24,13 +24,13 @@ export const useOptionStore = defineStore('options', {
                 this.entryCurrent = META.ENTRY_TYPE.PRODUCT;
 
                 this.options.genderSet = i18nConst.genderSet[locale.value];
-                this.options.imageTypeSet = i18nConst.imageTypeSet![locale.value];
-                this.options.bookTypeSet = i18nConst.bookTypeSet![locale.value];
-                this.options.goodsTypeSet = i18nConst.goodsTypeSet![locale.value];
-                this.options.figureTypeSet = i18nConst.figureTypeSet![locale.value];
-                this.options.releaseTypeSet = i18nConst.releaseTypeSet![locale.value];
-                this.options.entrySubTypeSet = i18nConst.entrySubTypeSet![locale.value];
-                this.options.languageSet = i18nConst.languageSet![locale.value];
+                this.options.imageTypeSet = i18nConst.imageTypeSet[locale.value];
+                this.options.bookTypeSet = i18nConst.bookTypeSet[locale.value];
+                this.options.goodsTypeSet = i18nConst.goodsTypeSet[locale.value];
+                this.options.figureTypeSet = i18nConst.figureTypeSet[locale.value];
+                this.options.releaseTypeSet = i18nConst.releaseTypeSet[locale.value];
+                this.options.entrySubTypeSet = i18nConst.entrySubTypeSet[locale.value];
+                this.options.languageSet = i18nConst.languageSet[locale.value];
             }
         },
         clear() {
