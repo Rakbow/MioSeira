@@ -4,19 +4,19 @@ import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {useOptionStore} from "@/store/modules/option";
 import {EntityManageParam} from "@/service/entityService";
-import {useConfirm} from "primevue";
+import {bs} from '@/service/baseService';
 
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
 const { proxy } = getCurrentInstance()!;
 const store = useOptionStore();
 const {t} = useI18n();
-const confirm = useConfirm();
 const dialogRef = inject<any>("dialogRef");
 const param = ref(new EntityManageParam());
 const dt = ref();
 const entryType = ref(proxy!.$const.ENTRY_TYPE.PRODUCT);
 const curEntryType = ref<any>(null);
+const isUpdate = ref(false);
 
 
 onBeforeMount(() => {
@@ -78,7 +78,7 @@ const createdDTO = ref({
 const openCreate = () => {
   createdDTO.value.roleId = 0;
   createdDTO.value.relatedRoleId = 0;
-  createdDTO.value.entities = [];
+  createdDTO.value.entities = <any>[];
   createdDTO.value.relatedEntries = [];
   createdDTO.value.relatedEntitySubType = entryType.value;
   createDialog.value = true;
@@ -89,7 +89,7 @@ const create = async () => {
   createdDTO.value.relatedEntries = createdDTO.value.entities.map(i => ({id: i.id, remark: i.remark}));
   const res = await Axios.post(API.RELATION_CREATE, createdDTO.value);
   if (res.success()) {
-    param.value.isUpdate = true;
+    isUpdate.value = true;
     createDialog.value = false;
     await load();
     bs!.toast.success(res.message);
@@ -117,7 +117,7 @@ const update = async () => {
     direction: updateDTO.value.direction
   });
   if (res.success()) {
-    param.value.isUpdate = true;
+    isUpdate.value = true;
     updateDialog.value = false;
     await load();
     bs!.toast.success(res.message);
@@ -130,7 +130,7 @@ const update = async () => {
 
 //region delete
 const openDelete = () => {
-  confirm.require({
+  bs!.confirm.require({
     group: 'templating',
     header: t('Delete'),
     message: t('ConfirmDeleteSelected'),
@@ -157,7 +157,7 @@ const openDelete = () => {
 const remove = async () => {
   const res = await Axios.delete(API.RELATION_DELETE, {ids: param.value.selectedData.map(i => i.id)});
   if (res.success()) {
-    param.value.isUpdate = true;
+    isUpdate.value = true;
     bs!.toast.success(res.message);
     await load();
   } else {

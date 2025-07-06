@@ -241,11 +241,11 @@ const handleTracks = () => {
               <FloatLabel variant="on">
                 <label>{{ t('Region') }}</label>
                 <Select v-model="dto.item.region" :options="$const.RegionSet" optionLabel="label" optionValue="value">
-                  <template #value="slotProps">
-                    <span :class="`fi fi-${slotProps.value}`"/>
+                  <template #value="{value}">
+                    <span :class="`fi fi-${value}`"/>
                   </template>
-                  <template #option="slotProps">
-                    <span :class="`fi fi-${slotProps.option.value}`"/>
+                  <template #option="{option}">
+                    <span :class="`fi fi-${option.value}`"/>
                   </template>
                 </Select>
               </FloatLabel>

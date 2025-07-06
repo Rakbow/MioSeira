@@ -78,7 +78,6 @@ const close = () => {
           <label>{{ t('Gender') }}</label>
           <Select v-model="entry.gender" :options="store.options.genderSet"
                   size="large" optionLabel="label" optionValue="value"/>
-
         </template>
         <template v-if="entry.type === $const.ENTRY_TYPE.PRODUCT">
           <label>{{ t('Category') }}</label>

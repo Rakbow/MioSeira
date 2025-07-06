@@ -111,7 +111,7 @@ const load = async () => {
   const res = await Axios.post(API.ENTRY_GET_LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
-    param.value.total = res.data.total
+    param.value.total = res.data.total;
   }
   param.value.endLoad();
 }
@@ -197,10 +197,10 @@ const exportCSV = () => {
       </template>
     </Column>
     <Column class="text-center" style="width: 2.5rem">
-      <template #body="prop">
-        <img v-if="prop.data.thumb" :alt="prop.data.name" :src="`${$api.STATIC_DOMAIN}${prop.data.thumb}`"
+      <template #body="{data}">
+        <img v-if="data.thumb" :alt="data.name" :src="`${$api.STATIC_DOMAIN}${data.thumb}`"
              style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto" />
-        <img v-else :alt="prop.data.name" :src="API.COMMON_EMPTY_THUMB_IMAGE" style="width: 2.5rem" />
+        <img v-else :alt="data.name" :src="API.COMMON_EMPTY_THUMB_IMAGE" style="width: 2.5rem" />
       </template>
     </Column>
 
