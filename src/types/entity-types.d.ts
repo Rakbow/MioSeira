@@ -7,6 +7,21 @@ interface ImageDTO {
     objectURL: string;
 }
 
+interface ImageUpdateDTO {
+    id: number;
+    url: string;
+    type: number;
+    name: string;
+    nameZh: string;
+    detail: string;
+    thumb: string;
+}
+
+interface ImageDeleteDTO {
+    id: number;
+    url: string;
+}
+
 interface RelatedEntity {
     entityType: number;
     entityId: number;

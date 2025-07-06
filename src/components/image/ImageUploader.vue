@@ -14,17 +14,17 @@ const props = defineProps({
   showDetail: {
     type: Boolean,
     required: false,
-    default: () => true
+    default: true
   },
   images: {
-    type: Array,
+    type: Array<ImageDTO>,
     required: false,
-    default: () => ([])
+    default: []
   },
   generateThumb: {
     type: Boolean,
     required: false,
-    default: () => false
+    default: false
   }
 });
 
@@ -35,13 +35,13 @@ onBeforeMount(() => {
 })
 
 const selectFile = async (ev: any) => {
-  if (!ev.files as File[]) return;
-  let files = ev.files.filter(f => !images.value.some(i => i.file.objectURL === f.objectURL))
-  for (let file: File of files) {
+  if (!ev.files) return;
+  let files: File[] = ev.files.filter(f => !images.value.some(i => i.file!.objectURL === f.objectURL))
+  for (let file of files) {
 
     let image: ImageDTO = {
       name: file.name.replace(/\.[^/.]+$/, ''),
-      type: store.options.imageTypeSet[this.name === 'Cover' ? 2 : 0].value,
+      type: store.options.imageTypeSet[file.name === 'Cover' ? 2 : 0].value,
       size: PublicHelper.formatSize(file.size),
       detail: '',
       file: file,
@@ -52,12 +52,12 @@ const selectFile = async (ev: any) => {
   emit('update:images', images.value);
 };
 
-const onImageReorder = (ev) => {
+const onImageReorder = (ev: any) => {
   images.value = ev.value;
   emit('update:images', images.value);
 };
 
-const onImageCellEdite = (ev) => {
+const onImageCellEdite = (ev: any) => {
   let {data, newValue, field} = ev;
 
   switch (field) {
@@ -97,7 +97,7 @@ const changeGenerateThumb = () => {
     <template #header="{ chooseCallback }">
       <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined/>
       <Button @click="onImageClear()" icon="pi pi-times" rounded outlined severity="danger"
-              :disabled="!images || images.length"/>
+              :disabled="!images || images.length === 0"/>
       <Checkbox v-model="generateThumb" binary @change="changeGenerateThumb" />
       <small class="label-title">{{ t('ImageGenerateThumb') }}</small>
     </template>
@@ -162,5 +162,4 @@ const changeGenerateThumb = () => {
 </template>
 
 <style scoped lang="scss">
-@use "@/styles/entity-global";
 </style>

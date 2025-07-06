@@ -93,25 +93,25 @@
   <Dialog :modal="true" v-model:visible="updateDisplay" :header="t('Edit')" class="entity-editor">
     <div class="flex flex-wrap mb-3" style="display: flex;justify-content: center;">
       <div class="entry-thumb">
-        <img role="presentation" :alt="updateDTO.name" :src="updateDTO.thumb"/>
+        <img role="presentation" :alt="updateDTO!.name" :src="updateDTO!.thumb"/>
       </div>
     </div>
     <FloatLabel class="field" variant="on">
       <label>{{ t('Path') }}</label>
-      <InputText size="large" id="url" v-model="updateDTO.url" disabled />
+      <InputText size="large" id="url" v-model="updateDTO!.url" disabled />
     </FloatLabel>
     <FloatLabel class="field" variant="on">
       <label>{{ t('Name') }}</label>
-      <InputText size="large" v-model="updateDTO.name"/>
+      <InputText size="large" v-model="updateDTO!.name"/>
     </FloatLabel>
     <FloatLabel class="field" variant="on">
       <label>{{ t('Type') }}</label>
-      <Select size="large" v-model="updateDTO.type" :options="store.options.imageTypeSet"
+      <Select size="large" v-model="updateDTO!.type" :options="store.options.imageTypeSet"
               optionLabel="label" optionValue="value"/>
     </FloatLabel>
     <FloatLabel class="field" variant="on">
       <label>{{ t('Description') }}</label>
-      <InputText size="large" v-model="updateDTO.detail"/>
+      <InputText size="large" v-model="updateDTO!.detail"/>
     </FloatLabel>
     <template #footer>
       <Button :label="t('Cancel')" icon="pi pi-times" variant="text" @click="updateDisplay = false"/>
@@ -181,7 +181,7 @@ const load = async () => {
 
 //region create
 const uploadDisplay = ref(false);
-const uploadImages = ref<any[]>([]);
+const uploadImages = ref<ImageDTO[]>([]);
 const openUpload = () => {
   uploadImages.value = [];
   uploadDisplay.value = true;
@@ -197,7 +197,7 @@ const upload = async () => {
       type: i.type,
       detail: i.detail
     });
-    fd.append('files', i.file)
+    fd.append('files', i.file!)
   })
   fd.append('infos', JSON.stringify(infos));
   fd.append('generateThumb', generateThumb!.value.toString());
@@ -216,7 +216,7 @@ const upload = async () => {
 
 //region update
 const updateDisplay = ref(false);
-const updateDTO = ref<any>({});
+const updateDTO = ref<ImageUpdateDTO>();
 const openUpdate = (data: any) => {
   updateDTO.value = {
     id: data.id,
@@ -231,14 +231,7 @@ const openUpdate = (data: any) => {
 }
 const update = async () => {
   param.value.block();
-  let json = {
-    id: updateDTO.value.id,
-    type: updateDTO.value.type.value,
-    name: updateDTO.value.name,
-    nameZh: updateDTO.value.nameZh,
-    detail: updateDTO.value.detail,
-  };
-  const res = await Axios.post(API.IMAGE_UPDATE, json);
+  const res = await Axios.post(API.IMAGE_UPDATE, updateDTO.value);
   if (res.success()) {
     bs!.toast.success(res.message);
     updateDisplay.value = false;
@@ -278,14 +271,15 @@ const openDelete = () => {
 
 const remove = async () => {
   param.value.block();
+  let deleteDTOs: Array<ImageDeleteDTO> = [];
   for(let i of param.value.selectedData as any[]) {
-    param.value.data.push({
+    deleteDTOs.push({
       id: i.id,
       url: i.url
     })
   }
 
-  const res = await Axios.delete(API.IMAGE_DELETE, param.value.data);
+  const res = await Axios.delete(API.IMAGE_DELETE, deleteDTOs);
   if (res.success()) {
     param.value.selectedData = [];
     await load();
