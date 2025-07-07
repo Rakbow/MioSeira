@@ -18,7 +18,7 @@ import {createApp} from "vue";
 import router from "@/router";// vue-router
 import pinia from '@/store';
 import 'material-symbols';
-import i18n from '@/config/i18n';// vue-i18n
+import i18n from '@/locales/i18n';// vue-i18n
 import {API} from "@/api";
 import {META} from "@/config/Web_Const";
 import MaterialIcon from '@/components/icons/MaterialIcon.vue';

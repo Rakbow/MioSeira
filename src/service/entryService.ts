@@ -1,5 +1,5 @@
 import editor from "@/components/entityEditor/EntryEditor.vue";
-import i18n from "@/config/i18n";
+import i18n from "@/locales/i18n";
 import { bs } from '@/service/baseService'
 
 const {t} = i18n.global;

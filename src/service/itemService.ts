@@ -1,5 +1,5 @@
 import editor from "@/components/entityEditor/ItemEditor.vue";
-import i18n from "@/config/i18n";
+import i18n from "@/locales/i18n";
 import {META} from "@/config/Web_Const";
 import { bs } from '@/service/baseService'
 

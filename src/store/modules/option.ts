@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {META} from "@/config/Web_Const";
-import {i18nConst} from "@/config/i18nConst";
+import {i18nConst} from "@/locales/i18nConst";
 
 export const useOptionStore = defineStore('options', {
     state: () => ({
