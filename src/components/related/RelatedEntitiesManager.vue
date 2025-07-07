@@ -5,6 +5,7 @@ import {API, Axios} from "@/api";
 import {useOptionStore} from "@/store/modules/option";
 import {EntityManageParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
+import router from "@/router";
 
 const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
 
@@ -17,7 +18,6 @@ const dt = ref();
 const entryType = ref(proxy!.$const.ENTRY_TYPE.PRODUCT);
 const curEntryType = ref<any>(null);
 const isUpdate = ref(false);
-
 
 onBeforeMount(() => {
   store.fetchOptions();
@@ -38,6 +38,11 @@ onMounted(() => {
   param.value.initPage(0, 10);
   load();
 });
+
+const jumpToEntryDetail = (data: any) => {
+  dialogRef.value.close();
+  router.push(`${proxy!.$api.ENTRY_DETAIL_PATH}/${data.id}`);
+};
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null) {
@@ -193,8 +198,7 @@ const load = async () => {
 
 <template>
   <BlockUI :blocked="param.blocking">
-    <DataTable ref="dt" :value="param.data" :loading="param.loading"
-               :alwaysShowPaginator="param.data.length !== 0"
+    <DataTable ref="dt" :value="param.data" :loading="param.loading" class="entity-manager-datatable"
                lazy :totalRecords="param.total" paginator
                :rows="param.query.rows" :first="param.query.first"
                @page="onPage($event)" @sort="onSort($event)"
@@ -203,6 +207,25 @@ const load = async () => {
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                scrollable scrollHeight="40rem" responsiveLayout="scroll">
+      <template #paginatorfirstpagelinkicon>
+        <MaterialIcon name="first_page" />
+      </template>
+      <template #paginatorprevpagelinkicon>
+        <MaterialIcon name="chevron_left" />
+      </template>
+      <template #paginatornextpagelinkicon>
+        <MaterialIcon name="chevron_right" />
+      </template>
+      <template #paginatorlastpagelinkicon>
+        <MaterialIcon name="last_page" />
+      </template>
+      <template #empty>
+        <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
+        <span class="entity-manager-datatable-empty-text">{{ t('CommonDataTableEmptyInfo') }}</span>
+      </template>
+      <template #loading>
+        <MaterialIcon class="pi-spin" name="autorenew" size="10rem"/>
+      </template>
       <template #header>
         <SelectButton size="small" v-model="curEntryType" :options="$const.ENTRY_TYPE_SET"
                       @change="switchEntryType($event)"
@@ -225,32 +248,23 @@ const load = async () => {
           </template>
         </Button>
       </template>
-      <template #empty>
-        <span class="emptyInfo">
-            {{ t('CommonDataTableEmptyInfo') }}
-        </span>
-      </template>
-      <template #loading>
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ t('CommonDataTableLoadingInfo') }}</span>
-      </template>
-      <Column selectionMode="multiple" style="width: 3rem" exportable/>
-      <Column style="width: 3rem">
+
+      <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
+      <Column class="entity-manager-datatable-edit-column">
         <template #body="{data}">
-          <Button variant="text" outlined size="small" @click="openUpdate(data)" style="padding: 0">
+          <Button variant="text" outlined size="small" @click="openUpdate(data)">
             <template #icon>
-              <MaterialIcon size="1.5" name="edit_square" />
+              <MaterialIcon name="edit_square" />
             </template>
           </Button>
         </template>
       </Column>
-      <Column :header="t('Group')" field="target.subType.label" style="width: 4rem"/>
+      <Column :header="t('Group')" field="target.subType.label" style="width: 5rem"/>
       <Column :header="t('Role')" field="target.role.label" style="width: 10rem"/>
       <Column :header="t('ReverseRole')" field="role.label" style="width: 10rem"/>
       <Column :header="t('RelatedEntity')">
         <template #body="{data}">
-          <router-link class="common-link" :title="data.target.name"
-                       :to="`${$api.ENTRY_DETAIL_PATH}/${data.target.entityId}`">
+          <router-link :title="data.target.name" :to="`${$api.ENTRY_DETAIL_PATH}/${data.target.entityId}`">
             {{ data!.target.name }}
           </router-link>
         </template>

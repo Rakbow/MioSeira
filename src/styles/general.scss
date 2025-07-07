@@ -1,6 +1,6 @@
 @import 'primeflex/primeflex';
 
-$golden-text: #beb993;
+$golden-text: #BEB993;
 $common-background: #2F364F;
 $common-root-background: #18181b;
 $common-header-background: #1B273D;
@@ -13,8 +13,13 @@ $gray: #bbb;
 $small-font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, Meiryo, sans-serif;
 
 $common-border-radius: 1rem;
-$common-border-down-radius: 0 0 10px 10px;
-$common-border-up-radius: 10px 10px 0 0;
+$common-border-down-radius: 0 0 1rem 1rem;
+$common-border-up-radius: 1rem 1rem 0 0;
+
+:root {
+  --r-background: #001122;
+  --r-header-background: #1B273D;
+}
 
 html {
   font-size: 62.5%;
@@ -22,7 +27,7 @@ html {
 }
 
 body {
-  background-color: #001122;
+  background-color: var(--r-background);
   min-width: 125rem;
 
   font-family: var(--font-family);

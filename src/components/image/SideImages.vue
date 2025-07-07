@@ -84,16 +84,12 @@ const openEditDialog = () => {
       <span><i class="pi pi-image"/><strong>{{ t('Images') }}</strong></span>
     </template>
     <template #icons>
-      <Button v-if="userStore.user && userStore.user.type > 1" text
-              @click="openEditDialog" v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
+      <Button v-if="userStore.user && userStore.user.type > 1" text @click="openEditDialog"
+              v-tooltip="{value: t('Edit')}">
         <MaterialIcon name="edit_square" />
       </Button>
-      <Button severity="success" outlined @click="openLoader" :disabled="!count"
-              v-tooltip.bottom="{value: t('ViewAll'), class: 'common-tooltip', disabled: !count}" >
-        <template #icon>
-          <span>{{count.toString()}}</span>
-        </template>
-      </Button>
+      <Button :label="count.toString()" outlined @click="openLoader" :disabled="!count"
+              v-tooltip="{value: t('ViewAll'), disabled: !count}"/>
     </template>
 
     <div v-if="!images.length">

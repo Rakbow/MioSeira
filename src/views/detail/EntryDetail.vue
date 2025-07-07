@@ -20,7 +20,7 @@
             <div v-if="userStore.user && userStore.user.type > 1" class="flex justify-content-end">
               <Button class="p-button-link"
                       @click="loadEditor(entry)"
-                      v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
+                      v-tooltip="{value: t('Edit'), class: 'short-tooltip'}">
                 <template #icon>
                   <MaterialIcon name="edit_square"/>
                 </template>

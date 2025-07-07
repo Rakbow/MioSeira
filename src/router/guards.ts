@@ -4,6 +4,8 @@ export const setupGuards = (router: Router) => {
     router.beforeEach((to, from, next) => {
         const isAuthenticated = !!localStorage.getItem('token')
 
+        console.log('跳转了')
+
         if (to.meta.requiresAuth && !isAuthenticated) {
             next({ name: 'Login' })
         } else {

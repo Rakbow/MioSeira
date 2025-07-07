@@ -43,8 +43,6 @@
 
 }
 
-
-
 .entity-fieldset {
 
   .p-dataview-content {
@@ -130,58 +128,45 @@
 
 .entity-detail-side-panel {
   margin: .5rem 0 1rem 0 !important;
-  border-radius: general.$common-border-radius !important;
 
   .p-panel {
     &-header {
-      vertical-align: middle;
-      padding: .4rem 0 .4rem 1rem;
-      background: general.$common-header-background;
-      color: general.$golden-text;
-      border-top-left-radius: general.$common-border-radius;
-      border-top-right-radius: general.$common-border-radius;
+      padding: .4rem .5rem .4rem .8rem;
+
+      span {
+        display: flex;
+        align-items: center;
+      }
 
       i {
+        margin-top: .1rem;
         margin-right: .7rem;
         font-size: 1.5rem;
-        line-height: inherit;
-        vertical-align: middle;
       }
 
       &-actions {
-        height: 2rem;
+        display: flex;
+        align-items: center;
       }
 
       strong {
         font-size: 1.4rem;
-        vertical-align: middle;
       }
 
       .p-button {
-        &-success {
-          transform: translateY(-30%) !important;
-        }
+        padding-top: 0;
+        padding-bottom: 0;
 
-        span {
+        &-label {
           font-size: 1.3rem;
         }
 
-        .material-symbols-outlined {
-          transform: translateY(-5%) !important;
-          font-size: 2.2rem !important;
-        }
-
-        padding: 0;
-        margin-right: 0.5rem !important;
       }
 
     }
 
     &-content {
       padding: 1rem;
-      background: general.$common-background;
-      border-bottom-left-radius: general.$common-border-radius;
-      border-bottom-right-radius: general.$common-border-radius;
     }
   }
 }
@@ -216,9 +201,11 @@
       &-x {
         opacity: 0;
       }
+
       &-x:hover {
         opacity: 0;
       }
+
       &-y {
         opacity: 1;
       }
@@ -256,15 +243,14 @@
   color: black;
 }
 
-.markdown-body a:hover ,
-.markdown-body a:visited ,
+.markdown-body a:hover,
+.markdown-body a:visited,
 .markdown-body a {
   color: general.$common-link;
   text-decoration: none;
 }
 
 .table-hover > tbody > tr:hover > td,
-
 .table-hover > tbody > tr:hover > th {
   color: #788990;
   background-color: #3C405C;
