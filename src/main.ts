@@ -19,10 +19,10 @@ import router from "@/router";// vue-router
 import pinia from '@/store';
 import 'material-symbols';
 import i18n from '@/config/i18n';// vue-i18n
-import {registerPrimeVue} from '@/config/primeVueConfig';
 import {API} from "@/api";
 import {META} from "@/config/Web_Const";
 import MaterialIcon from '@/components/icons/MaterialIcon.vue';
+import {setupPlugins} from "@/plugins";
 
 // import {useCookies} from '@vueuse/integrations/useCookies';
 
@@ -35,7 +35,7 @@ const metaManager = createMetaManager();
 app.config.globalProperties.$api = API
 app.config.globalProperties.$const = META
 
-registerPrimeVue(app);
+setupPlugins(app);
 app.use(router);
 app.use(metaManager);
 app.use(i18n);
