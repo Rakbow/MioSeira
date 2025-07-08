@@ -5,7 +5,7 @@
                     :options="$const.ENTRY_TYPE_SET" @change="switchEntryType($event)"
                     optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
         <template #option="{option}">
-          <MaterialIcon :name="option.icon" v-tooltip.bottom="{value: t(option!.label), class: 'short-tooltip'}"/>
+          <RIcon :name="option.icon" v-tooltip.bottom="{value: t(option!.label), class: 'short-tooltip'}"/>
         </template>
       </SelectButton>
       <IconField>
@@ -36,12 +36,12 @@
             <div class="related-entity-role">
               <Button v-if="!entity.isPicked || type === $const.ENTRY_TYPE.PERSON" text @click="select(entity)">
                 <template #icon>
-                  <MaterialIcon name="add_box" />
+                  <RIcon name="add_box" />
                 </template>
               </Button>
               <Button v-else text disabled severity="info">
                 <template #icon>
-                  <MaterialIcon name="check_box" />
+                  <RIcon name="check_box" />
                 </template>
               </Button>
             </div>

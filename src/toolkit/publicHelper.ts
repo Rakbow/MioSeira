@@ -118,7 +118,7 @@ export class PublicHelper {
         return `${year}/${month}/${day}`; // 返回 "yyyy/MM/dd" 格式
     }
 
-    static getDomain = (url: string): string => {
+    static getHostname = (url: string): string => {
         try {
             const urlObj = new URL(url);
             return urlObj.hostname; // 提取主域名部分

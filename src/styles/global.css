@@ -60,8 +60,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .image-tooltip .p-tooltip-text {
-    font-size: 9px;
-    width: 10rem;
+    font-size: .9rem;
+    width: 13rem;
 }
 
 .common-tooltip .p-tooltip-text {
@@ -91,63 +91,6 @@ input[type="number"]::-webkit-inner-spin-button {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
     overflow: hidden;
-}
-
-/*.text-truncate-2 a:hover {*/
-/*    border-bottom: 1px solid #ceffff;*/
-/*}*/
-
-.sidebar-panel-image-middle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: block;
-    transform: translate(-50%, -50%);
-    cursor: url("https://static.rakbow.com/common/zoomin.cur"), pointer;
-    /*pointer-events: none;*/
-}
-
-/*侧边栏panel中图*/
-.sidebar-panel-image-middle-width {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: block;
-    min-width: 100%;
-    max-width: 100%;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-    /*pointer-events: none;*/
-}
-
-.sidebar-panel-image-middle-height {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: block;
-    min-height: 100%;
-    max-height: 100%;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-    /*pointer-events: none;*/
-}
-
-/*侧边栏panel小图*/
-.sidebar-panel-image-small {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.sidebar-panel-image-small-div {
-    position: relative;
-    width: 66px;
-    height: 66px;
-}
-
-.sidebar-panel-image-small-div a:hover {
-    text-decoration: none;/*//a去掉下划线*/
 }
 
 .info_bit_small {
@@ -189,16 +132,6 @@ ul.info_bit_small {
     padding: 5px;
 }
 
-#panel-image-div {
-    display: flex;
-    position: relative;
-    width: 70px;
-    height: 70px;
-    overflow: hidden;
-    background-color: black;
-    border: 1px solid black;
-}
-
 ul.info_bit_detail {
     list-style-type: none;
     margin: 6px 0 0 0;
@@ -221,10 +154,6 @@ ul.info_bit_detail {
 a {
     text-decoration: none;/*//a去掉下划线*/
 }
-/*a:hover {*/
-/*    !*text-decoration:underline;//鼠标悬停出现下划线*!*/
-/*    border-bottom: 1px solid #ceffff;*/
-/*}*/
 
 
 .no-text-decoration {
@@ -262,8 +191,8 @@ a {
 }
 
 .common-link a:hover {
-    color: #ceffff;
-    border-bottom: 1px solid #ceffff;
+    color: var(--r-mint-100);
+    border-bottom: 1px solid var(--r-mint-100);
 }
 
 .material-symbols-outlined {

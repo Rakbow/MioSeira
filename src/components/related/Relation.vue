@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import {defineAsyncComponent, defineProps, getCurrentInstance, inject, ref} from 'vue';
+import {defineAsyncComponent, defineProps, inject, ref} from 'vue';
 import {useUserStore} from "@/store/modules/user";
-import {useDialog} from "primevue/usedialog";
-import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {META} from "@/config/Web_Const";
+import {bs} from '@/service/baseService';
 
 const RelationEntity = defineAsyncComponent(() => import('@/components/related/RelatedEntity.vue'));
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesBrowser.vue'));
 const {t} = useI18n();
-const route = useRoute();
 const userStore = useUserStore();
 const relatedEntities = ref<any>([]);
 const loading = ref(false);
 const entity = inject<Entity>('entity');
-import {bs} from '@/service/baseService';
 
 const props = defineProps({
   header: {
@@ -94,21 +91,15 @@ const openBrowser = () => {
 </script>
 
 <template>
-  <Panel class="entity-detail-side-panel">
+  <Panel>
     <template #header>
       <span><i class="pi pi-list"/><strong>{{ props.header }}</strong></span>
     </template>
     <template #icons>
-      <Button v-if="userStore.user && userStore.user.type > 1" text
-              @click="openManager" v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
-        <MaterialIcon name="edit_square" />
-      </Button>
-      <Button severity="success" outlined @click="openBrowser" :disabled="!relatedEntities"
-              v-tooltip.bottom="{value: t('ViewAll'), class: 'common-tooltip', disabled: !relatedEntities}">
-        <template #icon>
-          <span>{{ total.toString() }}</span>
-        </template>
-      </Button>
+      <RButton v-if="userStore.user && userStore.user.type > 1"
+               @click="openManager" icon="edit_square" variant="text" tooltip="Edit" />
+      <Button :label="total.toString()" outlined @click="openBrowser" :disabled="!relatedEntities"
+              v-tooltip="{value: t('ViewAll'), disabled: !relatedEntities}"/>
     </template>
     <i v-if="loading" class="pi pi-spin pi-spinner" style="font-size: 2rem"/>
     <div v-else>

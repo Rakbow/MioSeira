@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-wrap justify-content-center gap-3">
+  <div class="entity-detail">
     <div class="entity-detail-main-col">
-      <div class="entity-detail-header-title">
+      <div class="entity-detail-title">
         <h1 style="display: inline;">{{ episode.name }}</h1>
         <div v-if="episode.nameEn">
           <span>{{ episode.nameEn }}</span>
@@ -12,7 +12,7 @@
           <div class="entity-image-cover-200">
             <img :src="episode.cover" alt="main"/>
           </div>
-          <div class="infobox-container">
+          <div class="entity-detail-entry-info">
             <ul id="infobox">
               <li>
                 <span class="tip">{{ t('Category') }}:&nbsp;</span>
@@ -36,7 +36,7 @@
         </div>
         <div class="col py-0">
           <DetailPad :text="episode.detail"/>
-          <RelatedFiles :type="$const.ENTITY.EPISODE" :id="episode.id" />
+          <RelatedFiles />
         </div>
       </div>
     </div>

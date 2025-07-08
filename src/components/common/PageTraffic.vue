@@ -21,7 +21,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <Card class="page-info">
+  <Card>
     <template #content>
       <div class="formgrid grid">
         <div class="col-fixed">

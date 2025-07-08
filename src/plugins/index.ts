@@ -3,6 +3,6 @@ import PrimevueComponents from './primevue/components'
 import PrimevueTheme from "./primevue/theme";
 
 export const setupPlugins = (app: App) => {
-    app.use(PrimevueTheme);
     app.use(PrimevueComponents);
+    app.use(PrimevueTheme);
 }

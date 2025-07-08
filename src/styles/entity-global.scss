@@ -57,7 +57,7 @@ $item-color-6-14: #a4a;
 }
 
 .entry-thumb {
-  border: .2rem solid general.$golden-text;
+  border: .2rem solid var(--r-sand-200);
   border-radius: .5rem;
   @include common-entity-image;
 
@@ -70,7 +70,7 @@ $item-color-6-14: #a4a;
 .entry-thumb-50 {
   width: 5rem;
   height: 5rem;
-  border: .2rem solid general.$golden-text;
+  border: .2rem solid var(--r-sand-200);
   border-radius: 1rem;
   @include common-entity-image;
 
@@ -83,7 +83,7 @@ $item-color-6-14: #a4a;
 .entry-thumb-35 {
   width: 3.5rem;
   height: 3.5rem;
-  border: .2rem solid general.$golden-text;
+  border: .2rem solid var(--r-sand-200);
   border-radius: 1rem;
   @include common-entity-image;
 
@@ -199,7 +199,7 @@ $item-color-6-14: #a4a;
 .entity-search-result-block {
   margin: .5rem .5rem .5rem .25rem;
   border-radius: .7rem;
-  background-color: #2F364F;
+  background-color: var(--r-bg-slate-800);
 }
 
 .empty-search-result {
@@ -254,12 +254,12 @@ $item-color-6-14: #a4a;
   max-width: 38rem;
   margin: 0 0 .5rem 0;
   border-radius: .75rem;
-  background: general.$common-root-background;
+  background: var(--r-bg-neutral-950);
 
   &-thumb {
     flex: 0 0 auto;
     margin: 0.5rem 0 0.5rem 0.5rem;
-    border: .2rem solid general.$golden-text;
+    border: .2rem solid var(--r-sand-200);
     border-radius: .75rem;
     display: flex;
     justify-content: center;
@@ -315,7 +315,7 @@ $item-color-6-14: #a4a;
 
 .p-dataview-content {
   .related-entity {
-    background: general.$common-background !important;
+    background: var(--r-bg-slate-800) !important;
     max-width: 60rem !important;
   }
 }

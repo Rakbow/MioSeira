@@ -6,22 +6,24 @@
         <b>{{ t('TrackInfo') }}</b>
       </template>
 
-      <div class="album-track">
-        <Edit :func="openAudioUpload" icon="cloud_upload" position="right: 3rem" label="Upload"/>
-        <Edit :func="openQuickCreatorDialog" icon="music_note_add" label="Add"/>
+      <div class="album-tracks">
+        <RButton @click="openAudioUpload" icon="cloud_upload" tooltip="Upload" variant="text"
+                 class="absolute" style="right: 3rem"/>
+        <RButton @click="openQuickCreatorDialog" icon="music_note_add" tooltip="Add" variant="text"
+                 class="absolute" style="right: 0"/>
 
         <div v-if="!loading">
           <div v-if="!info.discs.length">
             <span class="empty-search-result">{{ t('NoTrackInfo') }}</span>
           </div>
           <div v-else>
-            <p class="album-track-header">
+            <p class="album-tracks-header">
               {{ t('TotalDiscNum') }}:&nbsp;<b>{{ info.discs.length }}</b>&nbsp;
               {{ t('TotalTrackNum') }}:&nbsp;<b>{{ info.totalTracks }}</b>&nbsp;
               {{ t('TotalLength') }}:&nbsp;<b>{{ info.totalDuration }}</b>
             </p>
-            <div v-for="disc in (info.discs as any[])">
-              <b class="album-track-sub-header">
+            <div v-for="disc in info.discs as any[]" class="album-tracks-disc">
+              <b class="album-tracks-disc-header">
                 {{ `Disc ${disc.discNo} (${disc.mediaFormat.label})` }}
                 <template v-if="disc.catalogId">&nbsp;[{{ disc.catalogId }}]</template>
                 <template v-if="disc.albumFormat.length">
@@ -32,22 +34,22 @@
                   </p>
                 </template>
               </b>
-              <table class="album-track-table table table-sm table-hover">
+              <table>
                 <tbody>
                 <tr v-for="track in disc.tracks">
-                  <th>{{ track.serial }}</th>
+                  <th>{{ track.serial < 10 ? `0${track.serial}` : track.serial }}</th>
                   <td nowrap="nowrap">
                     <router-link :to="`${$api.EPISODE_DETAIL}/${track.id}`">
                       <span>{{ track.name }}</span>
                     </router-link>
                   </td>
-                  <td class="album-track-duration">
+                  <td class="album-tracks-duration">
                     <span>{{ track.duration }}</span>
                   </td>
                 </tr>
                 </tbody>
               </table>
-              <span class="album-track-total">
+              <span class="album-tracks-disc-total">
                 <span>&nbsp;{{ t('TrackNum') }}:&nbsp;</span>{{ disc.tracks.length }}
                 <span>&nbsp;{{ t('DiscLength') }}:&nbsp;</span>{{ disc.duration }}
               </span>
@@ -55,8 +57,8 @@
           </div>
         </div>
 
-        <div v-if="loading">
-          <Skeleton width="20rem" style="margin-top: .75rem" />
+        <div v-else>
+          <Skeleton width="20rem" style="margin-top: .75rem"/>
           <Skeleton width="15rem" style="margin: .5rem 0"/>
           <table class="table table-sm table-hover">
             <thead/>
@@ -132,7 +134,6 @@ import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
 const {t} = useI18n();
-const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const quickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
 
 onMounted(() => {
@@ -230,9 +231,9 @@ const uploadAudioFile = async () => {
 </script>
 
 <style lang="scss" scoped>
-@use '@/styles/general' as g;
+@use '@/styles/general';
 
-.album-track {
+.album-tracks {
   position: relative !important;
 
   &-header {
@@ -241,27 +242,48 @@ const uploadAudioFile = async () => {
     text-align: left !important;
   }
 
-  &-sub-header {
-    margin-left: .5rem;
-    @extend .small-font;
+  &-disc {
+    margin-top: 3rem;
 
-    span {
-      color: gray;
+    &-header {
+      margin-left: .5rem;
+      @extend .small-font;
+
+      span {
+        color: gray;
+      }
+
+      p {
+        display: inline;
+      }
+
     }
 
-    p {
-      display: inline;
-    }
+    &-total {
+      @extend .small-font;
+      float: right;
+      margin: .1rem;
+      color: var(--r-steel-300);
 
+      > span {
+        color: gray
+      }
+    }
   }
 
-  &-table {
-
+  table {
+    width: 100%;
     padding-bottom: 0;
+    border: none;
+    border-collapse: collapse;
 
-    td, th {
+    tr {
+      border-bottom: .1rem solid var(--r-bg-indigo-700);
       padding-bottom: .1rem;
-      border-bottom: .1rem solid g.$common-border-bottom;
+
+      &:hover {
+        background-color: var(--r-bg-indigo-700);
+      }
     }
 
     td {
@@ -275,25 +297,14 @@ const uploadAudioFile = async () => {
 
     th {
       width: 2rem;
-      padding-top: .4rem;
-      color: g.$label;
+      color: var(--r-steel-500);
       @extend .small-font;
-    }
-  }
-
-  &-total {
-    @extend .small-font;
-    float: right;
-    margin: .1rem;
-
-    > span {
-      color: gray
     }
   }
 
   &-duration {
     text-align: right !important;
-    color: #B0C4DE;
+    color: var(--r-steel-300);
   }
 
 }

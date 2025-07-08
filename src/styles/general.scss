@@ -1,15 +1,5 @@
 @import 'primeflex/primeflex';
 
-$golden-text: #BEB993;
-$common-background: #2F364F;
-$common-root-background: #18181b;
-$common-header-background: #1B273D;
-$common-border-bottom: #3C405C;
-$common-link: #ceffff;
-$label: #788990;
-$time: #68b;
-$gray: #bbb;
-
 $small-font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, Meiryo, sans-serif;
 
 $common-border-radius: 1rem;
@@ -17,8 +7,19 @@ $common-border-down-radius: 0 0 1rem 1rem;
 $common-border-up-radius: 1rem 1rem 0 0;
 
 :root {
-  --r-background: #001122;
-  --r-header-background: #1B273D;
+  --r-bg-blue-950: #001122;
+  --r-bg-indigo-700: #3C405C;
+  --r-bg-indigo-900: #1B273D;
+  --r-bg-slate-800: #2F364F;
+  --r-bg-neutral-950: #18181b;
+
+  --r-sand-200: #BEB993;
+  --r-mint-100: #ceffff;
+  --r-blue-400: #68b;
+  --r-gray-300: #bbb;
+
+  --r-steel-300: #B0C4DE;
+  --r-steel-500: #788990;
 }
 
 html {
@@ -27,7 +28,7 @@ html {
 }
 
 body {
-  background-color: var(--r-background);
+  background-color: var(--r-bg-blue-950);
   min-width: 125rem;
 
   font-family: var(--font-family);
@@ -50,12 +51,12 @@ img {
 
 
 a:link {
-  color: $common-link !important;
+  color: var(--r-mint-100) !important;
   @include styleclass('no-underline hover:underline');
 }
 
 a:visited, a:hover {
-  color: $common-link !important;
+  color: var(--r-mint-100) !important;
 }
 
 .small-font {
@@ -63,7 +64,7 @@ a:visited, a:hover {
 }
 
 .label-title {
-  color: $label;
+  color: var(--r-steel-500);
 }
 
 

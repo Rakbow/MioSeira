@@ -10,14 +10,14 @@
                 @click="openTextTingle" style="right: 4%" icon="pi pi-external-link"
                 v-tooltip="{value: t('FullScreen'), class: 'short-tooltip'}">
           <template #icon>
-            <MaterialIcon name="arrows_output" />
+            <RIcon name="arrows_output" />
           </template>
         </Button>
         <Button v-if="userStore.user && userStore.user.type > 1" class="p-button-link absolute top-0"
                 @click="openEditDialog" style="right: 0"
                 v-tooltip="{value: t('Edit'), class: 'short-tooltip'}">
           <template #icon>
-            <MaterialIcon name="edit_square" />
+            <RIcon name="edit_square" />
           </template>
         </Button>
         <article style="width: 90%;font-size: 1.2rem" ref="html" class="entity-detail-markdown"/>

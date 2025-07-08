@@ -63,6 +63,7 @@ export const META = {
         MAIN_SERIES: 100
     },
     CURRENCIES: {
+        JPY: 'JPY',
         CNY: 'CNY',
         USD: 'USD',
         EUR: 'EUR',

@@ -1,69 +1,46 @@
 <script setup lang="ts">
-import {defineProps} from "vue";
-import "flag-icons/css/flag-icons.min.css";
+import {defineAsyncComponent, defineProps} from "vue";
 import {PublicHelper} from "@/toolkit/publicHelper";
-import ItemExtraInfo from "@/components/item/ItemExtraInfo.vue";
 import {useI18n} from "vue-i18n";
+
+const ItemExtraInfo = defineAsyncComponent(() => import('@/components/item/ItemExtraInfo.vue'));
+const CurrencySelect = defineAsyncComponent(() => import('@/components/global/CurrencySelect.vue'));
 
 const {t} = useI18n();
 
-const props = defineProps({
-  item: {
-    type: Object,
-    required: true,
-    default: () => ({})
-  } as any
-});
+const props = defineProps<{
+  item: any
+}>();
 
 </script>
 
 <template>
-  <table class="table-borderless table-sm ml-2">
-    <tbody class="entity-info-table">
-    <tr v-if="[$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(item.type)">
-      <td>
-        <b>{{ t('MediaFormat') }}</b>
-      </td>
-      <td v-for="format of item.mediaFormat" style="display:inline">
-        <Tag class="ml-1" :value="format.label"/>
-      </td>
-    </tr>
-    <tr v-if="item.type === $const.ITEM_TYPE.ALBUM">
-      <td>
-        <b>{{ t('AlbumFormat') }}</b>
-      </td>
-      <td v-for="format of item.albumFormat" style="display:inline">
-        <Tag class="ml-1" :value="format.label"/>
-      </td>
-    </tr>
+  <table>
+    <tbody>
     <template v-if="item.type === $const.ITEM_TYPE.BOOK">
       <tr>
         <td>
-          <b>{{ t('BookType') }}</b>
+          <b>{{ t('Category') }}</b>
         </td>
         <td>
-          <a :href="'/db/manager/book?bookType=' + item.subType.value">
-            <Tag class="ml-1" :value="item.subType.label"/>
-          </a>
+          <Tag :value="item.subType.label"/>
         </td>
       </tr>
       <tr>
         <td>
-          <b>{{ t('PublishLanguage') }}</b>
+          <b>{{ t('Language') }}</b>
         </td>
         <td>
-          <a :href="'/db/manager/book?lang=' + item.lang.value">
-            <Tag class="ml-1" :value="item.lang.label"></Tag>
-          </a>
+          <Tag :value="item.lang.label"/>
         </td>
       </tr>
     </template>
-    <tr v-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)">
+    <tr v-else-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)">
       <td>
         <b>{{ t('Type') }}</b>
       </td>
       <td>
-        <Tag class="ml-1" :value="item.subType.label"/>
+        <Tag :value="item.subType.label"/>
       </td>
     </tr>
 
@@ -73,47 +50,27 @@ const props = defineProps({
       </td>
       <td>
         {{ item.releaseDate }}
-        <span v-if="[$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)"
-            :class="'ml-1 mr-1 fi fi-' + item.region"/>
-        <Tag v-if="[$const.ITEM_TYPE.BOOK].includes(item.type)"
-             class="ml-1" :value="item.releaseType.label"/>
+        <span :class="'ml-1 fi fi-' + item.region"/>
       </td>
     </tr>
-
 
     <tr>
       <td></td>
       <td>
-        <template v-if="[$const.ITEM_TYPE.BOOK, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)">
-          {{ item.barcode }}
-          <span v-if="item.type === $const.ITEM_TYPE.BOOK" :class="'fi fi-' + item.region" style="margin-left: 0.5rem" />
+        <template v-if="item.price">
+          {{item.price}}
+          <CurrencySelect v-model="item.currency" :query="`${item.price}+${item.currency}`"/>
         </template>
-
-        {{ item.price !== 0 ? item.price : "&nbsp;&nbsp;-" }}
-        <span v-if="item.price !== 0">
-          <span class="dropdown">
-            <a href="#" class="dropdown-toggle"
-               data-bs-toggle="dropdown">
-              <span v-if="item.currency === 'JPY'"
-                    v-tooltip="{value: t('TaxInclusive'), class: 'region-tooltip'}">JPY</span>
-              <span v-else>{{ item.currency }}</span>
-            </a>
-            <div class="dropdown-menu" style="background: black">
-              <a v-for="(currency, code) in $const.CURRENCIES" :key="code"
-                 :href="`https://www.bing.com/search?q=${item.price}+${item.currency}+IN+${code}`"
-                 class="dropdown-item">{{ currency }}</a>
-            </div>
-          </span>
-        </span>
-        <Tag class="ml-1" :value="item.releaseType.label"/>
-        <i v-if="item.bonus" v-tooltip.bottom="{value: t('Bonus'), class: 'short-tooltip'}"
-           class="ml-1 pi pi-star-fill" style="color: #b7b71e"/>
+        <Tag :value="item.releaseType.label"/>
+        <i v-if="item.bonus" class="ml-1 pi pi-star-fill" style="color: yellow" v-tooltip="{value: t('Bonus')}"/>
       </td>
     </tr>
-    <tr v-if="[$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(item.type)">
+    <tr>
       <td></td>
       <td>
-        {{ item.catalogId }}&nbsp;•&nbsp;{{ item.barcode }}
+        <span v-if="item.catalogId">{{ item.catalogId }}</span>
+        <span v-if="item.catalogId && item.barcode">&nbsp;•&nbsp;</span>
+        <span v-if="item.barcode">{{ item.barcode }}</span>
       </td>
     </tr>
 
@@ -169,4 +126,5 @@ const props = defineProps({
 </template>
 
 <style scoped lang="scss">
+@use "flag-icons/css/flag-icons.min.css";
 </style>

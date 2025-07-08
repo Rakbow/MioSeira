@@ -71,6 +71,7 @@ export const API = {
     //region file
     FILE_DETAIL_PATH: '/db/file',
     FILE_LIST: '/api/db/file/list',
+    FILE_RELATED: '/api/db/file/related',
     FILE_UPDATE: '/api/db/file/update',
     FILE_UPLOAD: '/api/db/file/upload',
     FILE_RELATED_CREATE: '/api/db/file/create-related',

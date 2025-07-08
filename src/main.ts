@@ -7,7 +7,6 @@ import "@/styles/general.scss";
 
 import '@/styles/entity-detail.scss';
 import "@/styles/entity-global.scss";
-import "@/styles/entry-detail.scss";
 import '@/styles/entity-manager.scss';
 //endregion
 
@@ -21,8 +20,9 @@ import 'material-symbols';
 import i18n from '@/locales/i18n';// vue-i18n
 import {API} from "@/api";
 import {META} from "@/config/Web_Const";
-import MaterialIcon from '@/components/icons/MaterialIcon.vue';
 import {setupPlugins} from "@/plugins";
+import RIcon from "@/components/global/RIcon.vue";
+import RButton from "@/components/global/RButton.vue";
 
 // import {useCookies} from '@vueuse/integrations/useCookies';
 
@@ -40,5 +40,8 @@ app.use(router);
 app.use(metaManager);
 app.use(i18n);
 app.use(pinia);
-app.component('MaterialIcon', MaterialIcon)
+
+app.component('RIcon', RIcon);
+app.component('RButton', RButton);
+
 app.mount("#app");

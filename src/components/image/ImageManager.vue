@@ -10,35 +10,35 @@
              currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
              responsiveLayout="scroll">
     <template #paginatorfirstpagelinkicon>
-      <MaterialIcon name="first_page" />
+      <RIcon name="first_page" />
     </template>
     <template #paginatorprevpagelinkicon>
-      <MaterialIcon name="chevron_left" />
+      <RIcon name="chevron_left" />
     </template>
     <template #paginatornextpagelinkicon>
-      <MaterialIcon name="chevron_right" />
+      <RIcon name="chevron_right" />
     </template>
     <template #paginatorlastpagelinkicon>
-      <MaterialIcon name="last_page" />
+      <RIcon name="last_page" />
     </template>
     <template #empty>
       <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
       <span class="entity-manager-datatable-empty-text">{{ t('CommonDataTableEmptyInfo') }}</span>
     </template>
     <template #loading>
-      <MaterialIcon class="pi-spin" name="autorenew" size="10rem"/>
+      <RIcon class="pi-spin" name="autorenew" size="10rem"/>
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
         <Button variant="text" outlined @click="openUpload">
           <template #icon>
-            <MaterialIcon name="add_box"/>
+            <RIcon name="add_box"/>
           </template>
         </Button>
         <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
                 outlined @click="openDelete">
           <template #icon>
-            <MaterialIcon name="disabled_by_default"/>
+            <RIcon name="disabled_by_default"/>
           </template>
         </Button>
       </BlockUI>
@@ -48,7 +48,7 @@
       <template #body="{data}">
         <Button variant="text" outlined size="small" @click="openUpdate(data)">
           <template #icon>
-            <MaterialIcon name="edit_square" />
+            <RIcon name="edit_square" />
           </template>
         </Button>
       </template>

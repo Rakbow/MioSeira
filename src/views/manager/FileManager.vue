@@ -120,29 +120,29 @@ const exportCSV = () => {
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
              currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll">
     <template #paginatorfirstpagelinkicon>
-      <MaterialIcon name="first_page" />
+      <RIcon name="first_page" />
     </template>
     <template #paginatorprevpagelinkicon>
-      <MaterialIcon name="chevron_left" />
+      <RIcon name="chevron_left" />
     </template>
     <template #paginatornextpagelinkicon>
-      <MaterialIcon name="chevron_right" />
+      <RIcon name="chevron_right" />
     </template>
     <template #paginatorlastpagelinkicon>
-      <MaterialIcon name="last_page" />
+      <RIcon name="last_page" />
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
         <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
                 outlined @click="confirmDeleteSelected">
           <template #icon>
-            <MaterialIcon name="disabled_by_default" />
+            <RIcon name="disabled_by_default" />
           </template>
         </Button>
         <Button variant="text" severity="help" :disabled="param.data.length === 0"
                 outlined @click="exportCSV">
           <template #icon>
-            <MaterialIcon name="open_in_new"/>
+            <RIcon name="open_in_new"/>
           </template>
         </Button>
       </BlockUI>
@@ -152,7 +152,7 @@ const exportCSV = () => {
       <span class="entity-manager-datatable-empty-text">{{ t('CommonDataTableEmptyInfo') }}</span>
     </template>
     <template #loading>
-      <MaterialIcon class="pi-spin" name="autorenew" size="10rem"/>
+      <RIcon class="pi-spin" name="autorenew" size="10rem"/>
     </template>
 
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
@@ -160,7 +160,7 @@ const exportCSV = () => {
       <template #body="{data}">
         <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data)">
           <template #icon>
-            <MaterialIcon name="edit_square" />
+            <RIcon name="edit_square" />
           </template>
         </Button>
       </template>

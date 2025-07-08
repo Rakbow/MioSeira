@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import {defineAsyncComponent, getCurrentInstance, onBeforeMount, onMounted, ref} from 'vue';
+import {defineAsyncComponent, getCurrentInstance, inject, onMounted, ref} from 'vue';
 import {useUserStore} from "@/store/modules/user";
-import {useDialog} from "primevue/usedialog";
-import {PublicHelper} from "@/toolkit/publicHelper";
-import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
+import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
 
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 const {t} = useI18n();
 const entity = inject<Entity>('entity')!;
-const route = useRoute();
 const userStore = useUserStore();
 const subProducts = ref<any>([]);
 const param = ref(new EditParam());
@@ -34,7 +32,7 @@ const openEditDialog = () => {
     data: {
       direction: proxy!.$const.RELATION_RELATED_DIRECTION.NEGATIVE
     },
-    onClose: (options) => {
+    onClose: (options: any) => {
       if (options.data !== undefined) {
         if (options.data.isUpdate) {
           getSubProduct();
@@ -55,7 +53,7 @@ const getSubProduct = async () => {
 </script>
 
 <template>
-  <BlockUI :blocked="param.block" class="entity-fieldset">
+  <BlockUI :blocked="param.block" class="entity-fieldset" style="margin: 1rem">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-th-large"/>
@@ -67,7 +65,7 @@ const getSubProduct = async () => {
                   @click="openEditDialog" style="right: 0"
                   v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
             <template #icon>
-              <MaterialIcon name="edit_note" />
+              <RIcon name="edit_note" />
             </template>
           </Button>
         </div>
@@ -80,7 +78,7 @@ const getSubProduct = async () => {
               <td><h4>{{ t('Product') }}</h4></td>
             </tr>
             <tr v-for="entry in subProducts">
-              <td style="color: #788990;">{{ (entry as any).date }}</td>
+              <td style="color: var(--r-steel-500)">{{ (entry as any).date }}</td>
               <td class="a_with_underline">
                 <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" :key="entry.id">
                   <span style="white-space: nowrap;" :class="'product-type-' + entry.subType.value">{{ entry.name }}</span>
@@ -92,7 +90,7 @@ const getSubProduct = async () => {
           </table>
         </div>
         <div v-else>
-          <span class="emptyInfo"><em>{{ t('NoPerson') }}</em></span>
+          <span class="empty-search-result"><em>{{ t('NoInfo') }}</em></span>
         </div>
       </div>
     </Fieldset>

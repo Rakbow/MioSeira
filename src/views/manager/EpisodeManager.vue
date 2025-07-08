@@ -113,23 +113,23 @@ const exportCSV = () => {
              currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll"
              rowGroupMode="rowspan" groupRowsBy="parent.name">
     <template #paginatorfirstpagelinkicon>
-      <MaterialIcon name="first_page" />
+      <RIcon name="first_page" />
     </template>
     <template #paginatorprevpagelinkicon>
-      <MaterialIcon name="chevron_left" />
+      <RIcon name="chevron_left" />
     </template>
     <template #paginatornextpagelinkicon>
-      <MaterialIcon name="chevron_right" />
+      <RIcon name="chevron_right" />
     </template>
     <template #paginatorlastpagelinkicon>
-      <MaterialIcon name="last_page" />
+      <RIcon name="last_page" />
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
         <Button variant="text" severity="help" :disabled="param.selectedData.length === 0"
                 outlined @click="exportCSV">
           <template #icon>
-            <MaterialIcon name="file_export" />
+            <RIcon name="file_export" />
           </template>
         </Button>
       </BlockUI>
@@ -139,7 +139,7 @@ const exportCSV = () => {
       <span class="entity-manager-datatable-empty-text">{{ t('CommonDataTableEmptyInfo') }}</span>
     </template>
     <template #loading>
-      <MaterialIcon class="pi-spin" name="autorenew" size="10rem"/>
+      <RIcon class="pi-spin" name="autorenew" size="10rem"/>
     </template>
 
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
@@ -147,7 +147,7 @@ const exportCSV = () => {
       <template #body>
         <Button variant="text" outlined size="small">
           <template #icon>
-            <MaterialIcon name="edit_square" />
+            <RIcon name="edit_square" />
           </template>
         </Button>
       </template>

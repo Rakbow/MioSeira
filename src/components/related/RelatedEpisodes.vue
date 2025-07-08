@@ -7,7 +7,7 @@
       <div v-if="!loading">
 
         <div class="flex flex-wrap p-1">
-          <div class="grid" style="border-radius: 5px;background: #18181b">
+          <div class="grid" style="border-radius: 5px;background: var(--r-bg-neutral-950)">
             <div class="col-fixed p-1" style="width: 45px">
               <div class="entry-thumb">
                 <img role="presentation" :alt="parent.name" :src="parent.thumb"/>
@@ -49,7 +49,7 @@
       <div v-else>
 
         <div class="flex flex-wrap p-1">
-          <div class="grid" style="border-radius: 5px;background: #18181b">
+          <div class="grid" style="border-radius: 5px;background: var(--r-bg-neutral-950)">
             <div class="col-fixed p-1" style="width: 50px">
               <div class="entry-thumb">
                 <Skeleton size="40px"/>
@@ -144,7 +144,7 @@ const getRelatedData = async () => {
 .episode-list {
   &-duration {
     text-align: right !important;
-    color: #B0C4DE;
+    color: var(--r-steel-300);
   }
 
   &-total {
@@ -163,7 +163,7 @@ const getRelatedData = async () => {
 
     td, th {
       padding-bottom: 0;
-      border-bottom: 1px solid #3C405C;
+      border-bottom: 1px solid var(--r-bg-indigo-700);
     }
 
     td {
@@ -178,7 +178,7 @@ const getRelatedData = async () => {
     th {
       width: 20px;
       padding-top: 4px;
-      color: general.$label;
+      color: var(--r-steel-500);
       @extend .small-font;
     }
   }
@@ -187,12 +187,12 @@ const getRelatedData = async () => {
     &-th {
       color: white;
       border-radius: 5px 0 0 5px;
-      background: #18181b;
+      background: var(--r-bg-neutral-950);
     }
 
     &-td {
       border-radius: 0 5px 5px 0;
-      background: #18181b;
+      background: var(--r-bg-neutral-950);
       color: white;
     }
   }

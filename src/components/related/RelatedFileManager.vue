@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, inject, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
 import {useRoute} from "vue-router";
 import {loadEditor} from "@/service/entityService";
-import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
+import {bs} from '@/service/baseService';
 
-const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const fileUploader = defineAsyncComponent(() => import('@/components/file/FileCreator.vue'));
 
 const {t} = useI18n();
@@ -99,7 +98,7 @@ const openFilesUpload = () => {
       <template #legend>
         <i class="pi pi-file"/>
         <b>{{ t('RelatedFiles') }}</b>
-        <Edit :func="openFilesUpload" icon="note_add" label="Upload" />
+        <RButton @click="openFilesUpload" icon="note_add" tooltip="Upload" variant="text" class="absolute" style="right: 0" />
       </template>
       <DataTable v-if="files.length" ref="dt" :value="files"
                  lazy :totalRecords="records" :loading="loading" @page="onPage($event)" @sort="onSort($event)"
@@ -118,7 +117,7 @@ const openFilesUpload = () => {
           <template #body="{data}">
             <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data)">
               <template #icon>
-                <MaterialIcon size="1.5" name="edit_square" />
+                <RIcon size="1.5" name="edit_square" />
               </template>
             </Button>
           </template>

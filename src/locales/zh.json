@@ -261,5 +261,10 @@
   "EpisodeType1": "剧集",
 
   "LocalFile": "本地文件",
-  "CloudFile": "云端文件"
+  "CloudFile": "云端文件",
+
+  "Resource": {
+    "FileStatistics": "总文件数: {0}   大小: {1}"
+  }
+
 }

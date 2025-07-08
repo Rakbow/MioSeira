@@ -5,7 +5,7 @@
   &-main-col {
     margin-top: .5rem !important;
     width: 840px;
-    background: general.$common-root-background !important;
+    background: var(--r-bg-neutral-950) !important;
     border-radius: general.$common-border-radius;
   }
 
@@ -17,7 +17,7 @@
       margin-bottom: .5rem;
 
       i, b {
-        color: general.$gray;
+        color: var(--r-gray-300);
       }
 
       b {
@@ -33,13 +33,13 @@
   .p-paginator {
     &-content-start {
       margin-inline-end: 0;
-      color: general.$gray;
+      color: var(--r-gray-300);
       font-size: 12px;
     }
 
     &-content-end {
       margin-inline-start: 0;
-      color: general.$gray;
+      color: var(--r-gray-300);
       font-size: 12px;
     }
   }
@@ -62,7 +62,7 @@
 
 .item-search-related-entry {
   border-radius: general.$common-border-radius;
-  background-color: general.$common-background;
+  background-color: var(--r-bg-slate-800);
 
   > div {
     padding: .5rem;
@@ -85,7 +85,7 @@
 
   > div {
     border-radius: general.$common-border-radius !important;
-    background-color: general.$common-background !important;
+    background-color: var(--r-bg-slate-800) !important;
     margin: .5rem !important;
   }
 
@@ -100,7 +100,7 @@
     padding-right: 1.5rem !important;
 
     &-time {
-      color: general.$time;
+      color: var(--r-blue-400);
       font-size: 12px;
       font-weight: 400;
     }
@@ -133,7 +133,7 @@
 
   > div {
     border-radius: general.$common-border-radius !important;
-    background-color: general.$common-background !important;
+    background-color: var(--r-bg-slate-800) !important;
     margin: .5rem !important;
   }
 
@@ -148,7 +148,7 @@
     padding-right: 1.5rem !important;
 
     &-time {
-      color: general.$time;
+      color: var(--r-blue-400);
       font-size: 12px;
       font-weight: 400;
     }
@@ -182,7 +182,7 @@
     width: 300px;
     margin: .25rem .5rem;
     border-radius: 5px;
-    background: general.$common-background;
+    background: var(--r-bg-slate-800);
     > div {
       padding: .25rem;
     }

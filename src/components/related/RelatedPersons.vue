@@ -4,7 +4,6 @@ import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {bs} from '@/service/baseService';
 
-const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 
 const {t} = useI18n();
@@ -84,7 +83,7 @@ const toggleCollapse = () => {
         <b>{{ t('Persons') }}</b>
       </template>
       <div class="person-table">
-        <Edit :func="openEditDialog" icon="person_edit"/>
+        <RButton @click="openEditDialog" icon="person_edit" tooltip="Edit" variant="text" class="absolute" style="right: 0"/>
         <table v-if="personnel.length">
           <tbody>
           <tr v-for="item in visibleRows" :key="item.role.label">
@@ -140,7 +139,7 @@ const toggleCollapse = () => {
     }
 
     > span {
-      color: g.$label;
+      color: var(--r-steel-500);
       white-space: nowrap;
       @extend .small-font
     }

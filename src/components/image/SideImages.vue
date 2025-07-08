@@ -79,15 +79,13 @@ const openEditDialog = () => {
 </script>
 
 <template>
-  <Panel class="entity-detail-side-panel side-image">
+  <Panel>
     <template #header>
       <span><i class="pi pi-image"/><strong>{{ t('Images') }}</strong></span>
     </template>
     <template #icons>
-      <Button v-if="userStore.user && userStore.user.type > 1" text @click="openEditDialog"
-              v-tooltip="{value: t('Edit')}">
-        <MaterialIcon name="edit_square" />
-      </Button>
+      <RButton v-if="userStore.user && userStore.user.type > 1"
+               @click="openEditDialog" icon="edit_square" variant="text" tooltip="Edit" />
       <Button :label="count.toString()" outlined @click="openLoader" :disabled="!count"
               v-tooltip="{value: t('ViewAll'), disabled: !count}"/>
     </template>
@@ -95,23 +93,49 @@ const openEditDialog = () => {
     <div v-if="!images.length">
       <span class="empty-search-result">{{ t('NoImage') }}</span>
     </div>
-    <ScrollPanel v-else style="max-height: 300px;max-width: 265px">
-      <div v-if="images" class="grid justify-content-evenly justify-content-start" style="width: 260px">
-        <div class="col-4 mt-2 mb-2" id="panel-image-div"
-             v-for="(image, index) of images as any" :key="index">
-          <img class="sidebar-panel-image-middle" :src="image.thumb"
-               draggable="false"
-               oncontextmenu="return false"
-               v-tooltip.bottom="{value: t('UploadIn') + image.addedTime, class: 'image-tooltip'}"
-               @click="imageClick(index)" alt="" />
-        </div>
+    <div v-else class="image-showcase">
+      <div class="side-image" v-for="(image, index) of images as any" :key="index">
+        <img :src="image.thumb" draggable="false" oncontextmenu="return false"
+             v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`, class: 'image-tooltip'}"
+             @click="imageClick(index)" alt="image" />
       </div>
-      <ScrollTop target="parent" :threshold="100" class="search-scrolltop"
-                 icon="pi pi-arrow-up" />
-    </ScrollPanel>
+    </div>
   </Panel>
   <ImageGalleria :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
 
 <style lang="scss" scoped>
+
+.image-tooltip .p-tooltip-text {
+  font-size: 1rem;
+  width: 12rem;
+}
+
+.image-showcase {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.side-image {
+  margin: .5rem;
+  display: flex;
+  position: relative;
+  width: 7.2rem;
+  height: 7.2rem;
+  background-position: center center;
+  background-color: var(--r-bg-blue-950);
+  border: solid .1rem #40557E;
+
+  img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    transform: translate(-50%, -50%);
+    cursor: url("https://static.rakbow.com/common/zoomin.cur"), pointer;
+  }
+
+}
 </style>

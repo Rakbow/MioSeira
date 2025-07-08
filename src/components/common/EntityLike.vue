@@ -48,14 +48,19 @@ const like = async () => {
 </script>
 
 <template>
-  <div class="justify-content-center mt-1">
-    <Button class="p-button-link" @click="like" v-tooltip.bottom="{value: t('Like'), class: 'short-tooltip'}" :disabled="param.block">
-      <i style="font-size: 1.7rem" class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"/>
+  <div>
+    <Button @click="like" link v-tooltip.bottom="{value: t('Like'), class: 'short-tooltip'}" :disabled="param.block">
+      <i class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"/>
     </Button>
-    <span style="font-size: 1.4rem">{{ likeCount }}</span>
+    <span>{{ likeCount }}</span>
   </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+span {
+  font-size: 1.4rem
+}
+i {
+  font-size: 1.7rem
+}
 </style>

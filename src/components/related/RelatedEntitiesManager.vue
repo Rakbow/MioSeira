@@ -208,43 +208,43 @@ const load = async () => {
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                scrollable scrollHeight="40rem" responsiveLayout="scroll">
       <template #paginatorfirstpagelinkicon>
-        <MaterialIcon name="first_page" />
+        <RIcon name="first_page" />
       </template>
       <template #paginatorprevpagelinkicon>
-        <MaterialIcon name="chevron_left" />
+        <RIcon name="chevron_left" />
       </template>
       <template #paginatornextpagelinkicon>
-        <MaterialIcon name="chevron_right" />
+        <RIcon name="chevron_right" />
       </template>
       <template #paginatorlastpagelinkicon>
-        <MaterialIcon name="last_page" />
+        <RIcon name="last_page" />
       </template>
       <template #empty>
         <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
         <span class="entity-manager-datatable-empty-text">{{ t('CommonDataTableEmptyInfo') }}</span>
       </template>
       <template #loading>
-        <MaterialIcon class="pi-spin" name="autorenew" size="10rem"/>
+        <RIcon class="pi-spin" name="autorenew" size="10rem"/>
       </template>
       <template #header>
         <SelectButton size="small" v-model="curEntryType" :options="$const.ENTRY_TYPE_SET"
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
           <template #option="{option}">
-            <MaterialIcon :name="option!.icon" size="2" v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}"/>
+            <RIcon :name="option!.icon" size="2" v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}"/>
           </template>
         </SelectButton>
 
         <Button size="small" variant="text" outlined @click="openCreate" :disabled="param.blocking">
           <template #icon>
-            <MaterialIcon name="add_box" />
+            <RIcon name="add_box" />
           </template>
         </Button>
         <Button variant="text" severity="danger"
                 :disabled="!param.selectedData || !param.selectedData.length || param.blocking"
                 outlined @click="openDelete">
           <template #icon>
-            <MaterialIcon name="disabled_by_default" />
+            <RIcon name="disabled_by_default" />
           </template>
         </Button>
       </template>
@@ -254,7 +254,7 @@ const load = async () => {
         <template #body="{data}">
           <Button variant="text" outlined size="small" @click="openUpdate(data)">
             <template #icon>
-              <MaterialIcon name="edit_square" />
+              <RIcon name="edit_square" />
             </template>
           </Button>
         </template>
@@ -293,13 +293,13 @@ const load = async () => {
         <template #header>
           <Button variant="text" outlined @click="openEntrySelector">
             <template #icon>
-              <MaterialIcon name="add_box" />
+              <RIcon name="add_box" />
             </template>
           </Button>
           <Button v-if="createdDTO.entities.length" variant="text" severity="danger"
                   outlined @click="clearRelatedEntry">
             <template #icon>
-              <MaterialIcon name="disabled_by_default" />
+              <RIcon name="disabled_by_default" />
             </template>
           </Button>
         </template>

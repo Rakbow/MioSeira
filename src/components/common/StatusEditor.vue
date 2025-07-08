@@ -39,11 +39,7 @@ const updateStatus = async () => {
 </script>
 
 <template>
-  <div v-if="userStore.user">
-    <div class="item_status_edit" style="top: .5rem;right: .5rem" v-if="userStore.user.type > 2 || userStore.user.type === 0">
-      <ToggleSwitch v-model="status" @click="updateStatus" :disabled="param.block" />
-    </div>
-  </div>
+  <ToggleSwitch v-model="status" @click="updateStatus" :disabled="param.block" />
 </template>
 
 <style scoped>

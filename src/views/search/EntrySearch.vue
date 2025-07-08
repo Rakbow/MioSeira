@@ -182,7 +182,7 @@ const resetFilter = () => {
               <div class="flex align-items-center justify-content-center" style="width: 100px">
                 <span class="small-font" style="color:gray;">{{ t($const.ENTRY_TYPE_SET[entry.type-1].label) }}</span>
                 <Tag class="ml-2">
-                  <MaterialIcon :name="$const.ENTRY_TYPE_SET[entry.type-1].icon" size="2" />
+                  <RIcon :name="$const.ENTRY_TYPE_SET[entry.type-1].icon" size="2" />
                 </Tag>
               </div>
             </div>
@@ -213,7 +213,7 @@ const resetFilter = () => {
                           @change="switchItemType"
                           optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
               <template #option="{option}">
-                <MaterialIcon :name="option.icon" v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}" />
+                <RIcon :name="option.icon" v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}" />
               </template>
             </SelectButton>
           </div>

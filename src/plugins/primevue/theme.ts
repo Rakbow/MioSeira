@@ -37,6 +37,14 @@ const MyPreset = definePreset(Aura, {
                     border-radius: ${dt('panel.content.border.radius')};
                 }
             `
+        },
+        tag: {
+            root: {
+                font: {
+                    size: '1rem',
+                    weight: 500
+                }
+            }
         }
     }
 

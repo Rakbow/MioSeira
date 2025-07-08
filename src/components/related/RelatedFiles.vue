@@ -1,45 +1,30 @@
 <script setup lang="ts">
-import {defineAsyncComponent, defineProps, onMounted, ref} from "vue";
+import {defineAsyncComponent, inject, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
-import {useDialog} from "primevue/usedialog";
 import {useI18n} from "vue-i18n";
+import {bs} from '@/service/baseService';
 
-const Edit = defineAsyncComponent(() => import('@/components/common/EntityEditButton.vue'));
 const creator = defineAsyncComponent(() => import('@/components/file/FileCreator.vue'));
 
 const {t} = useI18n();
-const records = ref(0);
 const loading = ref(false);
-const files = ref([]);
+const files = ref<any[]>([]);
+const size = ref<string>();
+const entity = inject<Entity>('entity')!;
 
 onMounted((() => {
   load();
 }))
 
-const props = defineProps({
-  type: {
-    type: Number,
-    required: true
-  },
-  id: {
-    type: Number,
-    required: true
-  }
-});
-
 const load = async () => {
   loading.value = true;
-  const res = await Axios.post(API.FILE_LIST, {
-    first: 0,
-    rows: 0,
-    filters: {
-      entityType: {value: props.type},
-      entityId: {value: props.id}
-    }
+  const res = await Axios.post(API.FILE_RELATED, {
+    entityType: entity.type,
+    entityId: entity.id
   });
   if (res.success()) {
-    files.value = res.data.data;
-    records.value = res.data.total
+    files.value = res.data.files;
+    size.value = res.data.size;
   }
   loading.value = false;
 }
@@ -74,19 +59,23 @@ const openCreator = () => {
         <i class="pi pi-file"/>
         <b>{{ t('RelatedFiles') }}</b>
       </template>
-      <div class="relative">
-        <Edit :func="openCreator" icon="note_add" label="Upload"/>
-        <table v-if="files.length" class="related-file-table table table-sm table-hover" style="width: 70rem">
+      <div class="related-file">
+        <RButton @click="openCreator" icon="note_add" tooltip="Upload" variant="text" class="absolute"
+                 style="right: 0"/>
+        <p class="related-file-header">
+          {{ t('Resource.FileStatistics', [files.length, size]) }}
+        </p>
+        <table v-if="files.length">
           <tbody>
           <tr v-for="(file, index) in (files as any[])">
-            <td style="width: 2rem">{{ index + 1 }}</td>
-            <td style="width: 50rem" nowrap="nowrap">
-              <span class="text-overflow-ellipsis">{{ file.name }}</span>
+            <th>{{ index + 1 }}</th>
+            <td nowrap="nowrap"  class="related-file-name">
+              <span>{{ file.name }}</span>
             </td>
-            <td>
+            <td class="related-file-size">
               {{ file.size }}
             </td>
-            <td style="color: gray" class="text-end">
+            <td class="related-file-time">
               {{ file.editedTime }}
             </td>
           </tr>
@@ -103,16 +92,60 @@ const openCreator = () => {
 @use '@/styles/general' as g;
 
 .related-file {
+  position: relative;
 
-  &-table {
+  &-header {
+    font-size: 1.2rem;
+    margin-top: .5rem;
+    text-align: left !important;
+  }
 
-    margin: .5rem 2rem 0 0 !important;
+  table {
+    margin: 1rem 0;
+    width: 80rem;
+    padding-bottom: 0;
+    border: none;
+    border-collapse: collapse;
+
+    tr {
+      border-bottom: .1rem solid var(--r-bg-indigo-700);
+      padding-bottom: .1rem;
+
+      &:hover {
+        background-color: var(--r-bg-indigo-700);
+      }
+    }
 
     td {
-      padding: 0 0 .2rem 0;
-      border-bottom: .1rem solid g.$common-border-bottom;
-      color: #B0C4DE;
+      padding-top: 0;
+
+      span {
+        font-size: 1.1rem;
+      }
+
     }
+
+    th {
+      width: 2rem;
+      color: var(--r-steel-500);
+      @extend .small-font;
+    }
+  }
+
+  &-name {
+    span {
+      margin-left: 1rem;
+      text-overflow: ellipsis !important;
+    }
+    width: 55rem;
+    color: var(--r-steel-300);
+  }
+  &-size, &-time {
+    color: var(--r-gray-300);
+  }
+
+  &-time {
+    text-align: right !important;
   }
 
 }

@@ -126,7 +126,7 @@ const switchCreateType = (ev: any) => {
                   @change="switchCreateType($event)"
                   optionLabel="value" dataKey="value" ariaLabelledby="custom">
       <template #option="{option}">
-        <MaterialIcon :name="option!.icon" />
+        <RIcon :name="option!.icon" />
         <span style="font-size: 1.5rem">{{ t(option!.label) }}</span>
       </template>
     </SelectButton>
@@ -148,12 +148,12 @@ const switchCreateType = (ev: any) => {
 
             <Button variant="text" outlined @click="chooseCallback()">
               <template #icon>
-                <MaterialIcon name="upload_file"/>
+                <RIcon name="upload_file"/>
               </template>
             </Button>
             <Button variant="text" outlined @click="clearFile" severity="danger" :disabled="!fileInfos.length">
               <template #icon>
-                <MaterialIcon name="scan_delete"/>
+                <RIcon name="scan_delete"/>
               </template>
             </Button>
           </template>
@@ -164,12 +164,12 @@ const switchCreateType = (ev: any) => {
         <div v-show="currentCreateType === 1">
           <Button variant="text" outlined @click="displaySelector = true">
             <template #icon>
-              <MaterialIcon name="backup"/>
+              <RIcon name="backup"/>
             </template>
           </Button>
           <Button variant="text" outlined @click="clearFile" severity="danger" :disabled="!fileInfos.length">
             <template #icon>
-              <MaterialIcon name="scan_delete"/>
+              <RIcon name="scan_delete"/>
             </template>
           </Button>
         </div>
