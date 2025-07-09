@@ -3,10 +3,13 @@ import {defineAsyncComponent, inject, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
 import {useI18n} from "vue-i18n";
 import {bs} from '@/service/baseService';
+import {useUserStore} from "@/store/modules/user";
 
 const creator = defineAsyncComponent(() => import('@/components/file/FileCreator.vue'));
+const manager = defineAsyncComponent(() => import('@/components/file/FileManager.vue'));
 
 const {t} = useI18n();
+const userStore = useUserStore();
 const loading = ref(false);
 const files = ref<any[]>([]);
 const size = ref<string>();
@@ -49,50 +52,69 @@ const openCreator = () => {
   });
 }
 
+const openManager = () => {
+  bs!.dialog.open(manager, {
+    props: {
+      header: `${t('File')}${t('Edit')}`,
+      style: {
+        width: '75rem',
+      },
+      modal: true,
+      closable: true
+    },
+    data: {
+      type: entity!.type,
+      id: entity!.id,
+    }
+  });
+}
+
 //endregion
 </script>
 
 <template>
-  <BlockUI :blocked="loading" class="entity-fieldset related-file">
+  <BlockUI :blocked="loading" class="entity-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-file"/>
         <b>{{ t('RelatedFiles') }}</b>
       </template>
+      <div class="entity-fieldset-actions" v-if="userStore.user && userStore.user.type > 1">
+        <RButton @click="openManager" icon="edit_square" tooltip="Edit"/>
+        <RButton @click="openCreator" icon="note_add" tooltip="Upload"/>
+      </div>
       <div class="related-file">
-        <RButton @click="openCreator" icon="note_add" tooltip="Upload" class="absolute"
-                 style="right: 0"/>
-        <p class="related-file-header">
-          {{ t('Resource.FileStatistics', [files.length, size]) }}
-        </p>
-        <table v-if="files.length">
-          <tbody>
-          <tr v-for="(file, index) in (files as any[])">
-            <th>{{ index + 1 }}</th>
-            <td nowrap="nowrap"  class="related-file-name">
-              <span>{{ file.name }}</span>
-            </td>
-            <td class="related-file-size">
-              {{ file.size }}
-            </td>
-            <td class="related-file-time">
-              {{ file.editedTime }}
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <template v-if="files.length">
+          <p class="related-file-header">
+            {{ t('Resource.FileStatistics', [files.length, size]) }}
+          </p>
+          <table>
+            <tbody>
+            <tr v-for="(file, index) in (files as any[])">
+              <th>{{ index + 1 }}</th>
+              <td nowrap="nowrap"  class="related-file-name">
+                <span>{{ file.name }}</span>
+              </td>
+              <td class="related-file-size">
+                {{ file.size }}
+              </td>
+              <td class="related-file-time">
+                {{ file.editedTime }}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </template>
         <span v-else class="empty-search-result">{{ t('NoFile') }}</span>
       </div>
-
     </Fieldset>
   </BlockUI>
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/general' as g;
+@use '@/styles/general';
 
 .related-file {
-  position: relative;
 
   &-header {
     font-size: 1.2rem;

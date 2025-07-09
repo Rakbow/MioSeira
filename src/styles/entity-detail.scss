@@ -157,6 +157,10 @@
       }
     }
 
+    &-content {
+      margin-left: 1rem !important;
+    }
+
   }
 
   &-item {
@@ -240,15 +244,23 @@
       position: relative !important;
       border-radius: 1rem;
     }
-  }
 
-  &-content {
-    margin: 0 1rem !important;
+    &-content {
+      margin: 0 !important;
+    }
   }
 
 }
 
 .entity-fieldset {
+  position: relative !important;
+
+  &-actions {
+    position: absolute;
+    right: .5rem;
+    top: 1rem;
+    z-index: 999;
+  }
 
   .p-dataview-content {
     background: var(--r-bg-slate-800) !important;

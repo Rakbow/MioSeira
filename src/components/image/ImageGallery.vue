@@ -85,7 +85,7 @@ const openEditDialog = () => {
     </template>
     <template #icons>
       <RButton v-if="userStore.user && userStore.user.type > 1"
-               @click="openEditDialog" icon="edit_square" variant="text" tooltip="Edit" />
+               @click="openEditDialog" icon="edit_square" tooltip="Edit" />
       <Button :label="count.toString()" outlined @click="openLoader" :disabled="!count"
               v-tooltip="{value: t('ViewAll'), disabled: !count}"/>
     </template>

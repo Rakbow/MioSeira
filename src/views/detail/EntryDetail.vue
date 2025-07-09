@@ -30,7 +30,7 @@
               </div>
             </div>
           </div>
-          <div :class="`${prefix}-content`">
+          <div :class="`${prefix}-entry-content`">
             <DetailPad :text="entry.detail"/>
             <RelatedPersons v-if="entry.type.value === $const.ENTRY_TYPE.PRODUCT"/>
             <RelatedItems/>

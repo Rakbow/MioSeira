@@ -3,7 +3,6 @@ import {onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import "flag-icons/css/flag-icons.min.css";
 import {EntityManageParam, loadEditor} from "@/service/entityService";
 import {getIcon} from "material-file-icons";
 import {PColumn} from "@/service/frame";

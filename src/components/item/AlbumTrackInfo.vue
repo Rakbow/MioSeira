@@ -6,12 +6,12 @@
         <b>{{ t('TrackInfo') }}</b>
       </template>
 
-      <div class="album-tracks">
-        <RButton @click="openAudioUpload" icon="cloud_upload" tooltip="Upload" variant="text"
-                 class="absolute" style="right: 3rem"/>
-        <RButton @click="openQuickCreatorDialog" icon="music_note_add" tooltip="Add" variant="text"
-                 class="absolute" style="right: 0"/>
+      <div v-if="userStore.user && userStore.user.type > 1" class="entity-fieldset-actions">
+        <RButton @click="openAudioUpload" icon="cloud_upload" tooltip="Upload"/>
+        <RButton @click="openQuickCreatorDialog" icon="music_note_add" tooltip="Add"/>
+      </div>
 
+      <div class="album-tracks">
         <div v-if="!loading">
           <div v-if="!info.discs.length">
             <span class="empty-search-result">{{ t('NoTrackInfo') }}</span>
@@ -125,25 +125,19 @@
 </template>
 
 <script setup lang="ts">
-import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
-import {useRoute} from "vue-router";
+import {defineAsyncComponent, inject, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {PublicHelper} from "@/toolkit/publicHelper";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
+import {useUserStore} from "@/store/modules/user";
 
-const {t} = useI18n();
 const quickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
 
-onMounted(() => {
-  reloadTrackInfo();
-});
-
-onBeforeMount(() => {
-})
-
-const route = useRoute();
+const {t} = useI18n();
+const entity = inject<Entity>('entity');
+const userStore = useUserStore();
 const param = ref(new EditParam());
 const loading = ref(false);
 const info = ref({
@@ -152,10 +146,14 @@ const info = ref({
   totalDuration: 0,
 });
 
+onMounted(() => {
+  reloadTrackInfo();
+});
+
 const reloadTrackInfo = async () => {
   param.value.block = true;
   loading.value = true;
-  const res = await Axios.post(API.ALBUM_TRACK_LIST, {id: route.params.id});
+  const res = await Axios.post(API.ALBUM_TRACK_LIST, {id: entity!.id});
   if (res.success())
     info.value = res.data;
   param.value.block = false;
@@ -218,7 +216,7 @@ const removeFile = (index: number) => {
 };
 const uploadAudioFile = async () => {
   const fd = new FormData();
-  fd.append('albumId', route.params.id.toString());
+  fd.append('albumId', entity!.id.toString());
   fileInfos.value.forEach(f => fd.append('files', f.file));
   param.value.block = true;
   const res = await Axios.form(API.ALBUM_TRACK_FILES_UPLOAD, fd);

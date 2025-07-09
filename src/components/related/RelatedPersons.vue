@@ -3,6 +3,7 @@ import {computed, defineAsyncComponent, getCurrentInstance, inject, onMounted, r
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {bs} from '@/service/baseService';
+import {useUserStore} from "@/store/modules/user";
 
 const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
 
@@ -11,6 +12,7 @@ const personnel = ref<PersonnelGroup[]>([]);
 const loading = ref(false);
 const { proxy } = getCurrentInstance()!;
 const entity = inject<Entity>('entity');
+const userStore = useUserStore();
 
 onMounted(() => {
   load()
@@ -82,8 +84,10 @@ const toggleCollapse = () => {
         <i class="pi pi-users"/>
         <b>{{ t('Persons') }}</b>
       </template>
+      <div class="entity-fieldset-actions" v-if="userStore.user && userStore.user.type > 1">
+        <RButton @click="openEditDialog" icon="person_edit" tooltip="Edit"/>
+      </div>
       <div class="person-table">
-        <RButton @click="openEditDialog" icon="person_edit" tooltip="Edit" class="absolute" style="right: 0"/>
         <table v-if="personnel.length">
           <tbody>
           <tr v-for="item in visibleRows" :key="item.role.label">

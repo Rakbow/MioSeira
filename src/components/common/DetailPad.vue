@@ -5,21 +5,13 @@
         <i class="pi pi-align-left"/>
         <b>{{ t('Description') }}</b>
       </template>
+      <div class="entity-fieldset-actions">
+        <RButton v-if="!empty"
+                 @click="openTextTingle" icon="arrows_output" tooltip="FullScreen"/>
+        <RButton v-if="userStore.user && userStore.user.type > 1"
+                 @click="openEditDialog" icon="edit_square" tooltip="Edit"/>
+      </div>
       <div class="relative">
-        <Button v-if="!empty" class="p-button-link absolute top-0"
-                @click="openTextTingle" style="right: 4%" icon="pi pi-external-link"
-                v-tooltip="{value: t('FullScreen'), class: 'short-tooltip'}">
-          <template #icon>
-            <RIcon name="arrows_output" />
-          </template>
-        </Button>
-        <Button v-if="userStore.user && userStore.user.type > 1" class="p-button-link absolute top-0"
-                @click="openEditDialog" style="right: 0"
-                v-tooltip="{value: t('Edit'), class: 'short-tooltip'}">
-          <template #icon>
-            <RIcon name="edit_square" />
-          </template>
-        </Button>
         <article style="width: 90%;font-size: 1.2rem" ref="html" class="entity-detail-markdown"/>
         <Button v-if="text.length > maxLength" @click="toggleCollapse"
                 class="p-button-link" size="small" style="font-size: 1.1rem">
