@@ -18,7 +18,6 @@ const param = ref(new EditParam());
 onBeforeMount(() => {
   store.fetchOptions();
   entry.value = PublicHelper.deepCopy(dialogRef.value.data.entry);
-  PublicHelper.handleAttributes(entry.value);
 })
 
 const submit = async () => {
@@ -37,7 +36,8 @@ const submit = async () => {
 const close = () => {
   dialogRef.value.close(
       {
-        isUpdate: param.value.isUpdate
+        isUpdate: param.value.isUpdate,
+        entry: entry.value
       }
   );
 }
@@ -68,21 +68,21 @@ const close = () => {
       <AutoComplete size="large" v-model="entry.aliases" separator="," multiple :typeahead="false"/>
     </FloatLabel>
 
-    <div class="grid" v-if="entry.type !== $const.ENTRY_TYPE.CLASSIFICATION && entry.type !== $const.ENTRY_TYPE.MATERIAL">
+    <div class="grid" v-if="![$const.ENTRY_TYPE.CLASSIFICATION, $const.ENTRY_TYPE.MATERIAL].includes(entry.type.value)">
       <FloatLabel variant="on">
         <label>{{ t('Date') }}</label>
         <InputText size="large" v-model="entry.date"/>
       </FloatLabel>
       <FloatLabel variant="on">
-        <template v-if="entry.type === $const.ENTRY_TYPE.CHARACTER || entry.type === $const.ENTRY_TYPE.PERSON">
+        <template v-if="[$const.ENTRY_TYPE.PERSON, $const.ENTRY_TYPE.CHARACTER].includes(entry.type.value)">
           <label>{{ t('Gender') }}</label>
-          <Select v-model="entry.gender" :options="store.options.genderSet"
-                  size="large" optionLabel="label" optionValue="value"/>
+          <Select v-model="entry.gender" :options="store.options.genderSet" filled
+                  size="large" optionLabel="label"/>
         </template>
-        <template v-if="entry.type === $const.ENTRY_TYPE.PRODUCT">
+        <template v-if="entry.type.value === $const.ENTRY_TYPE.PRODUCT">
           <label>{{ t('Category') }}</label>
-          <Select v-model="entry.type" :options="store.options.entrySubTypeSet" disabled
-                  size="large" optionLabel="label" optionValue="value"/>
+          <Select v-model="entry.subType" :options="store.options.entrySubTypeSet" disabled filled
+                  size="large" optionLabel="label"/>
         </template>
       </FloatLabel>
     </div>

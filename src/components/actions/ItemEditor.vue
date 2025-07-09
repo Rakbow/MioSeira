@@ -18,7 +18,6 @@ const param = ref(new EditParam());
 onBeforeMount(() => {
   store.fetchOptions();
   item.value = PublicHelper.deepCopy(dialogRef.value.data.item);
-  PublicHelper.handleAttributes(item.value);
 })
 
 onMounted(() => {
@@ -26,7 +25,8 @@ onMounted(() => {
 
 const submit = async () => {
   param.value.block = true;
-  const res = await Axios.post(API.ITEM_UPDATE, item.value);
+  handleAttributeBeforeUpdate();
+  const res = await Axios.post(API.ITEM_UPDATE, param.value.data);
   if (res.success()) {
     bs!.toast.success(res.message);
     param.value.isUpdate = true;
@@ -40,7 +40,8 @@ const submit = async () => {
 const close = () => {
   dialogRef.value.close(
       {
-        isUpdate: param.value.isUpdate
+        isUpdate: param.value.isUpdate,
+        item: item.value
       }
   );
 }
@@ -59,6 +60,13 @@ const parseItemSpec = () => {
   item.value.width = res.width;
   item.value.length = res.length;
   item.value.height = res.height;
+}
+
+const handleAttributeBeforeUpdate = () => {
+  param.value.data = PublicHelper.deepCopy(item.value);
+
+  PublicHelper.handleAttributes(param.value.data);
+
 }
 
 </script>
@@ -99,8 +107,8 @@ const parseItemSpec = () => {
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('ReleaseType') }}</label>
-        <Select v-model="item.releaseType" :options="store.options.releaseTypeSet"
-                size="large" optionLabel="label" optionValue="value"/>
+        <Select v-model="item.releaseType" :options="store.options.releaseTypeSet" filled
+                size="large" optionLabel="label"/>
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('ReleasePrice') }}</label>
@@ -108,13 +116,13 @@ const parseItemSpec = () => {
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('Region') }}</label>
-        <Select v-model="item.region" :options="$const.RegionSet" optionLabel="label"
-                size="large" optionValue="value">
-          <template #value="slotProps">
-            <span :class="`fi fi-${slotProps.value}`"/>
+        <Select v-model="item.region" :options="$const.RegionSet" size="large" filled
+                optionLabel="label" optionValue="value">
+          <template #value>
+            <span :class="`fi fi-${item.region}`"/>
           </template>
-          <template #option="slotProps">
-            <span :class="`fi fi-${slotProps.option.value}`"/>
+          <template #option="{option}">
+            <span :class="`fi fi-${option.value}`"/>
           </template>
         </Select>
       </FloatLabel>
@@ -128,12 +136,12 @@ const parseItemSpec = () => {
         <FloatLabel variant="on">
           <label>{{ t('Category') }}<i class="pi pi-asterisk"/></label>
           <Select size="large" v-model="item.subType" :options="store.options.bookTypeSet"
-                  optionLabel="label" optionValue="value"/>
+                  optionLabel="label" filled/>
         </FloatLabel>
         <FloatLabel variant="on">
           <label>{{ t('Language') }}<i class="pi pi-asterisk"/></label>
           <Select size="large" v-model="item.lang" :options="store.options.languageSet"
-                  optionLabel="label" optionValue="value"/>
+                  optionLabel="label" filled/>
         </FloatLabel>
       </div>
     </template>
@@ -155,7 +163,7 @@ const parseItemSpec = () => {
         <FloatLabel variant="on" v-if="item.type === $const.ITEM_TYPE.DISC">
           <label>{{ t('MediaFormat') }}<i class="pi pi-asterisk"/></label>
           <MultiSelect showClear v-model="item.mediaFormat" :options="store.options.mediaFormatSet"
-                       optionLabel="label" optionValue="value" display="chip"/>
+                       optionLabel="label" display="chip"/>
         </FloatLabel>
         <FloatLabel variant="on">
           <label>{{ t('Discs') }}</label>
@@ -245,4 +253,5 @@ const parseItemSpec = () => {
 </template>
 
 <style scoped lang="scss">
+@use "flag-icons/css/flag-icons.min";
 </style>

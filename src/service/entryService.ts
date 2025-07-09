@@ -14,7 +14,7 @@ export class EntryQueryParams {
     sortOrder: number | null = null;
 }
 
-export const loadEditor = (data: any) => {
+export const loadEditor = (entry: any) => {
     bs!.dialog.open(editor, {
         props: {
             header: t('Edit'),
@@ -25,12 +25,12 @@ export const loadEditor = (data: any) => {
             closable: true
         },
         data: {
-            entry: data
+            entry: entry
         },
         onClose: (options) => {
             if (options!.data !== undefined) {
                 if (options!.data.isUpdate) {
-                    location.reload();
+                    Object.assign(entry, options!.data.entry);
                 }
             }
         }

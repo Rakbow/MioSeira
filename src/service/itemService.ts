@@ -161,7 +161,7 @@ export const loadEditor = (item: any) => {
         onClose: (options) => {
             if (options!.data !== undefined) {
                 if (options!.data.isUpdate) {
-                    location.reload();
+                    Object.assign(item, options!.data.item);
                 }
             }
         }
