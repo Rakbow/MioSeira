@@ -28,7 +28,7 @@ onMounted(() => {
 
 const submit = async () => {
   param.value.block = true;
-  const res = await Axios.post(API.ENTITY_UPDATE_DETAIL, {
+  const res = await Axios.post(API.ENTITY.UPDATE_DETAIL, {
     entityType: dialogRef.value.data.type,
     entityId: dialogRef.value.data.id,
     text: text.value

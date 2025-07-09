@@ -26,7 +26,7 @@ onMounted(() => {
 const submit = async () => {
   param.value.block = true;
   handleAttributeBeforeUpdate();
-  const res = await Axios.post(API.ITEM_UPDATE, param.value.data);
+  const res = await Axios.post(API.ITEM.UPDATE, param.value.data);
   if (res.success()) {
     bs!.toast.success(res.message);
     param.value.isUpdate = true;
@@ -48,7 +48,7 @@ const close = () => {
 
 const ISBNInterConvert = async (isbn10: string) => {
   param.value.block = true;
-  const res = await Axios.post(API.ITEM_CONVERT_ISBN, {isbn10: isbn10})
+  const res = await Axios.post(API.ITEM.BOOK_CONVERT_ISBN, {isbn10: isbn10})
   if (res.success())
     item.value.ean13 = res.data;
   param.value.block = false;

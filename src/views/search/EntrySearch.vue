@@ -108,7 +108,7 @@ const getEntries = async () => {
   queryParams.keywords = PublicHelper.splitAndTrim(queryParams.keyword);
   updateQueryParam();
   loading.value = true;
-  const res = await Axios.post(API.ENTRY_SEARCH, queryParams);
+  const res = await Axios.post(API.ENTRY.SEARCH, queryParams);
   if (res.success()) {
     if (res.data.data === null)
       searchResult.value.data = [];
@@ -169,12 +169,12 @@ const resetFilter = () => {
             </div>
             <div v-if="!loading" v-for="(entry, index) in slotProps.items" :key="index" class="grid">
               <div class="entry-search-list-thumb col-fixed">
-                <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" class="entry-thumb">
+                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="entry-thumb">
                   <img role="presentation" :alt="entry.id" :src="(entry as any).thumb"/>
                 </a>
               </div>
               <div class="entry-search-list-info col">
-                <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" class="text-overflow-hidden-one"
+                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="text-overflow-hidden-one"
                    :title="entry.name">{{ entry.name }}</a>
                 <span class="text-overflow-hidden-one" style="display: inline" :title="entry.subName">{{ entry.subName }}</span>
                 <span v-if="entry.date" style="display: inline">&nbsp;({{ entry.date }})</span>

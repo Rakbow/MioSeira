@@ -4,7 +4,7 @@ import {API} from "@/api";
 const SearchRouter: Array<RouteRecordRaw> = [
     {
         name: "ItemSearch",
-        path: API.ITEM_SEARCH_PATH,
+        path: API.ITEM.SEARCH_PATH,
         component: () => import('@/views/search/ItemSearch.vue'),
         meta: {
             title: "Items"
@@ -12,7 +12,7 @@ const SearchRouter: Array<RouteRecordRaw> = [
     },
     {
         name: "EntrySearch",
-        path: API.ENTRY_SEARCH_PATH,
+        path: API.ENTRY.SEARCH_PATH,
         component: () => import('@/views/search/EntrySearch.vue'),
         meta: {
             title: "Entries"

@@ -41,7 +41,7 @@ const switchItemType = () => {
   dto.value.item.type = parseInt(itemType.value.value);
 }
 const ISBNInterConvert = async (isbn10: string) => {
-  const res = await Axios.post(API.ITEM_CONVERT_ISBN, {isbn10: isbn10})
+  const res = await Axios.post(API.ITEM.BOOK_CONVERT_ISBN, {isbn10: isbn10})
   if (res.success())
     dto.value.item.barcode = res.data;
 };
@@ -87,9 +87,9 @@ const submit = async () => {
     i.file = null;
   });
   fd.append('param', JSON.stringify(dto.value));
-  const res = await Axios.form(API.ITEM_CREATE, fd);
+  const res = await Axios.form(API.ITEM.CREATE, fd);
   if (res.success())
-    await router.push(`${proxy!.$api.ITEM_DETAIL_PATH}/${res.data}`);
+    await router.push(`${proxy!.$api.ITEM.DETAIL_PATH}/${res.data}`);
   else
     bs!.toast.error(res.message);
   param.value.block = false;

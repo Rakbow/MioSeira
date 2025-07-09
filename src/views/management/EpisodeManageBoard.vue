@@ -87,7 +87,7 @@ const onFilter = () => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await Axios.post(API.EPISODE_GET_LIST, param.value.query);
+  const res = await Axios.post(API.EPISODE.LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
@@ -147,7 +147,7 @@ const exportCSV = () => {
     <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
             exportHeader="name" :sortable="true">
       <template #body="{data}">
-        <a :href="`${$api.EPISODE_DETAIL}/${data.id}`">
+        <a :href="`${$api.EPISODE.DETAIL_PATH}/${data.id}`">
           <div class="text-container" :title="data.name">
             {{ data!.name }}
           </div>

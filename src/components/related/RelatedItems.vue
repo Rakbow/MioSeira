@@ -26,7 +26,7 @@ const getRelatedItems = async () => {
     sortField: 'releaseDate',
     sortOrder: -1
   }
-  const res = await Axios.post(API.ITEM_SEARCH, param.value.data);
+  const res = await Axios.post(API.ITEM.SEARCH, param.value.data);
   if (res.success()) {
     if (res.data.data === null)
       relatedItems.value = [];
@@ -60,7 +60,7 @@ const endHover = () => {
         <i class="pi pi-th-large"/>
         <b>{{ t('RelatedItem') }}</b>
       </template>
-      <RouterLink v-if="records" class="ml-4" :to="`${$api.ITEM_SEARCH_PATH}?entry=${entity.id}`">
+      <RouterLink v-if="records" class="ml-4" :to="`${$api.ITEM.SEARCH_PATH}?entry=${entity.id}`">
         <span>{{records}}&nbsp;<i class="pi pi-angle-double-right" style="font-size: 1.3rem" /></span>
       </RouterLink>
       <DataView :value="relatedItems" layout="grid">
@@ -70,7 +70,7 @@ const endHover = () => {
         <template #grid="slotProps">
           <div class="flex flex-wrap">
             <div v-for="(item, index) in slotProps.items" :key="index" class="p-2">
-              <a :href="`${$api.ITEM_DETAIL_PATH}/${item.id}`" :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
+              <a :href="`${$api.ITEM.DETAIL_PATH}/${item.id}`" :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
                 <img role="presentation" :alt="item.id" :src="(item as any).thumb"
                      @pointerover="startHover($event, item)" @pointerleave="endHover"/>
               </a>

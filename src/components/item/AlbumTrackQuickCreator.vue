@@ -42,7 +42,7 @@ const close = () => {
 const submit = async () => {
   if (dr.value.data.mode === 'normal') {
     param.value.block = true;
-    const res = await Axios.post(API.ALBUM_TRACK_QUICK_CREATE, disc.value);
+    const res = await Axios.post(API.ITEM.ALBUM_TRACK_QUICK_CREATE, disc.value);
     if (res.success()) {
       bs!.toast.success(res.message);
       upload.value = true;

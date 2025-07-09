@@ -1,82 +1,86 @@
 export const API = {
 
-    //region entity
-    ENTITY_UPDATE_STATUS: '/api/db/update-entity-status',
-    ENTITY_UPDATE_DETAIL: '/api/db/update-entity-detail',
-    ENTITY_GET_OPTION: '/api/db/get-options',
-    ENTITY_LIKE: '/api/db/like',
-    //endregion
+    ENTITY: {
+        UPDATE_STATUS: '/api/db/update-entity-status',
+        UPDATE_DETAIL: '/api/db/update-entity-detail',
+        GET_OPTION: '/api/db/get-options',
+        LIKE: '/api/db/like',
+    },
 
-    //region item
-    ITEM_SEARCH_PATH: '/db/item',
-    ITEM_CREATE_PATH: 'item/submit',
-    ITEM_SEARCH: '/api/db/item/search',
-    ITEM_DETAIL_PATH: '/db/item',
-    ITEM_GET_DETAIL: '/api/db/item/detail',
-    ITEM_LIST: '/api/db/item/list',
-    ITEM_CREATE: '/api/db/item/create',
-    ITEM_UPDATE: '/api/db/item/update',
+    ITEM: {
+        DETAIL_PATH: '/db/item',
+        SEARCH_PATH: '/db/item',
+        CREATE_PATH: 'item/submit',
 
-    ITEM_EXTRA_INFO: '/api/db/entry/get-extra-info',
-    ITEM_CONVERT_ISBN: '/api/db/item/convert-isbn',
+        SEARCH: '/api/db/item/search',
+        DETAIL: '/api/db/item/detail',
+        LIST: '/api/db/item/list',
+        CREATE: '/api/db/item/create',
+        UPDATE: '/api/db/item/update',
+        EXTRA_INFO: '/api/db/entry/get-extra-info',
 
-    ALBUM_TRACK_QUICK_CREATE: '/api/db/item/album-track-quick-create',
-    ALBUM_TRACK_LIST: '/api/db/item/album-track-list',
-    ALBUM_TRACK_FILES_UPLOAD: '/api/db/item/album-track-files-upload',
-    //endregion
+        ALBUM_TRACK_QUICK_CREATE: '/api/db/item/album-track-quick-create',
+        ALBUM_TRACK_LIST: '/api/db/item/album-track-list',
+        ALBUM_TRACK_FILES_UPLOAD: '/api/db/item/album-track-files-upload',
+        BOOK_CONVERT_ISBN: '/api/db/item/convert-isbn',
+    },
 
-    //region entry
-    ENTRY_SEARCH_PATH: '/db/entry',
-    ENTRY_SEARCH: '/api/db/entry/search',
-    ENTRY_DETAIL_PATH: '/db/entry',
-    ENTRY_GET_MINI: '/api/db/entry/mini',
-    ENTRY_GET_DETAIL: '/api/db/entry/detail',
-    ENTRY_GET_LIST: '/api/db/entry/list',
-    ENTRY_UPDATE: '/api/db/entry/update',
-    ENTRY_UPLOAD_IMAGE: '/api/db/entry/upload-image',
-    ENTRY_GET_SUB_PRODUCTS: '/api/db/entry/get-sub-products',
-    //endregion
+    ENTRY: {
+        DETAIL_PATH: '/db/entry',
+        SEARCH_PATH: '/db/entry',
 
-    //region episode
-    EPISODE_DETAIL: '/db/ep',
-    EPISODE_GET_LIST: '/api/db/ep/list',
-    EPISODE_GET_DETAIL: '/api/db/ep/detail',
-    EPISODE_GET_RELATED: '/api/db/ep/related',
-    //endregion
+        SEARCH: '/api/db/entry/search',
+        MINI: '/api/db/entry/mini',
+        DETAIL: '/api/db/entry/detail',
+        LIST: '/api/db/entry/list',
+        UPDATE: '/api/db/entry/update',
+        UPLOAD_IMAGE: '/api/db/entry/upload-image',
+        SUB_PRODUCTS: '/api/db/entry/get-sub-products',
+    },
 
-    //region image
-    IMAGES_DEFAULT_DISPLAYED: '/api/db/image/default-displayed',
-    IMAGE_LIST: '/api/db/image/list',
-    IMAGE_UPLOAD: '/api/db/image/upload',
-    IMAGE_UPDATE: '/api/db/image/update',
-    IMAGE_DELETE: '/api/db/image/delete',
-    //endregion
+    EPISODE: {
+        DETAIL_PATH: '/db/ep',
 
-    //region relation
-    RELATION_LIST: '/api/db/relation/list',
-    RELATION_CREATE: '/api/db/relation/create',
-    RELATION_UPDATE: '/api/db/relation/update',
-    RELATION_DELETE: '/api/db/relation/delete',
-    RELATION_PERSONNEL: '/api/db/relation/personnel',
-    //endregion
+        LIST: '/api/db/ep/list',
+        DETAIL: '/api/db/ep/detail',
+        RELATED: '/api/db/ep/related',
+    },
 
-    //region role
-    ROLE_LIST: '/api/db/role/list',
-    ROLE_CREATE: '/api/db/role/create',
-    ROLE_UPDATE: '/api/db/role/update',
-    ROLE_DELETE: '/api/db/role/delete',
-    ROLE_REFRESH: '/api/db/role/refresh',
-    //endregion
+    IMAGE: {
+        PREVIEW: '/api/db/image/preview',
+        LIST: '/api/db/image/list',
+        UPLOAD: '/api/db/image/upload',
+        UPDATE: '/api/db/image/update',
+        DELETE: '/api/db/image/delete',
+    },
 
-    //region file
-    FILE_DETAIL_PATH: '/db/file',
-    FILE_LIST: '/api/db/file/list',
-    FILE_RELATED: '/api/db/file/related',
-    FILE_UPDATE: '/api/db/file/update',
-    FILE_UPLOAD: '/api/db/file/upload',
-    FILE_RELATED_CREATE: '/api/db/file/create-related',
-    FILE_SEARCH: '/api/db/file/search',
-    //endregion
+    RELATION: {
+        LIST: '/api/db/relation/list',
+        CREATE: '/api/db/relation/create',
+        UPDATE: '/api/db/relation/update',
+        DELETE: '/api/db/relation/delete',
+        PERSONNEL: '/api/db/relation/personnel',
+    },
+
+    ROLE: {
+        LIST: '/api/db/role/list',
+        CREATE: '/api/db/role/create',
+        UPDATE: '/api/db/role/update',
+        DELETE: '/api/db/role/delete',
+        REFRESH: '/api/db/role/refresh',
+    },
+
+    FILE: {
+        DETAIL_PATH: '/db/file',
+
+        LIST: '/api/db/file/list',
+        RELATED: '/api/db/file/related',
+        UPDATE: '/api/db/file/update',
+        UPLOAD: '/api/db/file/upload',
+        RELATED_CREATE: '/api/db/file/related-create',
+        RELATED_DELETE: '/api/db/file/related-delete',
+        SEARCH: '/api/db/file/search',
+    },
 
     //region user
     CHECK_USER_AUTHORITY: '/api/user/check-authority',

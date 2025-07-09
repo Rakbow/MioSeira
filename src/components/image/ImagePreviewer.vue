@@ -33,7 +33,7 @@ const getDisplayImages = async () => {
   entityType: entity!.type,
   entityId: entity!.id
   }
-  const res = await Axios.post(API.IMAGE_PREVIEW, param.value.data);
+  const res = await Axios.post(API.IMAGE.PREVIEW, param.value.data);
   if (res.success()) {
     images.value = res.data.images;
     count.value = res.data.count;

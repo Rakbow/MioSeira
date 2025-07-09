@@ -35,7 +35,7 @@
               <span>{{ ep.name }}</span>
             </td>
             <td nowrap="nowrap" v-else>
-              <router-link :to="`${$api.EPISODE_DETAIL}/${ep.id}`">
+              <router-link :to="`${$api.EPISODE.DETAIL_PATH}/${ep.id}`">
                 <span>{{ ep.name }}</span>
               </router-link>
             </td>
@@ -123,7 +123,7 @@ const loading = ref(false);
 const getRelatedData = async () => {
   loading.value = true;
   const res = await Axios.post(
-      API.EPISODE_GET_RELATED,
+      API.EPISODE.RELATED,
       {
         relatedType: props.relatedType,
         relatedId: props.relatedId,

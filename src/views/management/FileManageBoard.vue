@@ -86,7 +86,7 @@ const onFilter = () => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await Axios.post(API.FILE_LIST, param.value.query);
+  const res = await Axios.post(API.FILE.LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total

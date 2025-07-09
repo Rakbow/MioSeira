@@ -17,7 +17,7 @@ export const useOptionStore = defineStore('options', {
                 const {locale} = useI18n();
                 this.$reset();
 
-                const res = await Axios.get(API.ENTITY_GET_OPTION);
+                const res = await Axios.get(API.ENTITY.GET_OPTION);
                 this.options = res.data;
 
                 this.itemCurrent = META.ITEM_TYPE.ALBUM;

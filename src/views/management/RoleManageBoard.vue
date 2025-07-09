@@ -85,7 +85,7 @@ const onFilter = () => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await Axios.post(API.ROLE_LIST, param.value.query);
+  const res = await Axios.post(API.ROLE.LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
@@ -129,7 +129,7 @@ const confirmDeleteSelected = () => {
 
 const create = async () => {
   param.value.load();
-  const res = await Axios.post(API.ROLE_CREATE, createDTO.value);
+  const res = await Axios.post(API.ROLE.CREATE, createDTO.value);
   if (res.success()) {
     bs!.toast.success(res.message);
     closeAddDialog();
@@ -142,7 +142,7 @@ const create = async () => {
 
 const update = async () => {
   param.value.load();
-  const res = await Axios.post(API.ROLE_UPDATE, updateDTO.value);
+  const res = await Axios.post(API.ROLE.UPDATE, updateDTO.value);
   if (res.success()) {
     bs!.toast.success(res.message);
     closeEditDialog();
@@ -155,7 +155,7 @@ const update = async () => {
 
 const refresh = async () => {
   param.value.load();
-  const res = await Axios.post(API.ROLE_REFRESH);
+  const res = await Axios.post(API.ROLE.REFRESH);
   if (res.success()) {
     store.clear();
     bs!.toast.success(res.message);

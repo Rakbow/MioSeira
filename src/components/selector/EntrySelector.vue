@@ -25,7 +25,7 @@
               <img role="presentation" :alt="entity.name" :src="entity.thumb"/>
             </div>
             <div class="related-entity-info">
-              <a :href="`${$api.ENTRY_DETAIL_PATH}/${entity.id}`" :title="entity.name">
+              <a :href="`${$api.ENTRY.DETAIL_PATH}/${entity.id}`" :title="entity.name">
                 {{ entity.name }}
               </a>
               <small :title="entity.subName">
@@ -144,7 +144,7 @@ const load = async () => {
   param.value.load();
   param.value.handleKeyword();
   param.value.type = props.type;
-  const res = await Axios.post(API.ENTRY_SEARCH, param.value);
+  const res = await Axios.post(API.ENTRY.SEARCH, param.value);
   if (res.success()) {
     param.value.loadResult(res.data);
   }

@@ -47,7 +47,7 @@ const openEditDialog = () => {
 
 const load = async () => {
   loading.value = true;
-  const res = await Axios.post(API.RELATION_PERSONNEL, {
+  const res = await Axios.post(API.RELATION.PERSONNEL, {
     entityType: entity!.type,
     entityId: entity!.id
   });
@@ -96,7 +96,7 @@ const toggleCollapse = () => {
               <template v-for="(chunk) in chunkArray((item as any).persons, 10)">
                 <div>
                   <template v-for="(person, index) in chunk">
-                    <router-link :to="`${$api.ENTRY_DETAIL_PATH}/${(person as any).id}`">
+                    <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${(person as any).id}`">
                       <span>{{ (person as any).name }}</span>
                     </router-link>
                     <span v-if="(person as any).remark">&nbsp;({{ (person as any).remark }})</span>

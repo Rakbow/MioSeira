@@ -41,7 +41,7 @@ onMounted(() => {
 
 const jumpToEntryDetail = (data: any) => {
   dialogRef.value.close();
-  router.push(`${proxy!.$api.ENTRY_DETAIL_PATH}/${data.id}`);
+  router.push(`${proxy!.$api.ENTRY.DETAIL_PATH}/${data.id}`);
 };
 
 const switchEntryType = (ev: any) => {
@@ -92,7 +92,7 @@ const openCreate = () => {
 const create = async () => {
   param.value.block();
   createdDTO.value.relatedEntries = createdDTO.value.entities.map(i => ({id: i.id, remark: i.remark}));
-  const res = await Axios.post(API.RELATION_CREATE, createdDTO.value);
+  const res = await Axios.post(API.RELATION.CREATE, createdDTO.value);
   if (res.success()) {
     isUpdate.value = true;
     createDialog.value = false;
@@ -114,7 +114,7 @@ const openUpdate = (value: any) => {
 }
 const update = async () => {
   param.value.block();
-  const res = await Axios.post(API.RELATION_UPDATE, {
+  const res = await Axios.post(API.RELATION.UPDATE, {
     id: updateDTO.value.id,
     roleId: updateDTO.value.role.value,
     relatedRoleId: updateDTO.value.target.role.value,
@@ -160,7 +160,7 @@ const openDelete = () => {
 };
 
 const remove = async () => {
-  const res = await Axios.delete(API.RELATION_DELETE, {ids: param.value.selectedData.map(i => i.id)});
+  const res = await Axios.delete(API.RELATION.DELETE, {ids: param.value.selectedData.map(i => i.id)});
   if (res.success()) {
     isUpdate.value = true;
     bs!.toast.success(res.message);
@@ -185,7 +185,7 @@ const onSort = (ev: any) => {
 
 const load = async () => {
   param.value.load();
-  const res = await Axios.post(API.RELATION_LIST, param.value.query);
+  const res = await Axios.post(API.RELATION.LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
@@ -250,7 +250,7 @@ const load = async () => {
       <Column :header="t('ReverseRole')" field="role.label" style="width: 10rem"/>
       <Column :header="t('RelatedEntity')">
         <template #body="{data}">
-          <router-link :title="data.target.name" :to="`${$api.ENTRY_DETAIL_PATH}/${data.target.entityId}`">
+          <router-link :title="data.target.name" :to="`${$api.ENTRY.DETAIL_PATH}/${data.target.entityId}`">
             {{ data!.target.name }}
           </router-link>
         </template>

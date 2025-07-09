@@ -108,7 +108,7 @@ const onToggle = (val: PColumn[]) => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await Axios.post(API.ENTRY_GET_LIST, param.value.query);
+  const res = await Axios.post(API.ENTRY.LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total;
@@ -202,7 +202,7 @@ const exportCSV = () => {
     <Column :header="t('Name')" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
             exportHeader="name" :sortable="true">
       <template #body="{data}">
-        <a :href="`${$api.ENTRY_DETAIL_PATH}/${data.id}`" :title="data.name">
+        <a :href="`${$api.ENTRY.DETAIL_PATH}/${data.id}`" :title="data.name">
           {{ data!.name }}
         </a>
       </template>

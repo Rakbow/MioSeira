@@ -35,7 +35,7 @@ const like = async () => {
     entityType: entity.type,
     entityId: entity.id
   };
-  const res = await Axios.post(API.ENTITY_LIKE, param.value.data);
+  const res = await Axios.post(API.ENTITY.LIKE, param.value.data);
   if (res.success()) {
     likeCount.value++;
     liked.value = true;

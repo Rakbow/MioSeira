@@ -40,7 +40,7 @@ onMounted(() => {
 const getData = async () => {
   const requests = config.value.subConfigs.map(async subConfig => {
         queryParams.value.filters.targetEntitySubTypes.value = subConfig.value;
-        return Axios.post(API.RELATION_LIST, queryParams.value);
+        return Axios.post(API.RELATION.LIST, queryParams.value);
       }
   );
   const responses = await Promise.all(requests);

@@ -157,7 +157,7 @@ const onFilter = () => {
 };
 const load = async () => {
   param.value.load();
-  const res = await Axios.post(API.IMAGE_LIST, param.value.query);
+  const res = await Axios.post(API.IMAGE.LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total;
@@ -189,7 +189,7 @@ const upload = async () => {
   fd.append('infos', JSON.stringify(infos));
   fd.append('generateThumb', generateThumb!.value.toString());
   param.value.block();
-  const res = await Axios.form(API.IMAGE_UPLOAD, fd);
+  const res = await Axios.form(API.IMAGE.UPLOAD, fd);
   if (res.success()) {
     bs!.toast.success(res.message);
     uploadDisplay.value = false;
@@ -218,7 +218,7 @@ const openUpdate = (data: any) => {
 }
 const update = async () => {
   param.value.block();
-  const res = await Axios.post(API.IMAGE_UPDATE, updateDTO.value);
+  const res = await Axios.post(API.IMAGE.UPDATE, updateDTO.value);
   if (res.success()) {
     bs!.toast.success(res.message);
     updateDisplay.value = false;
@@ -266,7 +266,7 @@ const remove = async () => {
     })
   }
 
-  const res = await Axios.delete(API.IMAGE_DELETE, deleteDTOs);
+  const res = await Axios.delete(API.IMAGE.DELETE, deleteDTOs);
   if (res.success()) {
     param.value.selectedData = [];
     await load();

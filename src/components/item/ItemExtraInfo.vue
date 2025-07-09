@@ -18,7 +18,7 @@ onMounted(() => {
 
 const loadExtraInfo = async () => {
   loading.value = true;
-  const res = await Axios.post(API.ITEM_EXTRA_INFO, {id: entity!.id});
+  const res = await Axios.post(API.ITEM.EXTRA_INFO, {id: entity!.id});
   if (res.success()) extraInfo.value = res.data;
   loading.value = false;
 }
@@ -33,7 +33,7 @@ const loadExtraInfo = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(c, index) in extraInfo.classifications">
-          <router-link :to="`${$api.ENTRY_DETAIL_PATH}/${c.target.entityId}`">
+          <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${c.target.entityId}`">
             <span style="white-space: nowrap;">{{ c.target.name }}</span>
           </router-link>
           <span v-if="index < extraInfo.classifications.length - 1">, </span>
@@ -48,7 +48,7 @@ const loadExtraInfo = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(e, index) in extraInfo.events">
-          <router-link :to="`${$api.ENTRY_DETAIL_PATH}/${e.target.entityId}`">
+          <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${e.target.entityId}`">
             <span style="white-space: nowrap;">{{ e.target.name }}</span>
           </router-link>
           <span v-if="e.remark">&nbsp;({{ (e as any).remark }})</span>
@@ -64,7 +64,7 @@ const loadExtraInfo = async () => {
     <td>
       <div style="display: block;">
         <template v-for="(m, index) in extraInfo.materials">
-          <router-link :to="`${$api.ENTRY_DETAIL_PATH}/${m.target.entityId}`">
+          <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${m.target.entityId}`">
             <span style="white-space: nowrap;">{{ m.target.name }}</span>
           </router-link>
           <span v-if="m.remark">&nbsp;({{ (m as any).remark }})</span>

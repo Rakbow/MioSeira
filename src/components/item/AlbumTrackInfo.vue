@@ -39,7 +39,7 @@
                 <tr v-for="track in disc.tracks">
                   <th>{{ track.serial < 10 ? `0${track.serial}` : track.serial }}</th>
                   <td nowrap="nowrap">
-                    <router-link :to="`${$api.EPISODE_DETAIL}/${track.id}`">
+                    <router-link :to="`${$api.EPISODE.DETAIL_PATH}/${track.id}`">
                       <span>{{ track.name }}</span>
                     </router-link>
                   </td>
@@ -153,7 +153,7 @@ onMounted(() => {
 const reloadTrackInfo = async () => {
   param.value.block = true;
   loading.value = true;
-  const res = await Axios.post(API.ALBUM_TRACK_LIST, {id: entity!.id});
+  const res = await Axios.post(API.ITEM.ALBUM_TRACK_LIST, {id: entity!.id});
   if (res.success())
     info.value = res.data;
   param.value.block = false;
@@ -219,7 +219,7 @@ const uploadAudioFile = async () => {
   fd.append('albumId', entity!.id.toString());
   fileInfos.value.forEach(f => fd.append('files', f.file));
   param.value.block = true;
-  const res = await Axios.form(API.ALBUM_TRACK_FILES_UPLOAD, fd);
+  const res = await Axios.form(API.ITEM.ALBUM_TRACK_FILES_UPLOAD, fd);
   if (res.success())
     bs!.toast.success(res.message);
   audioUploadDisplay.value = false;

@@ -30,7 +30,7 @@ const close = () => {
 
 const submit = async () => {
   param.value.block = true;
-  const res = await Axios.post(API.ALBUM_TRACK_QUICK_CREATE, {
+  const res = await Axios.post(API.ITEM.ALBUM_TRACK_QUICK_CREATE, {
     id: entity!.id,
     tracks: tracks.value
   });

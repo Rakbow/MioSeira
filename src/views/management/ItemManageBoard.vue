@@ -123,7 +123,7 @@ const onToggle = (val: PColumn[]) => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await Axios.post(API.ITEM_LIST, param.value.query);
+  const res = await Axios.post(API.ITEM.LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
@@ -139,7 +139,7 @@ const confirmDeleteSelected = () => {
 }
 
 const openCreateTab = () => {
-  window.open(API.ITEM_CREATE_PATH, '_blank');
+  window.open(API.ITEM.CREATE_PATH, '_blank');
 }
 
 //endregion
@@ -244,7 +244,7 @@ const exportCSV = () => {
     <Column field="name" filterField="keyword" :showFilterMenu="false" showClearButton
             exportHeader="name" :sortable="true">
       <template #body="{data}">
-        <a :href="`${$api.ITEM_DETAIL_PATH}/${data.id}`" :title="data.name"
+        <a :href="`${$api.ITEM.DETAIL_PATH}/${data.id}`" :title="data.name"
            class="text-ellipsis" style="width: 30rem">
           {{ data!.name }}
         </a>

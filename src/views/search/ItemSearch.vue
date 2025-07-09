@@ -199,7 +199,7 @@ const getItems = async () => {
   queryParams.entries = entries.value.map(e => e.id)
   updateQueryParam();
   loading.value = true;
-  const res = await Axios.post(API.ITEM_SEARCH, queryParams);
+  const res = await Axios.post(API.ITEM.SEARCH, queryParams);
   if (res.success()) {
     if (res.data.data === null)
       searchResult.value.data = [];
@@ -216,7 +216,7 @@ const getItems = async () => {
 const getRelatedEntries = async () => {
   if (queryParams.entries.length) {
     entryLoading.value = true;
-    const res = await Axios.post(API.ENTRY_GET_MINI, queryParams.entries);
+    const res = await Axios.post(API.ENTRY.MINI, queryParams.entries);
     if (res.success()) {
       entries.value = res.data;
     }
@@ -305,7 +305,7 @@ const endHover = () => {
               </div>
             </div>
             <div v-else v-for="(item, index) in slotProps.items" :key="index">
-              <a :href="`${$api.ITEM_DETAIL_PATH}/${item.id}`"
+              <a :href="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
                  @pointerover="startHover($event, item)" @pointerleave="endHover"
                  :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
                 <img role="presentation" :alt="item.id" :src="(item as any).thumb"/>
@@ -320,13 +320,13 @@ const endHover = () => {
             </div>
             <div v-if="!loading" v-for="(item, index) in slotProps.items" :key="index" class="grid">
               <div class="item-search-list-thumb col-fixed">
-                <a :href="`${$api.ITEM_DETAIL_PATH}/${item.id}`"
+                <a :href="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
                    :class="`item-thumb item-thumb-${item.type.value}-${item.subType.value}`">
                   <img role="presentation" :alt="item.id" :src="(item as any).thumb"/>
                 </a>
               </div>
               <div class="item-search-list-info col">
-                <a :href="`${$api.ITEM_DETAIL_PATH}/${item.id}`" class="text-overflow-hidden-one"
+                <a :href="`${$api.ITEM.DETAIL_PATH}/${item.id}`" class="text-overflow-hidden-one"
                    :title="item.name">{{ item.name }}</a>
                 <Tag :value="item.type.label"/>
                 <span v-if="item.type.value !== $const.ITEM_TYPE.ALBUM">
@@ -444,7 +444,7 @@ const endHover = () => {
                 </div>
                 <div class="col" style="width: 212px;">
                     <span class="data-table-field-text-overflow-hidden">
-                      <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" :title="entry.name">{{ entry.name }}</a>
+                      <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" :title="entry.name">{{ entry.name }}</a>
                     </span>
                   <small style="color: gray" class="data-table-field-text-overflow-hidden">
                     {{ (entry as any).subName }}

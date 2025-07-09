@@ -110,7 +110,7 @@ const onFilter = () => {
 
 const getImages = async () => {
   loading.value = true;
-  const res = await Axios.post(API.IMAGE_LIST, queryParams.value);
+  const res = await Axios.post(API.IMAGE.LIST, queryParams.value);
   if (res.success()) {
     images.value = res.data.data;
     totalRecords.value = res.data.total

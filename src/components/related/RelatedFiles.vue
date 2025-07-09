@@ -20,7 +20,7 @@ onMounted((() => {
 
 const load = async () => {
   loading.value = true;
-  const res = await Axios.post(API.FILE_RELATED, {
+  const res = await Axios.post(API.FILE.RELATED, {
     entityType: entity.type,
     entityId: entity.id
   });

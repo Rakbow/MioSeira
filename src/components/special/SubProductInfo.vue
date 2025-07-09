@@ -44,7 +44,7 @@ const openEditDialog = () => {
 
 const getSubProduct = async () => {
   param.value.block = true;
-  const res = await Axios.post(API.ENTRY_GET_SUB_PRODUCTS, {id: entity!.id});
+  const res = await Axios.post(API.ENTRY.SUB_PRODUCTS, {id: entity!.id});
   if (res.success())
     subProducts.value = res.data;
   param.value.block = false;
@@ -80,7 +80,7 @@ const getSubProduct = async () => {
             <tr v-for="entry in subProducts">
               <td style="color: var(--r-steel-500)">{{ (entry as any).date }}</td>
               <td class="a_with_underline">
-                <a :href="`${$api.ENTRY_DETAIL_PATH}/${entry.id}`" :key="entry.id">
+                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" :key="entry.id">
                   <span style="white-space: nowrap;" :class="'product-type-' + entry.subType.value">{{ entry.name }}</span>
                 </a>
                 <small>&nbsp;({{ (entry as any).subType.label }})</small>

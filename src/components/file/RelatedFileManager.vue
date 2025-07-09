@@ -108,7 +108,7 @@ const onFilter = () => {
 
 const load = async () => {
   param.value.load();
-  const res = await Axios.post(API.FILE_LIST, param.value.query);
+  const res = await Axios.post(API.FILE.LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
@@ -167,7 +167,7 @@ const openDelete = () => {
 
 const remove = async () => {
   param.value.block();
-  const res = await Axios.delete(API.FILE_RELATED_DELETE, param.value.selectedData.map(d => d.relatedId));
+  const res = await Axios.delete(API.FILE.RELATED_DELETE, param.value.selectedData.map(d => d.relatedId));
   if (res.success()) {
     param.value.selectedData = [];
     await load();

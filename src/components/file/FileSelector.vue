@@ -115,7 +115,7 @@ const clearSearch = () => {
 const load = async () => {
   param.value.load();
   param.value.handleKeyword();
-  const res = await Axios.post(API.FILE_SEARCH, param.value);
+  const res = await Axios.post(API.FILE.SEARCH, param.value);
   if (res.success()) {
     param.value.loadResult(res.data);
   }

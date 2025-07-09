@@ -61,7 +61,7 @@ const page = (ev: any) => {
 const load = async () => {
   param.value.load();
   param.value.data = Array.from({length: param.value.query.rows});
-  const res = await Axios.post(API.RELATION_LIST, param.value.query);
+  const res = await Axios.post(API.RELATION.LIST, param.value.query);
   if (res.success()) {
     param.value.total = res.data.total;
     param.value.data = res.data.data;
