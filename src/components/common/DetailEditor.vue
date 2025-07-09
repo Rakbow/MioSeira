@@ -21,19 +21,16 @@ const {t} = useI18n();
 const param = ref(new EditParam())
 const dialogRef = inject<any>("dialogRef");
 const text = ref('');
-const type = ref('');
-const entity = inject<Entity>('entity')!;
 
 onMounted(() => {
   text.value = dialogRef.value.data.text;
-  type.value = dialogRef.value.data.type;
 });
 
 const submit = async () => {
   param.value.block = true;
   const res = await Axios.post(API.ENTITY_UPDATE_DETAIL, {
-    entityType: entity!.type,
-    entityId: entity!.id,
+    entityType: dialogRef.value.data.type,
+    entityId: dialogRef.value.data.id,
     text: text.value
   });
   if (res.success()) {

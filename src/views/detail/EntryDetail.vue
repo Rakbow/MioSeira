@@ -22,10 +22,10 @@
               <div :class="`${prefix}-entry-actions`">
                 <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked"/>
                 <div style="right: 0">
-                  <RButton v-if="userStore.user && userStore.user.type > 1"
-                           @click="loadEditor(entry)" icon="edit_square" variant="link" tooltip="Edit"/>
                   <StatusEditor v-if="userStore.user && (userStore.user.type > 2 || userStore.user.type === 0)"
                                 :status="entry.status"/>
+                  <RButton v-if="userStore.user && userStore.user.type > 1"
+                           @click="loadEditor(entry)" icon="edit_square" variant="link" tooltip="Edit"/>
                 </div>
               </div>
             </div>

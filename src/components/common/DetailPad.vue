@@ -24,17 +24,20 @@
 </template>
 
 <script setup lang="ts">
-import {computed, defineAsyncComponent, defineProps, onMounted, ref} from "vue";
+import {computed, defineAsyncComponent, defineProps, inject, onMounted, ref} from "vue";
 import {useUserStore} from "@/store/modules/user";
 import tingle from 'tingle.js';
-import 'tingle.js/src/tingle.css';
 import {marked} from 'marked';
-import 'md-editor-v3/lib/style.css';
 import {useI18n} from "vue-i18n";
 import {EditParam} from "@/service/entityService";
+import {bs} from '@/service/baseService';
+
+import 'tingle.js/src/tingle.css';
+import 'md-editor-v3/lib/style.css';
 
 const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/DetailEditor.vue'));
 const {t} = useI18n();
+const entity = inject<Entity>('entity');
 const param = ref(new EditParam());
 const empty = ref(false);
 const maxLength = ref(400);
@@ -76,6 +79,8 @@ const openEditDialog = () => {
       closable: true
     },
     data: {
+      type: entity!.type,
+      id: entity!.id,
       text: text.value
     },
     onClose: (options: any) => {
@@ -116,12 +121,4 @@ const tingleModal = new tingle.modal({
 </script>
 
 <style lang="scss" scoped>
-@use 'tingle.js/src/tingle.css';
-
-//.edit-btn {
-//  @apply p-button-link
-//  position: absolute
-//  bottom: 0
-//}
-
 </style>

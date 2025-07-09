@@ -232,7 +232,6 @@ const uploadAudioFile = async () => {
 @use '@/styles/general';
 
 .album-tracks {
-  position: relative !important;
 
   &-header {
     font-size: 1.2rem;

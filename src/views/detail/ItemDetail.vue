@@ -14,10 +14,10 @@
             <Info :item="item"/>
             <div :class="`${prefix}-item-actions`">
               <div style="top: 0">
-                <RButton v-if="userStore.user && userStore.user.type > 1" style="margin-right: .5rem"
-                         @click="loadEditor(item)" icon="edit_square" tooltip="Edit"/>
                 <StatusEditor v-if="userStore.user && (userStore.user.type > 2 || userStore.user.type === 0)"
                               :status="item.status"/>
+                <RButton v-if="userStore.user && userStore.user.type > 1"
+                         @click="loadEditor(item)" icon="edit_square" tooltip="Edit"/>
               </div>
               <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked"
                     style="bottom: 0"/>
