@@ -12,7 +12,7 @@ const fu = ref();
 const fileInfos = ref<FileInfoCreateDTO[]>([]);
 const entity = inject<Entity>('entity')!;
 const dialogRef = inject<any>("dialogRef");
-const FileSelector = defineAsyncComponent(() => import('@/components/selector/FileSelector.vue'));
+const FileSelector = defineAsyncComponent(() => import('@/components/file/FileSelector.vue'));
 const displaySelector = ref(false);
 const createType = ref();
 const currentCreateType = ref(0);

@@ -118,7 +118,7 @@
       <Button :label="t('Save')" icon="pi pi-check" @click="update"/>
     </template>
   </Dialog>
-  <ImageGalleria :images="param.data" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
+  <ImageViewer :images="param.data" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
 
 <script setup lang="ts">
@@ -130,7 +130,7 @@ import {EntityManageParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
-const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
+const ImageViewer = defineAsyncComponent(() => import('@/components/image/ImageViewer.vue'));
 
 const {t} = useI18n();
 

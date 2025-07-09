@@ -1,4 +1,4 @@
-import editor from "@/components/entityEditor/EntryEditor.vue";
+import editor from "@/components/actions/EntryEditor.vue";
 import i18n from "@/locales/i18n";
 import { bs } from '@/service/baseService'
 

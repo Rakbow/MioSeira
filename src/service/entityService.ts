@@ -1,4 +1,4 @@
-import fileEditor from "@/components/entityEditor/FileEditor.vue";
+import fileEditor from "@/components/file/FileEditor.vue";
 import {META} from "@/config/Web_Const";
 import i18n from "@/locales/i18n";
 import {PColumn} from "@/service/frame";

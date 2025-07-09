@@ -98,7 +98,7 @@ const openFilesUpload = () => {
       <template #legend>
         <i class="pi pi-file"/>
         <b>{{ t('RelatedFiles') }}</b>
-        <RButton @click="openFilesUpload" icon="note_add" tooltip="Upload" variant="text" class="absolute" style="right: 0" />
+        <RButton @click="openFilesUpload" icon="note_add" tooltip="Upload" class="absolute" style="right: 0" />
       </template>
       <DataTable v-if="files.length" ref="dt" :value="files"
                  lazy :totalRecords="records" :loading="loading" @page="onPage($event)" @sort="onSort($event)"

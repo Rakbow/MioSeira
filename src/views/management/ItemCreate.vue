@@ -7,12 +7,13 @@ import "flag-icons/css/flag-icons.min.css";
 import {API, Axios} from "@/api";
 import {ItemAdvanceCreateDTO, parseItemSpecParams} from "@/service/itemService";
 import {MdEditor} from "md-editor-v3";
-import {useDialog} from "primevue/usedialog";
 import {useRouter} from "vue-router";
 import {PublicHelper} from "@/toolkit/publicHelper";
+import {bs} from '@/service/baseService';
 
 import 'md-editor-v3/lib/style.css';
 import {useDraftStore} from "@/store/modules/draft";
+import {EditParam} from "@/service/entityService";
 
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
 const RelatedEntriesPicker = defineAsyncComponent(() => import('@/components/related/RelatedEntriesPicker.vue'));
@@ -26,6 +27,7 @@ const itemType = ref();
 const itemSpec = ref('');
 const dto = ref(new ItemAdvanceCreateDTO());
 const { proxy } = getCurrentInstance()!;
+const param = ref(new EditParam());
 
 const relatedEntry = reactive<RelatedEntry>(new RelatedEntry())
 
@@ -87,15 +89,15 @@ const submit = async () => {
   fd.append('param', JSON.stringify(dto.value));
   const res = await Axios.form(API.ITEM_CREATE, fd);
   if (res.success())
-    await router.push(`${$api.ITEM_DETAIL_PATH}/${res.data}`);
+    await router.push(`${proxy!.$api.ITEM_DETAIL_PATH}/${res.data}`);
   else
     bs!.toast.error(res.message);
   param.value.block = false;
 }
 
-const handlePasteDate = (ev: ClipboardEvent) => {
+const handlePasteDate = (ev: Event) => {
   // 获取粘贴的文本内容
-  const pastedDate = ev.clipboardData?.getData('text') || '';
+  const pastedDate = (ev as ClipboardEvent).clipboardData?.getData('text') || '';
   dto.value.item.releaseDate = PublicHelper.convertToDateFormat(pastedDate);
 }
 
@@ -198,7 +200,7 @@ const handleTracks = () => {
               </SelectButton>
             </div>
             <div v-if="dto.item.type === $const.ITEM_TYPE.BOOK" class="field">
-              <label>{{ t('BookType') }}<i class="required-label pi pi-asterisk"/></label>
+              <label>{{ t('Category') }}<i class="required-label pi pi-asterisk"/></label>
               <div class="flex flex-wrap flex-col gap-3">
                 <div v-for="format of store.options.bookTypeSet" class="flex gap-2">
                   <RadioButton v-model="dto.item.subType" :value="format.value"/>
@@ -260,7 +262,7 @@ const handleTracks = () => {
                 <InputGroup v-else>
                   <InputText v-model="dto.item!.barcode"/>
                   <Button icon="pi pi-sync" class="p-button-warning"
-                          @click="ISBNInterConvert(dto.item.barcode)" :title="t('TooltipGenerateBookISBN13')"/>
+                          @click="ISBNInterConvert(dto.item.barcode)" :title="t('GenerateISBN13')"/>
                 </InputGroup>
               </FloatLabel>
               <FloatLabel variant="on" v-if="dto.item.type !== $const.ITEM_TYPE.BOOK">
@@ -445,6 +447,4 @@ const handleTracks = () => {
 </template>
 
 <style lang="scss" scoped>
-@use "@/styles/entity-manager";
-@use "@/styles/entity-global";
 </style>

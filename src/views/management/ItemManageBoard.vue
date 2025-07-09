@@ -183,28 +183,16 @@ const exportCSV = () => {
         <SelectButton size="small" v-model="itemType" :options="$const.ITEM_TYPE_SET" @change="switchItemType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
           <template #option="{option}">
-            <RIcon :name="option!.icon" />
+            <RIcon :name="option!.icon" /><span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
           </template>
         </SelectButton>
-        <Button variant="text" outlined @click="openCreateTab">
-          <template #icon>
-            <RIcon name="add_box" />
-          </template>
-        </Button>
-        <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
-                outlined @click="confirmDeleteSelected">
-          <template #icon>
-            <RIcon name="disabled_by_default" />
-          </template>
-        </Button>
-        <Button variant="text" severity="help" :disabled="!param.data.length"
-                outlined @click="exportCSV">
-          <template #icon>
-            <RIcon name="file_export" />
-          </template>
-        </Button>
+        <RButton @click="openCreateTab" icon="add_box" tooltip="Add" />
+        <RButton @click="confirmDeleteSelected" icon="disabled_by_default" tooltip="Delete"
+                 severity="danger" :disabled="!param.selectedData.length" />
+        <RButton @click="exportCSV" icon="file_export" tooltip="Export"
+                 severity="help" :disabled="!param.data.length" />
         <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
-                     @update:modelValue="onToggle" :placeholder="t('SelectedDisplayColumns')" size="small"/>
+                     @update:modelValue="onToggle" :placeholder="t('SelectedDisplayColumns')" size="large"/>
       </BlockUI>
     </template>
 

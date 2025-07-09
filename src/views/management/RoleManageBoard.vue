@@ -193,28 +193,13 @@ const refresh = async () => {
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <Button variant="text" outlined @click="openAddDialog">
-          <template #icon>
-            <RIcon name="add_box" />
-          </template>
-        </Button>
-        <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
-                outlined @click="confirmDeleteSelected">
-          <template #icon>
-            <RIcon name="disabled_by_default" />
-          </template>
-        </Button>
-        <Button variant="text" severity="help" :disabled="!param.data.length"
-                outlined @click="exportCSV">
-          <template #icon>
-            <RIcon name="file_export" />
-          </template>
-        </Button>
-        <Button variant="text" severity="info" outlined @click="refresh">
-          <template #icon>
-            <RIcon name="cloud_sync" />
-          </template>
-        </Button>
+        <RButton @click="openAddDialog" icon="add_box" tooltip="Add" />
+        <RButton @click="confirmDeleteSelected" icon="disabled_by_default" tooltip="Delete"
+                 severity="danger" :disabled="!param.selectedData.length" />
+        <RButton @click="exportCSV" icon="file_export" tooltip="Export"
+                 severity="help" :disabled="!param.data.length" />
+        <RButton @click="refresh" icon="cloud_sync" tooltip="Refresh"
+                 severity="info" :disabled="!param.data.length" />
       </BlockUI>
     </template>
     <template #empty>

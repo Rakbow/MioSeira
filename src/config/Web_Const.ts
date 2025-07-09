@@ -87,12 +87,12 @@ export const META = {
         {icon: 'distance', value: '6', label: 'Event'}
     ],
     ITEM_TYPE_SET: [
-        {icon: 'genres', value: '1', disabled: false},
-        {icon: 'book_5', value: '2', disabled: false},
-        {icon: 'hangout_video', value: '3', disabled: false},
-        {icon: 'stadia_controller', value: '4', disabled: true},
-        {icon: 'package_2', value: '5', disabled: false},
-        {icon: 'accessibility_new', value: '6', disabled: false}
+        {icon: 'genres', value: '1', disabled: false, label: 'Entity.Album'},
+        {icon: 'book_5', value: '2', disabled: false, label: 'Entity.Book'},
+        {icon: 'hangout_video', value: '3', disabled: false, label: 'Entity.Disc'},
+        {icon: 'stadia_controller', value: '4', disabled: true, label: 'Entity.Game'},
+        {icon: 'package_2', value: '5', disabled: false, label: 'Entity.Goods'},
+        {icon: 'accessibility_new', value: '6', disabled: false, label: 'Entity.Figure'}
     ],
     FILE_CREATE_TYPE_SET: [
         {icon: 'upload_file', label: 'LocalFile', value: '0'},

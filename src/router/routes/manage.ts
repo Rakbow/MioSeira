@@ -2,45 +2,54 @@ import {RouteRecordRaw} from 'vue-router';
 
 const ManageRouter: Array<RouteRecordRaw> = [
     {
-        name: "Manager",
-        path: "/db/manager",
-        component: () => import('@/views/manager/Manager.vue'),
+        name: "Management",
+        path: "/db/manage",
+        component: () => import('@/views/management/ManageBoard.vue'),
         meta: {
-            title: "Manager",
+            title: "Manage"
         },
         children: [
             {
-                path: '/',
-                component: () => import('@/views/manager/ManagerIndex.vue'),
+                path: 'entry',
+                component: () => import('@/views/management/EntryManageBoard.vue'),
                 meta: {
-                    title: "Manager"
+                    title: "Entry Management"
                 }
             },
             {
-                path: 'entry',
-                component: () => import('@/views/manager/EntryManager.vue'),
-            },
-            {
                 path: 'item',
-                component: () => import('@/views/manager/ItemManager.vue'),
+                component: () => import('@/views/management/ItemManageBoard.vue'),
+                meta: {
+                    title: "Item Management"
+                }
             },
             {
                 path: 'ep',
-                component: () => import('@/views/manager/EpisodeManager.vue'),
+                component: () => import('@/views/management/EpisodeManageBoard.vue'),
+                meta: {
+                    title: "Episode Management"
+                }
             },
             {
                 path: 'role',
-                component: () => import('@/views/manager/RoleManager.vue'),
+                component: () => import('@/views/management/RoleManageBoard.vue'),
+                meta: {
+                    title: "Role Management"
+                }
             },
             {
                 path: 'file',
-                component: () => import('@/views/manager/FileManager.vue'),
+                component: () => import('@/views/management/FileManageBoard.vue'),
+                meta: {
+                    title: "File Management"
+                }
             },
-
-
             {
                 path: 'item/submit',
-                component: () => import('@/views/manager/ItemCreate.vue')
+                component: () => import('@/views/management/ItemCreate.vue'),
+                meta: {
+                    title: "Create New Item"
+                }
             }
         ],
     }

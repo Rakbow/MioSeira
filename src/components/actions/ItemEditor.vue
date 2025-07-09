@@ -83,7 +83,7 @@ const parseItemSpec = () => {
         <InputGroup v-else>
           <InputText size="large" v-model="item!.barcode"/>
           <Button size="large" icon="pi pi-sync" class="p-button-warning"
-                  @click="ISBNInterConvert(item.barcode)" :title="t('TooltipGenerateBookISBN13')"/>
+                  @click="ISBNInterConvert(item.barcode)" :title="t('GenerateISBN13')"/>
         </InputGroup>
       </FloatLabel>
       <FloatLabel variant="on">
@@ -126,7 +126,7 @@ const parseItemSpec = () => {
     <template v-if="item.type === $const.ITEM_TYPE.BOOK">
       <div class="grid">
         <FloatLabel variant="on">
-          <label>{{ t('BookType') }}<i class="pi pi-asterisk"/></label>
+          <label>{{ t('Category') }}<i class="pi pi-asterisk"/></label>
           <Select size="large" v-model="item.subType" :options="store.options.bookTypeSet"
                   optionLabel="label" optionValue="value"/>
         </FloatLabel>

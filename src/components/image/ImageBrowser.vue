@@ -46,7 +46,7 @@
       </Column>
     </DataTable>
   </BlockUI>
-  <ImageGalleria :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
+  <ImageViewer :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
 
 <script setup lang="ts">
@@ -57,7 +57,7 @@ import {useOptionStore} from "@/store/modules/option";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
-const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
+const ImageViewer = defineAsyncComponent(() => import('@/components/image/ImageViewer.vue'));
 
 const {t} = useI18n();
 const param = ref(new EditParam());

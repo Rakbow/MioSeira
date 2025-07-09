@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import { API, Axios } from '@/api';
+import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam} from "@/service/entityService";
+import {EntityManageParam, loadEditor} from "@/service/entityService";
+import {getIcon} from "material-file-icons";
 import {PColumn} from "@/service/frame";
 
 const {t} = useI18n();
-const dt = ref();
 const route = useRoute();
 const router = useRouter();
+const dt = ref();
 const param = ref(new EntityManageParam());
 
 onBeforeMount(async () => {
@@ -18,7 +19,6 @@ onBeforeMount(async () => {
     keyword: {value: ''}
   });
   param.value.initColumns([
-    new PColumn('remark', t('Remark')),
     new PColumn('addedTime', t('AddedTime')),
     new PColumn('editedTime', t('EditedTime'))
   ])
@@ -87,13 +87,21 @@ const onFilter = () => {
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await Axios.post(API.EPISODE_GET_LIST, param.value.query);
+  const res = await Axios.post(API.FILE_LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
     param.value.total = res.data.total
   }
   param.value.endLoad();
 }
+
+//region item CRUD
+const displayDeleteDialog = ref(false);
+
+const confirmDeleteSelected = () => {
+  displayDeleteDialog.value = true;
+}
+//endregion
 
 const exportCSV = () => {
   dt.value.exportCSV();
@@ -107,11 +115,10 @@ const exportCSV = () => {
              @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
              paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small"
              v-model:selection="param.selectedData" dataKey="id" removableSort showGridlines
-             scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]"
+             scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll"
-             rowGroupMode="rowspan" groupRowsBy="parent.name">
+             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll">
     <template #paginatorfirstpagelinkicon>
       <RIcon name="first_page" />
     </template>
@@ -126,12 +133,10 @@ const exportCSV = () => {
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <Button variant="text" severity="help" :disabled="param.selectedData.length === 0"
-                outlined @click="exportCSV">
-          <template #icon>
-            <RIcon name="file_export" />
-          </template>
-        </Button>
+        <RButton @click="confirmDeleteSelected" icon="disabled_by_default" tooltip="Delete"
+                 severity="danger" :disabled="!param.selectedData.length" />
+        <RButton @click="exportCSV" icon="file_export" tooltip="Export"
+                 severity="help" :disabled="!param.data.length" />
       </BlockUI>
     </template>
     <template #empty>
@@ -144,51 +149,38 @@ const exportCSV = () => {
 
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
-      <template #body>
-        <Button variant="text" outlined size="small">
+      <template #body="{data}">
+        <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data)">
           <template #icon>
             <RIcon name="edit_square" />
           </template>
         </Button>
       </template>
     </Column>
+
+    <Column style="width: 3rem">
+      <template #body="{data}">
+        <div v-html="getIcon(data.name).svg"/>
+      </template>
+    </Column>
+
     <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
             exportHeader="name" :sortable="true">
-      <template #body="{data}">
-        <a :href="`${$api.EPISODE_DETAIL}/${data.id}`">
-          <div class="text-container" :title="data.name">
-            {{ data!.name }}
-          </div>
-        </a>
-      </template>
       <template #filter="{filterModel,filterCallback}">
         <InputText style="width: 70%" size="large" type="text" v-model="filterModel.value"
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column :header="t('Duration')" field="duration" :showFilterMenu="false" :sortable="true" style="width: 6rem" />
-    <Column :header="t('Index')" :showFilterMenu="false" style="width: 5rem">
-      <template #body="{data}">
-        {{ `${data!.discNo}-${data!.serial}` }}
-      </template>
-    </Column>
+    <Column :header="t('Size')" field="size" :sortable="true" style="width: 9rem" />
+    <Column :header="t('AddedTime')" field="addedTime" :sortable="true" style="width: 14rem" />
+    <Column :header="t('EditedTime')" field="editedTime" :sortable="true" style="width: 14rem" />
+    <Column :header="t('Remark')" field="remark" style="width: 14rem" />
 
-    <Column field="parent.name" header="Parent" style="width: 30rem" :bodyStyle="{position: 'relative'}">
-      <template #body="{data}">
-        <a :title="data.parent.name"
-           :href="`/db/${data.parent.tableName}/${data.parent.id}`"
-           style="width: 28rem;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
-           position: absolute;margin-top: 1rem;top: 0">
-          {{ data!.parent.name }}
-        </a>
-      </template>
-    </Column>
-    <Column :header="t('AddedTime')" field="addedTime" :showFilterMenu="false" :sortable="true" style="width: 14rem" />
-    <Column :header="t('EditedTime')" field="editedTime" :showFilterMenu="false" :sortable="true" style="width: 14rem" />
-    <Column :header="t('File')" field="fileCount" class="text-center" style="width: 4rem" />
+    <Column v-for="(col, index) of param.selectedColumns" :field="col.field"
+            :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
   </DataTable>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss" >
 @use "@/styles/entity-manager";
 </style>

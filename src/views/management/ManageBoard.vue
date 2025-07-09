@@ -7,27 +7,27 @@ const items = ref([
   {
     label: t('Item'),
     icon: 'pi pi-th-large',
-    route: '/db/manager/item'
+    route: '/db/manage/item'
   },
   {
     label: t('Entry'),
     icon: 'pi pi-list',
-    route: '/db/manager/entry'
+    route: '/db/manage/entry'
   },
   {
     label: t('Role'),
     icon: 'pi pi-tags',
-    route: '/db/manager/role'
+    route: '/db/manage/role'
   },
   {
     label: t('Episode'),
     icon: 'pi pi-list',
-    route: '/db/manager/ep'
+    route: '/db/manage/ep'
   },
   {
     label: t('File'),
     icon: 'pi pi-file',
-    route: '/db/manager/file'
+    route: '/db/manage/file'
   }
 ]);
 </script>

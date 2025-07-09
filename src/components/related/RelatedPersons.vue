@@ -83,7 +83,7 @@ const toggleCollapse = () => {
         <b>{{ t('Persons') }}</b>
       </template>
       <div class="person-table">
-        <RButton @click="openEditDialog" icon="person_edit" tooltip="Edit" variant="text" class="absolute" style="right: 0"/>
+        <RButton @click="openEditDialog" icon="person_edit" tooltip="Edit" class="absolute" style="right: 0"/>
         <table v-if="personnel.length">
           <tbody>
           <tr v-for="item in visibleRows" :key="item.role.label">

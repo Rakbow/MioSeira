@@ -8,7 +8,7 @@ import {bs} from '@/service/baseService';
 
 const manager = defineAsyncComponent(() => import('@/components/image/ImageManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/image/ImageBrowser.vue'));
-const ImageGalleria = defineAsyncComponent(() => import('@/components/image/ImageGalleria.vue'));
+const ImageViewer = defineAsyncComponent(() => import('@/components/image/ImageViewer.vue'));
 
 const {t} = useI18n();
 const userStore = useUserStore();
@@ -101,7 +101,7 @@ const openEditDialog = () => {
       </div>
     </div>
   </Panel>
-  <ImageGalleria :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
+  <ImageViewer :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
 
 <style lang="scss" scoped>

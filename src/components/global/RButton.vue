@@ -14,17 +14,23 @@ const props = defineProps({
   },
   variant: {
     type: String,
-    required: false
+    required: false,
+    default: 'text'
   },
   size: {
     type: String,
     required: false
+  },
+  severity: {
+    type: String,
+    required: false,
+    default: 'success'
   }
 });
 </script>
 
 <template>
-  <Button :variant="props.variant" :size="props.size" v-tooltip.bottom="{value: t(tooltip)}">
+  <Button :variant="props.variant" :size="props.size" :severity="props.severity" v-tooltip.bottom="{value: t(tooltip)}">
     <template #icon>
       <RIcon :name="icon" />
     </template>

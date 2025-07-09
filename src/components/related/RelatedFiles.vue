@@ -60,7 +60,7 @@ const openCreator = () => {
         <b>{{ t('RelatedFiles') }}</b>
       </template>
       <div class="related-file">
-        <RButton @click="openCreator" icon="note_add" tooltip="Upload" variant="text" class="absolute"
+        <RButton @click="openCreator" icon="note_add" tooltip="Upload" class="absolute"
                  style="right: 0"/>
         <p class="related-file-header">
           {{ t('Resource.FileStatistics', [files.length, size]) }}

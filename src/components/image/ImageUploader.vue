@@ -141,7 +141,7 @@ const changeGenerateThumb = () => {
             </Select>
           </template>
         </Column>
-        <Column :header="t('ImageSize')" field="size" style="width: 6rem"/>
+        <Column :header="t('Size')" field="size" style="width: 6rem"/>
         <Column v-if="props.showDetail" :header="t('Description')" field="detail">
           <template #body="{data}">
             <div class="data-table-field-text-overflow-hidden">{{ data!.detail }}</div>

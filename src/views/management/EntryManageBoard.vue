@@ -1,24 +1,32 @@
 <script setup lang="ts">
-import {onBeforeMount, onMounted, ref} from "vue";
+import {getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
+import {loadEditor} from "@/service/entryService";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam, loadEditor} from "@/service/entityService";
-import {getIcon} from "material-file-icons";
+import {EntityManageParam} from '@/service/entityService';
+import {useOptionStore} from "@/store/modules/option";
+import {PublicHelper} from "@/toolkit/publicHelper";
 import {PColumn} from "@/service/frame";
 
+const dt = ref();
 const {t} = useI18n();
+const store = useOptionStore();
 const route = useRoute();
 const router = useRouter();
-const dt = ref();
 const param = ref(new EntityManageParam());
+const entryType = ref();
+const { proxy } = getCurrentInstance()!;
 
 onBeforeMount(async () => {
+  entryType.value = proxy!.$const.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
   param.value.initFilters({
+    type: {value: store.entryCurrent},
     keyword: {value: ''}
   });
   param.value.initColumns([
+    new PColumn('remark', t('Remark')),
     new PColumn('addedTime', t('AddedTime')),
     new PColumn('editedTime', t('EditedTime'))
   ])
@@ -28,6 +36,16 @@ onMounted(() => {
   initQueryParam();
   load();
 })
+
+const switchEntryType = (ev: any) => {
+  if (ev.value === null)
+    entryType.value = proxy!.$const.ENTRY_TYPE_SET[0];
+  store.entryCurrent = parseInt(entryType.value.value);
+  param.value.query.filters.type.value = store.entryCurrent;
+  param.value.clearSort();
+  param.value.initPage(0, dt.value.rows);
+  load();
+}
 
 const initQueryParam = async () => {
   const { query } = route;
@@ -50,7 +68,7 @@ const updateQueryParam = () => {
 
   curQuery.page = ((first / dt.value.rows) + 1).toString();
 
-  ['keyword'].forEach(key => {
+  ['type', 'keyword'].forEach(key => {
     if (filters[key]?.value) {
       curQuery[key] = filters[key].value;
     } else {
@@ -84,13 +102,16 @@ const onFilter = () => {
   load();
 };
 
+const onToggle = (val: PColumn[]) => {
+  param.value.selectedColumns = param.value.columns.filter(col => val.includes(col));
+};
 const load = async () => {
   updateQueryParam();
   param.value.load();
-  const res = await Axios.post(API.FILE_LIST, param.value.query);
+  const res = await Axios.post(API.ENTRY_GET_LIST, param.value.query);
   if (res.success()) {
     param.value.data = res.data.data;
-    param.value.total = res.data.total
+    param.value.total = res.data.total;
   }
   param.value.endLoad();
 }
@@ -133,18 +154,23 @@ const exportCSV = () => {
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
-                outlined @click="confirmDeleteSelected">
-          <template #icon>
-            <RIcon name="disabled_by_default" />
+        <SelectButton size="small" v-model="entryType" :options="$const.ENTRY_TYPE_SET"
+                      @change="switchEntryType($event)"
+                      optionLabel="value" dataKey="value" ariaLabelledby="custom">
+          <template #option="{option}">
+            <RIcon :name="option.icon"/>
+            <span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
           </template>
-        </Button>
-        <Button variant="text" severity="help" :disabled="param.data.length === 0"
-                outlined @click="exportCSV">
-          <template #icon>
-            <RIcon name="open_in_new"/>
-          </template>
-        </Button>
+        </SelectButton>
+
+        <RButton @click="" icon="add_box" tooltip="Add" />
+        <RButton @click="confirmDeleteSelected" icon="disabled_by_default" tooltip="Delete"
+                 severity="danger" :disabled="!param.selectedData.length" />
+        <RButton @click="exportCSV" icon="file_export" tooltip="Export"
+                 severity="help" :disabled="!param.data.length" />
+        <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
+                     @update:modelValue="onToggle" class="text-end" size="small"
+                     :placeholder="t('SelectedDisplayColumns')"/>
       </BlockUI>
     </template>
     <template #empty>
@@ -158,37 +184,71 @@ const exportCSV = () => {
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
-        <Button variant="text" outlined size="small" @click="loadEditor($const.ENTITY.FILE, data)">
+        <Button variant="text" outlined size="small" @click="loadEditor(data)">
           <template #icon>
             <RIcon name="edit_square" />
           </template>
         </Button>
       </template>
     </Column>
-
-    <Column style="width: 3rem">
+    <Column class="text-center" style="width: 2.5rem">
       <template #body="{data}">
-        <div v-html="getIcon(data.name).svg"/>
+        <img v-if="data.thumb" :alt="data.name" :src="`${$api.STATIC_DOMAIN}${data.thumb}`"
+             style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto" />
+        <img v-else :alt="data.name" :src="API.COMMON_EMPTY_THUMB_IMAGE" style="width: 2.5rem" />
       </template>
     </Column>
 
-    <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
+    <Column :header="t('Name')" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
             exportHeader="name" :sortable="true">
+      <template #body="{data}">
+        <a :href="`${$api.ENTRY_DETAIL_PATH}/${data.id}`" :title="data.name">
+          {{ data!.name }}
+        </a>
+      </template>
       <template #filter="{filterModel,filterCallback}">
         <InputText style="width: 70%" size="large" type="text" v-model="filterModel.value"
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column :header="t('Size')" field="size" :sortable="true" style="width: 9rem" />
-    <Column :header="t('AddedTime')" field="addedTime" :sortable="true" style="width: 14rem" />
-    <Column :header="t('EditedTime')" field="editedTime" :sortable="true" style="width: 14rem" />
-    <Column :header="t('Remark')" field="remark" style="width: 14rem" />
+    <Column :header="t('NameEn')" field="nameEn" :sortable="true" style="width: 25rem">
+      <template #body="{data}">
+        <div :title="data.nameEn" style="width: 25rem" class="text-ellipsis">
+          {{ data!.nameEn }}
+        </div>
+      </template>
+    </Column>
+    <Column :header="t('NameZh')" field="nameZh" :sortable="true" style="width: 25rem">
+      <template #body="{data}">
+        <div :title="data.nameZh" style="width: 25rem" class="text-ellipsis">
+          {{ data!.nameZh }}
+        </div>
+      </template>
+    </Column>
+    <Column :header="t('Date')" :sortable="true" field="date"
+            v-if="![$const.ENTRY_TYPE.CLASSIFICATION, $const.ENTRY_TYPE.MATERIAL].includes(store.entryCurrent)"
+            :style="`width: ${
+              [$const.ENTRY_TYPE.PRODUCT, $const.ENTRY_TYPE.PERSON].includes(store.entryCurrent) ? '7.5' :
+              store.entryCurrent === $const.ENTRY_TYPE.CHARACTER ? '15' : '16'
+            }rem`"/>
+    <Column :header="t('Type')" :sortable="true" field="subType"
+            v-if="store.entryCurrent === $const.ENTRY_TYPE.PRODUCT" style="width: 6rem" class="text-center">
+      <template #body="{data}">
+        <Tag v-if="data.subType.value" :value="data.subType.label"/>
+      </template>
+    </Column>
+    <Column :header="t('Gender')" :sortable="true" field="gender" class="text-center"
+            v-if="[$const.ENTRY_TYPE.PERSON, $const.ENTRY_TYPE.CHARACTER].includes(store.entryCurrent)" style="width: 5rem">
+      <template #body="{data}">
+        <i style="font-size: 1.4rem" :class="PublicHelper.getGenderIcon(data.gender.value)" />
+      </template>
+    </Column>
+    <Column :header="t('Item')" field="items" :sortable="true" style="width: 5rem" class="text-center" />
 
     <Column v-for="(col, index) of param.selectedColumns" :field="col.field"
             :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
   </DataTable>
 </template>
 
-<style scoped lang="scss" >
-@use "@/styles/entity-manager";
+<style lang="scss" scoped>
 </style>

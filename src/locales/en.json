@@ -118,7 +118,7 @@
   "BookChineseTitle": "书名(中)",
   "BookEnglishTitle": "书名(英)",
   "BookISBN10": "ISBN-10",
-  "BookISBN13": "ISBN-13",
+  "ISBN13": "ISBN-13",
   "BookType": "分类",
   "BookSerial": "连载",
 
