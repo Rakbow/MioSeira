@@ -24,16 +24,8 @@
               </small>
             </div>
             <div class="related-entity-role">
-              <Button v-if="!entity.isPicked" text @click="select(entity)">
-                <template #icon>
-                  <RIcon name="add_box" />
-                </template>
-              </Button>
-              <Button v-else text disabled severity="info">
-                <template #icon>
-                  <RIcon name="check_box" />
-                </template>
-              </Button>
+              <RButton v-if="!entity.isPicked" @click="select(entity)" icon="add_box" size="small" />
+              <RButton v-else icon="check_box" severity="info" disabled />
             </div>
           </div>
         </div>
@@ -71,7 +63,7 @@ import {ref, onMounted, defineProps} from "vue";
 import {API, Axios} from "@/api";
 import { getIcon } from 'material-file-icons';
 import {useI18n} from "vue-i18n";
-import {EntitySelectorParam} from "@/service/entityService";
+import {EntitySelectorParam, loadEditor} from "@/service/entityService";
 
 const emit = defineEmits(['pick']);
 
@@ -96,16 +88,16 @@ const props = defineProps({
 
 
 const {t} = useI18n();
-const pickedFiles = ref([]);
+const pickedFiles = ref<any[]>([]);
 const param = ref<EntitySelectorParam>(new EntitySelectorParam());
 
-const select = (entity) => {
+const select = (entity: any) => {
   entity.isPicked = true;
   pickedFiles.value.push(entity);
   emit('pick', entity);
 }
 
-const page = (ev) => {
+const page = (ev: any) => {
   param.value.page = ev.page + 1;
   load();
 }
@@ -144,5 +136,4 @@ const markPickedFiles = () => {
 </script>
 
 <style lang="scss" scoped>
-@use "entity-global";
 </style>

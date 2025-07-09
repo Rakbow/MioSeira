@@ -97,7 +97,7 @@ const openBrowser = () => {
     </template>
     <template #icons>
       <RButton v-if="userStore.user && userStore.user.type > 1"
-               @click="openManager" icon="edit_square" tooltip="Edit" />
+               @click="openManager" action="update" />
       <Button :label="total.toString()" outlined @click="openBrowser" :disabled="!relatedEntities"
               v-tooltip="{value: t('ViewAll'), disabled: !relatedEntities}"/>
     </template>

@@ -33,7 +33,7 @@ const getDisplayImages = async () => {
   entityType: entity!.type,
   entityId: entity!.id
   }
-  const res = await Axios.post(API.IMAGES_DEFAULT_DISPLAYED, param.value.data);
+  const res = await Axios.post(API.IMAGE_PREVIEW, param.value.data);
   if (res.success()) {
     images.value = res.data.images;
     count.value = res.data.count;
@@ -85,7 +85,7 @@ const openEditDialog = () => {
     </template>
     <template #icons>
       <RButton v-if="userStore.user && userStore.user.type > 1"
-               @click="openEditDialog" icon="edit_square" tooltip="Edit" />
+               @click="openEditDialog" action="update" />
       <Button :label="count.toString()" outlined @click="openLoader" :disabled="!count"
               v-tooltip="{value: t('ViewAll'), disabled: !count}"/>
     </template>

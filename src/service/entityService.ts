@@ -155,12 +155,9 @@ export const loadEditor = (type: number, data: any) => {
         onClose: (options) => {
             if (options!.data !== undefined) {
                 if (options!.data.isUpdate) {
-                    location.reload();
+                    Object.assign(data, options!.data.entity);
                 }
             }
         }
     });
-}
-
-export class updateEntityDetail {
 }

@@ -7,8 +7,8 @@
       </template>
 
       <div v-if="userStore.user && userStore.user.type > 1" class="entity-fieldset-actions">
-        <RButton @click="openAudioUpload" icon="cloud_upload" tooltip="Upload"/>
-        <RButton @click="openQuickCreatorDialog" icon="music_note_add" tooltip="Add"/>
+        <RButton @click="openAudioUpload" icon="cloud_upload" tip="Upload"/>
+        <RButton @click="openQuickCreatorDialog" icon="music_note_add" tip="Add"/>
       </div>
 
       <div class="album-tracks">

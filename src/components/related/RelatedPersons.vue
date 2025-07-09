@@ -85,7 +85,7 @@ const toggleCollapse = () => {
         <b>{{ t('Persons') }}</b>
       </template>
       <div class="entity-fieldset-actions" v-if="userStore.user && userStore.user.type > 1">
-        <RButton @click="openEditDialog" icon="person_edit" tooltip="Edit"/>
+        <RButton @click="openEditDialog" icon="person_edit" tip="Edit" severity="info"/>
       </div>
       <div class="person-table">
         <table v-if="personnel.length">

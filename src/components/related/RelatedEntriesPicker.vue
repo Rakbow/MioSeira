@@ -46,17 +46,8 @@ const displayEntrySelector = ref(false);
       <span class="empty-search-result"/>
     </template>
     <template #header>
-      <Button variant="text" outlined @click="displayEntrySelector = true">
-        <template #icon>
-          <RIcon name="add_box" />
-        </template>
-      </Button>
-      <Button v-if="relatedEntries.length" variant="text" severity="danger"
-              outlined @click="clearRelatedEntry()">
-        <template #icon>
-          <RIcon name="disabled_by_default" />
-        </template>
-      </Button>
+      <RButton @click="displayEntrySelector = true" action="create"/>
+      <RButton @click="clearRelatedEntry" action="clear" v-if="relatedEntries.length"/>
     </template>
     <template #grid="{items}">
       <div class="related-create-entity" style="margin: 1rem" v-for="(entry, index) in items as any[]" :key="index">

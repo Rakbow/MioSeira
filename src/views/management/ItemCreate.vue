@@ -5,7 +5,7 @@ import {defineAsyncComponent, getCurrentInstance, onBeforeMount, reactive, ref} 
 import {useOptionStore} from "@/store/modules/option";
 import "flag-icons/css/flag-icons.min.css";
 import {API, Axios} from "@/api";
-import {ItemAdvanceCreateDTO, parseItemSpecParams} from "@/service/itemService";
+import {ItemAdvanceCreateDTO, loadEditor, parseItemSpecParams} from "@/service/itemService";
 import {MdEditor} from "md-editor-v3";
 import {useRouter} from "vue-router";
 import {PublicHelper} from "@/toolkit/publicHelper";
@@ -352,11 +352,7 @@ const handleTracks = () => {
               <span><i class="pi pi-list"/><strong>{{ t('TrackInfo') }}</strong></span>
             </template>
             <template #icons>
-              <Button class="p-button-link" @click="openAlbumTrackQuickCreatorDialog">
-                <template #icon>
-                  <RIcon name="music_note_add" size="2" />
-                </template>
-              </Button>
+              <RButton @click="openAlbumTrackQuickCreatorDialog" action="update" icon="music_note_add" tip="Add"/>
             </template>
             <DataTable ref="dt" :value="dto.item.disc.tracks"
                        alwaysShowPaginator paginator :rows="50" stripedRows size="small"

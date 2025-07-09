@@ -228,9 +228,8 @@ const resetFilter = () => {
           <BlockUI :blocked="loading">
             <div class="relative">
               <div class="bottom-0 right-0">
-                <Button size="small" icon="pi pi-search" @click="search"/>
-                <Button size="small" icon="pi pi-filter-slash" variant="text" @click="clearFilter"
-                        severity="danger"/>
+                <RButton @click="search" icon="search"/>
+                <RButton @click="clearFilter" icon="filter_alt_off" severity="danger"/>
               </div>
             </div>
           </BlockUI>

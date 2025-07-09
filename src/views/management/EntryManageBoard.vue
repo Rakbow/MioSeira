@@ -163,10 +163,10 @@ const exportCSV = () => {
           </template>
         </SelectButton>
 
-        <RButton @click="" icon="add_box" tooltip="Add" />
-        <RButton @click="confirmDeleteSelected" icon="disabled_by_default" tooltip="Delete"
-                 severity="danger" :disabled="!param.selectedData.length" />
-        <RButton @click="exportCSV" icon="file_export" tooltip="Export"
+        <RButton @click="" action="create" />
+        <RButton @click="confirmDeleteSelected" action="delete"
+                 :disabled="!param.selectedData.length" />
+        <RButton @click="exportCSV" action="export"
                  severity="help" :disabled="!param.data.length" />
         <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
                      @update:modelValue="onToggle" class="text-end" size="small"

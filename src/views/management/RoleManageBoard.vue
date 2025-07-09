@@ -193,12 +193,12 @@ const refresh = async () => {
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <RButton @click="openAddDialog" icon="add_box" tooltip="Add" />
-        <RButton @click="confirmDeleteSelected" icon="disabled_by_default" tooltip="Delete"
-                 severity="danger" :disabled="!param.selectedData.length" />
-        <RButton @click="exportCSV" icon="file_export" tooltip="Export"
+        <RButton @click="openAddDialog" action="create" />
+        <RButton @click="confirmDeleteSelected" action="delete"
+                 :disabled="!param.selectedData.length" />
+        <RButton @click="exportCSV" action="export"
                  severity="help" :disabled="!param.data.length" />
-        <RButton @click="refresh" icon="cloud_sync" tooltip="Refresh"
+        <RButton @click="refresh" icon="cloud_sync" tip="Refresh"
                  severity="info" :disabled="!param.data.length" />
       </BlockUI>
     </template>
@@ -212,11 +212,7 @@ const refresh = async () => {
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
-        <Button variant="text" outlined size="small" @click="openEditDialog(data)">
-          <template #icon>
-            <RIcon name="edit_square" />
-          </template>
-        </Button>
+        <RButton @click="openEditDialog(data)" size="small" action="update"/>
       </template>
     </Column>
     <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false"

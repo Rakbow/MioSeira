@@ -10,7 +10,6 @@ import {bs} from '@/service/baseService';
 const {t} = useI18n();
 const fu = ref();
 const fileInfos = ref<FileInfoCreateDTO[]>([]);
-const entity = inject<Entity>('entity')!;
 const dialogRef = inject<any>("dialogRef");
 const FileSelector = defineAsyncComponent(() => import('@/components/file/FileSelector.vue'));
 const displaySelector = ref(false);
@@ -69,8 +68,8 @@ const submit = () => {
 
 const submitByUpload = async () => {
   const fd = new FormData();
-  fd.append('entityType', entity!.type.toString());
-  fd.append('entityId', entity!.id.toString());
+  fd.append('entityType', dialogRef.value.data.type.toString());
+  fd.append('entityId', dialogRef.value.data.id.toString());
   fileInfos.value!.forEach(f => {
     fd.append('files', f.file!);
     fd.append('names', f.name);
@@ -89,8 +88,8 @@ const submitByUpload = async () => {
 
 const submitByCould = async () => {
   param.value.data = {
-    entityType: entity!.type,
-    entityId: entity!.id,
+    entityType: dialogRef.value.data.type,
+    entityId: dialogRef.value.data.id,
     fileIds: fileInfos.value!.map(f => f.id)
   }
   param.value.block = true;
@@ -138,41 +137,24 @@ const switchCreateType = (ev: any) => {
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
       <template #header>
-        <FileUpload v-show="currentCreateType === 0" ref="fu" auto multiple
+        <FileUpload v-if="currentCreateType === 0" ref="fu" auto multiple
                     :showUploadButton="false"
                     :showCancelButton="false"
                     chooseIcon="pi pi-image" @select="selectFile"
                     :maxFileSize="1000000000" :previewWidth="100"
                     :invalidFileSizeMessage="t('InvalidFileSizeMessage')">
           <template #header="{ chooseCallback }">
-
-            <Button variant="text" outlined @click="chooseCallback()">
-              <template #icon>
-                <RIcon name="upload_file"/>
-              </template>
-            </Button>
-            <Button variant="text" outlined @click="clearFile" severity="danger" :disabled="!fileInfos.length">
-              <template #icon>
-                <RIcon name="scan_delete"/>
-              </template>
-            </Button>
+            <RButton @click="chooseCallback()" icon="upload_file" tip="Upload" />
+            <RButton @click="clearFile" icon="scan_delete" tip="Clear" severity="danger" v-if="fileInfos.length"/>
           </template>
           <template #content>
             <span class="empty-search-result">{{ t('DragFile') }}</span>
           </template>
         </FileUpload>
-        <div v-show="currentCreateType === 1">
-          <Button variant="text" outlined @click="displaySelector = true">
-            <template #icon>
-              <RIcon name="backup"/>
-            </template>
-          </Button>
-          <Button variant="text" outlined @click="clearFile" severity="danger" :disabled="!fileInfos.length">
-            <template #icon>
-              <RIcon name="scan_delete"/>
-            </template>
-          </Button>
-        </div>
+        <template v-if="currentCreateType === 1">
+          <RButton @click="displaySelector = true" icon="document_search" tip="Search" />
+          <RButton @click="clearFile" icon="scan_delete" tip="Clear" severity="danger" v-if="fileInfos.length" />
+        </template>
       </template>
       <template #empty>
         <span class="emptyInfo">

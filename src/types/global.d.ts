@@ -20,3 +20,9 @@ interface Entity {
     subType: number;
     id: number;
 }
+
+interface RButtonProps {
+    icon: string;
+    tip: string;
+    severity: string;
+}

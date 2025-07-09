@@ -126,7 +126,7 @@ const exportCSV = () => {
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <RButton @click="exportCSV" icon="file_export" tooltip="Export"
+        <RButton @click="exportCSV" action="export"
                  severity="help" :disabled="!param.data.length" />
       </BlockUI>
     </template>
@@ -141,11 +141,7 @@ const exportCSV = () => {
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
       <template #body>
-        <Button variant="text" outlined size="small">
-          <template #icon>
-            <RIcon name="edit_square" />
-          </template>
-        </Button>
+        <RButton size="small" action="update"/>
       </template>
     </Column>
     <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false" :showClearButton="true"

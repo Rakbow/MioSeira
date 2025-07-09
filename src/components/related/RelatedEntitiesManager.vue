@@ -235,28 +235,14 @@ const load = async () => {
           </template>
         </SelectButton>
 
-        <Button size="small" variant="text" outlined @click="openCreate" :disabled="param.blocking">
-          <template #icon>
-            <RIcon name="add_box" />
-          </template>
-        </Button>
-        <Button variant="text" severity="danger"
-                :disabled="!param.selectedData || !param.selectedData.length || param.blocking"
-                outlined @click="openDelete">
-          <template #icon>
-            <RIcon name="disabled_by_default" />
-          </template>
-        </Button>
+        <RButton @click="openCreate" action="create" :disabled="param.blocking"/>
+        <RButton @click="openDelete" action="delete" :disabled="!param.selectedData || !param.selectedData.length || param.blocking"/>
       </template>
 
       <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
       <Column class="entity-manager-datatable-edit-column">
         <template #body="{data}">
-          <Button variant="text" outlined size="small" @click="openUpdate(data)">
-            <template #icon>
-              <RIcon name="edit_square" />
-            </template>
-          </Button>
+          <RButton size="small" @click="openUpdate(data)" action="update" />
         </template>
       </Column>
       <Column :header="t('Group')" field="target.subType.label" style="width: 5rem"/>
@@ -291,17 +277,8 @@ const load = async () => {
           <span class="empty-search-result"/>
         </template>
         <template #header>
-          <Button variant="text" outlined @click="openEntrySelector">
-            <template #icon>
-              <RIcon name="add_box" />
-            </template>
-          </Button>
-          <Button v-if="createdDTO.entities.length" variant="text" severity="danger"
-                  outlined @click="clearRelatedEntry">
-            <template #icon>
-              <RIcon name="disabled_by_default" />
-            </template>
-          </Button>
+          <RButton @click="openEntrySelector" action="create"/>
+          <RButton @click="clearRelatedEntry" action="delete" v-if="!createdDTO.entities.length"/>
         </template>
         <template #grid="{items}">
           <div class="related-create-entity" v-for="(entry, index) in items" :key="index">

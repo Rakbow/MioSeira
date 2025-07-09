@@ -30,27 +30,14 @@
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">
-        <Button variant="text" outlined @click="openUpload">
-          <template #icon>
-            <RIcon name="add_box"/>
-          </template>
-        </Button>
-        <Button variant="text" severity="danger" :disabled="!param.selectedData.length"
-                outlined @click="openDelete">
-          <template #icon>
-            <RIcon name="disabled_by_default"/>
-          </template>
-        </Button>
+        <RButton @click="openUpload" action="create"/>
+        <RButton @click="openDelete" action="delete" :disabled="!param.selectedData.length"/>
       </BlockUI>
     </template>
     <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
     <Column class="entity-manager-datatable-edit-column">
       <template #body="{data}">
-        <Button variant="text" outlined size="small" @click="openUpdate(data)">
-          <template #icon>
-            <RIcon name="edit_square" />
-          </template>
-        </Button>
+        <RButton @click="openUpdate(data)" action="update" size="small"/>
       </template>
     </Column>
 

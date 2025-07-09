@@ -36,7 +36,8 @@ const submit = async () => {
 const close = () => {
   dialogRef.value.close(
       {
-        isUpdate: param.value.isUpdate
+        isUpdate: param.value.isUpdate,
+        entity: entity.value
       }
   );
 }

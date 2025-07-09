@@ -424,23 +424,13 @@ const endHover = () => {
           </div>
           <div class="relative">
             <div class="bottom-0 right-0">
-              <Button size="small" icon="pi pi-search" @click="search"/>
-              <Button size="small" icon="pi pi-filter-slash" variant="text" @click="clearFilter"
-                      severity="danger"/>
+              <RButton @click="search" icon="search"/>
+              <RButton @click="clearFilter" icon="filter_alt_off" severity="danger"/>
             </div>
           </div>
           <Divider align="left"><i class="pi pi-th-large"/><b>{{ t('RelatedEntity') }}</b></Divider>
-          <Button variant="text" outlined @click="displayEntrySelector = true">
-            <template #icon>
-              <RIcon name="add_box" />
-            </template>
-          </Button>
-          <Button v-if="entries.length" variant="text" severity="danger"
-                  outlined @click="clearEntries">
-            <template #icon>
-              <RIcon name="disabled_by_default" />
-            </template>
-          </Button>
+          <RButton @click="displayEntrySelector = true" action="create"/>
+          <RButton @click="clearEntries" action="clear" v-if="entries.length"/>
           <div class="search-entities grid" v-if="entries">
             <div v-if="entryLoading" class="field">
               <Skeleton height="70px"/>

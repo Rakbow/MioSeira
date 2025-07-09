@@ -17,7 +17,7 @@
                 <StatusEditor v-if="userStore.user && (userStore.user.type > 2 || userStore.user.type === 0)"
                               :status="item.status"/>
                 <RButton v-if="userStore.user && userStore.user.type > 1"
-                         @click="loadEditor(item)" icon="edit_square" tooltip="Edit"/>
+                         @click="loadEditor(item)" action="update"/>
               </div>
               <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked"
                     style="bottom: 0"/>
@@ -33,7 +33,7 @@
       </div>
     </div>
     <div :class="`${prefix}-side`">
-      <ImageGallery/>
+      <ImagePreviewer/>
       <RelationGroup :showRole="false"/>
       <TrafficInfo :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime"/>
     </div>
@@ -54,7 +54,7 @@ const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailP
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
 const AlbumTrack = defineAsyncComponent(() => import('@/components/item/AlbumTrackInfo.vue'));
-const ImageGallery = defineAsyncComponent(() => import('@/components/image/ImageGallery.vue'));
+const ImagePreviewer = defineAsyncComponent(() => import('@/components/image/ImagePreviewer.vue'));
 const RelatedFiles = defineAsyncComponent(() => import('@/components/related/RelatedFiles.vue'));
 const RelatedPersons = defineAsyncComponent(() => import('@/components/related/RelatedPersons.vue'));
 const RelationGroup = defineAsyncComponent(() => import('@/components/related/RelationGroup.vue'));

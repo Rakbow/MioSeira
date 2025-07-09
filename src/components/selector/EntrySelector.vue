@@ -34,16 +34,10 @@
             </div>
 
             <div class="related-entity-role">
-              <Button v-if="!entity.isPicked || type === $const.ENTRY_TYPE.PERSON" text @click="select(entity)">
-                <template #icon>
-                  <RIcon name="add_box" />
-                </template>
-              </Button>
-              <Button v-else text disabled severity="info">
-                <template #icon>
-                  <RIcon name="check_box" />
-                </template>
-              </Button>
+              <RButton @click="select(entity)" icon="add_box"
+                       v-if="!entity.isPicked || type === $const.ENTRY_TYPE.PERSON"/>
+              <RButton icon="check_box" severity="info"
+                       v-else disabled/>
             </div>
           </div>
         </div>

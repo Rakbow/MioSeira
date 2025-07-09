@@ -7,9 +7,9 @@
       </template>
       <div class="entity-fieldset-actions">
         <RButton v-if="!empty"
-                 @click="openTextTingle" icon="arrows_output" tooltip="FullScreen"/>
+                 @click="openTextTingle" icon="arrows_output" tip="FullScreen"/>
         <RButton v-if="userStore.user && userStore.user.type > 1"
-                 @click="openEditDialog" icon="edit_square" tooltip="Edit"/>
+                 @click="openEditDialog" action="update"/>
       </div>
       <div class="relative">
         <article style="width: 90%;font-size: 1.2rem" ref="html" class="entity-detail-markdown"/>

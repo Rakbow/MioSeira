@@ -5,8 +5,7 @@ import {useI18n} from "vue-i18n";
 import {bs} from '@/service/baseService';
 import {useUserStore} from "@/store/modules/user";
 
-const creator = defineAsyncComponent(() => import('@/components/file/FileCreator.vue'));
-const manager = defineAsyncComponent(() => import('@/components/file/FileManager.vue'));
+const manager = defineAsyncComponent(() => import('@/components/file/RelatedFileManager.vue'));
 
 const {t} = useI18n();
 const userStore = useUserStore();
@@ -30,26 +29,6 @@ const load = async () => {
     size.value = res.data.size;
   }
   loading.value = false;
-}
-
-const openCreator = () => {
-  bs!.dialog.open(creator, {
-    props: {
-      header: t('Upload'),
-      style: {
-        width: '80rem'
-      },
-      modal: true,
-      closable: true
-    },
-    onClose: (options: any) => {
-      if (options.data) {
-        if (options.data.isUpdate) {
-          load();
-        }
-      }
-    }
-  });
 }
 
 const openManager = () => {
@@ -80,8 +59,7 @@ const openManager = () => {
         <b>{{ t('RelatedFiles') }}</b>
       </template>
       <div class="entity-fieldset-actions" v-if="userStore.user && userStore.user.type > 1">
-        <RButton @click="openManager" icon="edit_square" tooltip="Edit"/>
-        <RButton @click="openCreator" icon="note_add" tooltip="Upload"/>
+        <RButton @click="openManager" action="update"/>
       </div>
       <div class="related-file">
         <template v-if="files.length">
