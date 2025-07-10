@@ -115,6 +115,7 @@ export const META = {
             key: [0, 1], type: 1, subConfigs: [
                 {
                     label: 'RelatedProduct',
+                    icon: 'th-large',
                     value: [1]
                 }
             ]
@@ -123,6 +124,7 @@ export const META = {
             key: [0, 2], type: 1, subConfigs: [
                 {
                     label: 'RelatedProduct',
+                    icon: 'th-large',
                     value: [1]
                 }
             ]
@@ -131,6 +133,7 @@ export const META = {
             key: [0, 3], type: 1, subConfigs: [
                 {
                     label: 'RelatedProduct',
+                    icon: 'th-large',
                     value: [1]
                 }
             ]
@@ -138,54 +141,67 @@ export const META = {
         {
             key: [0, 5], type: 1, subConfigs: [{
                 label: 'RelatedProduct',
+                icon: 'th-large',
                 value: [1]
             }, {
                 label: 'RelatedCharacter',
+                icon: 'user',
                 value: [3]
             }]
         },
         {
             key: [0, 6], type: 1, subConfigs: [{
                 label: 'RelatedProduct',
+                icon: 'th-large',
                 value: [1]
             }, {
                 label: 'RelatedCharacter',
+                icon: 'user',
                 value: [3]
             }]
         },
         {
             key: [1, 1], type: 1, subConfigs: [{
                 label: 'RelatedProduct',
+                icon: 'th-large',
                 value: [1]
             }, {
                 label: 'RelatedCharacter',
+                icon: 'user',
                 value: [3]
             }, {
                 label: 'RelatedEntry',
+                icon: 'list',
                 value: [4, 5, 6]
             }]
         },
         {
             key: [1, 2], type: 1, subConfigs: [{
                 label: 'RelatedProduct',
+                icon: 'th-large',
                 value: [1]
             }, {
                 label: 'RelatedCharacter',
+                icon: 'user',
                 value: [3]
             }, {
                 label: 'RelatedEntry',
+                icon: 'list',
                 value: [4, 5, 6]
             }]
         },
         {
             key: [1, 3], type: 1, subConfigs: [{
                 label: 'RelatedProduct',
+                icon: 'th-large',
                 value: [1]
             }, {
                 label: 'RelatedCharacter',
+                icon: 'user',
                 value: [3]
             }, {
                 label: 'RelatedEntry',
+                icon: 'list',
                 value: [4, 5, 6]
             }]
         },

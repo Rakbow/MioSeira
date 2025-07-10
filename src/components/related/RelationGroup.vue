@@ -38,7 +38,7 @@ onMounted(() => {
 })
 
 const getData = async () => {
-  const requests = config.value.subConfigs.map(async subConfig => {
+  const requests = (config.value.subConfigs as any[]).map(async subConfig => {
         queryParams.value.filters.targetEntitySubTypes.value = subConfig.value;
         return Axios.post(API.RELATION.LIST, queryParams.value);
       }
@@ -59,7 +59,7 @@ const getData = async () => {
 
 <template>
   <div v-if="resultSet.length" v-for="(subConfig, index) of config.subConfigs">
-    <Relation :header="t(subConfig.label)" :targetSubTypes="subConfig.value" :total="resultSet[index].total"
+    <Relation :header="t(subConfig.label)" :icon="subConfig.icon" :targetSubTypes="subConfig.value" :total="resultSet[index].total"
               :entities="resultSet[index].data" :showRole="props.showRole"/>
   </div>
 </template>

@@ -78,6 +78,7 @@ export class EntityManageParam {
     loading: boolean = false;//loading where search data
     blocking: boolean = false;//component blocked where search data
     total: number = 0;
+    time: number = 0;
     data: any[] = [];
     selectedData: any[] = [];
     columns: PColumn[] = [];

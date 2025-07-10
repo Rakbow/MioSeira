@@ -63,7 +63,16 @@ const MyPreset = definePreset(Aura, {
                     font-size: ${dt('select.option.label.font.size')};
                 }
             `
-        }
+        },
+        dialog: {
+            root: {
+            },
+            css: ({dt}: any) => `
+                .p-dialog-mask {
+                    //background: black !important;
+                }
+            `
+        },
     }
 
 });

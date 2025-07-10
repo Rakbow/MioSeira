@@ -5,10 +5,10 @@ import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
+import tingle from "tingle.js";
 
 const manager = defineAsyncComponent(() => import('@/components/image/ImageManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/image/ImageBrowser.vue'));
-const ImageViewer = defineAsyncComponent(() => import('@/components/image/ImageViewer.vue'));
 
 const {t} = useI18n();
 const userStore = useUserStore();
@@ -16,22 +16,18 @@ const entity = inject<Entity>('entity')!;
 const images = ref([]);
 const count = ref(0);
 const param = ref(new EditParam());
+const previewCount = 6;
 
 onMounted(() => {
-  getDisplayImages();
+  load();
 });
 
-const activeIndex = ref(0)
-const displayCustom = ref(false)
-const imageClick = (index: number) => {
-  activeIndex.value = index;
-  displayCustom.value = true;
-};
-const getDisplayImages = async () => {
+const load = async () => {
   param.value.block = true;
   param.value.data = {
-  entityType: entity!.type,
-  entityId: entity!.id
+    entityType: entity!.type,
+    entityId: entity!.id,
+    count: previewCount
   }
   const res = await Axios.post(API.IMAGE.PREVIEW, param.value.data);
   if (res.success()) {
@@ -43,28 +39,38 @@ const getDisplayImages = async () => {
   param.value.block = false;
 }
 
-const openLoader = () => {
+const openBrowser = () => {
   bs!.dialog.open(browser, {
     props: {
-      header: t('Images'),
+      showHeader: false,
+      dismissableMask: true,
+      blockScroll: true,
+      maximizable: true,
+      draggable: false,
       style: {
-        width: '40vw',
+        width: '70vw',
+        height: '100vh',
+        minWidth: '100rem',
+        minHeight: '65rem',
+        background: 'var(--r-bg-half-none)',
+        borderStyle: 'none'
       },
-      modal: true
+      modal: true,
+      contentClass: 'image-browser'
     },
     data: {
-      type: entity!.type,
-      id: entity!.id,
+      entityType: entity!.type,
+      entityId: entity!.id,
     }
   });
 }
 
-const openEditDialog = () => {
+const openManager = () => {
   bs!.dialog.open(manager, {
     props: {
       header: `${t('Images')}${t('Edit')}`,
       style: {
-        width: '75rem',
+        width: '75rem'
       },
       modal: true,
       closable: true
@@ -76,8 +82,16 @@ const openEditDialog = () => {
   });
 }
 
+const imageZoomIn = (image: any) => {
+  modal.setContent(`<img src="${image.display}" alt="${image.name}" />`)
+  modal.open();
+};
+const modal = new tingle.modal({
+  closeMethods: ['overlay', 'button', 'escape'],
+  closeLabel: "Close",
+  cssClass: ['tingle-image']
+});
 </script>
-
 <template>
   <Panel>
     <template #header>
@@ -85,8 +99,8 @@ const openEditDialog = () => {
     </template>
     <template #icons>
       <RButton v-if="userStore.user && userStore.user.type > 1"
-               @click="openEditDialog" action="update" />
-      <Button :label="count.toString()" outlined @click="openLoader" :disabled="!count"
+               @click="openManager" action="update"/>
+      <Button :label="count.toString()" outlined @click="openBrowser" :disabled="!count"
               v-tooltip="{value: t('ViewAll'), disabled: !count}"/>
     </template>
 
@@ -97,13 +111,14 @@ const openEditDialog = () => {
       <div class="side-image" v-for="(image, index) of images as any" :key="index">
         <img :src="image.thumb" draggable="false" oncontextmenu="return false"
              v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`, class: 'image-tooltip'}"
-             @click="imageClick(index)" alt="image" />
+             @click="imageZoomIn(image)" :alt="image.name"/>
       </div>
     </div>
+    <Button v-if="images.length" @click="openBrowser" link size="large" severity="info" class="ml-4">
+      {{ `${t('ViewAll')}(${count})` }}
+    </Button>
   </Panel>
-  <ImageViewer :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
-
 <style lang="scss" scoped>
 
 .image-tooltip .p-tooltip-text {

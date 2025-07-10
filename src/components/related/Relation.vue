@@ -19,6 +19,11 @@ const props = defineProps({
     type: String,
     required: true
   },
+  icon: {
+    type: String,
+    required: false,
+    default: 'list'
+  },
   targetType: {
     type: Number,
     required: false,
@@ -93,13 +98,13 @@ const openBrowser = () => {
 <template>
   <Panel>
     <template #header>
-      <span><i class="pi pi-list"/><strong>{{ props.header }}</strong></span>
+      <span><i :class="`pi pi-${props.icon}`"/><strong>{{ props.header }}</strong></span>
     </template>
     <template #icons>
       <RButton v-if="userStore.user && userStore.user.type > 1"
                @click="openManager" action="update" />
-      <Button :label="total.toString()" outlined @click="openBrowser" :disabled="!relatedEntities"
-              v-tooltip="{value: t('ViewAll'), disabled: !relatedEntities}"/>
+      <Button :label="total.toString()" outlined @click="openBrowser" :disabled="!relatedEntities.length"
+              v-tooltip="{value: t('ViewAll'), disabled: !relatedEntities.length}"/>
     </template>
     <i v-if="loading" class="pi pi-spin pi-spinner" style="font-size: 2rem"/>
     <div v-else>

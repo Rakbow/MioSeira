@@ -43,7 +43,7 @@
 
     <Column class="text-center" style="width: 2.5rem">
       <template #body="{data, index}">
-        <img :alt="data.name" :src="data.thumb" class="image-click" @click="openTextTingle(data)"
+        <img :alt="data.name" :src="data.thumb" class="image-click" @click="imageZoomIn(data)"
              style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto" />
       </template>
     </Column>
@@ -280,7 +280,7 @@ const remove = async () => {
 }
 //endregion
 
-const openTextTingle = (image: any) => {
+const imageZoomIn = (image: any) => {
   modal.setContent(`<img src="${image.display}" alt="${image.name}" />`)
   modal.open();
 };

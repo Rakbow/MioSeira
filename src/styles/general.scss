@@ -7,6 +7,8 @@ $common-border-down-radius: 0 0 1rem 1rem;
 $common-border-up-radius: 1rem 1rem 0 0;
 
 :root {
+  --r-bg-half-none: rgba(0, 0, 0, 0.5);
+
   --r-bg-blue-950: #001122;
   --r-bg-indigo-700: #3C405C;
   --r-bg-indigo-900: #1B273D;
@@ -49,7 +51,6 @@ img {
 }
 
 
-
 a:link {
   color: var(--r-mint-100) !important;
   @include styleclass('no-underline hover:underline');
@@ -70,12 +71,12 @@ a:visited, a:hover {
 
 .p-popover {
   border-radius: 6px !important;
+
   .p-popover-content {
     padding: 0 !important;
     border-radius: 6px !important;
   }
 }
-
 
 
 .image-click {

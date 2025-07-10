@@ -1,143 +1,80 @@
-<template>
-  <BlockUI :blocked="param.block">
-    <DataTable ref="dt" :value="images" :alwaysShowPaginator="images.length !== 0"
-               lazy :totalRecords="totalRecords" :loading="loading"
-               @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
-               filterDisplay="row" v-model:filters="filters"
-               paginator :rows="5" :first="first"
-               scrollable scrollHeight="flex" :rowsPerPageOptions="[10,25,50]" size="small"
-               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-               currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
-      <template #empty>
-        <span class="emptyInfo">
-            {{ t('CommonDataTableEmptyInfo') }}
-        </span>
-      </template>
-      <template #loading>
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <span>{{ t('CommonDataTableLoadingInfo') }}</span>
-      </template>
-      <Column style="width: 100px">
-        <template #body="slotProps">
-          <div class="edit-img-box">
-            <img :src="slotProps.data.thumb" :alt="slotProps.data.name"
-                 class="entry-thumb image-click" @click="imageClick(slotProps.index)" />
-          </div>
-        </template>
-      </Column>
-      <Column :header="t('Type')" field="type" filterField="type"
-              :showFilterMenu="false" :sortable="true" style="width: 5rem;">
-        <template #body="slotProps">
-          <div style="display: flex;justify-content: center;">
-            <Tag :value="slotProps.data.type.label"/>
-          </div>
-        </template>
-        <template #filter="{filterModel,filterCallback}">
-          <Select v-model="filterModel.value" :options="store.options.imageTypeSet" @change="filterCallback()"
-                  optionLabel="label" optionValue="value" Style="min-width: 100px"/>
-        </template>
-      </Column>
-      <Column :header="t('Info')" field="name">
-        <template #body="slotProps">
-          {{ slotProps.data.name }}<br>
-          {{ slotProps.data.addedTime }}
-        </template>
-      </Column>
-    </DataTable>
-  </BlockUI>
-  <ImageViewer :images="images" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
-</template>
-
 <script setup lang="ts">
-import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
-import {API, Axios} from '@/api';
+import {inject, onBeforeMount, onMounted, ref, watch} from "vue";
 import {useI18n} from "vue-i18n";
-import {useOptionStore} from "@/store/modules/option";
-import {EditParam} from "@/service/entityService";
-import {bs} from '@/service/baseService';
-
-const ImageViewer = defineAsyncComponent(() => import('@/components/image/ImageViewer.vue'));
+import {EntityManageParam} from "@/service/entityService";
+import {API, Axios} from "@/api";
 
 const {t} = useI18n();
-const param = ref(new EditParam());
-const images = ref<any>([]);
-const totalRecords = ref(0);
-const loading = ref(false);
-const queryParams = ref({});
-const first = ref(0);
-const dt = ref();
+const index = ref(0);
 const dialogRef = inject<any>('dialogRef');
-const store = useOptionStore();
 
-onBeforeMount(() => {
-  store.fetchOptions();
-})
-
-onMounted(async () => {
-  filters.value.entityType.value = dialogRef.value.data.type;
-  filters.value.entityId.value = dialogRef.value.data.id;
-  queryParams.value = {
-    first: 0,
-    rows: dt.value.rows,
-    sortField: null,
-    sortOrder: null,
-    filters: filters.value
-  };
-  await getImages();
+const param = ref(new EntityManageParam());
+onBeforeMount(async () => {
+  param.value.initFilters({
+    entityType: {value: dialogRef.value.data.entityType},
+    entityId: {value: dialogRef.value.data.entityId},
+    type: {value: -2}
+  });
+  param.value.initPage(0, 10);
 });
 
-const filters = ref({
-  'entityType': {value: dialogRef.value.data.type},
-  'entityId': {value: dialogRef.value.data.id},
-  'type': {value: -2}
+onMounted(() => {
+  load();
 });
 
-const onPage = (ev) => {
-  queryParams.value = ev;
-  getImages();
-};
-const onSort = (ev) => {
-  queryParams.value = ev;
-  getImages();
-};
-const onFilter = () => {
-  if(filters.value.type.value === null)
-    filters.value.type.value = -2;
-  queryParams.value.filters = filters.value;
-  getImages();
+const onPage = (ev: any) => {
+  param.value.initPage(ev.first, ev.rows);
+  load();
 };
 
-const getImages = async () => {
-  loading.value = true;
-  const res = await Axios.post(API.IMAGE.LIST, queryParams.value);
+const load = async () => {
+  param.value.load();
+  const res = await Axios.post(API.IMAGE.LIST, param.value.query);
   if (res.success()) {
-    images.value = res.data.data;
-    totalRecords.value = res.data.total
-  } else {
-    bs!.toast.error(res.message);
+    param.value.data = res.data.data;
+    param.value.total = res.data.total;
+    index.value = 0;
   }
-  loading.value = false;
-  first.value = queryParams.value.first;
-}
-
-const activeIndex = ref(0)
-const displayCustom = ref(false)
-const imageClick = (index: number) => {
-  activeIndex.value = index;
-  displayCustom.value = true;
+  param.value.endLoad();
 };
+
 </script>
 
+<template>
+  <Galleria v-model:value="param.data" :numVisible="param.data.length" v-model:activeIndex="index"
+            :showItemNavigators="true" :showThumbnailNavigators="false">
+    <template v-if="!param.loading" #item="{item}">
+      <img :src="item.display" :alt="item.name"/>
+    </template>
+    <template v-if="!param.loading" #thumbnail="{item}">
+      <img :src="item.thumb" :alt="item.name"/>
+    </template>
+    <template v-if="!param.loading" #caption="{item}">
+      <div class="grid">
+        <span class="col-fixed" style="width: 10rem;font-size: 1.3rem;font-weight: 700">{{ `${param.query.first + index + 1}/${param.total}` }}</span>
+        <span class="col" style="font-size: 1.5rem">{{ item.name }}</span>
+        <span class="col-fixed" style="width: 18rem">{{ `${t('UploadIn')}:&nbsp;&nbsp;${item.addedTime}` }}</span>
+
+      </div>
+<!--      <div class="static w-full">-->
+<!--        <span class="text-start">{{ item.name }}</span>-->
+<!--        <span class="text-end">{{ item.name }}</span>-->
+<!--      </div>-->
+<!--      <p class="text-white">{{ item.detail }}</p>-->
+    </template>
+    <template #footer>
+      <Paginator v-model:first="param.query.first" :rows="param.query.rows" :totalRecords="param.total"
+                 @page="onPage($event)" :alwaysShow="param.total !== 0">
+        <template #start>
+          <span>search in {{ param.time }}s</span>
+        </template>
+        <template #end>
+          {{ param.total }} images
+        </template>
+      </Paginator>
+    </template>
+  </Galleria>
+</template>
+
 <style lang="scss" scoped>
-
-.edit-img-box {
-  width: 90px;
-  height: 90px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #000; /* 方便查看边框 */
-}
-
 </style>
