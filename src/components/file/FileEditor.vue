@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {API, Axios} from "@/api";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';

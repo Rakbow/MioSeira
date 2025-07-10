@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {defineAsyncComponent, inject, onBeforeMount, ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {API, Axios} from "@/api";
 import {useOptionStore} from "@/store/modules/option";
 import {bs} from '@/service/baseService';
@@ -81,7 +81,7 @@ const close = () => {
         </template>
         <template v-if="entry.type.value === $const.ENTRY_TYPE.PRODUCT">
           <label>{{ t('Category') }}</label>
-          <Select v-model="entry.subType" :options="store.options.entrySubTypeSet" disabled filled
+          <Select v-model="entry.subType" :options="store.options.entrySubTypeSet" filled
                   size="large" optionLabel="label"/>
         </template>
       </FloatLabel>

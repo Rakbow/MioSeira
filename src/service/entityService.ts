@@ -2,7 +2,7 @@ import fileEditor from "@/components/file/FileEditor.vue";
 import {META} from "@/config/Web_Const";
 import i18n from "@/locales/i18n";
 import {PColumn} from "@/service/frame";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 
 import {bs} from '@/service/baseService'
 

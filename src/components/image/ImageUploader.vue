@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {defineProps, onBeforeMount, ref} from "vue";
 import {useOptionStore} from "@/store/modules/option";
 import {useI18n} from "vue-i18n";

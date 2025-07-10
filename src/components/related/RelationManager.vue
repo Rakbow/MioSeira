@@ -7,7 +7,7 @@ import {EntityManageParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 import router from "@/router";
 
-const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
+const EntrySelector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
 const { proxy } = getCurrentInstance()!;
 const store = useOptionStore();

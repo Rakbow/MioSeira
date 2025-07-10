@@ -5,7 +5,7 @@ import {API, Axios} from "@/api";
 import {bs} from '@/service/baseService';
 import {useUserStore} from "@/store/modules/user";
 
-const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
+const manager = defineAsyncComponent(() => import('@/components/related/RelationManager.vue'));
 
 const {t} = useI18n();
 const personnel = ref<PersonnelGroup[]>([]);

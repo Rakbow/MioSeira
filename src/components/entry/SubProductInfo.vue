@@ -6,7 +6,7 @@ import {API, Axios} from "@/api";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
-const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
+const manager = defineAsyncComponent(() => import('@/components/related/RelationManager.vue'));
 const {t} = useI18n();
 const entity = inject<Entity>('entity')!;
 const userStore = useUserStore();

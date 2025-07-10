@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
 import {defineAsyncComponent, getCurrentInstance, inject, onMounted, ref} from "vue";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {API, Axios} from "@/api";
 import {getIcon} from 'material-file-icons';
 import {EditParam, FileInfoCreateDTO} from "@/service/entityService";

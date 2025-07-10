@@ -165,5 +165,5 @@ const markPickedEntries = () => {
 </script>
 
 <style lang="scss" scoped>
-@use "@/styles/entity-global";
+@use "entity-global";
 </style>

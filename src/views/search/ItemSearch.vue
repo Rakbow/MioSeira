@@ -13,7 +13,7 @@ import {ItemQueryParams} from "@/service/itemService";
 import {bs} from '@/service/baseService';
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
-const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
+const EntrySelector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
 const {t} = useI18n();
 const route = useRoute();

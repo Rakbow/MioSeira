@@ -45,6 +45,24 @@ const MyPreset = definePreset(Aura, {
                     weight: 500
                 }
             }
+        },
+        select: {
+            root: {
+                option: {
+                    extend: {
+                        label: {
+                            font: {
+                                size: '1rem'
+                            }
+                        }
+                    }
+                }
+            },
+            css: ({dt}: any) => `
+                .p-select-option-label {
+                    font-size: ${dt('select.option.label.font.size')};
+                }
+            `
         }
     }
 

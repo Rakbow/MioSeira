@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {API, Axios} from "@/api";
 import {useOptionStore} from "@/store/modules/option";
 import {parseItemSpecParams} from "@/service/itemService";
@@ -253,5 +253,5 @@ const handleAttributeBeforeUpdate = () => {
 </template>
 
 <style scoped lang="scss">
-@use "flag-icons/css/flag-icons.min";
+@use "../../../node_modules/flag-icons/css/flag-icons.min.css";
 </style>

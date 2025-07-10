@@ -62,7 +62,7 @@ const {t} = useI18n();
 const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
-const RelatedFiles = defineAsyncComponent(() => import('@/components/related/RelatedFiles.vue'));
+const RelatedFiles = defineAsyncComponent(() => import('@/components/file/RelatedFiles.vue'));
 const RelatedEpisodes = defineAsyncComponent(() => import('@/components/related/RelatedEpisodes.vue'));
 
 const router = useRouter();

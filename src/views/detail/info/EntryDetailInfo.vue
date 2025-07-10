@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {defineProps} from "vue";
 import {useI18n} from "vue-i18n";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 const {t} = useI18n();
 
 const props = defineProps<{

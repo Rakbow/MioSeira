@@ -6,7 +6,7 @@ import {META} from "@/config/Web_Const";
 import {bs} from '@/service/baseService';
 
 const RelationEntity = defineAsyncComponent(() => import('@/components/related/RelatedEntity.vue'));
-const manager = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesManager.vue'));
+const manager = defineAsyncComponent(() => import('@/components/related/RelationManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesBrowser.vue'));
 const {t} = useI18n();
 const userStore = useUserStore();

@@ -10,7 +10,7 @@ import {LocationQueryValue, useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {useOptionStore} from "@/store/modules/option";
 import {EntryQueryParams} from "@/service/entryService";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {bs} from '@/service/baseService';
 
 const {t} = useI18n();

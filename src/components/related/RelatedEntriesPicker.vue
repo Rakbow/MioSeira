@@ -3,7 +3,7 @@ import {defineAsyncComponent, defineProps, onBeforeMount, ref, toRef, watch} fro
 import {useOptionStore} from "@/store/modules/option";
 import {useI18n} from "vue-i18n";
 
-const EntrySelector = defineAsyncComponent(() => import('@/components/selector/EntrySelector.vue'));
+const EntrySelector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
 const props = defineProps({
   relatedEntries: {

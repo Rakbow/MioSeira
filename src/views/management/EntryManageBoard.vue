@@ -7,7 +7,7 @@ import {loadEditor} from "@/service/entryService";
 import "flag-icons/css/flag-icons.min.css";
 import {EntityManageParam} from '@/service/entityService';
 import {useOptionStore} from "@/store/modules/option";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {PColumn} from "@/service/frame";
 
 const dt = ref();

@@ -55,7 +55,7 @@ const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.v
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
 const AlbumTrack = defineAsyncComponent(() => import('@/components/item/AlbumTrackInfo.vue'));
 const ImagePreviewer = defineAsyncComponent(() => import('@/components/image/ImagePreviewer.vue'));
-const RelatedFiles = defineAsyncComponent(() => import('@/components/related/RelatedFiles.vue'));
+const RelatedFiles = defineAsyncComponent(() => import('@/components/file/RelatedFiles.vue'));
 const RelatedPersons = defineAsyncComponent(() => import('@/components/related/RelatedPersons.vue'));
 const RelationGroup = defineAsyncComponent(() => import('@/components/related/RelationGroup.vue'));
 

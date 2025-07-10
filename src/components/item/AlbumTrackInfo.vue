@@ -128,7 +128,7 @@
 import {defineAsyncComponent, inject, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 import {useUserStore} from "@/store/modules/user";

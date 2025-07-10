@@ -8,7 +8,7 @@ import {API, Axios} from "@/api";
 import {ItemAdvanceCreateDTO, loadEditor, parseItemSpecParams} from "@/service/itemService";
 import {MdEditor} from "md-editor-v3";
 import {useRouter} from "vue-router";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {bs} from '@/service/baseService';
 
 import 'md-editor-v3/lib/style.css';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {defineAsyncComponent, defineProps} from "vue";
-import {PublicHelper} from "@/toolkit/publicHelper";
+import {PublicHelper} from "@/utils/publicHelper";
 import {useI18n} from "vue-i18n";
 
 const ItemExtraInfo = defineAsyncComponent(() => import('@/components/item/ItemExtraInfo.vue'));
