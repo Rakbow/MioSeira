@@ -43,7 +43,7 @@
 
     <Column class="text-center" style="width: 2.5rem">
       <template #body="{data, index}">
-        <img :alt="data.name" :src="data.thumb" class="image-click" @click="imageClick(index)"
+        <img :alt="data.name" :src="data.thumb" class="image-click" @click="openTextTingle(data)"
              style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto" />
       </template>
     </Column>
@@ -105,7 +105,6 @@
       <Button :label="t('Save')" icon="pi pi-check" @click="update"/>
     </template>
   </Dialog>
-  <ImageViewer :images="param.data" v-model:activeIndex="activeIndex" v-model:visible="displayCustom" />
 </template>
 
 <script setup lang="ts">
@@ -116,8 +115,10 @@ import {useOptionStore} from "@/store/modules/option";
 import {EntityManageParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
+import tingle from 'tingle.js';
+import 'tingle.js/src/tingle.css';
+
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
-const ImageViewer = defineAsyncComponent(() => import('@/components/image/ImageViewer.vue'));
 
 const {t} = useI18n();
 
@@ -135,6 +136,7 @@ onBeforeMount(() => {
     keyword: {value: ''},
     type: {value: null}
   });
+  param.value.initPage(0, 10);
 });
 
 onMounted(() => {
@@ -278,14 +280,19 @@ const remove = async () => {
 }
 //endregion
 
-const activeIndex = ref(0)
-const displayCustom = ref(false)
-const imageClick = (index: number) => {
-  activeIndex.value = index;
-  displayCustom.value = true;
+const openTextTingle = (image: any) => {
+  modal.setContent(`<img src="${image.display}" alt="${image.name}" />`)
+  modal.open();
 };
+const modal = new tingle.modal({
+  closeMethods: ['overlay', 'button', 'escape'],
+  closeLabel: "Close",
+  cssClass: ['tingle-image']
+});
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.tingle-modal {
+  z-index: 99999 !important;
+}
 </style>

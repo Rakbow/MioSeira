@@ -320,6 +320,27 @@
   color: black;
 }
 
+.tingle-image {
+  z-index: 9999 !important;
+  .tingle-modal {
+    background: rgba(0, 0, 0, 0.5) !important;
+    &-box, &-box__content {
+      background: rgba(0, 0, 0, 0) !important;
+    }
+
+    &-box__content {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: center !important;
+      padding: 0 !important;
+      img {
+        min-height: 70rem;
+      }
+    }
+  }
+}
+
 .markdown-body a:hover,
 .markdown-body a:visited,
 .markdown-body a {

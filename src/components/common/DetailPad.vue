@@ -26,13 +26,14 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, defineProps, inject, onMounted, ref} from "vue";
 import {useUserStore} from "@/store/modules/user";
-import tingle from 'tingle.js';
-import {marked} from 'marked';
 import {useI18n} from "vue-i18n";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
+import tingle from 'tingle.js';
 import 'tingle.js/src/tingle.css';
+
+import {marked} from 'marked';
 import 'md-editor-v3/lib/style.css';
 
 const CommonTextEditor = defineAsyncComponent(() => import('@/components/common/DetailEditor.vue'));
