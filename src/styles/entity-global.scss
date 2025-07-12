@@ -33,17 +33,6 @@ $item-color-6-14: #a4a;
   overflow: hidden;
 }
 
-.entity-image-cover-200 {
-  width: 20rem;
-  @include common-entity-image;
-  border-radius: 1rem;
-
-  img {
-    @include common-entity-image-img;
-  }
-
-}
-
 .image-thumb-50 {
   width: 5rem;
   height: 5rem;
@@ -93,109 +82,6 @@ $item-color-6-14: #a4a;
 
 }
 
-.item-thumb-loading {
-  width: 6.4rem;
-  height: 6.4rem;
-  border-radius: 1rem;
-  @include common-entity-image;
-
-  img {
-    @include common-entity-image-img;
-  }
-}
-
-.item-thumb {
-  width: 6.4rem;
-  height: 6.4rem;
-  border-radius: 1rem;
-  @include common-entity-image;
-
-  img {
-    border-radius: 1rem;
-    padding: 0.05rem;
-    @include common-entity-image-img;
-  }
-
-  border: .2rem solid;
-
-  &-1-0 {
-    border-color: $item-color-1-0;
-  }
-
-  &-2-0 {
-    border-color: $item-color-2-0;
-  }
-
-  &-3-0 {
-    border-color: $item-color-3-0;
-  }
-
-  &-4-0 {
-    border-color: $item-color-4-0;
-  }
-
-  &-5 {
-    &-1 {
-      border-color: $item-color-5-1;
-    }
-
-    &-2 {
-      border-color: $item-color-5-2;
-    }
-
-    &-3 {
-      border-color: $item-color-5-3;
-    }
-
-    &-4 {
-      border-color: $item-color-5-4;
-    }
-
-    &-5 {
-      border-color: $item-color-5-5;
-    }
-
-    &-6 {
-      border-color: $item-color-5-6;
-    }
-
-    &-7 {
-      border-color: $item-color-5-7;
-    }
-
-    &-8 {
-      border-color: $item-color-5-8;
-    }
-  }
-
-  &-6 {
-    &-9 {
-      border-color: $item-color-6-9;
-    }
-
-    &-10 {
-      border-color: $item-color-6-10;
-    }
-
-    &-11 {
-      border-color: $item-color-6-11;
-    }
-
-    &-12 {
-      border-color: $item-color-6-12;
-    }
-
-    &-13 {
-      border-color: $item-color-6-13;
-    }
-
-    &-14 {
-      border-color: $item-color-6-14;
-    }
-  }
-
-}
-
 .entity-search-result-block {
   margin: .5rem .5rem .5rem .25rem;
   border-radius: .7rem;
@@ -217,22 +103,6 @@ $item-color-6-14: #a4a;
 .data-table-field-text-overflow-hidden {
   display: block !important;
   @include styleclass('white-space-nowrap overflow-hidden text-overflow-ellipsis');
-}
-
-.text-overflow-hidden-one {
-  display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
-  -webkit-box-orient: vertical; /* 设置为纵向排列 */
-  -webkit-line-clamp: 1; /* 限制显示的行数 */
-  overflow: hidden; /* 超出部分隐藏 */
-  text-overflow: ellipsis; /* 显示 "..." */
-}
-
-.text-overflow-hidden-two {
-  display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
-  -webkit-box-orient: vertical; /* 设置为纵向排列 */
-  -webkit-line-clamp: 2; /* 限制显示的行数 */
-  overflow: hidden; /* 超出部分隐藏 */
-  text-overflow: ellipsis; /* 显示 "..." */
 }
 
 .p-select {
@@ -355,4 +225,122 @@ $item-color-6-14: #a4a;
     }
   }
 
+}
+
+.item-thumb {
+
+  &-list, &-grid {
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &-list {
+    width: 6rem;
+    height: 6rem;
+    img {
+      border-radius: 1rem;
+    }
+  }
+
+  &-grid {
+    width: 6.4rem;
+    height: 6.4rem;
+    box-sizing: border-box;
+
+    border: .2rem solid;
+    padding: .2rem;
+
+    img {
+      border-radius: 0.65rem;
+    }
+
+    &:hover {
+      border-width: 0.4rem;
+      padding: 0;
+    }
+
+    &-1-0 {
+      border-color: var(--r-item-1-0) !important;
+    }
+
+    &-2-0 {
+      border-color: var(--r-item-2-0) !important;
+    }
+
+    &-3-0 {
+      border-color: var(--r-item-3-0) !important;
+    }
+
+    &-4-0 {
+      border-color: var(--r-item-4-0) !important;
+    }
+
+    &-5 {
+      &-1 {
+        border-color: var(--r-item-5-1) !important;
+      }
+
+      &-2 {
+        border-color: var(--r-item-5-2) !important;
+      }
+
+      &-3 {
+        border-color: var(--r-item-5-3) !important;
+      }
+
+      &-4 {
+        border-color: var(--r-item-5-4) !important;
+      }
+
+      &-5 {
+        border-color: var(--r-item-5-5) !important;
+      }
+
+      &-6 {
+        border-color: var(--r-item-5-6) !important;
+      }
+
+      &-7 {
+        border-color: var(--r-item-5-7) !important;
+      }
+
+      &-8 {
+        border-color: var(--r-item-5-8) !important;
+      }
+    }
+
+    &-6 {
+      &-9 {
+        border-color: var(--r-item-6-9) !important;
+      }
+
+      &-10 {
+        border-color: var(--r-item-6-10) !important;
+      }
+
+      &-11 {
+        border-color: var(--r-item-6-11) !important;
+      }
+
+      &-12 {
+        border-color: var(--r-item-6-12) !important;
+      }
+
+      &-13 {
+        border-color: var(--r-item-6-13) !important;
+      }
+
+      &-14 {
+        border-color: var(--r-item-6-14) !important;
+      }
+    }
+  }
 }

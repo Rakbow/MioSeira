@@ -1,6 +1,5 @@
 <template>
-  <DataView :value="param.data" lazy paginator @page="page($event)"
-            :rows="param.query.rows" :first="param.query.first" :totalRecords="param.total">
+  <DataView :value="param.result.data" lazy paginator>
     <template #empty>
         <span class="empty-search-result">
             {{ t('NoSearchResult') }}
@@ -22,6 +21,10 @@
         </div>
       </div>
     </template>
+    <template #paginatorcontainer>
+      <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
+                  :total="param.result.total" @page="page($event)" :time="param.result.time"/>
+    </template>
   </DataView>
 </template>
 
@@ -39,7 +42,7 @@ const dialogRef = inject<any>('dialogRef');
 const param = ref(new EntityManageParam());
 
 onBeforeMount(async () => {
-  param.value.initPage(0, 7);
+  param.value.query.size = 7;
   param.value.initFilters({
     entityType: {value: dialogRef.value.data.entityType},
     entityId: {value: dialogRef.value.data.entityId},
@@ -54,17 +57,16 @@ onMounted(() => {
 });
 
 const page = (ev: any) => {
-  param.value.initPage(ev.first, ev.rows);
+  param.value.initPage(ev.page + 1);
   load();
 }
 
 const load = async () => {
   param.value.load();
-  param.value.data = Array.from({length: param.value.query.rows});
+  param.value.data = Array.from({length: param.value.query.size});
   const res = await Axios.post(API.RELATION.LIST, param.value.query);
   if (res.success()) {
-    param.value.total = res.data.total;
-    param.value.data = res.data.data;
+    param.value.loadResult(res.data);
   }
   param.value.endLoad();
 };

@@ -87,6 +87,7 @@ export const META = {
         {icon: 'distance', value: '6', label: 'Event'}
     ],
     ITEM_TYPE_SET: [
+        {icon: 'filter_alt_off', value: null, disabled: false, label: 'Entity.Album'},
         {icon: 'genres', value: '1', disabled: false, label: 'Entity.Album'},
         {icon: 'book_5', value: '2', disabled: false, label: 'Entity.Book'},
         {icon: 'hangout_video', value: '3', disabled: false, label: 'Entity.Disc'},

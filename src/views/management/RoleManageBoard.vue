@@ -29,7 +29,6 @@ onMounted(() => {
 
 const initQueryParam = async () => {
   const { query } = route;
-  const page = parseInt(query.page?.toString() ?? '1');
 
   if (query.sort) {
     param.value.query.sortField = query.sort.toString();
@@ -38,15 +37,15 @@ const initQueryParam = async () => {
     }
   }
 
-  param.value.countPage(page, dt.value.rows);
+  param.value.query.page = parseInt(query.page?.toString() ?? '1');
   param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
 }
 
 const updateQueryParam = () => {
-  const { query: { filters, sortField, sortOrder, first }} = param.value;
+  const { query: { filters, sortField, sortOrder, page }} = param.value;
   const curQuery = {...route.query};
 
-  curQuery.page = ((first / dt.value.rows) + 1).toString();
+  curQuery.page = page.toString();
 
   ['keyword'].forEach(key => {
     if (filters[key]?.value) {
@@ -69,16 +68,16 @@ const updateQueryParam = () => {
 //endregion
 
 const onPage = (ev: any) => {
-  param.value.initPage(ev.first, ev.rows);
+  param.value.initPage(ev.page + 1);
   load();
 };
 const onSort = (ev: any) => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   param.value.initSort(ev.sortField, ev.sortOrder);
   load();
 };
 const onFilter = () => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   load();
 };
 
@@ -87,8 +86,7 @@ const load = async () => {
   param.value.load();
   const res = await Axios.post(API.ROLE.LIST, param.value.query);
   if (res.success()) {
-    param.value.data = res.data.data;
-    param.value.total = res.data.total
+    param.value.loadResult(res.data);
   }
   param.value.endLoad();
 }
@@ -169,27 +167,16 @@ const refresh = async () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable" size="small"
-             lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
-             @page="onPage($event)" @sort="onSort($event)" @filter="onFilter"
-             filterDisplay="row" paginator :rows="param.query.rows" :first="param.query.first" stripedRows showGridlines
+  <DataTable ref="dt" :value="param.result.data" class="entity-manager-datatable" size="small"
+             lazy v-model:filters="param.query.filters" :loading="param.loading"
+             @sort="onSort($event)" @filter="onFilter"
+             filterDisplay="row" paginator alwaysShowPaginator :rows="param.query.size" stripedRows showGridlines
              v-model:selection="param.selectedData" dataKey="id" removableSort
-             scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]"
-             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
-             responsiveLayout="scroll">
-    <template #paginatorfirstpagelinkicon>
-      <RIcon name="first_page" />
-    </template>
-    <template #paginatorprevpagelinkicon>
-      <RIcon name="chevron_left" />
-    </template>
-    <template #paginatornextpagelinkicon>
-      <RIcon name="chevron_right" />
-    </template>
-    <template #paginatorlastpagelinkicon>
-      <RIcon name="last_page" />
+             scrollable scrollHeight="flex" responsiveLayout="scroll">
+    <template #paginatorcontainer>
+      <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
+                  :total="param.result.total" @page="onPage($event)" :time="param.result.time"
+                  :sizeOptions="[15, 30 ,50]" @update:rows="param.query.size = $event"/>
     </template>
     <template #header>
       <BlockUI :blocked="param.blocking">

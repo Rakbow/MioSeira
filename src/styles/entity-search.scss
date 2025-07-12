@@ -2,16 +2,28 @@
 @use 'entity-global' as e-general;
 
 .entity-search {
-  &-main-col {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 1rem !important;
+
+  &-main {
     margin-top: .5rem !important;
-    width: 840px;
+    width: 71rem;
     background: var(--r-bg-neutral-950) !important;
-    border-radius: general.$common-border-radius;
+    border-radius: 1rem;
+
+    .p-dataview {
+      &-header {
+        display: flex !important;
+      }
+    }
+
   }
 
-  &-side-col {
+  &-side {
     margin-top: .5rem !important;
-    width: 360px;
+    width: 36rem;
 
     .p-divider {
       margin-bottom: .5rem;
@@ -26,6 +38,91 @@
     }
 
   }
+
+  &-item {
+    &-grid {
+      display: flex !important;
+      flex-wrap: wrap !important;
+
+      > div {
+        padding: .5rem !important
+      }
+
+      &-loading {
+        width: 6.4rem;
+        height: 6.4rem;
+        border-radius: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+
+        img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .p-skeleton {
+        position: relative !important;
+        width: 6rem !important;
+        height: 6rem !important;
+      }
+    }
+
+    &-list {
+      a {
+        font-size: 1.2rem;
+      }
+
+      > div {
+        border-radius: general.$common-border-radius !important;
+        background-color: var(--r-bg-slate-800) !important;
+        margin: .5rem !important;
+      }
+
+      &-loading {
+        height: 7rem;
+      }
+
+      &-thumb {
+        padding: .5rem;
+      }
+
+      &-info {
+        padding: .5rem 1.5rem 0 .25rem !important;
+
+        &-time {
+          color: var(--r-blue-400);
+          font-size: 1.2rem;
+          font-weight: 400;
+        }
+
+        &-sub {
+          color: gray;
+          font-size: 1.2rem;
+          font-weight: 400;
+        }
+
+        i {
+          font-size: 1rem;
+        }
+
+        .p-tag {
+          padding: 0 .5rem;
+          background: #333;
+          margin: .2rem 0;
+        }
+
+        .p-tag-label {
+          font-size: 1.1rem;
+          font-weight: normal;
+        }
+      }
+    }
+  }
+
 
 }
 
@@ -66,63 +163,6 @@
 
   > div {
     padding: .5rem;
-  }
-}
-
-.item-search-grid {
-  display: flex !important;
-  flex-wrap: wrap !important;
-
-  > div {
-    padding: .5rem !important
-  }
-}
-
-.item-search-list {
-  a {
-    font-size: 12px;
-  }
-
-  > div {
-    border-radius: general.$common-border-radius !important;
-    background-color: var(--r-bg-slate-800) !important;
-    margin: .5rem !important;
-  }
-
-  &-thumb {
-    padding: .5rem;
-
-  }
-
-  &-info {
-    padding-left: 0.25rem !important;
-    padding-top: 1rem !important;
-    padding-right: 1.5rem !important;
-
-    &-time {
-      color: var(--r-blue-400);
-      font-size: 12px;
-      font-weight: 400;
-    }
-
-    &-sub {
-      color: gray;
-      font-size: 12px;
-      font-weight: 400;
-    }
-
-    i {
-      font-size: 10px;
-    }
-
-    .p-tag {
-      padding: 0 .5rem;
-    }
-
-    .p-tag-label {
-      font-size: 11px;
-      font-weight: normal;
-    }
   }
 }
 
@@ -176,13 +216,15 @@
 
 .search-entities {
   > div {
-    padding: 1rem;
+    justify-content: center;
   }
+
   &-block {
     width: 300px;
     margin: .25rem .5rem;
     border-radius: 5px;
     background: var(--r-bg-slate-800);
+
     > div {
       padding: .25rem;
     }

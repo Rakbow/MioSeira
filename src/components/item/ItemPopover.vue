@@ -23,7 +23,7 @@ const props = defineProps({
               &rtrif; {{ item?.subType.label }}
             </span>
       </li>
-      <li v-if="item.price">&yen;{{ item?.price }}</li>
+      <li v-if="item.price">{{ `${item.price} ${item.currency}` }}</li>
     </ul>
   </div>
 </template>

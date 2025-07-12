@@ -35,7 +35,7 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-  param.value.initPage(0, 10);
+  param.value.query.size = 10;
   load();
 });
 
@@ -87,11 +87,10 @@ const openCreate = () => {
   createdDTO.value.relatedEntries = [];
   createdDTO.value.relatedEntitySubType = entryType.value;
   createDialog.value = true;
-  console.log(entryType.value)
 }
 const create = async () => {
   param.value.block();
-  createdDTO.value.relatedEntries = createdDTO.value.entities.map(i => ({id: i.id, remark: i.remark}));
+  createdDTO.value.relatedEntries = (createdDTO.value.entities as any[]).map(i => ({id: i.id, remark: i.remark}));
   const res = await Axios.post(API.RELATION.CREATE, createdDTO.value);
   if (res.success()) {
     isUpdate.value = true;
@@ -174,11 +173,11 @@ const remove = async () => {
 
 //region query
 const onPage = (ev: any) => {
-  param.value.initPage(ev.first, ev.rows);
+  param.value.initPage(ev.page + 1);
   load();
 };
 const onSort = (ev: any) => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   param.value.initSort(ev.sortField, ev.sortOrder);
   load();
 };
@@ -187,8 +186,7 @@ const load = async () => {
   param.value.load();
   const res = await Axios.post(API.RELATION.LIST, param.value.query);
   if (res.success()) {
-    param.value.data = res.data.data;
-    param.value.total = res.data.total
+    param.value.loadResult(res.data);
   }
   param.value.endLoad();
 }
@@ -198,26 +196,13 @@ const load = async () => {
 
 <template>
   <BlockUI :blocked="param.blocking">
-    <DataTable ref="dt" :value="param.data" :loading="param.loading" class="entity-manager-datatable"
-               lazy :totalRecords="param.total" paginator
-               :rows="param.query.rows" :first="param.query.first"
-               @page="onPage($event)" @sort="onSort($event)"
+    <DataTable ref="dt" :value="param.result.data" :loading="param.loading" class="entity-manager-datatable"
+               lazy paginator alwaysShowPaginator :rows="param.query.size" @sort="onSort($event)"
                v-model:selection="param.selectedData" stripedRows size="small"
-               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-               currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                scrollable scrollHeight="40rem" responsiveLayout="scroll">
-      <template #paginatorfirstpagelinkicon>
-        <RIcon name="first_page" />
-      </template>
-      <template #paginatorprevpagelinkicon>
-        <RIcon name="chevron_left" />
-      </template>
-      <template #paginatornextpagelinkicon>
-        <RIcon name="chevron_right" />
-      </template>
-      <template #paginatorlastpagelinkicon>
-        <RIcon name="last_page" />
+      <template #footer>
+        <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
+                    :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
       </template>
       <template #empty>
         <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>

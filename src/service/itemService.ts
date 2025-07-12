@@ -49,24 +49,6 @@ export class ItemAdvanceCreateDTO {
     relatedEntities: any[] = [];
 }
 
-export class ItemQueryParams {
-    entries: any[] = [];
-    entityType: number | null | undefined = 0;
-    entityId: number | null = 0;
-    keyword: string | null = null;
-    type: number | null = 0;
-    subType: number | null = 0;
-    releaseType: number | null = 0;
-    barcode: string | null = "";
-    catalogId: string | null = "";
-    region: string | null = null;
-    bonus: number | null = 0;
-    page: number | null = 1;
-    size: number | null = 60;
-    sortField: string | null = null;
-    sortOrder: number | null = null;
-}
-
 /**
  * 解析商品参数字符串
  * @param input 输入的商品参数字符串

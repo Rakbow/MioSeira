@@ -34,7 +34,7 @@ const relatedEntry = reactive<RelatedEntry>(new RelatedEntry())
 
 onBeforeMount(() => {
   store.fetchOptions();
-  itemType.value = proxy!.$const.ITEM_TYPE_SET[dto.value.item.type - 1];
+  itemType.value = proxy!.$const.ITEM_TYPE_SET[dto.value.item.type];
 })
 
 const switchItemType = () => {

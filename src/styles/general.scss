@@ -22,6 +22,25 @@ $common-border-up-radius: 1rem 1rem 0 0;
 
   --r-steel-300: #B0C4DE;
   --r-steel-500: #788990;
+
+  --r-item-1-0: #3d9395;
+  --r-item-2-0: #999;
+  --r-item-3-0: #a44;
+  --r-item-4-0: #faf;
+  --r-item-5-1: #338979;
+  --r-item-5-2: #f84;
+  --r-item-5-3: #0af;
+  --r-item-5-4: #ddd;
+  --r-item-5-5: #a44;
+  --r-item-5-6: #f4f;
+  --r-item-5-7: #a4a;
+  --r-item-5-8: #00a000;
+  --r-item-6-9: green;
+  --r-item-6-10: #0080ff;
+  --r-item-6-11: #f84;
+  --r-item-6-12: #888;
+  --r-item-6-13: #a44;
+  --r-item-6-14: #a4a;
 }
 
 html {
@@ -89,4 +108,20 @@ a:visited, a:hover {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.text-ellipsis-one {
+  display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
+  -webkit-box-orient: vertical; /* 设置为纵向排列 */
+  -webkit-line-clamp: 1; /* 限制显示的行数 */
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示 "..." */
+}
+
+.text-ellipsis-two {
+  display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
+  -webkit-box-orient: vertical; /* 设置为纵向排列 */
+  -webkit-line-clamp: 2; /* 限制显示的行数 */
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示 "..." */
 }

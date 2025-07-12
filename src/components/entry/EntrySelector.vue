@@ -1,11 +1,12 @@
 <template>
   <div class="entity-selector">
     <BlockUI :blocked="param.loading">
-      <SelectButton v-if="props.all" class="w-full" size="small" v-model="selectEntityType"
-                    :options="$const.ENTRY_TYPE_SET" @change="switchEntryType($event)"
-                    optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+      <SelectButton v-if="props.all" class="w-full" size="small"
+                    v-model="selectEntityType" :options="$const.ENTRY_TYPE_SET" @change="switchEntryType($event)"
+                    optionLabel="value" dataKey="value" ariaLabelledby="custom">
         <template #option="{option}">
-          <RIcon :name="option.icon" v-tooltip.bottom="{value: t(option!.label), class: 'short-tooltip'}"/>
+          <RIcon :name="option.icon"/>
+          <span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
         </template>
       </SelectButton>
       <IconField>
@@ -41,7 +42,7 @@
             </div>
           </div>
         </div>
-        <div v-if="param.loading" v-for="(index) in 7" :key="index">
+        <div v-if="param.loading" v-for="() in param.size">
           <div class="related-entity">
             <div class="related-entity-thumb">
               <Skeleton size="3.5rem"/>
@@ -79,6 +80,7 @@ import {EntitySelectorParam} from "@/service/entityService";
 
 onMounted(() => {
   pickedEntries.value = props.entries;
+  param.value.type = props.type;
   load();
   param.value.initFirst();
 });
@@ -141,15 +143,16 @@ const clearSearch = () => {
 }
 
 const load = async () => {
-  param.value.load();
+  param.value.loading = true;
   param.value.handleKeyword();
-  param.value.type = props.type;
   const res = await Axios.post(API.ENTRY.SEARCH, param.value);
   if (res.success()) {
-    param.value.loadResult(res.data);
+    param.value.data = res.data.data;
+    param.value.total = res.data.total;
+    param.value.time = res.data.searchTime;
   }
   param.value.data = markPickedEntries();
-  param.value.endLoad();
+  param.value.loading = false;
 };
 
 const markPickedEntries = () => {
@@ -165,5 +168,4 @@ const markPickedEntries = () => {
 </script>
 
 <style lang="scss" scoped>
-@use "entity-global";
 </style>

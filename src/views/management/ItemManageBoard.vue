@@ -15,12 +15,12 @@ const store = useOptionStore();
 const route = useRoute();
 const router = useRouter();
 const param = ref(new EntityManageParam());
-const { proxy } = getCurrentInstance()!;
+const {proxy} = getCurrentInstance()!;
 const basicColumnCount = ref(0);
 const itemType = ref();
 
 onBeforeMount(async () => {
-  itemType.value = proxy!.$const.ITEM_TYPE_SET[store.itemCurrent === 0 ? 0 : store.itemCurrent - 1];
+  itemType.value = proxy!.$const.ITEM_TYPE_SET[store.itemCurrent === 1 ? 1 : store.itemCurrent];
   param.value.initFilters({
     type: {value: store.itemCurrent},
     keyword: {value: ''}
@@ -54,17 +54,16 @@ watch(
 
 const switchItemType = (ev: any) => {
   if (ev.value === null)
-    itemType.value = proxy!.$const.ITEM_TYPE_SET[0];
+    itemType.value = proxy!.$const.ITEM_TYPE_SET[1];
   store.itemCurrent = parseInt(itemType.value.value);
   param.value.query.filters.type.value = store.itemCurrent;
   param.value.clearSort();
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   load();
 }
 
 const initQueryParam = async () => {
-  const { query } = route;
-  const page = parseInt(query.page?.toString() ?? '1');
+  const {query} = route;
 
   if (query.sort) {
     param.value.query.sortField = query.sort.toString();
@@ -73,15 +72,15 @@ const initQueryParam = async () => {
     }
   }
 
-  param.value.countPage(page, dt.value.rows);
+  param.value.query.page = parseInt(query.page?.toString() ?? '1');
   param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
 }
 
 const updateQueryParam = () => {
-  const { query: { filters, sortField, sortOrder, first }} = param.value;
+  const {query: {filters, sortField, sortOrder, page}} = param.value;
   const curQuery = {...route.query};
 
-  curQuery.page = ((first / dt.value.rows) + 1).toString();
+  curQuery.page = page.toString();
 
   ['type', 'keyword'].forEach(key => {
     if (filters[key]?.value) {
@@ -103,16 +102,16 @@ const updateQueryParam = () => {
 };
 
 const onPage = (ev: any) => {
-  param.value.initPage(ev.first, ev.rows);
+  param.value.initPage(ev.page + 1);
   load();
 };
 const onSort = (ev: any) => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   param.value.initSort(ev.sortField, ev.sortOrder);
   load();
 };
 const onFilter = () => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   load();
 };
 
@@ -125,8 +124,7 @@ const load = async () => {
   param.value.load();
   const res = await Axios.post(API.ITEM.LIST, param.value.query);
   if (res.success()) {
-    param.value.data = res.data.data;
-    param.value.total = res.data.total
+    param.value.loadResult(res.data);
   }
   param.value.endLoad();
 }
@@ -150,27 +148,13 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable"
-             lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
-             @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
-             paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small" showGridlines
+  <DataTable ref="dt" :value="param.result.data" class="entity-manager-datatable"
+             lazy v-model:filters="param.query.filters" :loading="param.loading"
+             @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
+             stripedRows size="small" showGridlines paginator alwaysShowPaginator
              v-model:selection="param.selectedData" dataKey="id" removableSort
-             scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]"
-             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll">
-    <template #paginatorfirstpagelinkicon>
-      <RIcon name="first_page" />
-    </template>
-    <template #paginatorprevpagelinkicon>
-      <RIcon name="chevron_left" />
-    </template>
-    <template #paginatornextpagelinkicon>
-      <RIcon name="chevron_right" />
-    </template>
-    <template #paginatorlastpagelinkicon>
-      <RIcon name="last_page" />
-    </template>
+             v-model:rows="param.query.size"
+             scrollable scrollHeight="flex" responsiveLayout="scroll">
     <template #empty>
       <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
       <span class="entity-manager-datatable-empty-text">{{ t('CommonDataTableEmptyInfo') }}</span>
@@ -178,22 +162,26 @@ const exportCSV = () => {
     <template #loading>
       <RIcon class="pi-spin" name="autorenew" size="10rem"/>
     </template>
+    <template #paginatorcontainer>
+      <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
+                  :total="param.result.total" @page="onPage($event)" :time="param.result.time"
+                  :sizeOptions="[15, 30 ,50]" @update:rows="param.query.size = $event"/>
+    </template>
     <template #header>
-      <BlockUI :blocked="param.blocking">
-        <SelectButton size="small" v-model="itemType" :options="$const.ITEM_TYPE_SET" @change="switchItemType($event)"
-                      optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
-          <template #option="{option}">
-            <RIcon :name="option!.icon" /><span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
-          </template>
-        </SelectButton>
-        <RButton @click="openCreateTab" action="create" />
-        <RButton @click="confirmDeleteSelected" action="delete"
-                 :disabled="!param.selectedData.length" />
-        <RButton @click="exportCSV" action="export"
-                 severity="help" :disabled="!param.data.length" />
-        <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
-                     @update:modelValue="onToggle" :placeholder="t('SelectedDisplayColumns')" size="large"/>
-      </BlockUI>
+      <SelectButton size="small" v-model="itemType" :options="$const.ITEM_TYPE_SET" @change="switchItemType($event)"
+                    optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+        <template #option="{option}">
+          <RIcon :name="option!.icon"/>
+          <span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
+        </template>
+      </SelectButton>
+      <RButton @click="openCreateTab" action="create"/>
+      <RButton @click="confirmDeleteSelected" action="delete"
+               :disabled="!param.selectedData.length"/>
+      <RButton @click="exportCSV" action="export"
+               severity="help" :disabled="!param.result.total"/>
+      <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
+                   @update:modelValue="onToggle" :placeholder="t('SelectedDisplayColumns')" size="large"/>
     </template>
 
     <ColumnGroup type="header">
@@ -254,12 +242,14 @@ const exportCSV = () => {
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(store.itemCurrent)" bodyClass="text-center" :bodyStyle="{padding: 0}">
+    <Column v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(store.itemCurrent)" bodyClass="text-center"
+            :bodyStyle="{padding: 0}">
       <template #body="{data}">
         <Tag :value="data.subType.label"/>
       </template>
     </Column>
-    <Column field="catalogId" v-if="![$const.ITEM_TYPE.BOOK, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
+    <Column field="catalogId"
+            v-if="![$const.ITEM_TYPE.BOOK, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
     <Column field="barcode"/>
     <Column field="releaseDate"/>
     <Column field="price">

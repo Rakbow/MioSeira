@@ -49,9 +49,6 @@
 </template>
 
 <script setup lang="ts">
-import '@/styles/bootstrap/myBootstrap.min.css';
-import '@/lib/bootstrap.bundle.min';
-
 import {useRouter} from "vue-router";
 import {useUserStore} from "@/store/modules/user";
 import {loadEditor} from "@/service/entryService";

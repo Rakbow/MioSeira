@@ -43,15 +43,8 @@
       </template>
       <template #footer>
         <BlockUI :blocked="param.loading">
-          <Paginator v-model:first="param.first" :rows="param.size" :totalRecords="param.total"
-                     @page="page($event)" :alwaysShow="param.total !== 0">
-            <template #start>
-              search in {{ param.time }}s
-            </template>
-            <template #end>
-              {{ param.total }} items
-            </template>
-          </Paginator>
+          <RPaginator v-model:page="param.page" v-model:size="param.size"
+                      :total="param.total" @page="page($event)" :time="param.time"/>
         </BlockUI>
       </template>
     </DataView>
@@ -59,11 +52,11 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps} from "vue";
+import {defineProps, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
-import { getIcon } from 'material-file-icons';
+import {getIcon} from 'material-file-icons';
 import {useI18n} from "vue-i18n";
-import {EntitySelectorParam, loadEditor} from "@/service/entityService";
+import {EntitySelectorParam} from "@/service/entityService";
 
 const emit = defineEmits(['pick']);
 

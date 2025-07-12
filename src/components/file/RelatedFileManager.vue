@@ -1,25 +1,14 @@
 <template>
-  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable"
-             lazy :totalRecords="param.total" :loading="param.loading" size="small" paginator columnResizeMode="fit"
-             @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
-             v-model:filters="param.query.filters" :rows="param.query.rows" :first="param.query.first"
+  <DataTable ref="dt" :value="param.result.data" class="entity-manager-datatable"
+             lazy :loading="param.loading" size="small" paginator columnResizeMode="fit"
+             @sort="onSort($event)" @filter="onFilter" filterDisplay="row" alwaysShowPaginator
+             v-model:filters="param.query.filters" :rows="param.query.size"
              v-model:selection="param.selectedData" dataKey="id" removableSort
-             scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]" showGridlines
-             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
+             scrollable scrollHeight="flex" showGridlines
              responsiveLayout="scroll">
-    <template #paginatorfirstpagelinkicon>
-      <RIcon name="first_page"/>
-    </template>
-    <template #paginatorprevpagelinkicon>
-      <RIcon name="chevron_left"/>
-    </template>
-    <template #paginatornextpagelinkicon>
-      <RIcon name="chevron_right"/>
-    </template>
-    <template #paginatorlastpagelinkicon>
-      <RIcon name="last_page"/>
+    <template #paginatorcontainer>
+      <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
+                  :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
     </template>
     <template #empty>
       <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
@@ -89,20 +78,21 @@ onBeforeMount(async () => {
 })
 
 onMounted(() => {
+  param.value.query.size = 10;
   load();
 })
 
 const onPage = (ev: any) => {
-  param.value.initPage(ev.first, ev.rows);
+  param.value.initPage(ev.page + 1);
   load();
 };
 const onSort = (ev: any) => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   param.value.initSort(ev.sortField, ev.sortOrder);
   load();
 };
 const onFilter = () => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   load();
 };
 
@@ -110,8 +100,7 @@ const load = async () => {
   param.value.load();
   const res = await Axios.post(API.FILE.LIST, param.value.query);
   if (res.success()) {
-    param.value.data = res.data.data;
-    param.value.total = res.data.total
+    param.value.loadResult(res.data);
   }
   param.value.endLoad();
 }

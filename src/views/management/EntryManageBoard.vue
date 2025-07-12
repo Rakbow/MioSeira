@@ -17,7 +17,7 @@ const route = useRoute();
 const router = useRouter();
 const param = ref(new EntityManageParam());
 const entryType = ref();
-const { proxy } = getCurrentInstance()!;
+const {proxy} = getCurrentInstance()!;
 
 onBeforeMount(async () => {
   entryType.value = proxy!.$const.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
@@ -43,13 +43,12 @@ const switchEntryType = (ev: any) => {
   store.entryCurrent = parseInt(entryType.value.value);
   param.value.query.filters.type.value = store.entryCurrent;
   param.value.clearSort();
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   load();
 }
 
 const initQueryParam = async () => {
-  const { query } = route;
-  const page = parseInt(query.page?.toString() ?? '1');
+  const {query} = route;
 
   if (query.sort) {
     param.value.query.sortField = query.sort.toString();
@@ -58,15 +57,15 @@ const initQueryParam = async () => {
     }
   }
 
-  param.value.countPage(page, dt.value.rows);
+  param.value.query.page = parseInt(query.page?.toString() ?? '1');
   param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
 }
 
 const updateQueryParam = () => {
-  const { query: { filters, sortField, sortOrder, first }} = param.value;
+  const {query: {filters, sortField, sortOrder, page}} = param.value;
   const curQuery = {...route.query};
 
-  curQuery.page = ((first / dt.value.rows) + 1).toString();
+  curQuery.page = page.toString();
 
   ['type', 'keyword'].forEach(key => {
     if (filters[key]?.value) {
@@ -89,16 +88,16 @@ const updateQueryParam = () => {
 //endregion
 
 const onPage = (ev: any) => {
-  param.value.initPage(ev.first, ev.rows);
+  param.value.initPage(ev.page + 1);
   load();
 };
 const onSort = (ev: any) => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   param.value.initSort(ev.sortField, ev.sortOrder);
   load();
 };
 const onFilter = () => {
-  param.value.initPage(0, dt.value.rows);
+  param.value.initPage();
   load();
 };
 
@@ -110,8 +109,7 @@ const load = async () => {
   param.value.load();
   const res = await Axios.post(API.ENTRY.LIST, param.value.query);
   if (res.success()) {
-    param.value.data = res.data.data;
-    param.value.total = res.data.total;
+    param.value.loadResult(res.data);
   }
   param.value.endLoad();
 }
@@ -131,47 +129,35 @@ const exportCSV = () => {
 </script>
 
 <template>
-  <DataTable ref="dt" :value="param.data" class="entity-manager-datatable"
-             lazy v-model:filters="param.query.filters" :totalRecords="param.total" :loading="param.loading"
-             @page="onPage($event)" @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
-             paginator :rows="param.query.rows" :first="param.query.first" stripedRows size="small"
+  <DataTable ref="dt" :value="param.result.data" class="entity-manager-datatable"
+             lazy v-model:filters="param.query.filters" :loading="param.loading"
+             @sort="onSort($event)" @filter="onFilter" filterDisplay="row"
+             paginator alwaysShowPaginator :rows="param.query.size" stripedRows size="small"
              v-model:selection="param.selectedData" dataKey="id" removableSort showGridlines
-             scrollable scrollHeight="flex" :rowsPerPageOptions="[15,30,50]"
-             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-             currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;" responsiveLayout="scroll">
-    <template #paginatorfirstpagelinkicon>
-      <RIcon name="first_page" />
-    </template>
-    <template #paginatorprevpagelinkicon>
-      <RIcon name="chevron_left" />
-    </template>
-    <template #paginatornextpagelinkicon>
-      <RIcon name="chevron_right" />
-    </template>
-    <template #paginatorlastpagelinkicon>
-      <RIcon name="last_page" />
+             scrollable scrollHeight="flex" responsiveLayout="scroll">
+    <template #paginatorcontainer>
+      <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
+                  :total="param.result.total" @page="onPage($event)" :time="param.result.time"
+                  :sizeOptions="[15, 30 ,50]" @update:rows="param.query.size = $event"/>
     </template>
     <template #header>
-      <BlockUI :blocked="param.blocking">
-        <SelectButton size="small" v-model="entryType" :options="$const.ENTRY_TYPE_SET"
-                      @change="switchEntryType($event)"
-                      optionLabel="value" dataKey="value" ariaLabelledby="custom">
-          <template #option="{option}">
-            <RIcon :name="option.icon"/>
-            <span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
-          </template>
-        </SelectButton>
+      <SelectButton size="small" v-model="entryType" :options="$const.ENTRY_TYPE_SET"
+                    @change="switchEntryType($event)"
+                    optionLabel="value" dataKey="value" ariaLabelledby="custom">
+        <template #option="{option}">
+          <RIcon :name="option.icon"/>
+          <span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
+        </template>
+      </SelectButton>
 
-        <RButton @click="" action="create" />
-        <RButton @click="confirmDeleteSelected" action="delete"
-                 :disabled="!param.selectedData.length" />
-        <RButton @click="exportCSV" action="export"
-                 severity="help" :disabled="!param.data.length" />
-        <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
-                     @update:modelValue="onToggle" class="text-end" size="small"
-                     :placeholder="t('SelectedDisplayColumns')"/>
-      </BlockUI>
+      <RButton @click="" action="create"/>
+      <RButton @click="confirmDeleteSelected" action="delete"
+               :disabled="!param.selectedData.length"/>
+      <RButton @click="exportCSV" action="export"
+               severity="help" :disabled="!param.data.length"/>
+      <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
+                   @update:modelValue="onToggle" class="text-end" size="small"
+                   :placeholder="t('SelectedDisplayColumns')"/>
     </template>
     <template #empty>
       <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
@@ -186,7 +172,7 @@ const exportCSV = () => {
       <template #body="{data}">
         <Button variant="text" outlined size="small" @click="loadEditor(data)">
           <template #icon>
-            <RIcon name="edit_square" />
+            <RIcon name="edit_square"/>
           </template>
         </Button>
       </template>
@@ -194,8 +180,8 @@ const exportCSV = () => {
     <Column class="text-center" style="width: 2.5rem">
       <template #body="{data}">
         <img v-if="data.thumb" :alt="data.name" :src="`${$api.STATIC_DOMAIN}${data.thumb}`"
-             style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto" />
-        <img v-else :alt="data.name" :src="API.COMMON_EMPTY_THUMB_IMAGE" style="width: 2.5rem" />
+             style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto"/>
+        <img v-else :alt="data.name" :src="API.COMMON_EMPTY_THUMB_IMAGE" style="width: 2.5rem"/>
       </template>
     </Column>
 
@@ -238,12 +224,13 @@ const exportCSV = () => {
       </template>
     </Column>
     <Column :header="t('Gender')" :sortable="true" field="gender" class="text-center"
-            v-if="[$const.ENTRY_TYPE.PERSON, $const.ENTRY_TYPE.CHARACTER].includes(store.entryCurrent)" style="width: 5rem">
+            v-if="[$const.ENTRY_TYPE.PERSON, $const.ENTRY_TYPE.CHARACTER].includes(store.entryCurrent)"
+            style="width: 5rem">
       <template #body="{data}">
-        <i style="font-size: 1.4rem" :class="PublicHelper.getGenderIcon(data.gender.value)" />
+        <i style="font-size: 1.4rem" :class="PublicHelper.getGenderIcon(data.gender.value)"/>
       </template>
     </Column>
-    <Column :header="t('Item')" field="items" :sortable="true" style="width: 5rem" class="text-center" />
+    <Column :header="t('Item')" field="items" :sortable="true" style="width: 5rem" class="text-center"/>
 
     <Column v-for="(col, index) of param.selectedColumns" :field="col.field"
             :header="col.header" :key="col.field + '_' + index" :sortable="true"/>

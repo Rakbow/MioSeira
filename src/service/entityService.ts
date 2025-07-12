@@ -67,8 +67,8 @@ export class EntitySelectorParam {
 }
 
 export class EntityManageQueryParams {
-    first: number = 0;
-    rows: number = 15;
+    page: number = 1;
+    size: number = 15;
     sortField: string | null = null;
     sortOrder: number = 1;
     filters: any | null = null;
@@ -76,23 +76,29 @@ export class EntityManageQueryParams {
 
 export class EntityManageParam {
     loading: boolean = false;//loading where search data
+    loading2: boolean = false;//loading where search data
     blocking: boolean = false;//component blocked where search data
     total: number = 0;
-    time: number = 0;
+    time: string = '0';
     data: any[] = [];
     selectedData: any[] = [];
     columns: PColumn[] = [];
     selectedColumns: PColumn[] = [];
     query: EntityManageQueryParams = new EntityManageQueryParams();
-
-    initPage(first: number = 0, rows: number = 15): void {
-        this.query.first = first;
-        this.query.rows = rows;
+    result: SearchResult = {
+        data: [],
+        total: 0,
+        time: '0'
     }
 
-    countPage(page: number, rows: number): void {
-        this.query.first = (page - 1) * rows
-        this.query.rows = rows
+    loadResult(res: SearchResult): void {
+        this.result.data = res.data;
+        this.result.total = res.total;
+        this.result.time = res.time;
+    }
+
+    initPage(page: number = 1): void {
+        this.query.page = page;
     }
 
     initSort(field: string, order: number): void {

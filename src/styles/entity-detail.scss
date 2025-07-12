@@ -197,6 +197,7 @@
 
     &-info {
       position: relative !important;
+
       > * {
         display: inline-block;
         margin: 1rem;
@@ -322,8 +323,10 @@
 
 .tingle-image {
   z-index: 9999 !important;
+
   .tingle-modal {
     background: var(--r-bg-half-none) !important;
+
     &-box, &-box__content {
       background: rgba(0, 0, 0, 0) !important;
     }
@@ -334,6 +337,7 @@
       justify-content: center !important;
       align-items: center !important;
       padding: 0 !important;
+
       img {
         min-height: 70rem;
       }
@@ -367,6 +371,7 @@
     &-content {
       height: 95%;
     }
+
     &-footer {
       height: 5%;
     }
@@ -374,19 +379,26 @@
     &-items-container {
       height: 85%;
     }
+
     &-thumbnails {
       overflow: hidden;
       height: 15%;
+
       &-content {
         background: var(--r-bg-half-none);
       }
     }
 
+    &-thumbnail-items {
+      justify-content: space-evenly;
+    }
+
     &-item {
-      display: flex!important;
-      justify-content: center!important;
-      align-items: center!important;
-      overflow: hidden!important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      overflow: hidden !important;
+
       img {
         max-width: 100%;
         max-height: 100%;
@@ -399,7 +411,8 @@
   }
 
   .p-paginator {
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
+
     &-content-start {
       margin-inline-end: 0;
       color: var(--r-gray-300);

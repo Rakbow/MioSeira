@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {inject, onBeforeMount, onMounted, ref, watch} from "vue";
+import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {EntityManageParam} from "@/service/entityService";
 import {API, Axios} from "@/api";
@@ -15,7 +15,7 @@ onBeforeMount(async () => {
     entityId: {value: dialogRef.value.data.entityId},
     type: {value: -2}
   });
-  param.value.initPage(0, 10);
+  param.value.query.size = 10;
 });
 
 onMounted(() => {
@@ -23,7 +23,7 @@ onMounted(() => {
 });
 
 const onPage = (ev: any) => {
-  param.value.initPage(ev.first, ev.rows);
+  param.value.initPage(ev.page + 1);
   load();
 };
 
@@ -31,8 +31,7 @@ const load = async () => {
   param.value.load();
   const res = await Axios.post(API.IMAGE.LIST, param.value.query);
   if (res.success()) {
-    param.value.data = res.data.data;
-    param.value.total = res.data.total;
+    param.value.loadResult(res.data);
     index.value = 0;
   }
   param.value.endLoad();
@@ -41,7 +40,7 @@ const load = async () => {
 </script>
 
 <template>
-  <Galleria v-model:value="param.data" :numVisible="param.data.length" v-model:activeIndex="index"
+  <Galleria v-model:value="param.result.data" :numVisible="param.data.length" v-model:activeIndex="index"
             :showItemNavigators="true" :showThumbnailNavigators="false">
     <template v-if="!param.loading" #item="{item}">
       <img :src="item.display" :alt="item.name"/>
@@ -51,27 +50,17 @@ const load = async () => {
     </template>
     <template v-if="!param.loading" #caption="{item}">
       <div class="grid">
-        <span class="col-fixed" style="width: 10rem;font-size: 1.3rem;font-weight: 700">{{ `${param.query.first + index + 1}/${param.total}` }}</span>
+        <span class="col-fixed" style="width: 10rem;font-size: 1.3rem;font-weight: 700">
+          {{ `${(param.query.page - 1) * param.query.size + index + 1}/${param.result.total}` }}
+        </span>
         <span class="col" style="font-size: 1.5rem">{{ item.name }}</span>
         <span class="col-fixed" style="width: 18rem">{{ `${t('UploadIn')}:&nbsp;&nbsp;${item.addedTime}` }}</span>
 
       </div>
-<!--      <div class="static w-full">-->
-<!--        <span class="text-start">{{ item.name }}</span>-->
-<!--        <span class="text-end">{{ item.name }}</span>-->
-<!--      </div>-->
-<!--      <p class="text-white">{{ item.detail }}</p>-->
     </template>
     <template #footer>
-      <Paginator v-model:first="param.query.first" :rows="param.query.rows" :totalRecords="param.total"
-                 @page="onPage($event)" :alwaysShow="param.total !== 0">
-        <template #start>
-          <span>search in {{ param.time }}s</span>
-        </template>
-        <template #end>
-          {{ param.total }} images
-        </template>
-      </Paginator>
+      <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
+                  :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
     </template>
   </Galleria>
 </template>

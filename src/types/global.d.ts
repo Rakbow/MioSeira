@@ -26,3 +26,9 @@ interface RButtonProps {
     tip: string;
     severity: string;
 }
+
+interface SearchResult {
+    data: any[];
+    total: number;
+    time: string;
+}

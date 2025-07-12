@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import "@/styles/entity-search.scss";
-import '@/styles/bootstrap/myBootstrap.min.css';
-import '@/lib/bootstrap.bundle.min';
 import "flag-icons/css/flag-icons.min.css";
 
 import {API, Axios} from "@/api";
@@ -174,9 +172,9 @@ const resetFilter = () => {
                 </a>
               </div>
               <div class="entry-search-list-info col">
-                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="text-overflow-hidden-one"
+                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="text-ellipsis-one"
                    :title="entry.name">{{ entry.name }}</a>
-                <span class="text-overflow-hidden-one" style="display: inline" :title="entry.subName">{{ entry.subName }}</span>
+                <span class="text-ellipsis-one" style="display: inline" :title="entry.subName">{{ entry.subName }}</span>
                 <span v-if="entry.date" style="display: inline">&nbsp;({{ entry.date }})</span>
               </div>
               <div class="flex align-items-center justify-content-center" style="width: 100px">

@@ -23,6 +23,7 @@ import {META} from "@/config/Web_Const";
 import {setupPlugins} from "@/plugins";
 import RIcon from "@/components/global/RIcon.vue";
 import RButton from "@/components/global/RButton.vue";
+import RPaginator from "@/components/global/RPaginator.vue";
 
 // import {useCookies} from '@vueuse/integrations/useCookies';
 
@@ -43,5 +44,6 @@ app.use(pinia);
 
 app.component('RIcon', RIcon);
 app.component('RButton', RButton);
+app.component('RPaginator', RPaginator);
 
 app.mount("#app");
