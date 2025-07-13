@@ -61,6 +61,7 @@ export const API = {
         DELETE: '/api/db/relation/delete',
         PERSONNEL: '/api/db/relation/personnel',
         ITEMS: '/api/db/relation/items',
+        ENTRIES: '/api/db/relation/entries',
     },
 
     ROLE: {
