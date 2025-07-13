@@ -33,13 +33,13 @@ import {ref, onMounted, onBeforeMount, defineAsyncComponent} from "vue";
 import {API, Axios} from "@/api";
 import {inject} from "vue";
 import {useI18n} from "vue-i18n";
-import {EntityManageParam} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
 
 const RelationEntity = defineAsyncComponent(() => import('@/components/related/RelatedEntity.vue'));
 
 const {t} = useI18n();
 const dialogRef = inject<any>('dialogRef');
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 
 onBeforeMount(async () => {
   param.value.query.size = 7;

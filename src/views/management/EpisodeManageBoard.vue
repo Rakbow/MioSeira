@@ -4,14 +4,14 @@ import {useRoute, useRouter} from "vue-router";
 import { API, Axios } from '@/api';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
 import {PColumn} from "@/service/frame";
 
 const {t} = useI18n();
 const dt = ref();
 const route = useRoute();
 const router = useRouter();
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 
 onBeforeMount(async () => {
   param.value.initFilters({

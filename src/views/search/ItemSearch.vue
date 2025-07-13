@@ -8,7 +8,7 @@ import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {useOptionStore} from "@/store/modules/option";
 import {bs} from '@/service/baseService';
-import {EntityManageParam} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
 const CurrencySelect = defineAsyncComponent(() => import('@/components/global/CurrencySelect.vue'));
@@ -19,7 +19,7 @@ const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
 
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 
 //region data view and paginator
 const layout = ref('grid');
@@ -206,9 +206,9 @@ const resetFilter = () => {
 
 const selectedItem = ref();
 const op = ref();
-const startHover = (event: PointerEvent, item: any) => {
+const startHover = (ev: PointerEvent, item: any) => {
   selectedItem.value = item;
-  op.value.show(event);
+  op.value.show(ev);
 };
 
 const endHover = () => {
@@ -301,8 +301,8 @@ const endHover = () => {
         </template>
       </DataView>
     </div>
-    <div class="entity-search-side entity-editor">
-      <Panel>
+    <Card class="entity-search-side entity-editor">
+      <template #content>
         <BlockUI :blocked="param.loading">
           <Divider align="left"><i class="pi pi-list"/><b>{{ t('BasicInfo') }}</b></Divider>
           <div class="field">
@@ -354,16 +354,15 @@ const endHover = () => {
               <RButton @click="clearFilter" icon="filter_alt_off" severity="danger"/>
             </div>
           </div>
-          <Divider align="left"><i class="pi pi-th-large"/><b>{{ t('RelatedEntity') }}</b></Divider>
+          <Divider align="left"><i class="pi pi-th-large"/><b>{{ t('RelatedEntry') }}</b></Divider>
           <RButton @click="displayEntrySelector = true" action="create"/>
           <RButton @click="clearEntries" action="clear" v-if="entries.length"/>
-          <div class="grid" v-if="entries">
+          <div class="grid" style="padding: 1.25rem" v-if="entries">
             <div v-if="param.loading2" class="field">
-              <Skeleton height="7rem"/>
+              <Skeleton width="30rem" height="4.6rem"/>
             </div>
             <div v-if="entries.length && !param.loading2">
-              <div class="related-entity" v-for="(entry, index) in entries as any[]" :key="index">
-
+              <div class="related-entity" style="width: 30rem;background: #252525" v-for="(entry, index) in entries as any[]" :key="index">
                 <div class="related-entity-thumb">
                   <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
                 </div>
@@ -381,8 +380,8 @@ const endHover = () => {
             </div>
           </div>
         </BlockUI>
-      </Panel>
-    </div>
+      </template>
+    </Card>
 
     <Popover ref="op">
       <ItemPopover :item="selectedItem"/>

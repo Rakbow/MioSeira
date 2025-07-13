@@ -3,7 +3,7 @@ import {onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {EntityManageParam, loadEditor} from "@/service/entityService";
+import {EntitySearchParam, loadEditor} from "@/service/entityService";
 import {getIcon} from "material-file-icons";
 import {PColumn} from "@/service/frame";
 
@@ -11,7 +11,7 @@ const {t} = useI18n();
 const route = useRoute();
 const router = useRouter();
 const dt = ref();
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 
 onBeforeMount(async () => {
   param.value.initFilters({

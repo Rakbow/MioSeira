@@ -6,6 +6,7 @@
   flex-wrap: wrap !important;
   justify-content: center !important;
   gap: 1rem !important;
+  align-items: flex-start;
 
   &-main {
     margin-top: .5rem !important;
@@ -23,7 +24,7 @@
 
   &-side {
     margin-top: .5rem !important;
-    width: 36rem;
+    width: 34rem;
 
     .p-divider {
       margin-bottom: .5rem;

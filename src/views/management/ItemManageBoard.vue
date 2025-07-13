@@ -5,7 +5,7 @@ import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/service/itemService";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam} from '@/service/entityService';
+import {EntitySearchParam} from '@/service/entityService';
 import {useOptionStore} from "@/store/modules/option";
 import {PColumn} from "@/service/frame";
 
@@ -14,7 +14,7 @@ const dt = ref();
 const store = useOptionStore();
 const route = useRoute();
 const router = useRouter();
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 const {proxy} = getCurrentInstance()!;
 const basicColumnCount = ref(0);
 const itemType = ref();

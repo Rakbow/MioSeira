@@ -5,7 +5,7 @@ import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import {loadEditor} from "@/service/entryService";
 import "flag-icons/css/flag-icons.min.css";
-import {EntityManageParam} from '@/service/entityService';
+import {EntitySearchParam} from '@/service/entityService';
 import {useOptionStore} from "@/store/modules/option";
 import {PublicHelper} from "@/utils/publicHelper";
 import {PColumn} from "@/service/frame";
@@ -15,7 +15,7 @@ const {t} = useI18n();
 const store = useOptionStore();
 const route = useRoute();
 const router = useRouter();
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 const entryType = ref();
 const {proxy} = getCurrentInstance()!;
 

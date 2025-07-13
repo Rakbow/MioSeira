@@ -66,7 +66,7 @@ export class EntitySelectorParam {
 
 }
 
-export class EntityManageQueryParams {
+export class EntitySearchQuery {
     page: number = 1;
     size: number = 15;
     sortField: string | null = null;
@@ -74,7 +74,7 @@ export class EntityManageQueryParams {
     filters: any | null = null;
 }
 
-export class EntityManageParam {
+export class EntitySearchParam {
     loading: boolean = false;//loading where search data
     loading2: boolean = false;//loading where search data
     blocking: boolean = false;//component blocked where search data
@@ -84,7 +84,7 @@ export class EntityManageParam {
     selectedData: any[] = [];
     columns: PColumn[] = [];
     selectedColumns: PColumn[] = [];
-    query: EntityManageQueryParams = new EntityManageQueryParams();
+    query: EntitySearchQuery = new EntitySearchQuery();
     result: SearchResult = {
         data: [],
         total: 0,
@@ -141,6 +141,10 @@ export class EditParam {
     block: boolean = false;
     isUpdate: boolean = false;
     data: any = null;
+}
+
+export class RelatedEntitiesSearchParam {
+
 }
 
 export const loadEditor = (type: number, data: any) => {

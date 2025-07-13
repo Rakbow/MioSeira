@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {EntityManageParam} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
 import {API, Axios} from "@/api";
 
 const {t} = useI18n();
 const index = ref(0);
 const dialogRef = inject<any>('dialogRef');
 
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 onBeforeMount(async () => {
   param.value.initFilters({
     entityType: {value: dialogRef.value.data.entityType},

@@ -3,7 +3,7 @@ import {defineAsyncComponent, getCurrentInstance, inject, onBeforeMount, onMount
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {useOptionStore} from "@/store/modules/option";
-import {EntityManageParam} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 import router from "@/router";
 
@@ -13,7 +13,7 @@ const { proxy } = getCurrentInstance()!;
 const store = useOptionStore();
 const {t} = useI18n();
 const dialogRef = inject<any>("dialogRef");
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 const dt = ref();
 const entryType = ref(proxy!.$const.ENTRY_TYPE.PRODUCT);
 const curEntryType = ref<any>(null);

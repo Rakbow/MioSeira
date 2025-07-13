@@ -102,7 +102,7 @@ import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import {useOptionStore} from "@/store/modules/option";
-import {EntityManageParam} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
 import tingle from 'tingle.js';
@@ -116,7 +116,7 @@ const dt = ref();
 const generateThumb = ref(false);
 const store = useOptionStore();
 const dialogRef = inject<any>('dialogRef');
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 
 onBeforeMount(() => {
   store.fetchOptions();

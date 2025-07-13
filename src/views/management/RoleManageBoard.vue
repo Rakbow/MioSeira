@@ -4,7 +4,7 @@ import {PublicHelper} from "@/utils/publicHelper";
 import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
-import {EntityManageParam} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
 import {useOptionStore} from "@/store/modules/option";
 import {bs} from '@/service/baseService';
 
@@ -13,7 +13,7 @@ const dt = ref();
 const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 const createDTO = ref<any>();
 const updateDTO = ref<any>();
 

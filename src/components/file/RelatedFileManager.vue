@@ -58,7 +58,7 @@
 import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {EntityManageParam, loadEditor} from "@/service/entityService";
+import {EntitySearchParam, loadEditor} from "@/service/entityService";
 import {getIcon} from "material-file-icons";
 import {bs} from "@/service/baseService";
 
@@ -66,7 +66,7 @@ const creator = defineAsyncComponent(() => import('@/components/file/FileCreator
 
 const {t} = useI18n();
 const dt = ref();
-const param = ref(new EntityManageParam());
+const param = ref(new EntitySearchParam());
 const dialogRef = inject<any>('dialogRef');
 
 onBeforeMount(async () => {
