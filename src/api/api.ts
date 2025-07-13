@@ -60,6 +60,7 @@ export const API = {
         UPDATE: '/api/db/relation/update',
         DELETE: '/api/db/relation/delete',
         PERSONNEL: '/api/db/relation/personnel',
+        ITEMS: '/api/db/relation/items',
     },
 
     ROLE: {
