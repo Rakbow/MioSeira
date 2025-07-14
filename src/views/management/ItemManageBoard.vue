@@ -171,8 +171,8 @@ const exportCSV = () => {
       <SelectButton size="small" v-model="itemType" :options="$const.ITEM_TYPE_SET" @change="switchItemType($event)"
                     optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
         <template #option="{option}">
-          <RIcon :name="option!.icon"/>
-          <span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
+          <RIcon :name="option!.icon" :size="1.6"/>
+          <span style="font-size: 1.2rem">{{ t(option!.label) }}</span>
         </template>
       </SelectButton>
       <RButton @click="openCreateTab" action="create"/>
@@ -204,15 +204,15 @@ const exportCSV = () => {
         </Column>
       </Row>
       <Row>
-        <Column :header="t('Type')" :sortable="true" field="subType" style="width: 7.5rem"
+        <Column :header="t('Type')" :sortable="true" field="subType" style="width: 9rem"
                 v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(store.itemCurrent)"/>
         <Column :header="t('CatalogId')" :sortable="true" field="catalogId" style="width: 11rem"
                 v-if="![$const.ITEM_TYPE.BOOK, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
         <Column :header="t('Barcode')" :sortable="true" field="barcode" style="width: 9rem"/>
-        <Column :header="t('ReleaseDate')" :sortable="true" field="releaseDate" style="width: 7.5rem"/>
+        <Column :header="t('ReleaseDate')" :sortable="true" field="releaseDate" style="width: 10.6rem"/>
         <Column :header="t('Price')" :sortable="true" field="price" style="width: 8rem"/>
         <Column :header="t('Region')" :sortable="true" field="region" style="width: 5rem"/>
-        <Column :header="t('ReleaseType')" :sortable="true" field="releaseType" style="width: 7rem"/>
+        <Column :header="t('ReleaseType')" :sortable="true" field="releaseType" style="width: 12rem"/>
         <Column :header="t('Bonus')" :sortable="true" field="bonus" style="width: 5rem"
                 v-if="![$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
         <Column :header="t('Scale')" :sortable="true" field="scale" style="width: 5rem"
@@ -262,7 +262,7 @@ const exportCSV = () => {
         <span :class="`fi fi-${data.region}`"/>
       </template>
     </Column>
-    <Column>
+    <Column bodyClass="text-center">
       <template #body="{data}">
         <Tag :value="data.releaseType.label"/>
       </template>

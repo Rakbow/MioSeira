@@ -56,7 +56,7 @@
         <Tag :value="data.type.label"/>
       </template>
       <template #filter="{filterModel,filterCallback}">
-        <Select size="large" v-model="filterModel.value" :options="store.options.imageTypeSet" :filter="true"
+        <Select size="large" v-model="filterModel.value" :options="store.options.imageTypeSet"
                 @change="filterCallback()"
                 :showClear="true" optionLabel="label" optionValue="value" Style="width: 9rem"/>
       </template>

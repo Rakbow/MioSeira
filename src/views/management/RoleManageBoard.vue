@@ -210,7 +210,7 @@ const refresh = async () => {
     </Column>
     <Column :header="t('NameZh')" field="nameZh" :sortable="true" />
     <Column :header="t('NameEn')" field="nameEn" :sortable="true" />
-    <Column :header="t('Citations')" field="count" :sortable="true" style="width: 6rem" class="text-center" />
+    <Column :header="t('Usage')" field="count" :sortable="true" style="width: 6rem" class="text-center" />
     <Column v-for="(col, index) of param.selectedColumns" :field="col.field"
             :header="col.header" :key="col.field + '_' + index" :sortable="true"/>
   </DataTable>

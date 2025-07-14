@@ -54,7 +54,7 @@ const load = async () => {
           {{ `${(param.query.page - 1) * param.query.size + index + 1}/${param.result.total}` }}
         </span>
         <span class="col" style="font-size: 1.5rem">{{ item.name }}</span>
-        <span class="col-fixed" style="width: 18rem">{{ `${t('UploadIn')}:&nbsp;&nbsp;${item.addedTime}` }}</span>
+        <span class="col-fixed" style="width: 20rem">{{ `${t('UploadIn')}:&nbsp;&nbsp;${item.addedTime}` }}</span>
 
       </div>
     </template>

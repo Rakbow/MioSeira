@@ -210,7 +210,8 @@ const load = async () => {
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
           <template #option="{option}">
-            <RIcon :name="option!.icon" size="2" v-tooltip="{value: t(option.label), class: 'short-tooltip'}"/>
+            <RIcon :name="option!.icon" :size="2"/>
+            <span>{{ t(option.label) }}</span>
           </template>
         </SelectButton>
 

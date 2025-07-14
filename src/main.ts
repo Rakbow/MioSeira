@@ -36,6 +36,12 @@ const metaManager = createMetaManager();
 app.config.globalProperties.$api = API
 app.config.globalProperties.$const = META
 
+const savedLocale = localStorage.getItem('locale')
+if (savedLocale) {
+    document.cookie = `lang=${savedLocale}; path=/`;
+    i18n.global.locale.value = savedLocale;
+}
+
 setupPlugins(app);
 app.use(router);
 app.use(metaManager);

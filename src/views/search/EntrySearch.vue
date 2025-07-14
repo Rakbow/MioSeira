@@ -129,7 +129,7 @@ const resetFilter = () => {
     keyword: {value: ''},
     type: {value: null}
   };
-  if(entitySubType.value) {
+  if (entitySubType.value) {
     param.value.query.filters.type.value = parseInt(entitySubType.value.value);
   }
   sortKey.value = sortOptions.value[0];
@@ -137,7 +137,7 @@ const resetFilter = () => {
 }
 
 const onSortChange = (ev: any) => {
-  if(!['date'].includes(ev.value.field)) return;
+  if (!['date'].includes(ev.value.field)) return;
   param.value.query.sortField = ev.value.field;
   param.value.query.sortOrder = ev.value.order;
   load();
@@ -150,8 +150,9 @@ const onSortChange = (ev: any) => {
       <DataView :value="param.result.data" :layout="layout">
         <template #header>
           <div class="grid" style="width: 100%">
-            <div class="col-12" style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
-              <SelectButton size="large" v-model="entitySubType" :options="$const.ENTRY_TYPE_SET"
+            <div class="col-12"
+                 style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+              <SelectButton size="small" v-model="entitySubType" :options="$const.ENTRY_TYPE_SET"
                             @change="switchEntitySubType" :disabled="param.loading"
                             optionLabel="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
                 <template #option="{option}">
@@ -161,17 +162,17 @@ const onSortChange = (ev: any) => {
               </SelectButton>
               <div style="align-items: center;display: flex;gap: 1rem">
                 <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"
-                        @change="onSortChange" size="small">
+                        @change="onSortChange" size="small" :disabled="param.loading">
                   <template #value="{value}">
                     <div style="display: flex;align-items: center">
-                      <RIcon :name="value.order === -1 ? 'south' : 'north'" :size="1.5" />
-                      <RIcon :name="value.icon" :size="1.5" />
+                      <RIcon :name="value.order === -1 ? 'south' : 'north'" :size="1.5"/>
+                      <RIcon :name="value.icon" :size="1.5"/>
                       <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(value.label) }}</span>
                     </div>
                   </template>
                   <template #option="{option}">
-                    <RIcon :name="option.order === -1 ? 'south' : 'north'" :size="1.5" />
-                    <RIcon :name="option.icon" :size="1.5" />
+                    <RIcon :name="option.order === -1 ? 'south' : 'north'" :size="1.5"/>
+                    <RIcon :name="option.icon" :size="1.5"/>
                     <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(option.label) }}</span>
                   </template>
                 </Select>
@@ -188,7 +189,7 @@ const onSortChange = (ev: any) => {
                 <InputIcon class="pi pi-search"/>
                 <InputText size="large" :placeholder="t('Keyword')" v-model="param.query.filters.keyword.value"
                            style="width: 63rem" @keyup.enter="search" :disabled="param.loading"/>
-                <InputIcon class="pi pi-spin pi-spinner" v-if="param.loading" />
+                <InputIcon class="pi pi-spin pi-spinner" v-if="param.loading"/>
               </IconField>
             </div>
             <div class="col">
@@ -208,13 +209,12 @@ const onSortChange = (ev: any) => {
               <div class="col-fixed">
                 <Skeleton size="3.5rem"/>
               </div>
-              <div class="col" style="padding: .5rem 0 0 .25rem !important;width: 54rem;">
+              <div class="col" style="padding: .5rem 0 0 .25rem !important;width: 56rem;">
                 <Skeleton width="30rem" height="1.2rem" style="margin: .3rem 0"/>
                 <Skeleton width="20rem" height="1rem" style="margin: .3rem 0"/>
               </div>
-              <div class="flex align-items-center relative" style="width: 6.5rem">
-                <Skeleton width="3rem" height="1.5rem"/>
-                <Skeleton size="2rem" height="1.5rem" style="right: 1rem !important;position: absolute"/>
+              <div class="flex align-items-center justify-content-center" style="width: 4rem">
+                <Skeleton size="2rem" height="1.5rem"/>
               </div>
             </div>
             <div v-if="!param.loading" v-for="entry in items" class="grid">
@@ -225,24 +225,23 @@ const onSortChange = (ev: any) => {
               </div>
               <div class="entity-search-entry-list-info col">
                 <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="text-ellipsis-one"
-                             style="width: 54rem"
+                             style="width: 56rem"
                              :title="entry.name">{{ entry.name }}
                 </router-link>
 
-                <span style="width: 54rem;display: flex;align-items: center;white-space: nowrap;overflow: hidden;">
+                <span style="width: 56rem;display: flex;align-items: center;white-space: nowrap;overflow: hidden;">
                   <span class="text-ellipsis-one" style="flex-shrink: 1;flex-grow: 1;font-size: 1rem;color: #999999"
                         :title="entry.subName">{{ entry.subName }}</span>
-                  <span style="flex-shrink: 0;white-space: nowrap;margin-left: 8px;">
+                  <span style="flex-shrink: 0;white-space: nowrap;margin-left: .8rem;">
                     <i v-if="entry.gender.value" :class="PublicHelper.getGenderIcon(entry.gender.value)"/>
                     <span v-if="entry.date" class="entity-search-entry-list-info-time"
                           style="display: inline">{{ entry.date }}</span>
                   </span>
                 </span>
               </div>
-              <div class="flex align-items-center relative" style="width: 6.5rem">
-                <span style="color: gray;font-size: 1rem">{{ t($const.ENTRY_TYPE_SET[entry.type.value - 1].label) }}</span>
+              <div class="flex align-items-center justify-content-center" style="width: 4rem">
                 <span class="material-symbols-outlined"
-                      style="font-size: 2rem;right: 1rem !important;position: absolute;font-weight: 700"
+                      style="font-size: 2rem;font-weight: 700"
                       :style="`color: var(--r-entry-${entry.type.value})`">
                       {{ $const.ENTRY_TYPE_SET[entry.type.value - 1].icon }}
                     </span>

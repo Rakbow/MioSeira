@@ -145,8 +145,8 @@ const exportCSV = () => {
                     @change="switchEntryType($event)"
                     optionLabel="value" dataKey="value" ariaLabelledby="custom">
         <template #option="{option}">
-          <RIcon :name="option.icon"/>
-          <span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
+          <RIcon :name="option.icon" :size="1.6"/>
+          <span style="font-size: 1.2rem">{{ t(option!.label) }}</span>
         </template>
       </SelectButton>
 

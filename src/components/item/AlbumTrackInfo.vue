@@ -240,7 +240,7 @@ const uploadAudioFile = async () => {
   }
 
   &-disc {
-    margin-top: 3rem;
+    margin-top: 1rem;
 
     &-header {
       margin-left: .5rem;

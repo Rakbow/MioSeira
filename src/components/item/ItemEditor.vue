@@ -103,7 +103,7 @@ const handleAttributeBeforeUpdate = () => {
     <div class="grid" style="align-items: center">
       <FloatLabel variant="on">
         <label>{{ t('ReleaseDate') }}</label>
-        <InputMask size="large" v-model="item!.releaseDate" mask="****/**/**"/>
+        <InputText size="large" v-model="item!.releaseDate"/>
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('ReleaseType') }}</label>
@@ -253,5 +253,5 @@ const handleAttributeBeforeUpdate = () => {
 </template>
 
 <style scoped lang="scss">
-@use "../../../node_modules/flag-icons/css/flag-icons.min.css";
+@use "flag-icons/css/flag-icons.min";
 </style>
