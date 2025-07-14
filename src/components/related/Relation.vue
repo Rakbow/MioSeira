@@ -10,7 +10,6 @@ const manager = defineAsyncComponent(() => import('@/components/related/Relation
 const browser = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesBrowser.vue'));
 const {t} = useI18n();
 const userStore = useUserStore();
-const relatedEntities = ref<any>([]);
 const loading = ref(false);
 const entity = inject<Entity>('entity');
 
@@ -44,7 +43,7 @@ const props = defineProps({
   },
   entities: {
     type: Array,
-    required: false
+    required: true
   }
 });
 
@@ -103,8 +102,8 @@ const openBrowser = () => {
     <template #icons>
       <RButton v-if="userStore.user && userStore.user.type > 1"
                @click="openManager" action="update" />
-      <Button :label="total.toString()" outlined @click="openBrowser" :disabled="!relatedEntities.length"
-              v-tooltip="{value: t('ViewAll'), disabled: !relatedEntities.length}"/>
+      <Button :label="total.toString()" outlined @click="openBrowser" :disabled="total <= 5"
+              v-tooltip.bottom="{value: t('ViewAll'), disabled: total <= 5}"/>
     </template>
     <i v-if="loading" class="pi pi-spin pi-spinner" style="font-size: 2rem"/>
     <div v-else>

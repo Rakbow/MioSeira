@@ -5,7 +5,6 @@ import {API, Axios} from "@/api";
 import {useOptionStore} from "@/store/modules/option";
 import {EntitySearchParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
-import router from "@/router";
 
 const EntrySelector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
@@ -38,11 +37,6 @@ onMounted(() => {
   param.value.query.size = 10;
   load();
 });
-
-const jumpToEntryDetail = (data: any) => {
-  dialogRef.value.close();
-  router.push(`${proxy!.$api.ENTRY.DETAIL_PATH}/${data.id}`);
-};
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null) {
@@ -200,7 +194,7 @@ const load = async () => {
                lazy paginator alwaysShowPaginator :rows="param.query.size" @sort="onSort($event)"
                v-model:selection="param.selectedData" stripedRows size="small"
                scrollable scrollHeight="40rem" responsiveLayout="scroll">
-      <template #footer>
+      <template #paginatorcontainer>
         <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
                     :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
       </template>
@@ -216,7 +210,7 @@ const load = async () => {
                       @change="switchEntryType($event)"
                       optionLabel="value" dataKey="value" ariaLabelledby="custom">
           <template #option="{option}">
-            <RIcon :name="option!.icon" size="2" v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}"/>
+            <RIcon :name="option!.icon" size="2" v-tooltip="{value: t(option.label), class: 'short-tooltip'}"/>
           </template>
         </SelectButton>
 

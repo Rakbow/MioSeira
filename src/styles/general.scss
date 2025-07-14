@@ -41,6 +41,13 @@ $common-border-up-radius: 1rem 1rem 0 0;
   --r-item-6-12: #888;
   --r-item-6-13: #a44;
   --r-item-6-14: #a4a;
+
+  --r-entry-1: #fed;
+  --r-entry-2: #dfd;
+  --r-entry-3: #def;
+  --r-entry-4: #fee;
+  --r-entry-5: #eee;
+  --r-entry-6: #ffffdd;
 }
 
 html {
@@ -111,11 +118,11 @@ a:visited, a:hover {
 }
 
 .text-ellipsis-one {
-  display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
-  -webkit-box-orient: vertical; /* 设置为纵向排列 */
-  -webkit-line-clamp: 1; /* 限制显示的行数 */
-  overflow: hidden; /* 超出部分隐藏 */
-  text-overflow: ellipsis; /* 显示 "..." */
+  display: -webkit-box !important; /* 必须配合 -webkit-line-clamp 使用 */
+  -webkit-box-orient: vertical !important; /* 设置为纵向排列 */
+  -webkit-line-clamp: 1 !important; /* 限制显示的行数 */
+  overflow: hidden !important; /* 超出部分隐藏 */
+  text-overflow: ellipsis !important; /* 显示 "..." */
 }
 
 .text-ellipsis-two {

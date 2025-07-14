@@ -2,7 +2,7 @@
   <div class="entity-selector">
     <BlockUI :blocked="param.loading">
       <SelectButton v-if="props.all" class="w-full" size="small"
-                    v-model="selectEntityType" :options="$const.ENTRY_TYPE_SET" @change="switchEntryType($event)"
+                    v-model="entryType" :options="$const.ENTRY_TYPE_SET" @change="switchEntryType($event)"
                     optionLabel="value" dataKey="value" ariaLabelledby="custom">
         <template #option="{option}">
           <RIcon :name="option.icon"/>
@@ -10,12 +10,12 @@
         </template>
       </SelectButton>
       <IconField>
-        <InputIcon class="pi pi-search" v-if="!param.keyword"/>
-        <InputText size="large" v-model="param.keyword" @keyup.enter="search"/>
-        <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="param.keyword"/>
+        <InputIcon class="pi pi-search" v-if="!param.query.filters.keyword.value"/>
+        <InputText size="large" v-model="param.query.filters.keyword.value" @keyup.enter="search"/>
+        <InputIcon class="pi pi-times-circle" @click="clearSearch" v-if="param.query.filters.keyword.value"/>
       </IconField>
     </BlockUI>
-    <DataView :value="param.data">
+    <DataView :value="param.result.data">
       <template #empty>
         <span>{{ t('NoSearchResult') }}</span>
       </template>
@@ -42,7 +42,7 @@
             </div>
           </div>
         </div>
-        <div v-if="param.loading" v-for="() in param.size">
+        <div v-if="param.loading" v-for="() in param.query.size">
           <div class="related-entity">
             <div class="related-entity-thumb">
               <Skeleton size="3.5rem"/>
@@ -56,15 +56,8 @@
       </template>
       <template #footer>
         <BlockUI :blocked="param.loading">
-          <Paginator v-model:first="param.first" :rows="param.size" :totalRecords="param.total"
-                     @page="page($event)" :alwaysShow="param.total !== 0">
-            <template #start>
-              search in {{ param.time }}s
-            </template>
-            <template #end>
-              {{ param.total }} items
-            </template>
-          </Paginator>
+          <RPaginator v-model:page="param.query.page" v-model:size="param.query.size" alwaysShow
+                      :total="param.result.total" @page="page($event)" :time="param.result.time"/>
         </BlockUI>
       </template>
     </DataView>
@@ -72,17 +65,24 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps, getCurrentInstance} from "vue";
+import {ref, onMounted, defineProps, getCurrentInstance, onBeforeMount} from "vue";
 import {META} from "@/config/Web_Const";
 import {API, Axios} from "@/api";
 import {useI18n} from "vue-i18n";
-import {EntitySelectorParam} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
+
+onBeforeMount(() => {
+  param.value.initFilters({
+    type: {value: null},
+    keyword: {value: ''}
+  });
+  param.value.query.size = 7;
+});
 
 onMounted(() => {
   pickedEntries.value = props.entries;
-  param.value.type = props.type;
+  param.value.query.filters.type.value = props.type;
   load();
-  param.value.initFirst();
 });
 
 const props = defineProps({
@@ -111,13 +111,13 @@ const emit = defineEmits(['pick']);
 const { proxy } = getCurrentInstance()!;
 const {t} = useI18n();
 const pickedEntries = ref<any[]>([]);
-const selectEntityType = ref();
-const param = ref<EntitySelectorParam>(new EntitySelectorParam());
+const entryType = ref();
+const param = ref<EntitySearchParam>(new EntitySearchParam());
 
 const switchEntryType = (ev: any) => {
   if (ev.value === null)
-    selectEntityType.value = proxy!.$const.ENTRY_TYPE_SET[0];
-  param.value.type = parseInt(selectEntityType.value.value);
+    entryType.value = proxy!.$const.ENTRY_TYPE_SET[0];
+  param.value.query.filters.type.value = parseInt(entryType.value.value);
   load();
 }
 
@@ -128,7 +128,7 @@ const select = (entity: any) => {
 }
 
 const page = (ev: any) => {
-  param.value.page = ev.page + 1;
+  param.value.initPage(ev.page + 1);
   load();
 }
 
@@ -138,27 +138,24 @@ const search = () => {
 }
 const clearSearch = () => {
   param.value.initPage();
-  param.value.keyword = '';
+  param.value.query.filters.keyword.value = '';
   load();
 }
 
 const load = async () => {
   param.value.loading = true;
-  param.value.handleKeyword();
-  const res = await Axios.post(API.ENTRY.SEARCH, param.value);
+  const res = await Axios.post(API.ENTRY.SEARCH, param.value.query);
   if (res.success()) {
-    param.value.data = res.data.data;
-    param.value.total = res.data.total;
-    param.value.time = res.data.searchTime;
+    param.value.loadResult(res.data)
   }
-  param.value.data = markPickedEntries();
+  param.value.result.data = markPickedEntries();
   param.value.loading = false;
 };
 
 const markPickedEntries = () => {
-  return param.value.data.map(entry => {
+  return param.value.result.data.map(entry => {
     const picked = pickedEntries.value!
-        .some(pickedEntry => pickedEntry.id === entry.id && pickedEntry.type === entry.type);
+        .some(pickedEntry => pickedEntry.id === entry.id);
     if (picked) {
       return {...entry, isPicked: true};
     }

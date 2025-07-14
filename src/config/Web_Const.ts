@@ -79,7 +79,8 @@ export const META = {
         {label: "gb", value: "gb"}
     ],
     ENTRY_TYPE_SET: [
-        {icon: 'dataset', value: '1', label: 'Product'},
+        {icon: 'filter_alt_off', value: null, label: 'Entity.Album'},
+        {icon: 'widgets', value: '1', label: 'Product'},
         {icon: 'group', value: '2', label: 'Person'},
         {icon: 'mood', value: '3', label: 'Character'},
         {icon: 'folder', value: '4', label: 'Classification'},
@@ -87,25 +88,17 @@ export const META = {
         {icon: 'distance', value: '6', label: 'Event'}
     ],
     ITEM_TYPE_SET: [
-        {icon: 'filter_alt_off', value: null, disabled: false, label: 'Entity.Album'},
+        // {icon: 'filter_alt_off', value: null, disabled: false, label: 'Entity.Album'},
         {icon: 'genres', value: '1', disabled: false, label: 'Entity.Album'},
-        {icon: 'book_5', value: '2', disabled: false, label: 'Entity.Book'},
+        {icon: 'book_2', value: '2', disabled: false, label: 'Entity.Book'},
         {icon: 'hangout_video', value: '3', disabled: false, label: 'Entity.Disc'},
         {icon: 'stadia_controller', value: '4', disabled: true, label: 'Entity.Game'},
-        {icon: 'package_2', value: '5', disabled: false, label: 'Entity.Goods'},
+        {icon: 'chess_pawn', value: '5', disabled: false, label: 'Entity.Goods'},
         {icon: 'accessibility_new', value: '6', disabled: false, label: 'Entity.Figure'}
     ],
     FILE_CREATE_TYPE_SET: [
         {icon: 'upload_file', label: 'LocalFile', value: '0'},
         {icon: 'cloud_done', label: 'CloudFile', value: '1'}
-    ],
-    RELATED_GROUP_SET: [
-        {icon: 'list', value: '1'},
-        {icon: 'group', value: '2'},
-        {icon: 'mood', value: '3'},
-        {icon: 'folder', value: '4'},
-        {icon: 'diamond', value: '5'},
-        {icon: 'distance', value: '6'}
     ],
     ENTITY_TYPE_SET: {
         O: 'item',
@@ -224,17 +217,4 @@ export class RelatedEntry {
     classifications: any[] = [];
     materials: any[] = [];
     events: any[] = [];
-}
-
-export class EntityInfo {
-    type: number = 0;
-    id: number = 0;
-}
-
-export class QueryParams {
-    first: number = 0;
-    rows: number = 0;
-    sortField: string | null = null;
-    sortOrder: number | null = 1;
-    filters: any
 }

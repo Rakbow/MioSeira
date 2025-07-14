@@ -26,7 +26,7 @@ const draft = useDraftStore();
 const itemType = ref();
 const itemSpec = ref('');
 const dto = ref(new ItemAdvanceCreateDTO());
-const { proxy } = getCurrentInstance()!;
+const {proxy} = getCurrentInstance()!;
 const param = ref(new EditParam());
 
 const relatedEntry = reactive<RelatedEntry>(new RelatedEntry())
@@ -34,7 +34,7 @@ const relatedEntry = reactive<RelatedEntry>(new RelatedEntry())
 
 onBeforeMount(() => {
   store.fetchOptions();
-  itemType.value = proxy!.$const.ITEM_TYPE_SET[dto.value.item.type];
+  itemType.value = proxy!.$const.ITEM_TYPE_SET[dto.value.item.type - 1];
 })
 
 const switchItemType = () => {
@@ -78,7 +78,7 @@ const handleRelatedEntry = () => {
 const submit = async () => {
   param.value.block = true;
   handleRelatedEntry();
-  if(dto.value.item.type === proxy!.$const.ITEM_TYPE.ALBUM) handleTracks();
+  if (dto.value.item.type === proxy!.$const.ITEM_TYPE.ALBUM) handleTracks();
   // await handleImage();
 
   const fd = new FormData();
@@ -169,7 +169,7 @@ const openAlbumTrackQuickCreatorDialog = () => {
 }
 
 const handleTracks = () => {
-  if(dto.value.item.disc.tracks.length === 0) return;
+  if (dto.value.item.disc.tracks.length === 0) return;
   dto.value.item.tracks = dto.value.item.disc.tracks.length;
   dto.value.item.discs = 1;
   dto.value.item.runTime = dto.value.item.disc.tracks.reduce((sum: number, item: any) => {
@@ -195,7 +195,7 @@ const handleTracks = () => {
                             @change="switchItemType"
                             optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
                 <template #option="{option}">
-                  <RIcon :name="option.icon" />
+                  <RIcon :name="option.icon"/>
                 </template>
               </SelectButton>
             </div>
@@ -271,7 +271,8 @@ const handleTracks = () => {
               </FloatLabel>
             </div>
 
-            <div class="grid" v-if="dto.item.type === $const.ITEM_TYPE.ALBUM || dto.item.type === $const.ITEM_TYPE.DISC">
+            <div class="grid"
+                 v-if="dto.item.type === $const.ITEM_TYPE.ALBUM || dto.item.type === $const.ITEM_TYPE.DISC">
               <FloatLabel variant="on" v-if="dto.item.type === $const.ITEM_TYPE.DISC">
                 <label>{{ t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
                 <MultiSelect showClear v-model="dto.item.mediaFormat" :options="store.options.mediaFormatSet"
@@ -416,7 +417,7 @@ const handleTracks = () => {
                                 :type="$const.ENTRY_TYPE.CLASSIFICATION"/>
           <div v-if="dto.item.type === $const.ITEM_TYPE.GOODS || dto.item.type === $const.ITEM_TYPE.FIGURE">
             <Divider class="mb-0" align="left">
-              <RIcon name="diamond" size="1" />
+              <RIcon name="diamond" size="1"/>
               <b class="ml-1">{{ t('Material') }}</b>
             </Divider>
             <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.materials"

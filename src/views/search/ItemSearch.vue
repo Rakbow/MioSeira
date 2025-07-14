@@ -19,6 +19,15 @@ const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
 
+const sortKey = ref({label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: -1});
+const sortOptions = ref<any[]>([
+  {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: -1},
+  {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: 1},
+  {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: -1},
+  {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: 1},
+  {label: 'Price', icon: 'paid', field: 'price', order: -1},
+  {label: 'Price', icon: 'paid', field: 'price', order: 1},
+]);
 const param = ref(new EntitySearchParam());
 
 //region data view and paginator
@@ -61,16 +70,15 @@ watch(layout, (newValue) => {
   loadItems()
 })
 
-const itemType = ref();
-const switchItemType = () => {
-  if (itemType.value === null) {
+const entitySubType = ref();
+const switchEntitySubType = (ev: any) => {
+  if (ev.value) {
+    param.value.query.filters.type.value = parseInt(entitySubType.value.value);
+  } else {
+    entitySubType.value = null;
     param.value.query.filters.type.value = null;
-    return
   }
-  if (itemType.value.value === null)
-    param.value.query.filters.type.value = null;
-  else
-    param.value.query.filters.type.value = parseInt(itemType.value.value);
+  loadItems();
 }
 
 const initQueryParam = async () => {
@@ -98,9 +106,9 @@ const initQueryParam = async () => {
   }
 
   if (param.value.query.filters.type.value) {
-    itemType.value = proxy!.$const.ITEM_TYPE_SET.find(i => i.value === param.value.query.filters.type.value.toString())
+    entitySubType.value = proxy!.$const.ITEM_TYPE_SET.find(i => i.value === param.value.query.filters.type.value.toString())
   } else {
-    itemType.value = proxy!.$const.ITEM_TYPE_SET[0]
+    entitySubType.value = null;
   }
 }
 
@@ -119,12 +127,14 @@ const updateQueryParam = () => {
     }
   });
 
-  if (sortField) {
+  if (sortField && ['price', 'releaseDate'].includes(sortField)) {
     curQuery.sort = sortField;
     curQuery.order = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : null;
+    sortKey.value = sortOptions.value.find(op => op.field === sortField && op.order === sortOrder);
   } else {
     delete curQuery.sort;
     delete curQuery.order;
+    sortKey.value = sortOptions.value[0];
   }
 
   if (Array.isArray(param.value.query.filters.entries.value) && param.value.query.filters.entries.value.length) {
@@ -175,19 +185,18 @@ const removeEntries = (id: number) => {
 }
 
 const search = () => {
-  param.value.query.page = 1;
+  param.value.initPage();
   loadItems();
 }
 
 const clearFilter = () => {
-  param.value.query.page = 1;
+  param.value.initPage();
   resetFilter();
   loadItems();
 
 }
 
 const resetFilter = () => {
-  itemType.value = null;
   param.value.query.filters = {
     keyword: {value: ''},
     barcode: {value: ''},
@@ -198,9 +207,22 @@ const resetFilter = () => {
     releaseType: {value: null},
     entries: {value: []},
   };
+
+  if(entitySubType.value) {
+    param.value.query.filters.type.value = parseInt(entitySubType.value.value);
+  }
+
+  sortKey.value = sortOptions.value[0];
+
   param.value.clearSort();
   loadItems();
 }
+
+const onSortChange = (ev: any) => {
+  param.value.query.sortField = ev.value.field;
+  param.value.query.sortOrder = ev.value.order;
+  loadItems();
+};
 
 //region pop
 
@@ -223,11 +245,42 @@ const endHover = () => {
     <div class="entity-search-main">
       <DataView :value="param.result.data" :layout="layout">
         <template #header>
-          <SelectButton v-model="layout" :options="dataviewOptions" :allowEmpty="false">
-            <template #option="{ option }">
-              <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']"/>
-            </template>
-          </SelectButton>
+          <div style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+            <SelectButton size="large" :options="proxy!.$const.ITEM_TYPE_SET" :disabled="param.loading"
+                          v-model="entitySubType" @change="switchEntitySubType"
+                          optionLabel="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+              <template #option="{option}">
+                <RIcon :name="option.icon" :size="1.8"/>
+                {{ t(option.label) }}
+              </template>
+            </SelectButton>
+
+            <div style="align-items: center;display: flex;gap: 2rem">
+
+              <Select v-model="sortKey" :options="sortOptions" filled style="width: 15rem"
+                      @change="onSortChange" size="small">
+                <template #value="{value}">
+                  <div style="display: flex;align-items: center">
+                    <RIcon :name="value.order === -1 ? 'south' : 'north'" :size="1.5" />
+                    <RIcon :name="value.icon" :size="1.5" />
+                    <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(value.label) }}</span>
+                  </div>
+                </template>
+                <template #option="{option}">
+                  <RIcon :name="option.order === -1 ? 'south' : 'north'" :size="1.5" />
+                  <RIcon :name="option.icon" :size="1.5" />
+                  <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(option.label) }}</span>
+                </template>
+              </Select>
+
+              <SelectButton v-model="layout" :options="dataviewOptions" :allowEmpty="false" :disabled="param.loading">
+                <template #option="{ option }">
+                  <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']"/>
+                </template>
+              </SelectButton>
+            </div>
+
+          </div>
         </template>
         <template #empty>
             <span class="empty-search-result">
@@ -279,12 +332,11 @@ const endHover = () => {
                      :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>
                 <div class="relative">
                   <span class="entity-search-item-list-info-time" v-if="item.releaseDate">{{ item.releaseDate }}&nbsp;&nbsp;</span>
-                  <!--<span :class="'fi fi-' + item.region"/>&nbsp;&nbsp;-->
                   <span class="entity-search-item-list-info-sub" v-if="item.barcode">
                     <span v-if="item.catalogId">{{ item.catalogId }}&nbsp;•&nbsp;</span>
                     <span v-if="item.barcode">{{ item.barcode }}</span>
                   </span>
-                  <span style="position: absolute;right: 0">
+                  <span v-if="item.price" style="position: absolute;right: 0">
                     {{ item.price }}
                     <CurrencySelect v-model="item.currency" :query="`${item.price}+${item.currency}`"/>
                   </span>
@@ -303,83 +355,73 @@ const endHover = () => {
     </div>
     <Card class="entity-search-side entity-editor">
       <template #content>
-        <BlockUI :blocked="param.loading">
-          <Divider align="left"><i class="pi pi-list"/><b>{{ t('BasicInfo') }}</b></Divider>
-          <div class="field">
-            <SelectButton class="w-full justify justify-content-center" size="large" v-model="itemType"
-                          :options="proxy!.$const.ITEM_TYPE_SET"
-                          @change="switchItemType"
-                          optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
-              <template #option="{option}">
-                <RIcon :name="option.icon"/>
-              </template>
-            </SelectButton>
-          </div>
-          <FloatLabel class="field" variant="on">
-            <label>{{ t('Keyword') }}</label>
-            <InputText size="large" v-model="param.query.filters.keyword.value"/>
+        <Divider align="left"><i class="pi pi-list"/><b>{{ t('BasicInfo') }}</b></Divider>
+        <FloatLabel class="field" variant="on">
+          <label>{{ t('Keyword') }}</label>
+          <InputText size="large" v-model="param.query.filters.keyword.value" :disabled="param.loading"/>
+        </FloatLabel>
+        <div class="grid">
+          <FloatLabel variant="on">
+            <label>{{ t('Barcode') }}</label>
+            <InputText size="large" v-model="param.query.filters.barcode.value" :disabled="param.loading"/>
           </FloatLabel>
-          <div class="grid">
-            <FloatLabel variant="on">
-              <label>{{ t('Barcode') }}</label>
-              <InputText size="large" v-model="param.query.filters.barcode.value"/>
-            </FloatLabel>
-            <FloatLabel variant="on">
-              <label>{{ t('CatalogId') }}</label>
-              <InputText size="large" v-model="param.query.filters.catalogId.value"/>
-            </FloatLabel>
+          <FloatLabel variant="on">
+            <label>{{ t('CatalogId') }}</label>
+            <InputText size="large" v-model="param.query.filters.catalogId.value" :disabled="param.loading"/>
+          </FloatLabel>
+        </div>
+        <div class="grid">
+          <FloatLabel variant="on">
+            <label>{{ t('ReleaseType') }}</label>
+            <Select v-model="param.query.filters.releaseType.value" :options="store.options.releaseTypeSet"
+                    size="large" optionLabel="label" optionValue="value" :disabled="param.loading"/>
+          </FloatLabel>
+          <FloatLabel variant="on">
+            <label>{{ t('Region') }}</label>
+            <Select v-model="param.query.filters.region.value" :options="$const.RegionSet" optionLabel="label"
+                    size="large" optionValue="value" :disabled="param.loading">
+              <template #value="{value}">
+                <span :class="`fi fi-${value}`"/>
+              </template>
+              <template #option="{option}">
+                <span :class="`fi fi-${option!.value}`"/>
+              </template>
+            </Select>
+          </FloatLabel>
+        </div>
+        <div class="relative">
+          <div class="bottom-0 right-0">
+            <RButton @click="search" icon="search" :disabled="param.loading"/>
+            <RButton @click="clearFilter" icon="filter_alt_off" severity="danger" :disabled="param.loading"/>
           </div>
-          <div class="grid">
-            <FloatLabel variant="on">
-              <label>{{ t('ReleaseType') }}</label>
-              <Select v-model="param.query.filters.releaseType.value" :options="store.options.releaseTypeSet"
-                      size="large" optionLabel="label" optionValue="value"/>
-            </FloatLabel>
-            <FloatLabel variant="on">
-              <label>{{ t('Region') }}</label>
-              <Select v-model="param.query.filters.region.value" :options="$const.RegionSet" optionLabel="label"
-                      size="large" optionValue="value">
-                <template #value="{value}">
-                  <span :class="`fi fi-${value}`"/>
-                </template>
-                <template #option="{option}">
-                  <span :class="`fi fi-${option!.value}`"/>
-                </template>
-              </Select>
-            </FloatLabel>
+        </div>
+        <Divider align="left"><i class="pi pi-th-large"/><b>{{ t('RelatedEntry') }}</b></Divider>
+        <RButton @click="displayEntrySelector = true" action="create" :disabled="param.loading"/>
+        <RButton @click="clearEntries" action="clear" v-if="entries.length" :disabled="param.loading"/>
+        <div class="grid" style="padding: 1.25rem" v-if="entries">
+          <div v-if="param.loading2" class="field">
+            <Skeleton width="30rem" height="4.6rem"/>
           </div>
-          <div class="relative">
-            <div class="bottom-0 right-0">
-              <RButton @click="search" icon="search"/>
-              <RButton @click="clearFilter" icon="filter_alt_off" severity="danger"/>
-            </div>
-          </div>
-          <Divider align="left"><i class="pi pi-th-large"/><b>{{ t('RelatedEntry') }}</b></Divider>
-          <RButton @click="displayEntrySelector = true" action="create"/>
-          <RButton @click="clearEntries" action="clear" v-if="entries.length"/>
-          <div class="grid" style="padding: 1.25rem" v-if="entries">
-            <div v-if="param.loading2" class="field">
-              <Skeleton width="30rem" height="4.6rem"/>
-            </div>
-            <div v-if="entries.length && !param.loading2">
-              <div class="related-entity" style="width: 30rem;background: #252525" v-for="(entry, index) in entries as any[]" :key="index">
-                <div class="related-entity-thumb">
-                  <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
-                </div>
-                <div class="related-entity-info">
-                  <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`"
-                               :title="entry.name">{{ entry.name }}</router-link>
-                  <small :title="entry.subName">
-                    {{ entry.subName }}
-                  </small>
-                </div>
-                <div class="related-entity-role">
-                  <RButton action="clear" @click="removeEntries(entry.id)"/>
-                </div>
+          <div v-if="entries.length && !param.loading2">
+            <div class="related-entity" style="width: 30rem;background: #252525"
+                 v-for="(entry, index) in entries as any[]" :key="index">
+              <div class="related-entity-thumb">
+                <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
+              </div>
+              <div class="related-entity-info">
+                <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`"
+                             :title="entry.name">{{ entry.name }}
+                </router-link>
+                <small :title="entry.subName">
+                  {{ entry.subName }}
+                </small>
+              </div>
+              <div class="related-entity-role">
+                <RButton action="clear" @click="removeEntries(entry.id)"/>
               </div>
             </div>
           </div>
-        </BlockUI>
+        </div>
       </template>
     </Card>
 

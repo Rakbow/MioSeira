@@ -54,20 +54,20 @@ const endHover = () => {
         <i class="pi pi-th-large"/>
         <b>{{ t('RelatedItem') }}</b>
       </template>
-      <RouterLink v-if="result.total" class="ml-4" :to="`${$api.ITEM.SEARCH_PATH}?entry=${entity.id}`">
+      <RouterLink v-if="result.total" class="ml-4" :to="`${$api.ITEM.SEARCH_PATH}?entries=${entity.id}`">
         <span>{{result.total}}&nbsp;<i class="pi pi-angle-double-right" style="font-size: 1.3rem" /></span>
       </RouterLink>
       <DataView :value="result.data" layout="grid">
         <template #empty>
           <span class="empty-search-result"/>
         </template>
-        <template #grid="slotProps">
+        <template #grid="{items}">
           <div class="flex flex-wrap">
-            <div v-for="(item, index) in slotProps.items" :key="index" class="p-2">
+            <div v-for="(item, index) in items" :key="index" class="p-2">
               <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
+                           @pointerover="startHover($event, item)" @pointerleave="endHover"
                            :class="`item-thumb-grid item-thumb-grid-${item.type.value}-${item.subType.value}`">
-                <img role="presentation" :alt="item.id" :src="(item as any).thumb"
-                     @pointerover="startHover($event, item)" @pointerleave="endHover"/>
+                <img role="presentation" :alt="item.id" :src="item.thumb"/>
               </router-link>
             </div>
           </div>

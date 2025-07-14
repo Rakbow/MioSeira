@@ -89,7 +89,7 @@ export class EntitySearchParam {
         data: [],
         total: 0,
         time: '0'
-    }
+    };
 
     loadResult(res: SearchResult): void {
         this.result.data = res.data;

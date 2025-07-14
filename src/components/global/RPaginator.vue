@@ -64,6 +64,14 @@ onBeforeMount(() => {
     <template #lasticon>
       <RIcon name="last_page"/>
     </template>
+<!--    <template #container="{pageLinks, changePageCallback, firstPageCallback, prevPageCallback, nextPageCallback, lastPageCallback}">-->
+<!--      <Button @click="firstPageCallback" text>-->
+<!--        <RIcon name="first_page" size="0.5"/>-->
+<!--      </Button>-->
+<!--      <div v-for="page in pageLinks">-->
+<!--        <Button @click="changePageCallback(page-1)" :label="page.toString()" text />-->
+<!--      </div>-->
+<!--    </template>-->
   </Paginator>
 </template>
 

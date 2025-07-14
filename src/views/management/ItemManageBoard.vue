@@ -20,7 +20,7 @@ const basicColumnCount = ref(0);
 const itemType = ref();
 
 onBeforeMount(async () => {
-  itemType.value = proxy!.$const.ITEM_TYPE_SET[store.itemCurrent === 1 ? 1 : store.itemCurrent];
+  itemType.value = proxy!.$const.ITEM_TYPE_SET[store.itemCurrent === 0 ? 0 : store.itemCurrent - 1];
   param.value.initFilters({
     type: {value: store.itemCurrent},
     keyword: {value: ''}
@@ -54,7 +54,7 @@ watch(
 
 const switchItemType = (ev: any) => {
   if (ev.value === null)
-    itemType.value = proxy!.$const.ITEM_TYPE_SET[1];
+    itemType.value = proxy!.$const.ITEM_TYPE_SET[0];
   store.itemCurrent = parseInt(itemType.value.value);
   param.value.query.filters.type.value = store.itemCurrent;
   param.value.clearSort();

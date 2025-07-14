@@ -4,150 +4,130 @@ import "flag-icons/css/flag-icons.min.css";
 
 import {API, Axios} from "@/api";
 import {getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
-import {LocationQueryValue, useRoute, useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {useOptionStore} from "@/store/modules/option";
-import {EntryQueryParams} from "@/service/entryService";
+import {EntitySearchParam} from "@/service/entityService";
 import {PublicHelper} from "@/utils/publicHelper";
-import {bs} from '@/service/baseService';
 
 const {t} = useI18n();
 const route = useRoute();
 const router = useRouter();
-const store = useOptionStore();
-const { proxy } = getCurrentInstance()!;
+const {proxy} = getCurrentInstance()!;
 
 //region data view and paginator
-const first = ref(0);
 const layout = ref('list');
 const dataviewOptions = ref(['list']);
-const loading = ref(false);
 //endregion
-
-const queryParams = new EntryQueryParams();
-const searchResult = ref({
-  total: 0,
-  time: 0,
-  data: []
-});
+const entryType = ref();
+const param = ref<EntitySearchParam>(new EntitySearchParam());
 
 onBeforeMount(() => {
-  store.fetchOptions();
+  param.value.initFilters({
+    type: {value: null},
+    keyword: {value: ''}
+  });
+  param.value.query.size = 10;
 });
 
 onMounted(() => {
   initQueryParam();
-  getEntries();
-  first.value = (queryParams.page! - 1) * queryParams.size!;
+  load();
 })
-
-const entryType = ref();
 
 const switchItemType = () => {
   if (entryType.value === null) {
-    queryParams.type = null;
-  }else {
-    queryParams.type = parseInt(entryType.value.value);
+    param.value.query.filters.type.value = null;
+  } else {
+    param.value.query.filters.type.value = parseInt(entryType.value.value);
   }
-  getEntries();
+  load();
 }
 
 const initQueryParam = async () => {
-  if (route.query.type) {
-    queryParams.type = getNumberValue(route.query.type);
-  }
-  if (route.query.keyword) {
-    queryParams.keyword = route.query.keyword;
-  }
-  if (route.query.page) {
-    queryParams.page = getNumberValue(route.query.page, 1);
+  const {query} = route;
+
+  if (query.sort) {
+    param.value.query.sortField = query.sort.toString();
+    if (query.order) {
+      param.value.query.sortOrder = query.order.toString() === 'desc' ? -1 : 1;
+    }
   }
 
-  if (queryParams.type) {
-    entryType.value = proxy!.$const.ENTRY_TYPE_SET.find(i => i.value === queryParams.type?.toString())
+  param.value.query.page = parseInt(query.page?.toString() ?? '1');
+
+  param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
+  param.value.query.filters.type.value = query.type ? parseInt(query.type?.toString()) : null;
+
+  if (param.value.query.filters.type.value) {
+    entryType.value = proxy!.$const.ENTRY_TYPE_SET.find(i => i.value === param.value.query.filters.type.value.toString())
+  } else {
+    entryType.value = proxy!.$const.ENTRY_TYPE_SET[0]
   }
-  // queryParams.size = getNumberValue(route.query.size, 60);
 }
-const getNumberValue = (value: string | null | LocationQueryValue[] | undefined, defaultValue: number | null = null): number | null => {
-  return typeof value === 'string' && !isNaN(Number(value)) ? Number(value) : defaultValue;
-};
 
 const updateQueryParam = () => {
-  // 获取当前查询参数对象
-  const currentQueryParams = {...route.query};
+  const {query: {filters, sortField, sortOrder, page}} = param.value;
+  const curQuery = {...route.query};
 
-  // 修改查询参数的值
-  if (queryParams.page) {
-    currentQueryParams.page = queryParams.page;
+  curQuery.page = page.toString();
+
+  ['type', 'keyword'].forEach(key => {
+    if (filters[key]?.value || filters[key]?.value === 0) {
+      curQuery[key] = filters[key].value;
+    } else {
+      delete curQuery[key];
+    }
+  });
+
+  if (sortField) {
+    curQuery.sort = sortField;
+    curQuery.order = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : null;
   } else {
-    delete currentQueryParams.page
-  }
-  if (queryParams.keyword) {
-    currentQueryParams.keyword = queryParams.keyword;
-  } else {
-    delete currentQueryParams.keyword
-  }
-  if (queryParams.type) {
-    currentQueryParams.type = queryParams.type;
-  } else {
-    delete currentQueryParams.type
+    delete curQuery.sort;
+    delete curQuery.order;
   }
 
-  // 使用 router.push 更新 URL
-  router.push({path: route.path, query: currentQueryParams});
+  router.push({path: route.path, query: curQuery});
 };
 
-const onPage = (ev) => {
-  queryParams.page = ev.page + 1;
-  getEntries();
+const onPage = (ev: any) => {
+  param.value.initPage(ev.page + 1)
+  load();
 }
 
-const getEntries = async () => {
-  queryParams.keywords = PublicHelper.splitAndTrim(queryParams.keyword);
+const load = async () => {
   updateQueryParam();
-  loading.value = true;
-  const res = await Axios.post(API.ENTRY.SEARCH, queryParams);
+  param.value.loading = true;
+  const res = await Axios.post(API.ENTRY.SEARCH, param.value.query);
   if (res.success()) {
-    if (res.data.data === null)
-      searchResult.value.data = [];
-    else
-      searchResult.value.data = res.data.data;
-    searchResult.value.total = res.data.total;
-    searchResult.value.time = res.data.searchTime;
-  } else {
-    bs!.toast.error(res.message);
+    param.value.loadResult(res.data)
   }
-  loading.value = false;
+  param.value.loading = false;
 }
 
 const search = () => {
-  resetPage();
-  getEntries();
+  param.value.initPage();
+  load();
 }
 
 const clearFilter = () => {
-  resetPage();
+  param.value.initPage();
   resetFilter();
-  getEntries();
+  load();
 
-}
-
-const resetPage = () => {
-  queryParams.page = 1;
-  first.value = 0;
 }
 
 const resetFilter = () => {
-  queryParams.keyword = '';
+  param.value.query.filters.keyword.value = '';
 }
 </script>
 
 <template>
-  <div class="flex flex-wrap justify-content-center gap-3">
-    <div class="entity-search-main-col">
-      <DataView :value="searchResult.data" :layout="layout">
+  <div class="entity-search">
+    <div class="entity-search-main">
+      <DataView :value="param.result.data" :layout="layout">
         <template #header>
-          <div class="flex justify-end">
+          <div class="flex">
             <SelectButton v-model="layout" :options="dataviewOptions" :allowEmpty="false">
               <template #option="{ option }">
                 <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']"/>
@@ -160,70 +140,84 @@ const resetFilter = () => {
                 {{ t('NoSearchResult') }}
             </span>
         </template>
-        <template #list="slotProps">
-          <div class="entry-search-list">
-            <div v-if="loading" v-for="(index_1) in 10" :key="index_1">
-              <Skeleton height="53px"/>
+        <template #list="{items}">
+          <div class="entity-search-entry-list">
+            <div v-if="param.loading" v-for="() in param.query.size" class="entity-search-entry-list-loading grid">
+              <div class="col-fixed">
+                <Skeleton size="3.5rem"/>
+              </div>
+              <div class="col" style="padding: .5rem 0 0 .25rem !important;width: 54rem;">
+                <Skeleton width="30rem" height="1.2rem" style="margin: .3rem 0"/>
+                <Skeleton width="20rem" height="1rem" style="margin: .3rem 0"/>
+              </div>
+              <div class="flex align-items-center relative" style="width: 6.5rem">
+                <Skeleton width="3rem" height="1.5rem"/>
+                <Skeleton size="2rem" height="1.5rem" style="right: 1rem !important;position: absolute"/>
+              </div>
             </div>
-            <div v-if="!loading" v-for="(entry, index) in slotProps.items" :key="index" class="grid">
-              <div class="entry-search-list-thumb col-fixed">
-                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="entry-thumb">
-                  <img role="presentation" :alt="entry.id" :src="(entry as any).thumb"/>
+            <div v-if="!param.loading" v-for="entry in items" class="grid">
+              <div class="entity-search-entry-list-thumb col-fixed">
+                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="entry-thumb-list">
+                  <img role="presentation" :alt="entry.id" :src="entry.thumb"/>
                 </a>
               </div>
-              <div class="entry-search-list-info col">
-                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="text-ellipsis-one"
-                   :title="entry.name">{{ entry.name }}</a>
-                <span class="text-ellipsis-one" style="display: inline" :title="entry.subName">{{ entry.subName }}</span>
-                <span v-if="entry.date" style="display: inline">&nbsp;({{ entry.date }})</span>
+              <div class="entity-search-entry-list-info col">
+                <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="text-ellipsis-one"
+                             style="width: 54rem"
+                             :title="entry.name">{{ entry.name }}
+                </router-link>
+
+                <span style="width: 54rem;display: flex;align-items: center;white-space: nowrap;overflow: hidden;">
+                  <span class="text-ellipsis-one" style="flex-shrink: 1;flex-grow: 1;font-size: 1rem;color: #999999"
+                        :title="entry.subName">{{ entry.subName }}</span>
+                  <span style="flex-shrink: 0;white-space: nowrap;margin-left: 8px;">
+                    <i v-if="entry.gender.value" :class="PublicHelper.getGenderIcon(entry.gender.value)"/>
+                    <span v-if="entry.date" class="entity-search-entry-list-info-time"
+                          style="display: inline">{{ entry.date }}</span>
+                  </span>
+                </span>
               </div>
-              <div class="flex align-items-center justify-content-center" style="width: 100px">
-                <span class="small-font" style="color:gray;">{{ t($const.ENTRY_TYPE_SET[entry.type-1].label) }}</span>
-                <Tag class="ml-2">
-                  <RIcon :name="$const.ENTRY_TYPE_SET[entry.type-1].icon" size="2" />
-                </Tag>
+              <div class="flex align-items-center relative" style="width: 6.5rem">
+                <span style="color: gray;font-size: 1rem">{{ t($const.ENTRY_TYPE_SET[entry.type.value].label) }}</span>
+                <span class="material-symbols-outlined"
+                      style="font-size: 2rem;right: 1rem !important;position: absolute;font-weight: 700"
+                      :style="`color: var(--r-entry-${entry.type.value})`">
+                      {{ $const.ENTRY_TYPE_SET[entry.type.value].icon }}
+                    </span>
               </div>
             </div>
           </div>
         </template>
-
         <template #footer>
-          <BlockUI :blocked="loading">
-            <Paginator v-model:first="first" :rows="queryParams.size" :totalRecords="searchResult.total"
-                       @page="onPage($event)" :alwaysShow="searchResult.total !== 0">
-              <template #start>
-                search in {{ searchResult.time }}s
-              </template>
-              <template #end>
-                {{ searchResult.total }} entries
-              </template>
-            </Paginator>
+          <BlockUI :blocked="param.loading">
+            <RPaginator v-model:page="param.query.page" v-model:size="param.query.size" alwaysShow
+                        :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
           </BlockUI>
         </template>
       </DataView>
     </div>
-    <div class="entity-search-side-col">
-      <Panel>
-        <BlockUI :blocked="loading">
-          <div class="field">
-            <SelectButton class="w-full justify justify-content-center" size="small" v-model="entryType"
-                          :options="$const.ENTRY_TYPE_SET"
-                          @change="switchItemType"
-                          optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
-              <template #option="{option}">
-                <RIcon :name="option.icon" v-tooltip.bottom="{value: t(option.label), class: 'short-tooltip'}" />
-              </template>
-            </SelectButton>
-          </div>
-          <div class="field">
-            <FloatLabel variant="on">
+    <div class="entity-search-side entity-editor">
+      <Card>
+        <template #content>
+          <BlockUI :blocked="param.loading">
+            <div class="field">
+              <SelectButton class="w-full justify justify-content-center" size="small" v-model="entryType"
+                            :options="$const.ENTRY_TYPE_SET"
+                            @change="switchItemType"
+                            optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+                <template #option="{option}">
+                  <RIcon :name="option.icon" v-tooltip.bottom="{value: t(option.label)}"/>
+                </template>
+              </SelectButton>
+            </div>
+            <FloatLabel class="field" variant="on">
               <label>{{ t('Keyword') }}</label>
-              <InputText size="small" v-model="queryParams.keyword" class="static w-full"/>
+              <InputText size="large" v-model="param.query.filters.keyword.value" class="static w-full"/>
             </FloatLabel>
-          </div>
-        </BlockUI>
+          </BlockUI>
+        </template>
         <template #footer>
-          <BlockUI :blocked="loading">
+          <BlockUI :blocked="param.loading">
             <div class="relative">
               <div class="bottom-0 right-0">
                 <RButton @click="search" icon="search"/>
@@ -232,7 +226,7 @@ const resetFilter = () => {
             </div>
           </BlockUI>
         </template>
-      </Panel>
+      </Card>
     </div>
   </div>
 
