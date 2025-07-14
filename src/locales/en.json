@@ -200,6 +200,9 @@
 
   "Resource": {
     "FileStatistics": "File: {0}   Size: {1}"
-  }
+  },
+
+  "SearchIn": "Search in",
+  "Result": "Results"
 
 }

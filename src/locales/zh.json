@@ -200,6 +200,9 @@
 
   "Resource": {
     "FileStatistics": "总文件数: {0}   大小: {1}"
-  }
+  },
+
+  "SearchIn": "耗时",
+  "Result": "结果"
 
 }

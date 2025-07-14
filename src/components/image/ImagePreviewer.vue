@@ -5,7 +5,6 @@ import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
-import tingle from "tingle.js";
 
 const manager = defineAsyncComponent(() => import('@/components/image/ImageManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/image/ImageBrowser.vue'));
@@ -81,16 +80,6 @@ const openManager = () => {
     }
   });
 }
-
-const imageZoomIn = (image: any) => {
-  modal.setContent(`<img src="${image.display}" alt="${image.name}" />`)
-  modal.open();
-};
-const modal = new tingle.modal({
-  closeMethods: ['overlay', 'button', 'escape'],
-  closeLabel: "Close",
-  cssClass: ['tingle-image']
-});
 </script>
 <template>
   <Panel>
@@ -109,7 +98,6 @@ const modal = new tingle.modal({
     </div>
     <div v-else class="image-showcase">
       <div class="side-image" v-for="(image, index) of images as any" :key="index">
-
         <Image preview v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`, class: 'image-tooltip'}">
           <template #image>
             <img :src="image.thumb" draggable="false" oncontextmenu="return false" :alt="image.name"/>
@@ -118,10 +106,6 @@ const modal = new tingle.modal({
             <img :src="image.display" :alt="image.name" :style="style" @click="previewCallback" />
           </template>
         </Image>
-
-<!--        <img :src="image.thumb" draggable="false" oncontextmenu="return false"-->
-<!--             v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`, class: 'image-tooltip'}"-->
-<!--             @click="imageZoomIn(image)" :alt="image.name"/>-->
       </div>
     </div>
     <Button v-if="images.length" @click="openBrowser" link size="large" severity="info" class="ml-4">

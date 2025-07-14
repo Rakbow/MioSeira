@@ -27,5 +27,9 @@ export default defineConfig({
         rewrite: (path: string) => path.replace(/^\/api/, ''), // 将请求路径中的 /api 替换为空
       },
     },
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost'
+    }
   },
 })

@@ -10,7 +10,6 @@
           <span>{{ entry.nameZh }}</span><br>
         </div>
       </div>
-
       <template v-if="entry.subType.value !== $const.ENTRY_SUB_TYPE.MAIN_SERIES">
         <div :class="`${prefix}-entry`">
           <div :class="`${prefix}-entry-summary`">

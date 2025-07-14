@@ -39,7 +39,7 @@ app.config.globalProperties.$const = META
 const savedLocale = localStorage.getItem('locale')
 if (savedLocale) {
     document.cookie = `lang=${savedLocale}; path=/`;
-    i18n.global.locale.value = savedLocale;
+    i18n.global.locale.value = savedLocale as 'zh' | 'en';
 }
 
 setupPlugins(app);

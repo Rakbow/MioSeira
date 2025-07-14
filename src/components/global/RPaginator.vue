@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
 import {defineProps, onBeforeMount, ref} from "vue";
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n();
 const emit = defineEmits(['page', 'update:rows'])
 const props = defineProps({
   page: {
@@ -47,10 +49,10 @@ onBeforeMount(() => {
              @page="e => emit('page', e)" @update:rows="e => emit('update:rows', e)"
              :alwaysShow="alwaysShow" :rowsPerPageOptions="sizeOptions" :template="pageTemplate">
     <template #start>
-      search in {{ time }}s
+      {{ `${t('SearchIn')} ${time}s` }}
     </template>
     <template #end>
-      {{ total }} items
+      {{ total }} {{ t('Result') }}
     </template>
     <template #firsticon>
       <RIcon name="first_page"/>
