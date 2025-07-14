@@ -1,39 +1,36 @@
 <template>
   <BlockUI :blocked="param.block">
     <div class="text-center mb-5">
-      <img src="https://blocks.primevue.org/images/blocks/logos/hyper.svg" alt="Image" height="50" class="mb-3">
+      <img alt="logo" :src="`${$const.STATIC_DOMAIN}common/logo.png`" height="40" class="mr-2" />
       <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
       <span class="text-600 font-medium line-height-3">Don't have an account?</span>
       <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
     </div>
-    <div>
-      <label for="username" class="block text-900 font-medium mb-2">{{ t('Username') }}</label>
-      <InputText id="username" v-model="param.username" type="text" class="w-full mb-3"/>
+    <div class="entity-editor">
+      <FloatLabel class="field" variant="on">
+        <label>{{ t('Username') }}</label>
+        <InputText id="username" size="large" v-model="loginDTO.username"/>
+      </FloatLabel>
+      <FloatLabel class="field" variant="on">
+        <label>{{ t('Password') }}</label>
+        <InputText id="password" size="large" v-model="loginDTO.password"/>
+      </FloatLabel>
 
-      <label for="password" class="block text-900 font-medium mb-2">{{ t('Password') }}</label>
-      <InputText id="password" v-model="param.password" type="password" class="w-full mb-3"/>
-
-      <div class="flex align-items-center justify-content-between mb-6">
+      <div class="grid gap-4">
+        <FloatLabel variant="on">
+          <label>{{ t('VerifyCode') }}</label>
+          <InputText size="large" v-model="loginDTO.verifyCode"/>
+        </FloatLabel>
         <div class="flex align-items-center">
-          <InputText id="verifyCode" name="verifyCode" v-model="param.verifyCode" class="mr-1"
-                     :placeholder="t('VerifyCode')"/>
-          <!--                        <label htmlFor="verifyCode" class="block text-900 font-medium mb-2">验证码</label>-->
-        </div>
-        <div class="flex align-items-center">
-          <img id="kaptcha" style="width:10rem;height:4rem;" class="mr-2" alt="" src=""/>
+          <img id="kaptcha" style="width:7rem;height:2.8rem;" class="mr-2" alt="" src=""/>
           <Button @click="refreshKaptcha" icon="pi pi-refresh" :v-tooltip="t('RefreshVerifyCode')"
                   class="p-button-rounded p-button-text"/>
         </div>
-      </div>
-
-      <div class="flex align-items-center justify-content-between mb-6">
         <div class="flex align-items-center">
-          <Checkbox id="rememberMe" :binary="true" v-model="param.rememberMe" class="mr-2"></Checkbox>
+          <Checkbox id="rememberMe" :binary="true" v-model="loginDTO.rememberMe" class="mr-2"></Checkbox>
           <label for="rememberMe">{{ t('RememberMe') }}</label>
         </div>
-        <!--        <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>-->
       </div>
-
       <Button :label="t('SignIn')" icon="pi pi-user" class="w-full" @click="login"/>
     </div>
   </BlockUI>
@@ -63,7 +60,8 @@ const refreshKaptcha = () => {
 
 const login = async () => {
   param.value.block = true;
-  const res = await Axios.post(API.LOGIN, param.value);
+  param.value.data = loginDTO.value
+  const res = await Axios.post(API.LOGIN, param.value.data);
   if (res.success()) {
     userStore.login(res.data.user, res.data.token);
     location.reload();
@@ -73,7 +71,7 @@ const login = async () => {
   }
 }
 
-const param = ref({
+const loginDTO = ref({
   username: "",
   password: "",
   verifyCode: "",
