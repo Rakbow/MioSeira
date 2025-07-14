@@ -102,7 +102,7 @@ const openManager = () => {
 
   table {
     margin: 1rem 0;
-    width: 80rem;
+    width: 90%;
     padding-bottom: 0;
     border: none;
     border-collapse: collapse;
@@ -137,14 +137,19 @@ const openManager = () => {
       margin-left: 1rem;
       text-overflow: ellipsis !important;
     }
-    width: 55rem;
+    //width: 55rem;
     color: var(--r-steel-300);
   }
   &-size, &-time {
     color: var(--r-gray-300);
   }
 
+  &-size {
+    width: 7rem;
+  }
+
   &-time {
+    width: 12rem;
     text-align: right !important;
   }
 

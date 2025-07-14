@@ -112,8 +112,10 @@
   &-entry {
     margin: 1rem !important;
     display: flex;
+    @extend .grid;
 
     &-summary {
+      @extend .col-fixed;
       width: 20rem;
       margin-top: 1rem !important;
     }
@@ -159,7 +161,7 @@
     }
 
     &-content {
-      margin-left: 1rem !important;
+      @extend .col;
     }
 
   }
