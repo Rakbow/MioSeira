@@ -18,9 +18,14 @@ const {proxy} = getCurrentInstance()!;
 const layout = ref('list');
 const dataviewOptions = ref(['list']);
 //endregion
-const entryType = ref();
+const entitySubType = ref();
 const param = ref<EntitySearchParam>(new EntitySearchParam());
-
+const sortKey = ref({label: 'Item', icon: 'lists', field: 'items', order: -1});
+const sortOptions = ref<any[]>([
+  {label: 'Item', icon: 'lists', field: 'items', order: -1},
+  {label: 'Date', icon: 'calendar_today', field: 'date', order: 1},
+  {label: 'Date', icon: 'calendar_today', field: 'date', order: -1}
+]);
 onBeforeMount(() => {
   param.value.initFilters({
     type: {value: null},
@@ -34,11 +39,12 @@ onMounted(() => {
   load();
 })
 
-const switchItemType = () => {
-  if (entryType.value === null) {
-    param.value.query.filters.type.value = null;
+const switchEntitySubType = (ev: any) => {
+  if (ev.value) {
+    param.value.query.filters.type.value = parseInt(entitySubType.value.value);
   } else {
-    param.value.query.filters.type.value = parseInt(entryType.value.value);
+    entitySubType.value = null;
+    param.value.query.filters.type.value = null;
   }
   load();
 }
@@ -59,9 +65,9 @@ const initQueryParam = async () => {
   param.value.query.filters.type.value = query.type ? parseInt(query.type?.toString()) : null;
 
   if (param.value.query.filters.type.value) {
-    entryType.value = proxy!.$const.ENTRY_TYPE_SET.find(i => i.value === param.value.query.filters.type.value.toString())
+    entitySubType.value = proxy!.$const.ENTRY_TYPE_SET.find(i => i.value === param.value.query.filters.type.value.toString())
   } else {
-    entryType.value = proxy!.$const.ENTRY_TYPE_SET[0]
+    entitySubType.value = null;
   }
 }
 
@@ -79,12 +85,14 @@ const updateQueryParam = () => {
     }
   });
 
-  if (sortField) {
+  if (sortField && ['date'].includes(sortField)) {
     curQuery.sort = sortField;
     curQuery.order = sortOrder === 1 ? 'asc' : sortOrder === -1 ? 'desc' : null;
+    sortKey.value = sortOptions.value.find(op => op.field === sortField && op.order === sortOrder);
   } else {
     delete curQuery.sort;
     delete curQuery.order;
+    sortKey.value = sortOptions.value[0];
   }
 
   router.push({path: route.path, query: curQuery});
@@ -114,12 +122,26 @@ const clearFilter = () => {
   param.value.initPage();
   resetFilter();
   load();
-
 }
 
 const resetFilter = () => {
-  param.value.query.filters.keyword.value = '';
+  param.value.query.filters = {
+    keyword: {value: ''},
+    type: {value: null}
+  };
+  if(entitySubType.value) {
+    param.value.query.filters.type.value = parseInt(entitySubType.value.value);
+  }
+  sortKey.value = sortOptions.value[0];
+  param.value.clearSort();
 }
+
+const onSortChange = (ev: any) => {
+  if(!['date'].includes(ev.value.field)) return;
+  param.value.query.sortField = ev.value.field;
+  param.value.query.sortOrder = ev.value.order;
+  load();
+};
 </script>
 
 <template>
@@ -127,13 +149,53 @@ const resetFilter = () => {
     <div class="entity-search-main">
       <DataView :value="param.result.data" :layout="layout">
         <template #header>
-          <div class="flex">
-            <SelectButton v-model="layout" :options="dataviewOptions" :allowEmpty="false">
-              <template #option="{ option }">
-                <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']"/>
-              </template>
-            </SelectButton>
+          <div class="grid" style="width: 100%">
+            <div class="col-12" style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+              <SelectButton size="large" v-model="entitySubType" :options="$const.ENTRY_TYPE_SET"
+                            @change="switchEntitySubType" :disabled="param.loading"
+                            optionLabel="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+                <template #option="{option}">
+                  <RIcon :name="option.icon" :size="1.8"/>
+                  {{ t(option.label) }}
+                </template>
+              </SelectButton>
+              <div style="align-items: center;display: flex;gap: 1rem">
+                <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"
+                        @change="onSortChange" size="small">
+                  <template #value="{value}">
+                    <div style="display: flex;align-items: center">
+                      <RIcon :name="value.order === -1 ? 'south' : 'north'" :size="1.5" />
+                      <RIcon :name="value.icon" :size="1.5" />
+                      <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(value.label) }}</span>
+                    </div>
+                  </template>
+                  <template #option="{option}">
+                    <RIcon :name="option.order === -1 ? 'south' : 'north'" :size="1.5" />
+                    <RIcon :name="option.icon" :size="1.5" />
+                    <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(option.label) }}</span>
+                  </template>
+                </Select>
+
+                <SelectButton v-model="layout" :options="dataviewOptions" :allowEmpty="false" :disabled="param.loading">
+                  <template #option="{ option }">
+                    <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']"/>
+                  </template>
+                </SelectButton>
+              </div>
+            </div>
+            <div class="col-fixed">
+              <IconField>
+                <InputIcon class="pi pi-search"/>
+                <InputText size="large" :placeholder="t('Keyword')" v-model="param.query.filters.keyword.value"
+                           style="width: 63rem" @keyup.enter="search" :disabled="param.loading"/>
+                <InputIcon class="pi pi-spin pi-spinner" v-if="param.loading" />
+              </IconField>
+            </div>
+            <div class="col">
+              <RButton size="small" action="clear" @click="clearFilter" :disabled="param.loading"/>
+            </div>
           </div>
+
         </template>
         <template #empty>
             <span class="empty-search-result">
@@ -178,11 +240,11 @@ const resetFilter = () => {
                 </span>
               </div>
               <div class="flex align-items-center relative" style="width: 6.5rem">
-                <span style="color: gray;font-size: 1rem">{{ t($const.ENTRY_TYPE_SET[entry.type.value].label) }}</span>
+                <span style="color: gray;font-size: 1rem">{{ t($const.ENTRY_TYPE_SET[entry.type.value - 1].label) }}</span>
                 <span class="material-symbols-outlined"
                       style="font-size: 2rem;right: 1rem !important;position: absolute;font-weight: 700"
                       :style="`color: var(--r-entry-${entry.type.value})`">
-                      {{ $const.ENTRY_TYPE_SET[entry.type.value].icon }}
+                      {{ $const.ENTRY_TYPE_SET[entry.type.value - 1].icon }}
                     </span>
               </div>
             </div>
@@ -195,38 +257,6 @@ const resetFilter = () => {
           </BlockUI>
         </template>
       </DataView>
-    </div>
-    <div class="entity-search-side entity-editor">
-      <Card>
-        <template #content>
-          <BlockUI :blocked="param.loading">
-            <div class="field">
-              <SelectButton class="w-full justify justify-content-center" size="small" v-model="entryType"
-                            :options="$const.ENTRY_TYPE_SET"
-                            @change="switchItemType"
-                            optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
-                <template #option="{option}">
-                  <RIcon :name="option.icon" v-tooltip.bottom="{value: t(option.label)}"/>
-                </template>
-              </SelectButton>
-            </div>
-            <FloatLabel class="field" variant="on">
-              <label>{{ t('Keyword') }}</label>
-              <InputText size="large" v-model="param.query.filters.keyword.value" class="static w-full"/>
-            </FloatLabel>
-          </BlockUI>
-        </template>
-        <template #footer>
-          <BlockUI :blocked="param.loading">
-            <div class="relative">
-              <div class="bottom-0 right-0">
-                <RButton @click="search" icon="search"/>
-                <RButton @click="clearFilter" icon="filter_alt_off" severity="danger"/>
-              </div>
-            </div>
-          </BlockUI>
-        </template>
-      </Card>
     </div>
   </div>
 

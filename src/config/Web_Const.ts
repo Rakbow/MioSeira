@@ -79,7 +79,6 @@ export const META = {
         {label: "gb", value: "gb"}
     ],
     ENTRY_TYPE_SET: [
-        {icon: 'filter_alt_off', value: null, label: 'Entity.Album'},
         {icon: 'widgets', value: '1', label: 'Product'},
         {icon: 'group', value: '2', label: 'Person'},
         {icon: 'mood', value: '3', label: 'Character'},

@@ -61,8 +61,8 @@ const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageT
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
-const RelatedItems = defineAsyncComponent(() => import('@/components/item/RelatedItems.vue'));
 const RelatedPersons = defineAsyncComponent(() => import('@/components/related/RelatedPersons.vue'));
+const RelatedItems = defineAsyncComponent(() => import('@/components/item/RelatedItems.vue'));
 const SubProductInfo = defineAsyncComponent(() => import('@/components/entry/SubProductInfo.vue'));
 const RelationGroup = defineAsyncComponent(() => import('@/components/related/RelationGroup.vue'));
 

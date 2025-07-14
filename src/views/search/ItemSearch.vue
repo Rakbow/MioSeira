@@ -193,7 +193,6 @@ const clearFilter = () => {
   param.value.initPage();
   resetFilter();
   loadItems();
-
 }
 
 const resetFilter = () => {
@@ -207,15 +206,11 @@ const resetFilter = () => {
     releaseType: {value: null},
     entries: {value: []},
   };
-
   if(entitySubType.value) {
     param.value.query.filters.type.value = parseInt(entitySubType.value.value);
   }
-
   sortKey.value = sortOptions.value[0];
-
   param.value.clearSort();
-  loadItems();
 }
 
 const onSortChange = (ev: any) => {
@@ -246,7 +241,7 @@ const endHover = () => {
       <DataView :value="param.result.data" :layout="layout">
         <template #header>
           <div style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
-            <SelectButton size="large" :options="proxy!.$const.ITEM_TYPE_SET" :disabled="param.loading"
+            <SelectButton size="large" :options="$const.ITEM_TYPE_SET" :disabled="param.loading"
                           v-model="entitySubType" @change="switchEntitySubType"
                           optionLabel="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
               <template #option="{option}">
@@ -255,9 +250,8 @@ const endHover = () => {
               </template>
             </SelectButton>
 
-            <div style="align-items: center;display: flex;gap: 2rem">
-
-              <Select v-model="sortKey" :options="sortOptions" filled style="width: 15rem"
+            <div style="align-items: center;display: flex;gap: 1rem">
+              <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"
                       @change="onSortChange" size="small">
                 <template #value="{value}">
                   <div style="display: flex;align-items: center">
@@ -279,7 +273,6 @@ const endHover = () => {
                 </template>
               </SelectButton>
             </div>
-
           </div>
         </template>
         <template #empty>
