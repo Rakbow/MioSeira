@@ -59,9 +59,6 @@ const MyPreset = definePreset(Aura, {
                 }
             },
             css: ({dt}: any) => `
-                .p-select, .p-select-overlay {
-                    border-style: none;
-                }
                 .p-select-option-label {
                     font-size: ${dt('select.option.label.font.size')};
                 }

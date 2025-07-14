@@ -109,9 +109,19 @@ const modal = new tingle.modal({
     </div>
     <div v-else class="image-showcase">
       <div class="side-image" v-for="(image, index) of images as any" :key="index">
-        <img :src="image.thumb" draggable="false" oncontextmenu="return false"
-             v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`, class: 'image-tooltip'}"
-             @click="imageZoomIn(image)" :alt="image.name"/>
+
+        <Image preview v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`, class: 'image-tooltip'}">
+          <template #image>
+            <img :src="image.thumb" draggable="false" oncontextmenu="return false" :alt="image.name"/>
+          </template>
+          <template #original="{style, previewCallback}">
+            <img :src="image.display" :alt="image.name" :style="style" @click="previewCallback" />
+          </template>
+        </Image>
+
+<!--        <img :src="image.thumb" draggable="false" oncontextmenu="return false"-->
+<!--             v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`, class: 'image-tooltip'}"-->
+<!--             @click="imageZoomIn(image)" :alt="image.name"/>-->
       </div>
     </div>
     <Button v-if="images.length" @click="openBrowser" link size="large" severity="info" class="ml-4">
@@ -120,11 +130,6 @@ const modal = new tingle.modal({
   </Panel>
 </template>
 <style lang="scss" scoped>
-
-.image-tooltip .p-tooltip-text {
-  font-size: 1rem;
-  width: 12rem;
-}
 
 .image-showcase {
   display: flex !important;
@@ -143,14 +148,23 @@ const modal = new tingle.modal({
   background-color: var(--r-bg-blue-950);
   border: solid .1rem #40557E;
 
-  img {
+  .p-image {
     position: absolute;
     top: 50%;
     left: 50%;
     display: block;
     transform: translate(-50%, -50%);
-    cursor: url("https://static.rakbow.com/common/zoomin.cur"), pointer;
+
   }
+
+  //img {
+  //  position: absolute;
+  //  top: 50%;
+  //  left: 50%;
+  //  display: block;
+  //  transform: translate(-50%, -50%);
+  //  cursor: url("https://static.rakbow.com/common/zoomin.cur"), pointer;
+  //}
 
 }
 </style>

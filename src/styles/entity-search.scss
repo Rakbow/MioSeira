@@ -194,6 +194,16 @@
   .p-dataview {
     margin: 0 1rem;
     .p-dataview {
+      &-header {
+        .p-select {
+          border-style: none;
+
+          &-overlay {
+            border-style: none;
+          }
+        }
+      }
+
       &-content {
         margin: 1rem;
       }

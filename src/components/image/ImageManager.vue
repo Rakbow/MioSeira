@@ -30,9 +30,16 @@
     </Column>
 
     <Column class="text-center" style="width: 2.5rem">
-      <template #body="{data, index}">
-        <img :alt="data.name" :src="data.thumb" class="image-click" @click="imageZoomIn(data)"
-             style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto"/>
+      <template #body="{data}">
+        <Image preview>
+          <template #image>
+            <img :src="data.thumb" draggable="false" oncontextmenu="return false" :alt="data.name"
+                 style="max-width: 2.5rem;max-height: 2.5rem;width: auto;height: auto"/>
+          </template>
+          <template #original="{style, previewCallback}">
+            <img :src="data.display" :alt="data.name" :style="style" @click="previewCallback" />
+          </template>
+        </Image>
       </template>
     </Column>
     <Column :header="t('Name')" filterField="keyword" field="name"
