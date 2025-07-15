@@ -1,5 +1,5 @@
 <template>
-  <DataView :value="param.result.data" lazy paginator>
+  <DataView :value="param.result.data">
     <template #empty>
         <span class="empty-search-result">
             {{ t('NoSearchResult') }}
@@ -21,7 +21,7 @@
         </div>
       </div>
     </template>
-    <template #paginatorcontainer>
+    <template #footer>
       <RPaginator v-model:page="param.query.page" v-model:size="param.query.size"
                   :total="param.result.total" @page="page($event)" :time="param.result.time"/>
     </template>

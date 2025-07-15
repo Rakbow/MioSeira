@@ -3,22 +3,22 @@ import "@/styles/entity-search.scss";
 import "flag-icons/css/flag-icons.min.css";
 
 import {API, Axios} from "@/api";
-import {getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntitySearchParam} from "@/service/entityService";
 import {PublicHelper} from "@/utils/publicHelper";
 
+const EntryTypeSelector = defineAsyncComponent(() => import('@/components/entry/EntryTypeSelector.vue'));
+
 const {t} = useI18n();
 const route = useRoute();
 const router = useRouter();
-const {proxy} = getCurrentInstance()!;
 
 //region data view and paginator
 const layout = ref('list');
 const dataviewOptions = ref(['list']);
 //endregion
-const entitySubType = ref();
 const param = ref<EntitySearchParam>(new EntitySearchParam());
 const sortKey = ref({label: 'Item', icon: 'lists', field: 'items', order: -1});
 const sortOptions = ref<any[]>([
@@ -39,13 +39,8 @@ onMounted(() => {
   load();
 })
 
-const switchEntitySubType = (ev: any) => {
-  if (ev.value) {
-    param.value.query.filters.type.value = parseInt(entitySubType.value.value);
-  } else {
-    entitySubType.value = null;
-    param.value.query.filters.type.value = null;
-  }
+const switchEntitySubType = (value: any) => {
+  param.value.query.filters.type.value = value;
   load();
 }
 
@@ -63,12 +58,6 @@ const initQueryParam = async () => {
 
   param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
   param.value.query.filters.type.value = query.type ? parseInt(query.type?.toString()) : null;
-
-  if (param.value.query.filters.type.value) {
-    entitySubType.value = proxy!.$const.ENTRY_TYPE_SET.find(i => i.value === param.value.query.filters.type.value.toString())
-  } else {
-    entitySubType.value = null;
-  }
 }
 
 const updateQueryParam = () => {
@@ -125,13 +114,8 @@ const clearFilter = () => {
 }
 
 const resetFilter = () => {
-  param.value.query.filters = {
-    keyword: {value: ''},
-    type: {value: null}
-  };
-  if (entitySubType.value) {
-    param.value.query.filters.type.value = parseInt(entitySubType.value.value);
-  }
+
+  param.value.query.filters.keyword.value = '';
   sortKey.value = sortOptions.value[0];
   param.value.clearSort();
 }
@@ -152,14 +136,8 @@ const onSortChange = (ev: any) => {
           <div class="grid" style="width: 100%">
             <div class="col-12"
                  style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
-              <SelectButton size="small" v-model="entitySubType" :options="$const.ENTRY_TYPE_SET"
-                            @change="switchEntitySubType" :disabled="param.loading"
-                            optionLabel="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
-                <template #option="{option}">
-                  <RIcon :name="option.icon" :size="1.8"/>
-                  {{ t(option.label) }}
-                </template>
-              </SelectButton>
+              <EntryTypeSelector v-model="param.query.filters.type.value"
+                                 @update="switchEntitySubType" :disabled="param.loading" />
               <div style="align-items: center;display: flex;gap: 1rem">
                 <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"
                         @change="onSortChange" size="small" :disabled="param.loading">

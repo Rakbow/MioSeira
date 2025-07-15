@@ -5,7 +5,7 @@ import {defineAsyncComponent, getCurrentInstance, onBeforeMount, reactive, ref} 
 import {useOptionStore} from "@/store/modules/option";
 import "flag-icons/css/flag-icons.min.css";
 import {API, Axios} from "@/api";
-import {ItemAdvanceCreateDTO, loadEditor, parseItemSpecParams} from "@/service/itemService";
+import {ItemAdvanceCreateDTO, parseItemSpecParams} from "@/service/itemService";
 import {MdEditor} from "md-editor-v3";
 import {useRouter} from "vue-router";
 import {PublicHelper} from "@/utils/publicHelper";

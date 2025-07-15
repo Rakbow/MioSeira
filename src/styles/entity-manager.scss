@@ -158,14 +158,11 @@
 
       &-header {
 
+        display: flex;
+        align-items: center;
+
         border-top-left-radius: 1rem !important;
         border-top-right-radius: 1rem !important;
-
-        .p-selectbutton {
-          .material-symbols-outlined {
-            font-size: 2rem;
-          }
-        }
 
         .p-button {
           margin-left: .5rem;

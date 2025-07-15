@@ -1,14 +1,8 @@
 <template>
   <div class="entity-selector">
     <BlockUI :blocked="param.loading">
-      <SelectButton v-if="props.all" class="w-full" size="small"
-                    v-model="entryType" :options="$const.ENTRY_TYPE_SET" @change="switchEntryType($event)"
-                    optionLabel="value" dataKey="value" ariaLabelledby="custom">
-        <template #option="{option}">
-          <RIcon :name="option.icon"/>
-          <span style="font-size: 1.4rem">{{ t(option!.label) }}</span>
-        </template>
-      </SelectButton>
+      <EntryTypeSelector v-if="option.all" :disabled="false"
+                         v-model="param.query.filters.type.value" @update="switchEntryType" />
       <IconField>
         <InputIcon class="pi pi-search" v-if="!param.query.filters.keyword.value"/>
         <InputText size="large" v-model="param.query.filters.keyword.value" @keyup.enter="search"/>
@@ -36,7 +30,7 @@
 
             <div class="related-entity-role">
               <RButton @click="select(entity)" icon="add_box"
-                       v-if="!entity.isPicked || type === $const.ENTRY_TYPE.PERSON"/>
+                       v-if="!entity.isPicked || option.type === $const.ENTRY_TYPE.PERSON"/>
               <RButton icon="check_box" severity="info"
                        v-else disabled/>
             </div>
@@ -65,11 +59,40 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineProps, getCurrentInstance, onBeforeMount} from "vue";
-import {META} from "@/config/Web_Const";
+import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
 import {useI18n} from "vue-i18n";
 import {EntitySearchParam} from "@/service/entityService";
+
+const EntryTypeSelector = defineAsyncComponent(() => import('@/components/entry/EntryTypeSelector.vue'));
+
+const emit = defineEmits(['pick']);
+const {t} = useI18n();
+const param = ref<EntitySearchParam>(new EntitySearchParam());
+const dialogRef = inject<any>('dialogRef');
+
+const option = ref({
+  all: false,
+  type: null,
+  multi: true,
+  entries: <any>[]
+})
+
+const initParam = () => {
+  if(dialogRef.value.data.all) {
+    option.value.all = dialogRef.value.data.all;
+  }
+  if(dialogRef.value.data.type) {
+    option.value.type = dialogRef.value.data.type;
+    param.value.query.filters.type.value = dialogRef.value.data.type;
+  }
+  if(dialogRef.value.data.multi) {
+    option.value.multi = dialogRef.value.data.multi;
+  }
+  if(dialogRef.value.data.entries) {
+    option.value.entries = dialogRef.value.data.entries;
+  }
+}
 
 onBeforeMount(() => {
   param.value.initFilters({
@@ -77,54 +100,22 @@ onBeforeMount(() => {
     keyword: {value: ''}
   });
   param.value.query.size = 7;
+  initParam();
 });
 
 onMounted(() => {
-  pickedEntries.value = props.entries;
-  param.value.query.filters.type.value = props.type;
   load();
 });
 
-const props = defineProps({
-  all: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
-  type: {
-    type: Number,
-    required: false,
-    default: META.ENTRY_TYPE.PRODUCT
-  },
-  entries: {
-    type: Array,
-    required: true,
-    default: () => ([])
-  },
-  multiSelect: {
-    type: Boolean,
-    required: false,
-    default: true
-  },
-});
-const emit = defineEmits(['pick']);
-const { proxy } = getCurrentInstance()!;
-const {t} = useI18n();
-const pickedEntries = ref<any[]>([]);
-const entryType = ref();
-const param = ref<EntitySearchParam>(new EntitySearchParam());
-
-const switchEntryType = (ev: any) => {
-  if (ev.value === null)
-    entryType.value = proxy!.$const.ENTRY_TYPE_SET[0];
-  param.value.query.filters.type.value = parseInt(entryType.value.value);
+const switchEntryType = (value: any) => {
+  param.value.query.filters.type.value = value;
   load();
 }
 
 const select = (entity: any) => {
   entity.isPicked = true;
-  pickedEntries.value!.push(entity);
-  emit('pick', entity);
+  option.value.entries.push(entity);
+  emit('pick', option.value.entries);
 }
 
 const page = (ev: any) => {
@@ -154,7 +145,7 @@ const load = async () => {
 
 const markPickedEntries = () => {
   return param.value.result.data.map(entry => {
-    const picked = pickedEntries.value!
+    const picked = (option.value.entries as any[])
         .some(pickedEntry => pickedEntry.id === entry.id);
     if (picked) {
       return {...entry, isPicked: true};

@@ -15,19 +15,14 @@ const filteredOptions = computed(() =>
 )
 
 const toggle = () => {
-  show.value = !show.value
-  console.log('Toggled dropdown:', show.value)
-}
-
-const close = () => {
-  show.value = false
+  show.value = !show.value;
 }
 
 // 点击外部关闭 dropdown
 const dropdownRef = ref<HTMLElement | null>(null)
 const handleClickOutside = (event: MouseEvent) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
-    close()
+    show.value = false;
   }
 }
 

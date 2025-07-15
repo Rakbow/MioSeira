@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
@@ -9,6 +9,8 @@ import {EntitySearchParam} from '@/service/entityService';
 import {useOptionStore} from "@/store/modules/option";
 import {PublicHelper} from "@/utils/publicHelper";
 import {PColumn} from "@/service/frame";
+
+const EntryTypeSelector = defineAsyncComponent(() => import('@/components/entry/EntryTypeSelector.vue'));
 
 const dt = ref();
 const {t} = useI18n();
@@ -20,7 +22,7 @@ const entryType = ref();
 const {proxy} = getCurrentInstance()!;
 
 onBeforeMount(async () => {
-  entryType.value = proxy!.$const.ENTRY_TYPE_SET[store.entryCurrent === 0 ? 0 : store.entryCurrent - 1];
+  entryType.value = store.entryCurrent;
   param.value.initFilters({
     type: {value: store.entryCurrent},
     keyword: {value: ''}
@@ -37,11 +39,13 @@ onMounted(() => {
   load();
 })
 
-const switchEntryType = (ev: any) => {
-  if (ev.value === null)
-    entryType.value = proxy!.$const.ENTRY_TYPE_SET[0];
-  store.entryCurrent = parseInt(entryType.value.value);
-  param.value.query.filters.type.value = store.entryCurrent;
+const switchEntityType = (value: any) => {
+  if (value === null)
+    entryType.value = proxy!.$const.ENTRY_TYPE.PRODUCT;
+  else
+    entryType.value = value;
+  store.entryCurrent = parseInt(entryType.value);
+  param.value.query.filters.type.value = entryType.value;
   param.value.clearSort();
   param.value.initPage();
   load();
@@ -59,6 +63,7 @@ const initQueryParam = async () => {
 
   param.value.query.page = parseInt(query.page?.toString() ?? '1');
   param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
+  param.value.query.filters.type.value = query.type?.toString() ?? store.entryCurrent;
 }
 
 const updateQueryParam = () => {
@@ -141,15 +146,7 @@ const exportCSV = () => {
                   :sizeOptions="[15, 30 ,50]" @update:rows="param.query.size = $event"/>
     </template>
     <template #header>
-      <SelectButton size="small" v-model="entryType" :options="$const.ENTRY_TYPE_SET"
-                    @change="switchEntryType($event)"
-                    optionLabel="value" dataKey="value" ariaLabelledby="custom">
-        <template #option="{option}">
-          <RIcon :name="option.icon" :size="1.6"/>
-          <span style="font-size: 1.2rem">{{ t(option!.label) }}</span>
-        </template>
-      </SelectButton>
-
+      <EntryTypeSelector v-model="entryType" @update="switchEntityType" :disabled="param.loading" />
       <RButton @click="" action="create"/>
       <RButton @click="confirmDeleteSelected" action="delete"
                :disabled="!param.selectedData.length"/>

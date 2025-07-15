@@ -12,7 +12,7 @@ import {EntitySearchParam} from "@/service/entityService";
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
 const CurrencySelect = defineAsyncComponent(() => import('@/components/global/CurrencySelect.vue'));
-const EntrySelector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
+const selector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
 const {t} = useI18n();
 const route = useRoute();
@@ -36,8 +36,6 @@ const dataviewOptions = ref(['grid', 'list']);
 const entries = ref<any[]>([]);
 const {proxy} = getCurrentInstance()!;
 //endregion
-
-const displayEntrySelector = ref(false);
 
 onBeforeMount(() => {
   store.fetchOptions();
@@ -233,6 +231,24 @@ const endHover = () => {
 };
 
 //endregion
+
+const openSelector = () => {
+  bs!.dialog.open(selector, {
+    props: {
+      header: t('Entry'),
+      style: {
+        width: '60rem'
+      },
+      modal: true,
+      closable: true
+    },
+    data: {
+      entries: entries.value,
+      all: true
+    }
+  })
+}
+
 </script>
 
 <template>
@@ -389,7 +405,7 @@ const endHover = () => {
           </div>
         </div>
         <Divider align="left"><i class="pi pi-th-large"/><b>{{ t('RelatedEntry') }}</b></Divider>
-        <RButton @click="displayEntrySelector = true" action="create" :disabled="param.loading"/>
+        <RButton @click="openSelector" action="create" :disabled="param.loading"/>
         <RButton @click="clearEntries" action="clear" v-if="entries.length" :disabled="param.loading"/>
         <div class="grid" style="padding: 1.25rem" v-if="entries">
           <div v-if="param.loading2" class="field">
@@ -422,10 +438,6 @@ const endHover = () => {
       <ItemPopover :item="selectedItem"/>
     </Popover>
   </div>
-
-  <Dialog :modal="true" v-model:visible="displayEntrySelector" style="width: 60rem" :header="t('Add')">
-    <EntrySelector :all="true" :entries="entries"/>
-  </Dialog>
 </template>
 
 <style scoped lang="scss">

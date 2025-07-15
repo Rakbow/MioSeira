@@ -6,7 +6,8 @@ import {useOptionStore} from "@/store/modules/option";
 import {EntitySearchParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
-const EntrySelector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
+const EntryTypeSelector = defineAsyncComponent(() => import('@/components/entry/EntryTypeSelector.vue'));
+const selector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
 const { proxy } = getCurrentInstance()!;
 const store = useOptionStore();
@@ -15,7 +16,6 @@ const dialogRef = inject<any>("dialogRef");
 const param = ref(new EntitySearchParam());
 const dt = ref();
 const entryType = ref(proxy!.$const.ENTRY_TYPE.PRODUCT);
-const curEntryType = ref<any>(null);
 const isUpdate = ref(false);
 
 onBeforeMount(() => {
@@ -29,7 +29,6 @@ onBeforeMount(() => {
   if (dialogRef.value.data.subTypes.length) {
     entryType.value = dialogRef.value.data.subTypes[0];
     param.value.query.filters.targetEntitySubTypes.value = [entryType.value];
-    curEntryType.value = proxy!.$const.ENTRY_TYPE_SET[entryType.value - 1];
   }
 })
 
@@ -38,22 +37,17 @@ onMounted(() => {
   load();
 });
 
-const switchEntryType = (ev: any) => {
-  if (ev.value === null) {
+const switchEntryType = (value: any) => {
+  if (value) {
+    entryType.value = value;
+    param.value.query.filters.targetEntitySubTypes.value = [entryType.value];
+  } else {
     entryType.value = proxy!.$const.ENTRY_TYPE.PRODUCT;
     param.value.query.filters.targetEntitySubTypes.value = [];
-  } else {
-    entryType.value = parseInt(curEntryType.value.value);
-    param.value.query.filters.targetEntitySubTypes.value = [entryType.value];
   }
   load();
 }
 
-
-const displayEntrySelector = ref(false);
-const openEntrySelector = () => {
-  displayEntrySelector.value = true;
-}
 const removeRelatedEntry = (index: number) => {
   createdDTO.value.entities.splice(index, 1);
 }
@@ -186,6 +180,23 @@ const load = async () => {
 }
 //endregion
 
+const openSelector = () => {
+  bs!.dialog.open(selector, {
+    props: {
+      header: t('Entry'),
+      style: {
+        width: '60rem'
+      },
+      modal: true,
+      closable: true
+    },
+    data: {
+      entries: createdDTO.value.entities,
+      all: false,
+      type: entryType.value
+    }
+  })
+}
 </script>
 
 <template>
@@ -206,14 +217,8 @@ const load = async () => {
         <RIcon class="pi-spin" name="autorenew" size="10rem"/>
       </template>
       <template #header>
-        <SelectButton size="small" v-model="curEntryType" :options="$const.ENTRY_TYPE_SET"
-                      @change="switchEntryType($event)"
-                      optionLabel="value" dataKey="value" ariaLabelledby="custom">
-          <template #option="{option}">
-            <RIcon :name="option!.icon" :size="2"/>
-            <span>{{ t(option.label) }}</span>
-          </template>
-        </SelectButton>
+        <EntryTypeSelector :disabled="param.loading"
+                           v-model="entryType" @update="switchEntryType" />
 
         <RButton @click="openCreate" action="create" :disabled="param.blocking"/>
         <RButton @click="openDelete" action="delete" :disabled="!param.selectedData || !param.selectedData.length || param.blocking"/>
@@ -226,8 +231,8 @@ const load = async () => {
         </template>
       </Column>
       <Column :header="t('Group')" field="target.subType.label" style="width: 5rem"/>
-      <Column :header="t('Role')" field="target.role.label" style="width: 10rem"/>
-      <Column :header="t('ReverseRole')" field="role.label" style="width: 10rem"/>
+      <Column :header="t('Role')" field="target.role.label" style="width: 12rem"/>
+      <Column :header="t('ReverseRole')" field="role.label" style="width: 12rem"/>
       <Column :header="t('RelatedEntity')">
         <template #body="{data}">
           <router-link :title="data.target.name" :to="`${$api.ENTRY.DETAIL_PATH}/${data.target.entityId}`">
@@ -257,7 +262,7 @@ const load = async () => {
           <span class="empty-search-result"/>
         </template>
         <template #header>
-          <RButton @click="openEntrySelector" action="create"/>
+          <RButton @click="openSelector" action="create"/>
           <RButton @click="clearRelatedEntry" action="delete" v-if="!createdDTO.entities.length"/>
         </template>
         <template #grid="{items}">
@@ -322,9 +327,6 @@ const load = async () => {
       <Button :label="t('Save')" icon="pi pi-check" class="p-button-text"
               @click="update" :disabled="param.blocking"/>
     </template>
-  </Dialog>
-  <Dialog :modal="true" v-model:visible="displayEntrySelector" :style="{width: '600px'}" :header="t('Add')">
-    <EntrySelector :type="entryType" :entries="createdDTO.entities"/>
   </Dialog>
 </template>
 
