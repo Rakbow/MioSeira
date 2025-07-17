@@ -85,7 +85,10 @@ const saveDraft = () => {
 <template>
   <Card>
     <template #header>
-      <span><i class="pi pi-objects-column"/><strong>{{ t('Relation') }}</strong></span>
+      <div>
+        <RIcon name="dataset_linked" :size="2"/>
+        <strong>{{ t('Relation') }}</strong>
+      </div>
     </template>
     <template #content>
       <DataTable :value="relatedEntries" class="entity-manager-datatable" style="font-size: 1rem"

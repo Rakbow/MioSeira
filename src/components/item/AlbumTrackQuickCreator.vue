@@ -7,7 +7,6 @@ import {useOptionStore} from "@/store/modules/option";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
-const entity = inject<Entity>('entity')!;
 const {t} = useI18n();
 const dr = inject<any>("dialogRef");
 const upload = ref(false);
@@ -19,7 +18,7 @@ const param = ref(new EditParam());
 
 onBeforeMount(() => {
   if (dr.value.data.mode === 'normal'){
-    disc.value.itemId = entity!.id;
+    disc.value.itemId = dr.value.data.id;
   }
   disc.value.mediaFormat = store.options.mediaFormatSet[1].value
   disc.value.albumFormat = [store.options.albumFormatSet[0].value]
@@ -63,9 +62,7 @@ const submit = async () => {
 </script>
 
 <template>
-  <BlockUI :blocked="param.block">
-    <div class="formgrid grid">
-    </div>
+  <BlockUI :blocked="param.block" class="entity-editor">
     <DataTable ref="dt" :value="disc.tracks" :loading="loading"
                alwaysShowPaginator paginator :rows="50" stripedRows size="small"
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
@@ -76,36 +73,27 @@ const submit = async () => {
         <div class="field">
           <Textarea class="w-full" size="small" rows="6" v-model="analysisInput"/>
         </div>
-        <div class="grid">
-          <div class="col">
-            <FloatLabel variant="on">
-              <label>{{ t('Index') }}</label>
-              <InputNumber size="small" v-model="disc.discNo" class="static w-full"/>
-            </FloatLabel>
-          </div>
-          <div class="col">
-            <FloatLabel variant="on">
-              <label>{{ t('MediaFormat') }}</label>
-              <Select v-model="disc.mediaFormat" :options="store.options.mediaFormatSet"
-                      size="small" optionLabel="label" optionValue="value" class="static w-full"/>
-            </FloatLabel>
-          </div>
-          <div class="field col" style="max-width: 50px">
-            <Button size="small" icon="pi pi-sync" class="p-button-warning"
-                    @click="parseDisc" :title="t('Analysis')" :disabled="analysisInput === ''"/>
-          </div>
-        </div>
-        <div class="field">
+        <div class="grid flex align-items-center">
+          <FloatLabel variant="on">
+            <label>{{ t('Index') }}</label>
+            <InputNumber size="large" v-model="disc.discNo" class="static w-full"/>
+          </FloatLabel>
+          <FloatLabel variant="on">
+            <label>{{ t('MediaFormat') }}</label>
+            <Select v-model="disc.mediaFormat" :options="store.options.mediaFormatSet"
+                    size="large" optionLabel="label" optionValue="value" class="static w-full"/>
+          </FloatLabel>
           <FloatLabel variant="on">
             <label>{{ t('AlbumFormat') }}<i class="required-label pi pi-asterisk"/></label>
             <MultiSelect showClear size="small" v-model="disc.albumFormat" :options="store.options.albumFormatSet"
                          optionLabel="label" optionValue="value" display="chip" class="static w-full"/>
           </FloatLabel>
+          <RButton icon="convert_to_text" @click="parseDisc" tip="Analysis" :disabled="!analysisInput"/>
         </div>
       </template>
       <template #empty>
         <span>
-            {{ t('CommonDataTableEmptyInfo') }}
+            {{ t('NoTrackInfo') }}
         </span>
       </template>
       <template #loading>
@@ -118,9 +106,9 @@ const submit = async () => {
     </DataTable>
     <div class="relative">
       <div class="bottom-0 right-0">
-        <Button icon="pi pi-times" size="small" :label="t('Cancel')" @click="close"
+        <Button icon="pi pi-times" size="large" :label="t('Cancel')" @click="close"
                 class="p-button-text"/>
-        <Button icon="pi pi-save" size="small" :label="t('Save')" @click="submit"/>
+        <Button icon="pi pi-save" size="large" :label="t('Save')" @click="submit"/>
       </div>
     </div>
   </BlockUI>

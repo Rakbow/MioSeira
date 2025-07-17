@@ -165,18 +165,14 @@ const openQuickCreatorDialog = () => {
     props: {
       header: t('TrackInfo'),
       style: {
-        width: '40vw',
-        minWidth: '40vw'
-      },
-      breakpoints: {
-        '960px': '40vw',
-        '640px': '40vw'
+        width: '65rem'
       },
       modal: true,
       closable: false
     },
     data: {
-      mode: 'normal'
+      mode: 'normal',
+      albumId: entity!.id
     },
     onClose: (options: any) => {
       if (options.data !== undefined) {

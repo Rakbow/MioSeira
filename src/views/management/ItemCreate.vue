@@ -161,45 +161,38 @@ const handleTracks = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="param.block">
-    <div class="entity-creator" style="width: 125rem">
-      <div class="col-7">
-        <div class="col-12">
-          <Panel class="entity-editor">
-            <template #header>
-              <span><i class="pi pi-tag"/><strong>{{ t('Category') }}</strong></span>
-            </template>
-            <template #icons>
-              <Button @click="submit" icon="pi pi-save"/>
-            </template>
-            <div class="text-center pt-4">
-              <SelectButton v-model="itemType" :options="$const.ITEM_TYPE_SET"
-                            @change="switchItemType"
-                            optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
-                <template #option="{option}">
-                  <RIcon :name="option.icon"/>
-                </template>
-              </SelectButton>
+  <BlockUI :blocked="param.block" class="entity-creator" style="width: 125rem">
+    <div class="col-7">
+      <Card class="col-12">
+        <template #header>
+          <div><RIcon name="label"/><strong>{{ t('Category') }}</strong></div>
+        </template>
+        <template #content>
+          <div style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+            <SelectButton v-model="itemType" :options="$const.ITEM_TYPE_SET"
+                          @change="switchItemType"
+                          optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+              <template #option="{option}">
+                <RIcon :name="option.icon"/>
+              </template>
+            </SelectButton>
+            <RButton @click="submit" tip="Save" icon="save"/>
+          </div>
+          <div v-if="dto.item.type === $const.ITEM_TYPE.BOOK" class="field mt-3 flex gap-3">
+            <div v-for="type of store.options.bookTypeSet" class="flex gap-2 align-items-center">
+              <RadioButton v-model="dto.item.subType" :value="type.value"/>
+              <label>{{ type.label }}</label>
             </div>
-            <div v-if="dto.item.type === $const.ITEM_TYPE.BOOK" class="field">
-              <label>{{ t('Category') }}<i class="required-label pi pi-asterisk"/></label>
-              <div class="flex flex-wrap flex-col gap-3">
-                <div v-for="format of store.options.bookTypeSet" class="flex gap-2">
-                  <RadioButton v-model="dto.item.subType" :value="format.value"/>
-                  <label>{{ format.label }}</label>
-                </div>
-              </div>
-            </div>
-          </Panel>
-        </div>
-        <div class="col-12">
-          <Panel class="entity-editor">
-            <template #header>
-              <span><i class="pi pi-tag"/><strong>{{ t('BasicInfo') }}</strong></span>
-            </template>
-            <template #icons>
-              <Button severity="info" @click="analysisBasicInfoDisplay = true" icon="pi pi-file"/>
-            </template>
+          </div>
+        </template>
+      </Card>
+      <Card class="mt-3 col-12">
+        <template #header>
+          <div><RIcon name="format_list_bulleted"/><strong>{{ t('BasicInfo') }}</strong></div>
+          <RButton severity="info" @click="analysisBasicInfoDisplay = true" icon="convert_to_text" tip="Analysis"/>
+        </template>
+        <template #content>
+          <div class="entity-editor">
             <FloatLabel class="field" variant="on">
               <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>
               <InputText v-model="dto.item.name"/>
@@ -326,65 +319,60 @@ const handleTracks = () => {
               <label>{{ t('Remark') }}</label>
               <Textarea v-model="dto.item.remark" rows="4" cols="20"/>
             </FloatLabel>
-          </Panel>
-        </div>
-
-        <div class="col-12" v-if="dto.item.type === $const.ITEM_TYPE.ALBUM">
-          <Panel>
-            <template #header>
-              <span><i class="pi pi-list"/><strong>{{ t('TrackInfo') }}</strong></span>
-            </template>
-            <template #icons>
-              <RButton @click="openAlbumTrackQuickCreatorDialog" action="update" icon="music_note_add" tip="Add"/>
-            </template>
-            <DataTable ref="dt" :value="dto.item.disc.tracks"
-                       alwaysShowPaginator paginator :rows="50" stripedRows size="small"
-                       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-                       currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
-                       scrollable scrollHeight="40rem" responsiveLayout="scroll">
-              <template #empty>
-                <span>
+          </div>
+        </template>
+      </Card>
+      <Card class="mt-3 col-12" v-if="dto.item.type === $const.ITEM_TYPE.ALBUM">
+        <template #header>
+          <div><RIcon name="queue_music"/><strong>{{ t('TrackInfo') }}</strong></div>
+          <RButton @click="openAlbumTrackQuickCreatorDialog" severity="info" icon="music_note_add" tip="Add"/>
+        </template>
+        <template #content>
+          <DataTable ref="dt" :value="dto.item.disc.tracks" :rows="50" stripedRows size="small"
+                     scrollable scrollHeight="40rem" responsiveLayout="scroll">
+            <template #empty>
+                <span class="empty-search-result">
                     {{ t('CommonDataTableEmptyInfo') }}
                 </span>
-              </template>
-              <template #loading>
-                <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-                <span>{{ t('CommonDataTableLoadingInfo') }}</span>
-              </template>
-              <Column :header="t('Index')" field="serial" style="flex: 0 0 10rem"/>
-              <Column :header="t('Name')" field="name" style="flex: 0 0 10rem"/>
-              <Column :header="t('Duration')" field="duration" style="flex: 0 0 10rem"/>
-            </DataTable>
-          </Panel>
-        </div>
-
-        <div class="col-12">
-          <RelatedEntriesCreator v-model:relatedEntries="relatedEntries"/>
-        </div>
-      </div>
-      <div class="col-5">
-        <div class="col-12">
-          <Panel>
-            <template #header>
-              <span><i class="pi pi-images"/><strong>{{ t('Images') }}</strong></span>
             </template>
-            <ImageUploader v-model:images="dto.images" v-model:generateThumb="dto.generateThumb" :showDetail="false"/>
-          </Panel>
-        </div>
-      </div>
-      <div class="col-12">
-        <Panel>
+            <template #loading>
+              <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+              <span>{{ t('CommonDataTableLoadingInfo') }}</span>
+            </template>
+            <Column :header="t('Index')" field="serial" style="flex: 0 0 10rem"/>
+            <Column :header="t('Name')" field="name" style="flex: 0 0 10rem"/>
+            <Column :header="t('Duration')" field="duration" style="flex: 0 0 10rem"/>
+          </DataTable>
+        </template>
+      </Card>
+      <RelatedEntriesCreator class="mt-3 col-12" v-model:relatedEntries="relatedEntries"/>
+    </div>
+    <div class="col-5">
+      <Card>
+        <template #header>
+          <div><RIcon name="image"/><strong>{{ t('Images') }}</strong></div>
+        </template>
+        <template #content>
+          <ImageUploader v-model:images="dto.images" v-model:generateThumb="dto.generateThumb" :showDetail="false"/>
+        </template>
+      </Card>
+    </div>
+    <div class="col-9">
+      <Card>
+        <template #header>
+          <div><RIcon name="article"/><strong>{{ t('Description') }}</strong></div>
+        </template>
+        <template #content>
           <MdEditor v-model="dto.item.detail" theme="dark" previewTheme="github"
                     :toolbarsExclude="['save', 'pageFullscreen', 'fullscreen',
                    'preview', 'previewOnly', 'htmlPreview', 'catalog', 'github']"/>
-        </Panel>
-      </div>
+        </template>
+      </Card>
     </div>
   </BlockUI>
-  <Dialog :modal="true" v-model:visible="analysisBasicInfoDisplay" :header="t('Analysis')">
+  <Dialog :modal="true" v-model:visible="analysisBasicInfoDisplay" :header="t('Analysis')" style="width: 40rem">
     <Textarea size="small" v-model="analysisBasicInfoText" rows="8" cols="20" class="static w-full"/>
-    <Button size="small" class="mt-2" severity="info" @click="parseBasicInfo" icon="pi pi-file"/>
+    <RButton class="mt-2" severity="info" @click="parseBasicInfo" icon="convert_to_text"/>
   </Dialog>
 </template>
 

@@ -95,9 +95,8 @@ const changeGenerateThumb = () => {
               :maxFileSize="30000000" :previewWidth="100"
               :invalidFileSizeMessage="t('InvalidFileSizeMessage')">
     <template #header="{ chooseCallback }">
-      <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined/>
-      <Button @click="onImageClear()" icon="pi pi-times" rounded outlined severity="danger"
-              :disabled="!images || images.length === 0"/>
+      <RButton @click="chooseCallback()" icon="image_arrow_up" tip="Upload"/>
+      <RButton @click="onImageClear()" action="clear" :disabled="!images || images.length === 0"/>
       <Checkbox v-model="generateThumb" binary @change="changeGenerateThumb" />
       <small class="label-title">{{ t('ImageGenerateThumb') }}</small>
     </template>
