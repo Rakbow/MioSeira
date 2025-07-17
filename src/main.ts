@@ -2,12 +2,8 @@
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
 import "@/styles/font.css";
-import "@/styles/global.css";
 import "@/styles/general.scss";
-
-import '@/styles/entity-detail.scss';
 import "@/styles/entity-global.scss";
-import '@/styles/entity-manager.scss';
 //endregion
 
 

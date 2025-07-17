@@ -70,7 +70,7 @@ const submit = async () => {
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                scrollable scrollHeight="400px" responsiveLayout="scroll">
       <template #empty>
-        <span class="emptyInfo">
+        <span>
             {{ t('CommonDataTableEmptyInfo') }}
         </span>
       </template>

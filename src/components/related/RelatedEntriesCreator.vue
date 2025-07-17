@@ -83,94 +83,97 @@ const saveDraft = () => {
 </script>
 
 <template>
-  <Panel>
+  <Card>
     <template #header>
       <span><i class="pi pi-objects-column"/><strong>{{ t('Relation') }}</strong></span>
     </template>
-
-    <DataTable :value="relatedEntries" class="entity-manager-datatable" style="font-size: 1rem"
-               reorderableColumns @rowReorder="onReorder"
-               editMode="cell" @cellEditComplete="onCellEdite" showGridlines
-               stripedRows size="small" scrollable scrollHeight="40rem" responsiveLayout="scroll">
-      <template #empty>
-        <span class="empty-search-result">{{ t('NoInfo') }}</span>
-      </template>
-      <template #header>
-        <RButton size="small" action="create" @click="openSelector"/>
-        <RButton @click="onClear" action="clear" :disabled="!relatedEntries || relatedEntries.length === 0"/>
-        <RButton size="small" icon="save" tip="Draft" @click="saveDraft"
-                 :disabled="!relatedEntries || relatedEntries.length === 0"/>
-        <RButton size="small" icon="draft" tip="Get" @click="getDraft"/>
-      </template>
-
-      <Column field="type.value">
-        <template #body="{data}">
-          <span style="margin-left: 1rem">{{ data.type.label }}</span>
+    <template #content>
+      <DataTable :value="relatedEntries" class="entity-manager-datatable" style="font-size: 1rem"
+                 reorderableColumns @rowReorder="onReorder"
+                 editMode="cell" @cellEditComplete="onCellEdite" showGridlines
+                 stripedRows size="small" scrollable scrollHeight="40rem" responsiveLayout="scroll">
+        <template #empty>
+          <span class="empty-search-result">{{ t('NoInfo') }}</span>
         </template>
-      </Column>
-      <Column class="text-center" rowReorder headerStyle="width: 3rem"/>
-      <Column class="text-center" style="width: 2rem">
-        <template #body="{data}">
-          <img :alt="data.name" :src="data.thumb"
-               style="max-width: 2rem;max-height: 2rem;width: auto;height: auto"/>
+        <template #header>
+          <RButton size="small" action="create" @click="openSelector"/>
+          <RButton @click="onClear" action="clear" :disabled="!relatedEntries || relatedEntries.length === 0"/>
+          <RButton size="small" icon="save" tip="Draft" @click="saveDraft"
+                   :disabled="!relatedEntries || relatedEntries.length === 0"/>
+          <RButton size="small" icon="draft" tip="Get" @click="getDraft"/>
         </template>
-      </Column>
-      <Column style="width: 19rem">
-        <template #body="{data}">
-          <span class="text-ellipsis-one" :title="data.name">{{ data.name }}</span>
-        </template>
-      </Column>
 
-      <Column :header="t('Role')" field="role" style="width: 12rem">
-        <template #body="{data}">
+        <Column field="type.value">
+          <template #body="{data}">
+            <span style="margin-left: 1rem">{{ data.type.label }}</span>
+          </template>
+        </Column>
+        <Column class="text-center" rowReorder headerStyle="width: 3rem"/>
+        <Column class="text-center" style="width: 2rem">
+          <template #body="{data}">
+            <img :alt="data.name" :src="data.thumb"
+                 style="max-width: 2rem;max-height: 2rem;width: auto;height: auto"/>
+          </template>
+        </Column>
+        <Column style="width: 19rem">
+          <template #body="{data}">
+            <span class="text-ellipsis-one" :title="data.name">{{ data.name }}</span>
+          </template>
+        </Column>
+
+        <Column :header="t('Role')" field="role" style="width: 12rem">
+          <template #body="{data}">
           <span v-if="data.role" style="margin-left: .6rem">
             {{data.role.label}}
           </span>
-        </template>
-        <template #editor="{ data, field }">
-          <Select size="small" v-model="data[field]" :options="store.options.roleSet" filter
-                  optionLabel="label" fluid style="width: 10rem;font-size: 1rem">
-            <template #option="{option}">
-              {{ option!.label }}
-            </template>
-          </Select>
-        </template>
-      </Column>
+          </template>
+          <template #editor="{ data, field }">
+            <Select size="small" v-model="data[field]" :options="store.options.roleSet" filter
+                    optionLabel="label" fluid style="width: 10rem;font-size: 1rem">
+              <template #option="{option}">
+                {{ option!.label }}
+              </template>
+            </Select>
+          </template>
+        </Column>
 
-      <Column :header="t('ReverseRole')" field="relatedRole" style="width: 12rem">
-        <template #body="{data}">
+        <Column :header="t('ReverseRole')" field="relatedRole" style="width: 12rem">
+          <template #body="{data}">
           <span v-if="data.relatedRole" style="margin-left: .6rem">
             {{data.relatedRole.label}}
           </span>
-        </template>
-        <template #editor="{ data, field }">
-          <Select size="small" v-model="data[field]" :options="store.options.roleSet" filter
-                  optionLabel="label" fluid>
-            <template #option="{option}">
-              {{ option!.label }}
-            </template>
-          </Select>
-        </template>
-      </Column>
+          </template>
+          <template #editor="{ data, field }">
+            <Select size="small" v-model="data[field]" :options="store.options.roleSet" filter
+                    optionLabel="label" fluid>
+              <template #option="{option}">
+                {{ option!.label }}
+              </template>
+            </Select>
+          </template>
+        </Column>
 
-      <Column :header="t('Remark')" field="remark" style="width: 10rem">
-        <template #body="{data}">
-          <div class="data-table-field-text-overflow-hidden">{{ data.remark }}</div>
-        </template>
-        <template #editor="{ data, field }">
-          <InputText v-model="data[field]" fluid/>
-        </template>
-      </Column>
+        <Column :header="t('Remark')" field="remark" style="width: 10rem">
+          <template #body="{data}">
+            <div class="data-table-field-text-overflow-hidden">{{ data.remark }}</div>
+          </template>
+          <template #editor="{ data, field }">
+            <InputText v-model="data[field]" fluid/>
+          </template>
+        </Column>
 
-      <Column style="width: 1rem;padding: 0 .3rem">
-        <template #body="{ index }">
-          <RButton size="small" @click="onRemove(index)" action="clear" style="padding: 0"/>
-        </template>
-      </Column>
-    </DataTable>
-  </Panel>
+        <Column style="width: 1rem;padding: 0 .3rem">
+          <template #body="{ index }">
+            <RButton size="small" @click="onRemove(index)" action="clear" style="padding: 0"/>
+          </template>
+        </Column>
+      </DataTable>
+    </template>
+  </Card>
 </template>
 
 <style scoped lang="scss">
-
+.p-datatable {
+  border-style: none !important;
+}
 </style>

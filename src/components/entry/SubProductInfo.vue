@@ -53,7 +53,7 @@ const getSubProduct = async () => {
 </script>
 
 <template>
-  <BlockUI :blocked="param.block" class="entity-fieldset" style="margin: 1rem">
+  <BlockUI :blocked="param.block" class="entity-detail-fieldset" style="margin: 1rem">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-th-large"/>
@@ -63,7 +63,7 @@ const getSubProduct = async () => {
         <div v-if="userStore.user">
           <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
                   @click="openEditDialog" style="right: 0"
-                  v-tooltip.bottom="{value: t('Edit'), class: 'short-tooltip'}">
+                  v-tooltip.bottom="{value: t('Edit')}">
             <template #icon>
               <RIcon name="edit_note" />
             </template>

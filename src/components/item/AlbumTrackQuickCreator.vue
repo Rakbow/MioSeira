@@ -104,7 +104,7 @@ const submit = async () => {
         </div>
       </template>
       <template #empty>
-        <span class="emptyInfo">
+        <span>
             {{ t('CommonDataTableEmptyInfo') }}
         </span>
       </template>

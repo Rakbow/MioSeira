@@ -1,12 +1,12 @@
 <template>
-  <div class="entity-fieldset">
+  <div class="entity-detail-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-align-justify"/>
         <b>{{ t('TrackInfo') }}</b>
       </template>
 
-      <div v-if="userStore.user && userStore.user.type > 1" class="entity-fieldset-actions">
+      <div v-if="userStore.user && userStore.user.type > 1" class="entity-detail-fieldset-actions">
         <RButton @click="openAudioUpload" icon="cloud_upload" tip="Upload"/>
         <RButton @click="openQuickCreatorDialog" icon="music_note_add" tip="Add"/>
       </div>

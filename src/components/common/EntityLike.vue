@@ -49,7 +49,7 @@ const like = async () => {
 
 <template>
   <div>
-    <Button @click="like" link v-tooltip.bottom="{value: t('Like'), class: 'short-tooltip'}" :disabled="param.block">
+    <Button @click="like" link v-tooltip.bottom="{value: t('Like')}" :disabled="param.block">
       <i class="pi" :class="{'pi-thumbs-up-fill': liked, 'pi-thumbs-up': !liked}"/>
     </Button>
     <span>{{ likeCount }}</span>

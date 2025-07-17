@@ -100,14 +100,14 @@ const openCropper = () => {
     <div class="flex align-items-center justify-content-center image-container">
       <Button class="absolute bottom-0 right-0" size="small"
               @click="openUploadDialog($const.IMAGE_TYPE.MAIN)" icon="pi pi-cloud-upload" severity="info"
-              v-tooltip.bottom="{value: t('Upload'), class: 'short-tooltip'}"/>
+              v-tooltip.bottom="{value: t('Upload')}"/>
       <img v-if="cover" :src="`${$api.STATIC_DOMAIN}${cover}`" alt="cover"/>
       <img v-else :src="API.COMMON_EMPTY_COVER_IMAGE" alt="cover"/>
     </div>
     <div class="flex align-items-center justify-content-center image-container">
       <Button class="absolute bottom-0 right-0" size="small"
               @click="openUploadDialog($const.IMAGE_TYPE.THUMB)" icon="pi pi-cloud-upload" severity="info"
-              v-tooltip.bottom="{value: t('Upload'), class: 'short-tooltip'}"/>
+              v-tooltip.bottom="{value: t('Upload')}"/>
       <img v-if="thumb" :src="`${$api.STATIC_DOMAIN}${thumb}`" alt="thumb"/>
       <img v-else :src="API.COMMON_EMPTY_THUMB_IMAGE" alt="cover"/>
     </div>

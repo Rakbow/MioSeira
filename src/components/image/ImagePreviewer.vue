@@ -98,7 +98,7 @@ const openManager = () => {
     </div>
     <div v-else class="image-showcase">
       <div class="side-image" v-for="(image, index) of images as any" :key="index">
-        <Image preview v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`, class: 'image-tooltip'}">
+        <Image preview v-tooltip.bottom="{value: `${t('UploadIn')} ${image.addedTime}`}">
           <template #image>
             <img :src="image.thumb" draggable="false" oncontextmenu="return false" :alt="image.name"/>
           </template>

@@ -73,6 +73,15 @@ const MyPreset = definePreset(Aura, {
                 }
             `
         },
+        tooltip: {
+            root: {
+            },
+            css: ({dt}: any) => `
+                .p-tooltip-text {
+                    font-size: .9rem;
+                }
+            `
+        },
     }
 
 });

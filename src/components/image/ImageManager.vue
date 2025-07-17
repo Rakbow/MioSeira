@@ -274,20 +274,7 @@ const remove = async () => {
   param.value.endBlock();
 }
 //endregion
-
-const imageZoomIn = (image: any) => {
-  modal.setContent(`<img src="${image.display}" alt="${image.name}" />`)
-  modal.open();
-};
-const modal = new tingle.modal({
-  closeMethods: ['overlay', 'button', 'escape'],
-  closeLabel: "Close",
-  cssClass: ['tingle-image']
-});
 </script>
 
 <style scoped lang="scss">
-.tingle-modal {
-  z-index: 99999 !important;
-}
 </style>

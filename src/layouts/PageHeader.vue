@@ -24,7 +24,7 @@
           <Avatar v-if="userStore.isAuthenticated" :image="userStore!.user!.headerUrl"
                   size="xlarge" shape="circle" @pointerover="openSetting" />
           <Button v-if="!userStore.isAuthenticated" text rounded @click="openLogin" size="large"
-                  v-tooltip="{value: t('SignIn'), class: 'short-tooltip'}">
+                  v-tooltip="{value: t('SignIn')}">
             <template #icon>
               <RIcon name="login" :size="3"/>
             </template>

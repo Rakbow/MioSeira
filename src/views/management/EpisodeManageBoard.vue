@@ -133,9 +133,9 @@ const exportCSV = () => {
             exportHeader="name" :sortable="true">
       <template #body="{data}">
         <a :href="`${$api.EPISODE.DETAIL_PATH}/${data.id}`">
-          <div class="text-container" :title="data.name">
+          <span :title="data.name">
             {{ data!.name }}
-          </div>
+          </span>
         </a>
       </template>
       <template #filter="{filterModel,filterCallback}">
@@ -167,5 +167,4 @@ const exportCSV = () => {
 </template>
 
 <style lang="scss" scoped>
-@use "@/styles/entity-manager";
 </style>

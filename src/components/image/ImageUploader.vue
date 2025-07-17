@@ -115,9 +115,8 @@ const changeGenerateThumb = () => {
         <Column rowReorder headerStyle="width: 3rem" />
         <Column style="width: 6rem">
           <template #body="{data}">
-            <div class="image-thumb-50">
-              <img role="presentation" :alt="data!.name" :src="data.objectURL"/>
-            </div>
+            <img :src="data.objectURL" draggable="false" oncontextmenu="return false" :alt="data.name"
+                 style="max-width: 5rem;max-height: 5rem"/>
           </template>
         </Column>
         <Column :header="t('Name')" field="name" style="max-width: 10rem">

@@ -165,5 +165,4 @@ const exportCSV = () => {
 </template>
 
 <style scoped lang="scss">
-@use "@/styles/entity-manager";
 </style>

@@ -162,7 +162,7 @@ const handleTracks = () => {
 
 <template>
   <BlockUI :blocked="param.block">
-    <div class="grid entity-creator" style="width: 125rem">
+    <div class="entity-creator" style="width: 125rem">
       <div class="col-7">
         <div class="col-12">
           <Panel class="entity-editor">
@@ -344,9 +344,9 @@ const handleTracks = () => {
                        currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
                        scrollable scrollHeight="40rem" responsiveLayout="scroll">
               <template #empty>
-        <span class="emptyInfo">
-            {{ t('CommonDataTableEmptyInfo') }}
-        </span>
+                <span>
+                    {{ t('CommonDataTableEmptyInfo') }}
+                </span>
               </template>
               <template #loading>
                 <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
@@ -360,7 +360,7 @@ const handleTracks = () => {
         </div>
 
         <div class="col-12">
-          <RelatedEntriesCreator v-model:relatedEntries="relatedEntries" />
+          <RelatedEntriesCreator v-model:relatedEntries="relatedEntries"/>
         </div>
       </div>
       <div class="col-5">

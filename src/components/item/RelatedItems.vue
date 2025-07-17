@@ -48,7 +48,7 @@ const endHover = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="param.block" class="entity-fieldset">
+  <BlockUI :blocked="param.block" class="entity-detail-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-th-large"/>

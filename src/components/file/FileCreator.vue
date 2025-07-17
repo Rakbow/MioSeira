@@ -157,7 +157,7 @@ const switchCreateType = (ev: any) => {
         </template>
       </template>
       <template #empty>
-        <span class="emptyInfo">
+        <span>
             {{ t('NoFile') }}
         </span>
       </template>

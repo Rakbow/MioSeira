@@ -1,12 +1,11 @@
 @import 'primeflex/primeflex';
 
-$small-font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, Meiryo, sans-serif;
-
-$common-border-radius: 1rem;
 $common-border-down-radius: 0 0 1rem 1rem;
 $common-border-up-radius: 1rem 1rem 0 0;
 
 :root {
+  --r-text-small-font: verdana, geneva, lucida, 'lucida grande', arial, helvetica, Meiryo, sans-serif;
+
   --r-bg-half-none: rgba(0, 0, 0, 0.5);
   --r-bg-black: rgba(0, 0, 0, 1);
 
@@ -88,7 +87,7 @@ a:visited, a:hover {
 }
 
 .small-font {
-  font: 1.1rem $small-font-family;
+  font: 1.1rem var(--r-text-small-font);
 }
 
 .label-title {

@@ -78,13 +78,13 @@ const toggleCollapse = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="loading" class="entity-fieldset">
+  <BlockUI :blocked="loading" class="entity-detail-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-users"/>
         <b>{{ t('Persons') }}</b>
       </template>
-      <div class="entity-fieldset-actions" v-if="userStore.user && userStore.user.type > 1">
+      <div class="entity-detail-fieldset-actions" v-if="userStore.user && userStore.user.type > 1">
         <RButton @click="openEditDialog" icon="person_edit" tip="Edit" severity="info"/>
       </div>
       <div class="person-table">

@@ -1,11 +1,11 @@
 <template>
-  <BlockUI :blocked="param.block" class="entity-fieldset">
+  <BlockUI :blocked="param.block" class="entity-detail-fieldset">
     <Fieldset :toggleable="true">
       <template #legend>
         <i class="pi pi-align-left"/>
         <b>{{ t('Description') }}</b>
       </template>
-      <div class="entity-fieldset-actions">
+      <div class="entity-detail-fieldset-actions">
         <RButton v-if="!empty"
                  @click="openTextTingle" icon="arrows_output" tip="FullScreen"/>
         <RButton v-if="userStore.user && userStore.user.type > 1"
