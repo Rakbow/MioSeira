@@ -46,7 +46,7 @@ export class ItemAdvanceCreateDTO {
     item = new ItemCreateDTO();
     images: ImageDTO[] = [];
     generateThumb: boolean = false;
-    relatedEntities: any[] = [];
+    relatedEntries: any[] = [];
 }
 
 /**

@@ -24,7 +24,11 @@
   }
 }
 
-.manager-panel {
+.entity-creator {
+
+  .p-datatable {
+    border-style: none !important;
+  }
 
   .p-panel {
     .p-panel {
@@ -49,9 +53,8 @@
       }
 
       &-content {
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-        background: #2f364f !important;
+        padding: 1rem !important;
+        background: var(--r-bg-neutral-950) !important;
       }
     }
 
@@ -146,6 +149,36 @@
 .entity-manager {
   &-datatable {
 
+    .p-select {
+      border-style: none !important;
+      color: red;
+
+      &-overlay {
+        border-style: none !important;
+        width: 10rem !important;
+      }
+
+      &-list {
+        border-style: none !important;
+        width: 10rem !important;
+
+        &-container {
+          border-style: none !important;
+          width: 10rem !important;
+        }
+      }
+
+      &-option {
+        font-size: 1rem !important;
+        width: 10rem !important;
+
+        &-label {
+          font-size: 1rem !important;
+        }
+      }
+
+    }
+
     @extend .small-font;
 
     .p-tag {
@@ -192,27 +225,34 @@
       }
 
     }
+
     &-select-column {
       width: 3rem;
       text-align: center !important;
     }
+
     &-edit-column {
       width: 3rem;
+
       .material-symbols-outlined {
         font-size: 1.5rem !important;
       }
     }
+
     &-empty {
       &-icon {
         padding-top: 3rem;
+
         img {
           width: 20rem;
         }
       }
+
       &-text {
         padding: 1rem 0 3rem 0;
       }
     }
+
     .p-datatable .p-datatable-tbody > tr {
       height: 50px; /* 固定高度 */
     }

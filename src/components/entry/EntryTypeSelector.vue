@@ -27,8 +27,8 @@ const update = (ev: any) => {
                 v-model="entryType" :options="$const.ENTRY_TYPE_SET"
                 optionLabel="value" ariaLabelledby="custom">
     <template #option="{option}">
-      <RIcon :name="option.icon" :size="1.3"/>
-      <span style="font-size: 1rem">{{ t(option!.label) }}</span>
+      <RIcon :name="option.icon" :size="1.4"/>
+      <span style="font-size: 1.1rem">{{ t(option!.label) }}</span>
     </template>
   </SelectButton>
 </template>

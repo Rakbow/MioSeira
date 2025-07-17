@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
-import {RelatedEntry} from "@/config/Web_Const";
-import {defineAsyncComponent, getCurrentInstance, onBeforeMount, reactive, ref} from "vue";
+import {defineAsyncComponent, getCurrentInstance, onBeforeMount, ref} from "vue";
 import {useOptionStore} from "@/store/modules/option";
 import "flag-icons/css/flag-icons.min.css";
 import {API, Axios} from "@/api";
@@ -12,24 +11,22 @@ import {PublicHelper} from "@/utils/publicHelper";
 import {bs} from '@/service/baseService';
 
 import 'md-editor-v3/lib/style.css';
-import {useDraftStore} from "@/store/modules/draft";
 import {EditParam} from "@/service/entityService";
 
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
-const RelatedEntriesPicker = defineAsyncComponent(() => import('@/components/related/RelatedEntriesPicker.vue'));
 const albumQuickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
+const RelatedEntriesCreator = defineAsyncComponent(() => import('@/components/related/RelatedEntriesCreator.vue'));
 
 const router = useRouter();
 const {t} = useI18n();
 const store = useOptionStore();
-const draft = useDraftStore();
 const itemType = ref();
 const itemSpec = ref('');
 const dto = ref(new ItemAdvanceCreateDTO());
 const {proxy} = getCurrentInstance()!;
 const param = ref(new EditParam());
 
-const relatedEntry = reactive<RelatedEntry>(new RelatedEntry())
+const relatedEntries = ref<any[]>([])
 
 
 onBeforeMount(() => {
@@ -56,31 +53,25 @@ const parseItemSpec = () => {
 
 //region related entities
 
-const handleRelatedEntry = () => {
-  const entities: any[] = [
-    ...relatedEntry.products.map(e => ({
-      relatedEntitySubType: proxy!.$const.ENTRY_TYPE.PRODUCT,
-      relatedEntityType: proxy!.$const.ENTITY.ENTRY,
-      relatedEntityId: e.id
-    })),
-    ...relatedEntry.persons.map(e => ({
-      relatedEntitySubType: proxy!.$const.ENTRY_TYPE.PERSON,
+const handleRelatedEntities = () => {
+  dto.value.relatedEntries = [
+    ...relatedEntries.value.map(e => ({
+      relatedEntitySubType: e.type.value,
       relatedEntityType: proxy!.$const.ENTITY.ENTRY,
       relatedEntityId: e.id,
-      relatedRoleId: e.role.value
+      remark: e.remark ?? '',
+
+      roleId: e.relatedRole?.value ?? 0,
+      relatedRoleId: e.role?.value ?? 0
     }))
   ];
-
-  dto.value.relatedEntities.push(...entities);
 }
 //endregion
 
 const submit = async () => {
   param.value.block = true;
-  handleRelatedEntry();
+  handleRelatedEntities();
   if (dto.value.item.type === proxy!.$const.ITEM_TYPE.ALBUM) handleTracks();
-  // await handleImage();
-
   const fd = new FormData();
   dto.value.images.forEach(i => {
     fd.append('images', (i as any).file)
@@ -99,15 +90,6 @@ const handlePasteDate = (ev: Event) => {
   // 获取粘贴的文本内容
   const pastedDate = (ev as ClipboardEvent).clipboardData?.getData('text') || '';
   dto.value.item.releaseDate = PublicHelper.convertToDateFormat(pastedDate);
-}
-
-//draft
-const getDraft = () => {
-  Object.assign(relatedEntry, JSON.parse(JSON.stringify(draft.relatedEntry)))
-}
-
-const saveDraft = () => {
-  draft.save(relatedEntry)
 }
 
 //analysis
@@ -150,7 +132,7 @@ const openAlbumTrackQuickCreatorDialog = () => {
     props: {
       header: t('TrackInfo'),
       style: {
-        width: '650px'
+        width: '65rem'
       },
       modal: true,
       closable: false
@@ -180,7 +162,7 @@ const handleTracks = () => {
 
 <template>
   <BlockUI :blocked="param.block">
-    <div class="grid manager-panel">
+    <div class="grid entity-creator" style="width: 125rem">
       <div class="col-7">
         <div class="col-12">
           <Panel class="entity-editor">
@@ -360,7 +342,7 @@ const handleTracks = () => {
                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                        currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
-                       scrollable scrollHeight="400px" responsiveLayout="scroll">
+                       scrollable scrollHeight="40rem" responsiveLayout="scroll">
               <template #empty>
         <span class="emptyInfo">
             {{ t('CommonDataTableEmptyInfo') }}
@@ -376,6 +358,10 @@ const handleTracks = () => {
             </DataTable>
           </Panel>
         </div>
+
+        <div class="col-12">
+          <RelatedEntriesCreator v-model:relatedEntries="relatedEntries" />
+        </div>
       </div>
       <div class="col-5">
         <div class="col-12">
@@ -386,47 +372,6 @@ const handleTracks = () => {
             <ImageUploader v-model:images="dto.images" v-model:generateThumb="dto.generateThumb" :showDetail="false"/>
           </Panel>
         </div>
-      </div>
-      <div class="col-12">
-        <Panel class="entity-editor">
-          <template #header>
-            <span><i class="pi pi-objects-column"/><strong>{{ t('Relation') }}</strong></span>
-          </template>
-          <template #icons>
-            <Button severity="info" @click="saveDraft" icon="pi pi-save" class="mr-1"/>
-            <Button severity="info" @click="getDraft" icon="pi pi-file"/>
-          </template>
-          <Divider class="my-0" align="left"><i class="pi pi-th-large"/><b class="ml-1">{{ t('Product') }}</b>
-          </Divider>
-          <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.products"
-                                :type="$const.ENTRY_TYPE.PRODUCT"/>
-          <Divider class="mb-0" align="left"><i class="pi pi-users"/><b class="ml-1">{{ t('Person') }}</b></Divider>
-          <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.persons"
-                                :type="$const.ENTRY_TYPE.PERSON"/>
-          <div v-if="dto.item.type !== $const.ITEM_TYPE.ALBUM && dto.item.type !== $const.ITEM_TYPE.BOOK">
-            <Divider class="mb-0" align="left"><i class="pi pi-users"/><b class="ml-1">{{ t('Character') }}</b>
-            </Divider>
-            <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.characters"
-                                  :type="$const.ENTRY_TYPE.CHARACTER"/>
-          </div>
-          <Divider class="mb-0" align="left"><i class="pi pi-folder-open"/><b class="ml-1">{{
-              t('Classification')
-            }}</b>
-          </Divider>
-          <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.classifications"
-                                :type="$const.ENTRY_TYPE.CLASSIFICATION"/>
-          <div v-if="dto.item.type === $const.ITEM_TYPE.GOODS || dto.item.type === $const.ITEM_TYPE.FIGURE">
-            <Divider class="mb-0" align="left">
-              <RIcon name="diamond" size="1"/>
-              <b class="ml-1">{{ t('Material') }}</b>
-            </Divider>
-            <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.materials"
-                                  :type="$const.ENTRY_TYPE.MATERIAL"/>
-          </div>
-          <Divider class="mb-0" align="left"><i class="pi pi-calendar"/><b class="ml-1">{{ t('Event') }}</b></Divider>
-          <RelatedEntriesPicker v-model:relatedEntries="relatedEntry.events"
-                                :type="$const.ENTRY_TYPE.EVENT"/>
-        </Panel>
       </div>
       <div class="col-12">
         <Panel>

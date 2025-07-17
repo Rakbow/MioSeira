@@ -14,11 +14,6 @@ const EntryTypeSelector = defineAsyncComponent(() => import('@/components/entry/
 const {t} = useI18n();
 const route = useRoute();
 const router = useRouter();
-
-//region data view and paginator
-const layout = ref('list');
-const dataviewOptions = ref(['list']);
-//endregion
 const param = ref<EntitySearchParam>(new EntitySearchParam());
 const sortKey = ref({label: 'Item', icon: 'lists', field: 'items', order: -1});
 const sortOptions = ref<any[]>([
@@ -131,36 +126,28 @@ const onSortChange = (ev: any) => {
 <template>
   <div class="entity-search">
     <div class="entity-search-main">
-      <DataView :value="param.result.data" :layout="layout">
+      <DataView :value="param.result.data" layout="list">
         <template #header>
           <div class="grid" style="width: 100%">
             <div class="col-12"
                  style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
               <EntryTypeSelector v-model="param.query.filters.type.value"
                                  @update="switchEntitySubType" :disabled="param.loading" />
-              <div style="align-items: center;display: flex;gap: 1rem">
-                <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"
-                        @change="onSortChange" size="small" :disabled="param.loading">
-                  <template #value="{value}">
-                    <div style="display: flex;align-items: center">
-                      <RIcon :name="value.order === -1 ? 'south' : 'north'" :size="1.5"/>
-                      <RIcon :name="value.icon" :size="1.5"/>
-                      <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(value.label) }}</span>
-                    </div>
-                  </template>
-                  <template #option="{option}">
-                    <RIcon :name="option.order === -1 ? 'south' : 'north'" :size="1.5"/>
-                    <RIcon :name="option.icon" :size="1.5"/>
-                    <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(option.label) }}</span>
-                  </template>
-                </Select>
-
-                <SelectButton v-model="layout" :options="dataviewOptions" :allowEmpty="false" :disabled="param.loading">
-                  <template #option="{ option }">
-                    <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']"/>
-                  </template>
-                </SelectButton>
-              </div>
+              <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"
+                      @change="onSortChange" size="small" :disabled="param.loading">
+                <template #value="{value}">
+                  <div style="display: flex;align-items: center">
+                    <RIcon :name="value.order === -1 ? 'south' : 'north'" :size="1.5"/>
+                    <RIcon :name="value.icon" :size="1.5"/>
+                    <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(value.label) }}</span>
+                  </div>
+                </template>
+                <template #option="{option}">
+                  <RIcon :name="option.order === -1 ? 'south' : 'north'" :size="1.5"/>
+                  <RIcon :name="option.icon" :size="1.5"/>
+                  <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(option.label) }}</span>
+                </template>
+              </Select>
             </div>
             <div class="col-fixed">
               <IconField>
@@ -174,7 +161,6 @@ const onSortChange = (ev: any) => {
               <RButton size="small" action="clear" @click="clearFilter" :disabled="param.loading"/>
             </div>
           </div>
-
         </template>
         <template #empty>
             <span class="empty-search-result">
