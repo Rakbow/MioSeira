@@ -23,7 +23,7 @@ const path = ref();
 </script>
 
 <template>
-  <div class="related-entity">
+  <div class="related-entity" style="background: var(--r-bg-neutral-950)">
     <div class="related-entity-thumb">
       <img role="presentation" :alt="entity.target.name" :src="entity.target.thumb"/>
     </div>

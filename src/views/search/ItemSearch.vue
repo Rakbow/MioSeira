@@ -412,7 +412,7 @@ const openSelector = () => {
             <Skeleton width="30rem" height="4.6rem"/>
           </div>
           <div v-if="entries.length && !param.loading2">
-            <div class="related-entity" style="width: 30rem;background: #252525"
+            <div class="related-entity" style="width: 30rem"
                  v-for="(entry, index) in entries as any[]" :key="index">
               <div class="related-entity-thumb">
                 <img role="presentation" :alt="entry.name" :src="entry.thumb"/>

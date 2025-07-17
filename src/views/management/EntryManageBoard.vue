@@ -125,6 +125,10 @@ const displayDeleteDialog = ref(false);
 const confirmDeleteSelected = () => {
   displayDeleteDialog.value = true;
 }
+
+const openCreateTab = () => {
+  window.open(API.ENTRY.CREATE_PATH, '_blank');
+}
 //endregion
 
 const exportCSV = () => {
@@ -147,7 +151,7 @@ const exportCSV = () => {
     </template>
     <template #header>
       <EntryTypeSelector v-model="entryType" @update="switchEntityType" :disabled="param.loading" />
-      <RButton @click="" action="create"/>
+      <RButton @click="openCreateTab" action="create"/>
       <RButton @click="confirmDeleteSelected" action="delete"
                :disabled="!param.selectedData.length"/>
       <RButton @click="exportCSV" action="export"

@@ -10,7 +10,7 @@ export const API = {
     ITEM: {
         DETAIL_PATH: '/db/item',
         SEARCH_PATH: '/db/item',
-        CREATE_PATH: 'item/submit',
+        CREATE_PATH: '/db/item/new',
 
         SEARCH: '/api/db/item/search',
         DETAIL: '/api/db/item/detail',
@@ -28,6 +28,7 @@ export const API = {
     ENTRY: {
         DETAIL_PATH: '/db/entry',
         SEARCH_PATH: '/db/entry',
+        CREATE_PATH: '/db/entry/new',
 
         SEARCH: '/api/db/entry/search',
         MINI: '/api/db/entry/mini',

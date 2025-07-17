@@ -101,6 +101,7 @@ const changeLanguage = () => {
   locale.value = currentLocale.value;
   localStorage.setItem('locale', currentLocale.value);
   optionStore.clear();
+  location.reload();
 }
 </script>
 
