@@ -4,6 +4,7 @@ import {useI18n} from "vue-i18n";
 import {useOptionStore} from "@/store/modules/option";
 import {bs} from "@/service/baseService";
 import {useDraftStore} from "@/store/modules/draft";
+import {useLocalStorage} from "@vueuse/core";
 
 const selector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
@@ -73,7 +74,7 @@ const onClear = () => {
 
 //region draft
 const getDraft = () => {
-  Object.assign(relatedEntries, JSON.parse(JSON.stringify(draft.relatedEntries)))
+  relatedEntries.value = useLocalStorage('relatedEntries', []).value
 }
 
 const saveDraft = () => {

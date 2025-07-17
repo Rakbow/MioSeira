@@ -12,7 +12,8 @@ export const useDraftStore = defineStore('draft', {
     actions: {
         save(relatedEntries: Array<any>) {
             this.relatedEntries = relatedEntries;
-            useStorage('relatedEntry', JSON.stringify(relatedEntries)).value = JSON.stringify(relatedEntries);
+            useStorage('relatedEntries', JSON.stringify(relatedEntries)).value = JSON.stringify(relatedEntries);
         }
     },
+    persist: true, // 开启持久化
 });
