@@ -1,5 +1,5 @@
 import {RouteRecordRaw} from 'vue-router';
-import { API, Axios } from '@/api';
+import {API, Axios} from '@/api';
 
 const DetailRouter: Array<RouteRecordRaw> = [
     {
@@ -8,13 +8,18 @@ const DetailRouter: Array<RouteRecordRaw> = [
         component: () => import('@/views/detail/EntryDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await Axios.post(`${API.ENTRY.DETAIL}/${to.params.id}`);
-                if (res.success()) {
-                    to.meta.info = res.data;
-                    to.meta.title = res.data.entry.name;
-                    next();
+                const id = to.params.id;
+                if (/^\d+$/.test(String(id))) {
+                    const res = await Axios.post(`${API.ENTRY.DETAIL}/${id}`);
+                    if (res.success()) {
+                        to.meta.info = res.data;
+                        to.meta.title = res.data.entry.name;
+                        next();
+                    } else {
+                        console.log(res.message);
+                    }
                 } else {
-                    console.log(res.message);
+                    next(false);
                 }
             } catch (e) {
                 console.error(e);
@@ -27,13 +32,18 @@ const DetailRouter: Array<RouteRecordRaw> = [
         component: () => import('@/views/detail/ItemDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await Axios.post(`${API.ITEM.DETAIL}/${to.params.id}`);
-                if (res.success()) {
-                    to.meta.info = res.data;
-                    to.meta.title = res.data.item.name;
-                    next();
+                const id = to.params.id;
+                if (/^\d+$/.test(String(id))) {
+                    const res = await Axios.post(`${API.ITEM.DETAIL}/${id}`);
+                    if (res.success()) {
+                        to.meta.info = res.data;
+                        to.meta.title = res.data.item.name;
+                        next();
+                    } else {
+                        console.log(res.message);
+                    }
                 } else {
-                    console.log(res.message);
+                    next(false);
                 }
             } catch (e) {
                 console.error(e);

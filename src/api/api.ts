@@ -33,6 +33,7 @@ export const API = {
         MINI: '/api/db/entry/mini',
         DETAIL: '/api/db/entry/detail',
         LIST: '/api/db/entry/list',
+        CREATE: '/api/db/entry/create',
         UPDATE: '/api/db/entry/update',
         UPLOAD_IMAGE: '/api/db/entry/upload-image',
         SUB_PRODUCTS: '/api/db/entry/get-sub-products',

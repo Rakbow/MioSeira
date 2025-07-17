@@ -161,215 +161,217 @@ const handleTracks = () => {
 </script>
 
 <template>
-  <BlockUI :blocked="param.block" class="entity-creator" style="width: 125rem">
-    <div class="col-7">
-      <Card class="col-12">
-        <template #header>
-          <div><RIcon name="label"/><strong>{{ t('Category') }}</strong></div>
-        </template>
-        <template #content>
-          <div style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
-            <SelectButton v-model="itemType" :options="$const.ITEM_TYPE_SET"
-                          @change="switchItemType"
-                          optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
-              <template #option="{option}">
-                <RIcon :name="option.icon"/>
-              </template>
-            </SelectButton>
-            <RButton @click="submit" tip="Save" icon="save"/>
-          </div>
-          <div v-if="dto.item.type === $const.ITEM_TYPE.BOOK" class="field mt-3 flex gap-3">
-            <div v-for="type of store.options.bookTypeSet" class="flex gap-2 align-items-center">
-              <RadioButton v-model="dto.item.subType" :value="type.value"/>
-              <label>{{ type.label }}</label>
+  <div class="flex justify-content-center">
+    <BlockUI :blocked="param.block" class="entity-creator" style="width: 125rem">
+      <div class="col-7">
+        <Card class="col-12">
+          <template #header>
+            <div><RIcon name="label"/><strong>{{ t('Category') }}</strong></div>
+          </template>
+          <template #content>
+            <div style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+              <SelectButton v-model="itemType" :options="$const.ITEM_TYPE_SET"
+                            @change="switchItemType"
+                            optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">
+                <template #option="{option}">
+                  <RIcon :name="option.icon"/>
+                </template>
+              </SelectButton>
+              <RButton @click="submit" tip="Save" icon="save"/>
             </div>
-          </div>
-        </template>
-      </Card>
-      <Card class="mt-3 col-12">
-        <template #header>
-          <div><RIcon name="format_list_bulleted"/><strong>{{ t('BasicInfo') }}</strong></div>
-          <RButton severity="info" @click="analysisBasicInfoDisplay = true" icon="convert_to_text" tip="Analysis"/>
-        </template>
-        <template #content>
-          <div class="entity-editor">
-            <FloatLabel class="field" variant="on">
-              <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>
-              <InputText v-model="dto.item.name"/>
-            </FloatLabel>
-            <FloatLabel class="field" variant="on">
-              <label>{{ t('Aliases') }}</label>
-              <AutoComplete v-model="dto.item.aliases" separator="," multiple :typeahead="false"/>
-            </FloatLabel>
-            <div class="grid">
-              <FloatLabel variant="on">
-                <label>{{ t('ReleaseDate') }}</label>
-                <InputMask @paste="handlePasteDate" v-model="dto.item.releaseDate" mask="****/**/**"/>
-              </FloatLabel>
-              <FloatLabel variant="on">
-                <label>{{ t('ReleasePrice') }}</label>
-                <InputNumber v-model="dto.item.price" :minFractionDigits="0" :maxFractionDigits="2"/>
-              </FloatLabel>
-              <FloatLabel variant="on">
-                <label>{{ t('ReleaseType') }}</label>
-                <Select v-model="dto.item.releaseType" :options="store.options.releaseTypeSet"
-                        optionLabel="label" optionValue="value"/>
-              </FloatLabel>
-              <FloatLabel variant="on">
-                <label>{{ t('Region') }}</label>
-                <Select v-model="dto.item.region" :options="$const.RegionSet" optionLabel="label" optionValue="value">
-                  <template #value="{value}">
-                    <span :class="`fi fi-${value}`"/>
-                  </template>
-                  <template #option="{option}">
-                    <span :class="`fi fi-${option.value}`"/>
-                  </template>
-                </Select>
-              </FloatLabel>
-              <ToggleButton style="height: 2.5rem" size="small" v-model="dto.item.bonus"
-                            onIcon="pi true-icon pi-check-circle" :onLabel="t('BonusInclusion')"
-                            offIcon="pi false-icon pi-times-circle" :offLabel="t('BonusExclusion')"/>
+            <div v-if="dto.item.type === $const.ITEM_TYPE.BOOK" class="field mt-3 flex gap-3">
+              <div v-for="type of store.options.bookTypeSet" class="flex gap-2 align-items-center">
+                <RadioButton v-model="dto.item.subType" :value="type.value"/>
+                <label>{{ type.label }}</label>
+              </div>
             </div>
-            <div class="grid">
-              <FloatLabel variant="on">
-                <label>{{ t('Barcode') }}</label>
-                <InputText v-if="dto.item.type !== $const.ITEM_TYPE.BOOK" v-model="dto.item!.barcode"/>
-                <InputGroup v-else>
-                  <InputText v-model="dto.item!.barcode"/>
-                  <Button icon="pi pi-sync" class="p-button-warning"
-                          @click="ISBNInterConvert(dto.item.barcode)" :title="t('GenerateISBN13')"/>
+          </template>
+        </Card>
+        <Card class="mt-3 col-12">
+          <template #header>
+            <div><RIcon name="format_list_bulleted"/><strong>{{ t('BasicInfo') }}</strong></div>
+            <RButton severity="info" @click="analysisBasicInfoDisplay = true" icon="convert_to_text" tip="Analysis"/>
+          </template>
+          <template #content>
+            <div class="entity-editor">
+              <FloatLabel class="field" variant="on">
+                <label>{{ t('Name') }}<i class="required-label pi pi-asterisk"/></label>
+                <InputText v-model="dto.item.name"/>
+              </FloatLabel>
+              <FloatLabel class="field" variant="on">
+                <label>{{ t('Aliases') }}</label>
+                <AutoComplete v-model="dto.item.aliases" separator="," multiple :typeahead="false"/>
+              </FloatLabel>
+              <div class="grid">
+                <FloatLabel variant="on">
+                  <label>{{ t('ReleaseDate') }}</label>
+                  <InputMask @paste="handlePasteDate" v-model="dto.item.releaseDate" mask="****/**/**"/>
+                </FloatLabel>
+                <FloatLabel variant="on">
+                  <label>{{ t('ReleasePrice') }}</label>
+                  <InputNumber v-model="dto.item.price" :minFractionDigits="0" :maxFractionDigits="2"/>
+                </FloatLabel>
+                <FloatLabel variant="on">
+                  <label>{{ t('ReleaseType') }}</label>
+                  <Select v-model="dto.item.releaseType" :options="store.options.releaseTypeSet"
+                          optionLabel="label" optionValue="value"/>
+                </FloatLabel>
+                <FloatLabel variant="on">
+                  <label>{{ t('Region') }}</label>
+                  <Select v-model="dto.item.region" :options="$const.RegionSet" optionLabel="label" optionValue="value">
+                    <template #value="{value}">
+                      <span :class="`fi fi-${value}`"/>
+                    </template>
+                    <template #option="{option}">
+                      <span :class="`fi fi-${option.value}`"/>
+                    </template>
+                  </Select>
+                </FloatLabel>
+                <ToggleButton style="height: 2.5rem" size="small" v-model="dto.item.bonus"
+                              onIcon="pi true-icon pi-check-circle" :onLabel="t('BonusInclusion')"
+                              offIcon="pi false-icon pi-times-circle" :offLabel="t('BonusExclusion')"/>
+              </div>
+              <div class="grid">
+                <FloatLabel variant="on">
+                  <label>{{ t('Barcode') }}</label>
+                  <InputText v-if="dto.item.type !== $const.ITEM_TYPE.BOOK" v-model="dto.item!.barcode"/>
+                  <InputGroup v-else>
+                    <InputText v-model="dto.item!.barcode"/>
+                    <Button icon="pi pi-sync" class="p-button-warning"
+                            @click="ISBNInterConvert(dto.item.barcode)" :title="t('GenerateISBN13')"/>
+                  </InputGroup>
+                </FloatLabel>
+                <FloatLabel variant="on" v-if="dto.item.type !== $const.ITEM_TYPE.BOOK">
+                  <label>{{ t('CatalogId') }}</label>
+                  <InputText v-model="dto.item.catalogId"/>
+                </FloatLabel>
+              </div>
+
+              <div class="grid"
+                   v-if="dto.item.type === $const.ITEM_TYPE.ALBUM || dto.item.type === $const.ITEM_TYPE.DISC">
+                <FloatLabel variant="on" v-if="dto.item.type === $const.ITEM_TYPE.DISC">
+                  <label>{{ t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
+                  <MultiSelect showClear v-model="dto.item.mediaFormat" :options="store.options.mediaFormatSet"
+                               optionLabel="label" optionValue="value" display="chip"/>
+                </FloatLabel>
+                <FloatLabel variant="on">
+                  <label>{{ t('Discs') }}</label>
+                  <InputNumber v-model="dto.item.discs"/>
+                </FloatLabel>
+                <FloatLabel variant="on">
+                  <template v-if="dto.item.type === $const.ITEM_TYPE.ALBUM">
+                    <label>{{ t('Tracks') }}</label>
+                    <InputNumber v-model="dto.item.tracks"/>
+                  </template>
+                  <template v-if="dto.item.type === $const.ITEM_TYPE.DISC">
+                    <label>{{ t('Episodes') }}</label>
+                    <InputNumber v-model="dto.item.episodes"/>
+                  </template>
+                </FloatLabel>
+                <FloatLabel variant="on">
+                  <label>{{ t('RunTime') }}</label>
+                  <InputNumber v-model="dto.item.runTime"/>
+                </FloatLabel>
+              </div>
+
+              <div class="grid" v-if="dto.item.type === $const.ITEM_TYPE.BOOK">
+                <FloatLabel variant="on">
+                  <label class="mb-3">{{ t('Language') }}<i class="required-label pi pi-asterisk"/></label>
+                  <Select v-model="dto.item.lang" :options="store.options.languageSet"
+                          optionLabel="label" optionValue="value"/>
+                </FloatLabel>
+                <FloatLabel variant="on">
+                  <label>{{ t('Pages') }}</label>
+                  <InputNumber v-model="dto.item.pages"/>
+                </FloatLabel>
+                <FloatLabel variant="on">
+                  <label>{{ t('BookSize') }}</label>
+                  <InputText v-model="dto.item.size"/>
+                </FloatLabel>
+              </div>
+
+              <InputGroup class="field">
+                <InputText v-model="itemSpec"/>
+                <Button icon="pi pi-sync" class="p-button-warning"
+                        @click="parseItemSpec" :title="t('Analysis')"/>
+              </InputGroup>
+
+              <div class="flex flex-col gap-3 field">
+                <InputGroup>
+                  <InputGroupAddon>M</InputGroupAddon>
+                  <InputNumber suffix=" g" :minFractionDigits="0" :maxFractionDigits="2"
+                               v-model="dto.item.weight"/>
                 </InputGroup>
-              </FloatLabel>
-              <FloatLabel variant="on" v-if="dto.item.type !== $const.ITEM_TYPE.BOOK">
-                <label>{{ t('CatalogId') }}</label>
-                <InputText v-model="dto.item.catalogId"/>
+                <InputGroup>
+                  <InputGroupAddon>W</InputGroupAddon>
+                  <InputNumber suffix=" mm" v-model="dto.item.width"/>
+                </InputGroup>
+                <InputGroup>
+                  <InputGroupAddon>L</InputGroupAddon>
+                  <InputNumber suffix=" mm" v-model="dto.item.length"/>
+                </InputGroup>
+                <InputGroup>
+                  <InputGroupAddon>H</InputGroupAddon>
+                  <InputNumber suffix=" mm" v-model="dto.item.height"/>
+                </InputGroup>
+              </div>
+
+              <FloatLabel class="field" variant="on">
+                <label>{{ t('Remark') }}</label>
+                <Textarea v-model="dto.item.remark" rows="4" cols="20"/>
               </FloatLabel>
             </div>
-
-            <div class="grid"
-                 v-if="dto.item.type === $const.ITEM_TYPE.ALBUM || dto.item.type === $const.ITEM_TYPE.DISC">
-              <FloatLabel variant="on" v-if="dto.item.type === $const.ITEM_TYPE.DISC">
-                <label>{{ t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
-                <MultiSelect showClear v-model="dto.item.mediaFormat" :options="store.options.mediaFormatSet"
-                             optionLabel="label" optionValue="value" display="chip"/>
-              </FloatLabel>
-              <FloatLabel variant="on">
-                <label>{{ t('Discs') }}</label>
-                <InputNumber v-model="dto.item.discs"/>
-              </FloatLabel>
-              <FloatLabel variant="on">
-                <template v-if="dto.item.type === $const.ITEM_TYPE.ALBUM">
-                  <label>{{ t('Tracks') }}</label>
-                  <InputNumber v-model="dto.item.tracks"/>
-                </template>
-                <template v-if="dto.item.type === $const.ITEM_TYPE.DISC">
-                  <label>{{ t('Episodes') }}</label>
-                  <InputNumber v-model="dto.item.episodes"/>
-                </template>
-              </FloatLabel>
-              <FloatLabel variant="on">
-                <label>{{ t('RunTime') }}</label>
-                <InputNumber v-model="dto.item.runTime"/>
-              </FloatLabel>
-            </div>
-
-            <div class="grid" v-if="dto.item.type === $const.ITEM_TYPE.BOOK">
-              <FloatLabel variant="on">
-                <label class="mb-3">{{ t('Language') }}<i class="required-label pi pi-asterisk"/></label>
-                <Select v-model="dto.item.lang" :options="store.options.languageSet"
-                        optionLabel="label" optionValue="value"/>
-              </FloatLabel>
-              <FloatLabel variant="on">
-                <label>{{ t('Pages') }}</label>
-                <InputNumber v-model="dto.item.pages"/>
-              </FloatLabel>
-              <FloatLabel variant="on">
-                <label>{{ t('BookSize') }}</label>
-                <InputText v-model="dto.item.size"/>
-              </FloatLabel>
-            </div>
-
-            <InputGroup class="field">
-              <InputText v-model="itemSpec"/>
-              <Button icon="pi pi-sync" class="p-button-warning"
-                      @click="parseItemSpec" :title="t('Analysis')"/>
-            </InputGroup>
-
-            <div class="flex flex-col gap-3 field">
-              <InputGroup>
-                <InputGroupAddon>M</InputGroupAddon>
-                <InputNumber suffix=" g" :minFractionDigits="0" :maxFractionDigits="2"
-                             v-model="dto.item.weight"/>
-              </InputGroup>
-              <InputGroup>
-                <InputGroupAddon>W</InputGroupAddon>
-                <InputNumber suffix=" mm" v-model="dto.item.width"/>
-              </InputGroup>
-              <InputGroup>
-                <InputGroupAddon>L</InputGroupAddon>
-                <InputNumber suffix=" mm" v-model="dto.item.length"/>
-              </InputGroup>
-              <InputGroup>
-                <InputGroupAddon>H</InputGroupAddon>
-                <InputNumber suffix=" mm" v-model="dto.item.height"/>
-              </InputGroup>
-            </div>
-
-            <FloatLabel class="field" variant="on">
-              <label>{{ t('Remark') }}</label>
-              <Textarea v-model="dto.item.remark" rows="4" cols="20"/>
-            </FloatLabel>
-          </div>
-        </template>
-      </Card>
-      <Card class="mt-3 col-12" v-if="dto.item.type === $const.ITEM_TYPE.ALBUM">
-        <template #header>
-          <div><RIcon name="queue_music"/><strong>{{ t('TrackInfo') }}</strong></div>
-          <RButton @click="openAlbumTrackQuickCreatorDialog" severity="info" icon="music_note_add" tip="Add"/>
-        </template>
-        <template #content>
-          <DataTable ref="dt" :value="dto.item.disc.tracks" :rows="50" stripedRows size="small"
-                     scrollable scrollHeight="40rem" responsiveLayout="scroll">
-            <template #empty>
+          </template>
+        </Card>
+        <Card class="mt-3 col-12" v-if="dto.item.type === $const.ITEM_TYPE.ALBUM">
+          <template #header>
+            <div><RIcon name="queue_music"/><strong>{{ t('TrackInfo') }}</strong></div>
+            <RButton @click="openAlbumTrackQuickCreatorDialog" severity="info" icon="music_note_add" tip="Add"/>
+          </template>
+          <template #content>
+            <DataTable ref="dt" :value="dto.item.disc.tracks" :rows="50" stripedRows size="small"
+                       scrollable scrollHeight="40rem" responsiveLayout="scroll">
+              <template #empty>
                 <span class="empty-search-result">
                     {{ t('CommonDataTableEmptyInfo') }}
                 </span>
-            </template>
-            <template #loading>
-              <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-              <span>{{ t('CommonDataTableLoadingInfo') }}</span>
-            </template>
-            <Column :header="t('Index')" field="serial" style="flex: 0 0 10rem"/>
-            <Column :header="t('Name')" field="name" style="flex: 0 0 10rem"/>
-            <Column :header="t('Duration')" field="duration" style="flex: 0 0 10rem"/>
-          </DataTable>
-        </template>
-      </Card>
-      <RelatedEntriesCreator class="mt-3 col-12" v-model:relatedEntries="relatedEntries"/>
-    </div>
-    <div class="col-5">
-      <Card>
-        <template #header>
-          <div><RIcon name="image"/><strong>{{ t('Images') }}</strong></div>
-        </template>
-        <template #content>
-          <ImageUploader v-model:images="dto.images" v-model:generateThumb="dto.generateThumb" :showDetail="false"/>
-        </template>
-      </Card>
-    </div>
-    <div class="col-9">
-      <Card>
-        <template #header>
-          <div><RIcon name="article"/><strong>{{ t('Description') }}</strong></div>
-        </template>
-        <template #content>
-          <MdEditor v-model="dto.item.detail" theme="dark" previewTheme="github"
-                    :toolbarsExclude="['save', 'pageFullscreen', 'fullscreen',
+              </template>
+              <template #loading>
+                <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                <span>{{ t('CommonDataTableLoadingInfo') }}</span>
+              </template>
+              <Column :header="t('Index')" field="serial" style="flex: 0 0 10rem"/>
+              <Column :header="t('Name')" field="name" style="flex: 0 0 10rem"/>
+              <Column :header="t('Duration')" field="duration" style="flex: 0 0 10rem"/>
+            </DataTable>
+          </template>
+        </Card>
+        <RelatedEntriesCreator class="mt-3 col-12" v-model:relatedEntries="relatedEntries"/>
+      </div>
+      <div class="col-5">
+        <Card>
+          <template #header>
+            <div><RIcon name="image"/><strong>{{ t('Images') }}</strong></div>
+          </template>
+          <template #content>
+            <ImageUploader v-model:images="dto.images" v-model:generateThumb="dto.generateThumb" :showDetail="false"/>
+          </template>
+        </Card>
+      </div>
+      <div class="col-9">
+        <Card>
+          <template #header>
+            <div><RIcon name="article"/><strong>{{ t('Description') }}</strong></div>
+          </template>
+          <template #content>
+            <MdEditor v-model="dto.item.detail" theme="dark" previewTheme="github"
+                      :toolbarsExclude="['save', 'pageFullscreen', 'fullscreen',
                    'preview', 'previewOnly', 'htmlPreview', 'catalog', 'github']"/>
-        </template>
-      </Card>
-    </div>
-  </BlockUI>
+          </template>
+        </Card>
+      </div>
+    </BlockUI>
+  </div>
   <Dialog :modal="true" v-model:visible="analysisBasicInfoDisplay" :header="t('Analysis')" style="width: 40rem">
     <Textarea size="small" v-model="analysisBasicInfoText" rows="8" cols="20" class="static w-full"/>
     <RButton class="mt-2" severity="info" @click="parseBasicInfo" icon="convert_to_text"/>

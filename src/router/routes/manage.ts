@@ -43,15 +43,22 @@ const ManageRouter: Array<RouteRecordRaw> = [
                 meta: {
                     title: "File Management"
                 }
-            },
-            {
-                path: 'item/submit',
-                component: () => import('@/views/management/ItemCreate.vue'),
-                meta: {
-                    title: "Create New Item"
-                }
             }
         ],
+    },
+    {
+        path: '/db/item/new',
+        component: () => import('@/views/management/ItemCreate.vue'),
+        meta: {
+            title: "New Item"
+        }
+    },
+    {
+        path: '/db/entry/new',
+        component: () => import('@/views/management/EntryCreate.vue'),
+        meta: {
+            title: "New Entry"
+        }
     }
 ];
 
