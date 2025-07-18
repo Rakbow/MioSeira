@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import {useUserStore} from "@/store/modules/user";
 import {defineProps, inject, onMounted, ref} from "vue";
 import {API, Axios} from '@/api'
 import {bs} from '@/service/baseService';
 import {EditParam} from "@/service/entityService";
 
-const userStore = useUserStore();
 const param = ref(new EditParam());
 const status = ref();
 const entity = inject<Entity>('entity')!;

@@ -31,7 +31,7 @@
           <label for="rememberMe">{{ t('RememberMe') }}</label>
         </div>
       </div>
-      <Button :label="t('SignIn')" icon="pi pi-user" class="w-full" @click="login"/>
+      <Button :label="t('SignIn')" icon="pi pi-user" class="w-full" @click="toLogin"/>
     </div>
   </BlockUI>
 </template>
@@ -39,14 +39,12 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import $ from 'jquery';
-import {API, Axios} from "@/api";
-import {useUserStore} from "@/store/modules/user";
+import {API} from "@/api";
 import {useI18n} from "vue-i18n";
-import {bs} from '@/service/baseService';
+import {login} from '@/service/login';
 import {EditParam} from "@/service/entityService";
 
 const {t} = useI18n();
-const userStore = useUserStore();
 const param = ref(new EditParam());
 
 onMounted(() => {
@@ -58,17 +56,10 @@ const refreshKaptcha = () => {
   $("#kaptcha").attr("src", path);
 }
 
-const login = async () => {
+const toLogin = async () => {
   param.value.block = true;
-  param.value.data = loginDTO.value
-  const res = await Axios.post(API.LOGIN, param.value.data);
-  if (res.success()) {
-    userStore.login(res.data.user, res.data.token);
-    location.reload();
-  } else {
-    bs!.toast.error(res.message);
-    param.value.block = false;
-  }
+  await login(loginDTO.value);
+  param.value.block = false;
 }
 
 const loginDTO = ref({

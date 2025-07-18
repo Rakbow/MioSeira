@@ -27,11 +27,9 @@
             </ul>
             <div :class="`${prefix}-entry-actions`">
               <Like :likeCount="episode.traffic.likeCount" :liked="episode.traffic.liked"/>
-              <div style="right: 0">
-                <StatusEditor v-if="userStore.user && (userStore.user.type > 2 || userStore.user.type === 0)"
-                              :status="episode.status"/>
-                <RButton v-if="userStore.user && userStore.user.type > 1"
-                         @click="loadEditor($const.ENTITY.EPISODE, episode)" action="update"/>
+              <div style="right: 0" v-permission>
+                <StatusEditor :status="episode.status"/>
+                <RButton @click="loadEditor($const.ENTITY.EPISODE, episode)" action="update"/>
               </div>
             </div>
           </div>
@@ -51,7 +49,6 @@
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import {useUserStore} from "@/store/modules/user";
 import {loadEditor} from "@/service/entityService";
 import {useI18n} from "vue-i18n";
 import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} from "vue";
@@ -67,7 +64,6 @@ const RelatedFiles = defineAsyncComponent(() => import('@/components/file/Relate
 const RelatedEpisodes = defineAsyncComponent(() => import('@/components/related/RelatedEpisodes.vue'));
 
 const router = useRouter();
-const userStore = useUserStore();
 const episode = ref<any>({});
 const {proxy} = getCurrentInstance()!;
 

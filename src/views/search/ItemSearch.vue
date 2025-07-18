@@ -76,6 +76,7 @@ const switchEntitySubType = (ev: any) => {
     entitySubType.value = null;
     param.value.query.filters.type.value = null;
   }
+  param.value.initPage();
   loadItems();
 }
 

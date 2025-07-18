@@ -21,20 +21,15 @@
               <option value="en">English</option>
             </select>
           </div>
-          <Avatar v-if="userStore.isAuthenticated" :image="userStore!.user!.headerUrl"
+          <RButton v-if="!userStore.info" icon="login" @click="openLogin" size="large" tip="SignIn"/>
+          <Avatar v-else :image="userStore!.info!.avatar"
                   size="xlarge" shape="circle" @pointerover="openSetting" />
-          <Button v-if="!userStore.isAuthenticated" text rounded @click="openLogin" size="large"
-                  v-tooltip="{value: t('SignIn')}">
-            <template #icon>
-              <RIcon name="login" :size="3"/>
-            </template>
-          </Button>
         </div>
 
       </template>
     </Menubar>
   </div>
-  <Popover ref="op">
+  <Popover ref="op" style="width: 7rem">
     <Button @click="logout" :label="t('SignOut')" text>
       <template #icon>
         <RIcon name="logout" :size="2"/>
@@ -45,12 +40,12 @@
 
 <script setup lang="ts">
 import {defineAsyncComponent, getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
-import {logout} from '@/service/login';
 import {useUserStore} from "@/store/modules/user";
 import {useI18n} from "vue-i18n";
 import {bs} from "@/service/baseService";
 import {useRouter} from "vue-router";
 import {useOptionStore} from "@/store/modules/option";
+import {logout} from "@/service/login";
 
 const Login = defineAsyncComponent(() => import('@/components/common/Login.vue'));
 
@@ -66,6 +61,7 @@ const optionStore = useOptionStore();
 onBeforeMount(() => {
 })
 onMounted(() => {
+  console.log(userStore.info)
 })
 
 const menuItems = ref([

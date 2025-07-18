@@ -2,7 +2,7 @@ import type { Router } from 'vue-router'
 
 export const setupGuards = (router: Router) => {
     router.beforeEach((to, from, next) => {
-        const isAuthenticated = !!localStorage.getItem('token')
+        const isAuthenticated = !!localStorage.getItem('ticket')
 
         console.log('跳转了')
 

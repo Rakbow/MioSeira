@@ -6,7 +6,7 @@
         <b>{{ t('TrackInfo') }}</b>
       </template>
 
-      <div v-if="userStore.user && userStore.user.type > 1" class="entity-detail-fieldset-actions">
+      <div v-permission class="entity-detail-fieldset-actions">
         <RButton @click="openAudioUpload" icon="cloud_upload" tip="Upload"/>
         <RButton @click="openQuickCreatorDialog" icon="music_note_add" tip="Add"/>
       </div>

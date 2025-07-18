@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {defineAsyncComponent, getCurrentInstance, inject, onMounted, ref} from 'vue';
-import {useUserStore} from "@/store/modules/user";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {EditParam} from "@/service/entityService";
@@ -9,7 +8,6 @@ import {bs} from '@/service/baseService';
 const manager = defineAsyncComponent(() => import('@/components/related/RelationManager.vue'));
 const {t} = useI18n();
 const entity = inject<Entity>('entity')!;
-const userStore = useUserStore();
 const subProducts = ref<any>([]);
 const param = ref(new EditParam());
 const { proxy } = getCurrentInstance()!;
@@ -60,15 +58,13 @@ const getSubProduct = async () => {
         <b>{{ t('Product') }}</b>
       </template>
       <div class="relative">
-        <div v-if="userStore.user">
-          <Button v-if="userStore.user.type > 1" class="p-button-link absolute top-0"
-                  @click="openEditDialog" style="right: 0"
-                  v-tooltip.bottom="{value: t('Edit')}">
-            <template #icon>
-              <RIcon name="edit_note" />
-            </template>
-          </Button>
-        </div>
+        <Button v-permission class="p-button-link absolute top-0"
+                @click="openEditDialog" style="right: 0"
+                v-tooltip.bottom="{value: t('Edit')}">
+          <template #icon>
+            <RIcon name="edit_note" />
+          </template>
+        </Button>
 
         <div class="ml-2 mt-1" v-if="subProducts.length !== 0">
           <table class="table-borderless">

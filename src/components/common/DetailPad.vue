@@ -8,8 +8,7 @@
       <div class="entity-detail-fieldset-actions">
         <RButton v-if="!empty"
                  @click="openTextTingle" icon="arrows_output" tip="FullScreen"/>
-        <RButton v-if="userStore.user && userStore.user.type > 1"
-                 @click="openEditDialog" action="update"/>
+        <RButton v-permission @click="openEditDialog" action="update"/>
       </div>
       <div class="relative">
         <article style="width: 90%;font-size: 1.2rem" ref="html" class="entity-detail-markdown"/>
@@ -25,7 +24,6 @@
 
 <script setup lang="ts">
 import {computed, defineAsyncComponent, defineProps, inject, onMounted, ref} from "vue";
-import {useUserStore} from "@/store/modules/user";
 import {useI18n} from "vue-i18n";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
@@ -65,7 +63,6 @@ onMounted(() => {
   text2Markdown();
 })
 
-const userStore = useUserStore();
 const html = ref();
 const text = ref('');
 

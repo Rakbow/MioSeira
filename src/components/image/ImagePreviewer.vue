@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {defineAsyncComponent, inject, onMounted, ref} from 'vue';
-import {useUserStore} from "@/store/modules/user";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {EditParam} from "@/service/entityService";
@@ -10,7 +9,6 @@ const manager = defineAsyncComponent(() => import('@/components/image/ImageManag
 const browser = defineAsyncComponent(() => import('@/components/image/ImageBrowser.vue'));
 
 const {t} = useI18n();
-const userStore = useUserStore();
 const entity = inject<Entity>('entity')!;
 const images = ref([]);
 const count = ref(0);
@@ -87,7 +85,7 @@ const openManager = () => {
       <span><i class="pi pi-image"/><strong>{{ t('Images') }}</strong></span>
     </template>
     <template #icons>
-      <RButton v-if="userStore.user && userStore.user.type > 1"
+      <RButton v-permission
                @click="openManager" action="update"/>
       <Button :label="count.toString()" outlined @click="openBrowser" :disabled="!count"
               v-tooltip="{value: t('ViewAll'), disabled: !count}"/>

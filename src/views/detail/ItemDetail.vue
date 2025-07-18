@@ -13,11 +13,9 @@
           <div :class="`${prefix}-item-info`">
             <Info :item="item"/>
             <div :class="`${prefix}-item-actions`">
-              <div style="top: 0">
-                <StatusEditor v-if="userStore.user && (userStore.user.type > 2 || userStore.user.type === 0)"
-                              :status="item.status"/>
-                <RButton v-if="userStore.user && userStore.user.type > 1"
-                         @click="loadEditor(item)" action="update"/>
+              <div style="top: 0" v-permission>
+                <StatusEditor :status="item.status"/>
+                <RButton @click="loadEditor(item)" action="update"/>
               </div>
               <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked"
                     style="bottom: 0"/>
@@ -43,7 +41,6 @@
 <script setup lang="ts">
 import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} from "vue";
 import {useRouter} from "vue-router";
-import {useUserStore} from "@/store/modules/user";
 import {loadEditor} from "@/service/itemService";
 
 const prefix = 'entity-detail';
@@ -60,7 +57,6 @@ const RelatedPersons = defineAsyncComponent(() => import('@/components/related/R
 const RelationGroup = defineAsyncComponent(() => import('@/components/related/RelationGroup.vue'));
 
 const router = useRouter();
-const userStore = useUserStore();
 const itemType = ref(0);
 const item = ref<any>({});
 const pageInfo = ref<any>();

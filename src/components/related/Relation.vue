@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {defineAsyncComponent, defineProps, inject, ref} from 'vue';
-import {useUserStore} from "@/store/modules/user";
 import {useI18n} from "vue-i18n";
 import {META} from "@/config/Web_Const";
 import {bs} from '@/service/baseService';
@@ -9,7 +8,6 @@ const RelationEntity = defineAsyncComponent(() => import('@/components/related/R
 const manager = defineAsyncComponent(() => import('@/components/related/RelationManager.vue'));
 const browser = defineAsyncComponent(() => import('@/components/related/RelatedEntitiesBrowser.vue'));
 const {t} = useI18n();
-const userStore = useUserStore();
 const loading = ref(false);
 const entity = inject<Entity>('entity');
 
@@ -100,7 +98,7 @@ const openBrowser = () => {
       <span><i :class="`pi pi-${props.icon}`"/><strong>{{ props.header }}</strong></span>
     </template>
     <template #icons>
-      <RButton v-if="userStore.user && userStore.user.type > 1"
+      <RButton v-permission
                @click="openManager" action="update" />
       <Button :label="total.toString()" outlined @click="openBrowser" :disabled="total <= 5"
               v-tooltip.bottom="{value: t('ViewAll'), disabled: total <= 5}"/>

@@ -20,11 +20,9 @@
               <Info :entry="entry"/>
               <div :class="`${prefix}-entry-actions`">
                 <Like :likeCount="pageInfo.likeCount" :liked="pageInfo.liked"/>
-                <div style="right: 0">
-                  <StatusEditor v-if="userStore.user && (userStore.user.type > 2 || userStore.user.type === 0)"
-                                :status="entry.status"/>
-                  <RButton v-if="userStore.user && userStore.user.type > 1"
-                           @click="loadEditor(entry)" action="update"/>
+                <div style="right: 0" v-permission>
+                  <StatusEditor :status="entry.status"/>
+                  <RButton @click="loadEditor(entry)" action="update"/>
                 </div>
               </div>
             </div>

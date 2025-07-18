@@ -3,12 +3,10 @@ import {defineAsyncComponent, inject, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
 import {useI18n} from "vue-i18n";
 import {bs} from '@/service/baseService';
-import {useUserStore} from "@/store/modules/user";
 
 const manager = defineAsyncComponent(() => import('@/components/file/RelatedFileManager.vue'));
 
 const {t} = useI18n();
-const userStore = useUserStore();
 const loading = ref(false);
 const files = ref<any[]>([]);
 const size = ref<string>();
@@ -58,7 +56,7 @@ const openManager = () => {
         <i class="pi pi-file"/>
         <b>{{ t('RelatedFiles') }}</b>
       </template>
-      <div class="entity-detail-fieldset-actions" v-if="userStore.user && userStore.user.type > 1">
+      <div class="entity-detail-fieldset-actions" v-permission>
         <RButton @click="openManager" action="update"/>
       </div>
       <div class="related-file">

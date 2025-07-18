@@ -20,13 +20,11 @@ import {setupPlugins} from "@/plugins";
 import RIcon from "@/components/global/RIcon.vue";
 import RButton from "@/components/global/RButton.vue";
 import RPaginator from "@/components/global/RPaginator.vue";
+import permissionDirective from '@/directives/permission'
 
-// import {useCookies} from '@vueuse/integrations/useCookies';
 
 const app = createApp(App);
 const metaManager = createMetaManager();
-// const cookie = useCookies();
-// const locale = cookie.get('locale') || 'zh';
 
 // 全局挂载 $api
 app.config.globalProperties.$api = API
@@ -38,6 +36,7 @@ if (savedLocale) {
     i18n.global.locale.value = savedLocale as 'zh' | 'en';
 }
 
+app.use(permissionDirective)
 setupPlugins(app);
 app.use(router);
 app.use(metaManager);
