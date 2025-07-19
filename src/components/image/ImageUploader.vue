@@ -82,7 +82,6 @@ const onImageClear = () => {
 };
 
 const changeGenerateThumb = () => {
-  console.log('generateThumb: ', generateThumb.value)
   emit('update:generateThumb', generateThumb.value);
 }
 </script>

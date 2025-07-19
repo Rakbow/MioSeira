@@ -61,7 +61,6 @@ const optionStore = useOptionStore();
 onBeforeMount(() => {
 })
 onMounted(() => {
-  console.log(userStore.info)
 })
 
 const menuItems = ref([
