@@ -172,7 +172,7 @@ const switchCreateType = (ev: any) => {
           <div class="text-ellipsis">{{ data!.name }}</div>
         </template>
         <template #editor="{ data, field }">
-          <InputText v-model="data[field]" autofocus fluid/>
+          <InputText v-model="data[field]" fluid/>
         </template>
       </Column>
       <Column :header="t('Size')" field="size" style="width: 8rem"/>
