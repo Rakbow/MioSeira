@@ -29,34 +29,32 @@ const props = defineProps({
 </template>
 
 <style scoped lang="scss">
-$pop-border-radius: 6px;
-$pop-down-border-radius: 0 0 6px 6px;
 
 .item-pop {
   &-over {
-    border-radius: $pop-border-radius;
-    width: 192px;
-    height: 256px;
+    border-radius: .6rem;
+    width: 19.2rem;
+    height: 25.6rem;
     position: relative;
 
     ul {
       list-style: none !important;
-      padding-left: 5px !important;
+      padding-left: .5rem !important;
     }
 
     ul li {
       overflow: hidden;
       text-overflow: ellipsis;
-      margin: 2px 0;
+      margin: .2rem 0;
 
       > i {
-        font-size: 10px
+        font-size: 1rem;
       }
     }
   }
 
   &-over-preview {
-    border-radius: $pop-border-radius;
+    border-radius: .6rem;
     position: absolute;
     top: 0;
     left: 0;
@@ -65,7 +63,7 @@ $pop-down-border-radius: 0 0 6px 6px;
   }
 
   &-over-data {
-    border-radius: $pop-down-border-radius;
+    border-radius: 0 0 .6rem .6rem;
     background: linear-gradient(to bottom, rgba(44, 44, 44, .5), #2c2c2c);
     position: absolute;
     overflow: hidden;
@@ -83,15 +81,15 @@ $pop-down-border-radius: 0 0 6px 6px;
     -webkit-line-clamp: 4; /* 限制显示的行数 */
     overflow: hidden; /* 超出部分隐藏 */
     text-overflow: ellipsis; /* 显示 "..." */
-    font-size: 12px;
+    font-size: 1.2rem;
     font-weight: 700;
-    line-height: 16px;
+    line-height: 1.6rem;
   }
 
   &-category {
     display: inline-block;
-    line-height: 16px;
-    font-size: 11px;
+    line-height: 1.6rem;
+    font-size: 1.1rem;
   }
 }
 </style>

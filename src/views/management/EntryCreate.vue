@@ -70,7 +70,7 @@ const submit = async () => {
           <div><RIcon name="label"/><strong>{{ t('Category') }}</strong></div>
         </template>
         <template #content>
-          <div style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+          <div class="content-space-between">
             <EntryTypeSelector v-model="dto.entry.type"
                                @update="switchEntryType" :disabled="false" />
             <RButton @click="submit" tip="Save" icon="save"/>

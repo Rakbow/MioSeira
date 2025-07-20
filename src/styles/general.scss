@@ -59,7 +59,6 @@ body {
   background-color: var(--r-bg-blue-950);
   min-width: 125rem;
 
-  font-family: var(--font-family);
   color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -73,7 +72,7 @@ img {
 
 .card {
   background: var(--surface-card);
-  border-radius: 10px;
+  border-radius: 1rem;
 }
 
 
@@ -96,11 +95,11 @@ a:visited, a:hover {
 
 
 .p-popover {
-  border-radius: 6px !important;
+  border-radius: .6rem !important;
 
   .p-popover-content {
     padding: 0 !important;
-    border-radius: 6px !important;
+    border-radius: .6rem !important;
   }
 }
 
@@ -121,6 +120,7 @@ a:visited, a:hover {
   display: -webkit-box !important; /* 必须配合 -webkit-line-clamp 使用 */
   -webkit-box-orient: vertical !important; /* 设置为纵向排列 */
   -webkit-line-clamp: 1 !important; /* 限制显示的行数 */
+
   overflow: hidden !important; /* 超出部分隐藏 */
   text-overflow: ellipsis !important; /* 显示 "..." */
 }
@@ -129,6 +129,15 @@ a:visited, a:hover {
   display: -webkit-box; /* 必须配合 -webkit-line-clamp 使用 */
   -webkit-box-orient: vertical; /* 设置为纵向排列 */
   -webkit-line-clamp: 2; /* 限制显示的行数 */
+
   overflow: hidden; /* 超出部分隐藏 */
   text-overflow: ellipsis; /* 显示 "..." */
+}
+
+.content-space-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: auto;
+  width: 100%
 }

@@ -89,7 +89,7 @@ const toggleCollapse = () => {
         <table v-if="personnel.length">
           <tbody>
           <tr v-for="item in visibleRows" :key="item.role.label">
-            <td><span>{{ item.role.label }}</span></td>
+            <td style="width: 7rem"><span>{{ item.role.label }}</span></td>
             <td>
               <template v-for="(chunk) in chunkArray((item as any).persons, 10)">
                 <div>
@@ -119,8 +119,6 @@ const toggleCollapse = () => {
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/general' as g;
-
 .person-table {
   position: relative !important;
   margin-left: .5rem;
@@ -130,9 +128,12 @@ const toggleCollapse = () => {
     font-size: 1.1rem;
   }
 
+  tr {
+    padding: 0 !important;
+  }
+
   td {
-    padding-left: .6rem;
-    padding-right: .6rem;
+    padding: 0 !important;
     font-size: 1.1rem;
     vertical-align: top;
 
@@ -143,7 +144,7 @@ const toggleCollapse = () => {
     > span {
       color: var(--r-steel-500);
       white-space: nowrap;
-      @extend .small-font
+      font: 1.1rem var(--r-text-small-font);
     }
   }
 }

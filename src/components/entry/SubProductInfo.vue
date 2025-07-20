@@ -22,7 +22,7 @@ const openEditDialog = () => {
     props: {
       header: `${t('RelatedEntity')}-${t('Edit')}`,
       style: {
-        width: '900px',
+        width: '90rem',
       },
       modal: true,
       closable: true
@@ -96,15 +96,15 @@ const getSubProduct = async () => {
 <style scoped lang="scss">
 
 .person-table td {
-  padding-left: 6px;
-  padding-right: 6px;
+  padding-left: .6rem;
+  padding-right: .6rem;
   font-size: 9pt;
 }
 
 .person-table h4 {
   font-size: 9pt;
   color: #beb993;
-  margin: 5px 0;
+  margin: .5rem 0;
 }
 
 $product-colors: (

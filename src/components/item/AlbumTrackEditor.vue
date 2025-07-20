@@ -68,7 +68,7 @@ const submit = async () => {
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
-               scrollable scrollHeight="400px" responsiveLayout="scroll">
+               scrollable scrollHeight="40rem" responsiveLayout="scroll">
       <template #empty>
         <span>
             {{ t('CommonDataTableEmptyInfo') }}

@@ -129,8 +129,7 @@ const onSortChange = (ev: any) => {
       <DataView :value="param.result.data" layout="list">
         <template #header>
           <div class="grid" style="width: 100%">
-            <div class="col-12"
-                 style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+            <div class="col-12 content-space-between">
               <EntryTypeSelector v-model="param.query.filters.type.value"
                                  @update="switchEntitySubType" :disabled="param.loading" />
               <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"

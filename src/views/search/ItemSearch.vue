@@ -257,7 +257,7 @@ const openSelector = () => {
     <div class="entity-search-main">
       <DataView :value="param.result.data" :layout="layout">
         <template #header>
-          <div style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+          <div class="content-space-between">
             <SelectButton size="large" :options="$const.ITEM_TYPE_SET" :disabled="param.loading"
                           v-model="entitySubType" @change="switchEntitySubType"
                           optionLabel="value" ariaLabelledby="custom" :optionDisabled="'disabled'">

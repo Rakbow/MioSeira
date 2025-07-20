@@ -24,7 +24,7 @@
         </div>
         <div :class="`${prefix}-item-content`">
           <RelatedPersons/>
-          <AlbumTrack v-if="itemType === $const.ITEM_TYPE.ALBUM"/>
+          <AlbumTrack v-if="itemType === $const.ITEM_TYPE.ALBUM" :id="item.id" :catalogId="item.catalogId" />
           <DetailPad :text="item.detail"/>
           <RelatedFiles/>
         </div>

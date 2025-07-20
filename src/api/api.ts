@@ -19,9 +19,9 @@ export const API = {
         UPDATE: '/api/db/item/update',
         EXTRA_INFO: '/api/db/entry/get-extra-info',
 
-        ALBUM_TRACK_QUICK_CREATE: '/api/db/item/album-track-quick-create',
         ALBUM_TRACK_LIST: '/api/db/item/album-track-list',
-        ALBUM_TRACK_FILES_UPLOAD: '/api/db/item/album-track-files-upload',
+        ALBUM_TRACK_QUICK_CREATE: '/api/db/item/album-track-quick-create',
+        ALBUM_TRACK_QUICK_UPLOAD: '/api/db/item/album-track-quick-upload',
         BOOK_CONVERT_ISBN: '/api/db/item/convert-isbn',
     },
 

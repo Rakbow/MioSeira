@@ -47,7 +47,6 @@
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import {useUserStore} from "@/store/modules/user";
 import {loadEditor} from "@/service/entryService";
 import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} from "vue";
 
@@ -65,7 +64,6 @@ const RelationGroup = defineAsyncComponent(() => import('@/components/related/Re
 
 const meta = ref<any>();
 const router = useRouter();
-const userStore = useUserStore();
 const entry = ref<any>();
 const pageInfo = ref<any>();
 const cover = ref();

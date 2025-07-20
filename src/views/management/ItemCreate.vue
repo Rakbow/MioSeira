@@ -143,7 +143,7 @@ const openAlbumTrackQuickCreatorDialog = () => {
     onClose: (options) => {
       if (options!.data !== undefined) {
         if (options!.data.disc && options!.data.disc.tracks.length > 0) {
-          dto.value.item.disc.tracks = options!.data.tracks;
+          dto.value.item.disc = options!.data.disc;
         }
       }
     }
@@ -169,7 +169,7 @@ const handleTracks = () => {
             <div><RIcon name="label"/><strong>{{ t('Category') }}</strong></div>
           </template>
           <template #content>
-            <div style="display: flex;justify-content: space-between;align-items: center;height: auto;width: 100%">
+            <div class="content-space-between">
               <SelectButton v-model="itemType" :options="$const.ITEM_TYPE_SET"
                             @change="switchItemType"
                             optionLabel="value" dataKey="value" ariaLabelledby="custom" :optionDisabled="'disabled'">

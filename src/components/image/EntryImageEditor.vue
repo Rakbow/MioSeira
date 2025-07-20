@@ -76,7 +76,7 @@ const openCropper = () => {
     props: {
       header: t('Edit'),
       style: {
-        width: '400px',
+        width: '40rem',
       },
       modal: true,
       closable: true
@@ -113,7 +113,7 @@ const openCropper = () => {
     </div>
   </div>
 
-  <Dialog :modal="true" v-model:visible="uploadDialogDisplay" :style="{width: '400px'}" :header="t('UploadImage')"
+  <Dialog :modal="true" v-model:visible="uploadDialogDisplay" :style="{width: '40rem'}" :header="t('UploadImage')"
           class="p-fluid">
     <BlockUI :blocked="loading">
       <FileUpload accept="image/*" auto :customUpload="true"
@@ -146,16 +146,16 @@ const openCropper = () => {
 
 <style scoped lang="scss">
 .image-container {
-  width: 100px;
-  height: 100px;
+  width: 10rem;
+  height: 10rem;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden; /* 如果需要裁剪，可以加上 */
   position: relative;
 
-  border: gold solid 2px;
-  border-radius: 10px;
+  border: gold solid .2rem;
+  border-radius: 1rem;
   img {
     max-width: 100%; /* 宽度不超过容器 */
     max-height: 100%; /* 高度不超过容器 */
