@@ -7,7 +7,7 @@
       </template>
 
       <div v-permission class="entity-detail-fieldset-actions">
-        <RButton @click="openAudioUpload" icon="cloud_upload" tip="Upload"/>
+        <RButton @click="openAudioUpload" icon="cloud_upload" tip="Upload" v-if="info.discs.length"/>
         <RButton @click="openQuickCreatorDialog" icon="music_note_add" tip="Add"/>
       </div>
 
@@ -81,7 +81,7 @@
       </div>
     </Fieldset>
   </div>
-  <Dialog :modal="true" v-model:visible="audioUploadDisplay" :style="{width: '600px'}" :header="t('Upload')">
+  <Dialog :modal="true" v-model:visible="audioUploadDisplay" :style="{width: '60rem'}" :header="t('Upload')">
     <BlockUI :blocked="param.block">
       <FileUpload ref="dt" auto multiple :customUpload="true"
                   :showUploadButton="false"
@@ -90,30 +90,28 @@
                   :maxFileSize="100000000" :previewWidth="100"
                   :invalidFileSizeMessage="t('InvalidFileSizeMessage')">
         <template #header="{ chooseCallback }">
-          <Button @click="chooseCallback()" icon="pi pi-file" rounded outlined/>
-          <Button @click="clearFile" icon="pi pi-times" rounded outlined severity="danger"
-                  :disabled="!fileInfos || fileInfos.length === 0"/>
-          <Button @click="uploadAudioFile" icon="pi pi-save" rounded outlined v-if="fileInfos.length"/>
+          <div>
+            <RButton @click="chooseCallback()" icon="image" tip="Images"/>
+            <RButton @click="clearFile" action="clear" :disabled="!fileInfos || fileInfos.length === 0"/>
+            <RButton @click="uploadAudioFile" icon="cloud_upload" v-if="fileInfos.length" tip="Upload"/>
+          </div><br>
+          <Select size="small" :options="[...Array(info.discs.length).keys()]" v-model="selectedDiscNo"/>
         </template>
         <template #empty>
           <span class="empty-search-result">{{ t('DragFile') }}</span>
         </template>
         <template #content>
-          <DataTable v-if="fileInfos.length > 0" ref="dt" :value="fileInfos"
-                     :alwaysShowPaginator="fileInfos.length !== 0" paginator :rows="5"
-                     scrollable scrollHeight="flex" size="small"
-                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
-                                 LastPageLink CurrentPageReport RowsPerPageDropdown"
-                     currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;">
-            <Column :header="t('Name')" style="max-width: 10rem">
-              <template #body="slotProps">
-                <div class="data-table-field-text-overflow-hidden">{{ slotProps.data.name }}</div>
+          <DataTable v-if="fileInfos.length > 0" ref="dt" :value="fileInfos" class="entity-manager-datatable"
+                     scrollable scrollHeight="31rem" size="small">
+            <Column :header="t('Name')" style="width: 10rem">
+              <template #body="{data}">
+                <div class="text-ellipsis">{{ data.name }}</div>
               </template>
             </Column>
             <Column :header="t('Size')" field="size" style="width: 6rem"/>
             <Column style="width: 1rem">
               <template #body="{ index }">
-                <Button size="small" icon="pi pi-times" outlined rounded severity="danger"
+                <Button size="small" icon="pi pi-times" link severity="danger"
                         @click="removeFile(index)"/>
               </template>
             </Column>
@@ -125,19 +123,16 @@
 </template>
 
 <script setup lang="ts">
-import {defineAsyncComponent, inject, onMounted, ref} from "vue";
+import {defineAsyncComponent, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {API, Axios} from "@/api";
 import {PublicHelper} from "@/utils/publicHelper";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
-import {useUserStore} from "@/store/modules/user";
 
 const quickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
 
 const {t} = useI18n();
-const entity = inject<Entity>('entity');
-const userStore = useUserStore();
 const param = ref(new EditParam());
 const loading = ref(false);
 const info = ref({
@@ -146,6 +141,11 @@ const info = ref({
   totalDuration: 0,
 });
 
+const props = defineProps<{
+  id: number,
+  catalogId: string
+}>()
+
 onMounted(() => {
   reloadTrackInfo();
 });
@@ -153,7 +153,7 @@ onMounted(() => {
 const reloadTrackInfo = async () => {
   param.value.block = true;
   loading.value = true;
-  const res = await Axios.post(API.ITEM.ALBUM_TRACK_LIST, {id: entity!.id});
+  const res = await Axios.post(API.ITEM.ALBUM_TRACK_LIST, {id: props.id});
   if (res.success())
     info.value = res.data;
   param.value.block = false;
@@ -172,7 +172,7 @@ const openQuickCreatorDialog = () => {
     },
     data: {
       mode: 'normal',
-      albumId: entity!.id
+      id: props.id
     },
     onClose: (options: any) => {
       if (options.data !== undefined) {
@@ -210,12 +210,20 @@ const clearFile = () => {
 const removeFile = (index: number) => {
   fileInfos.value.splice(index, 1);
 };
+
+const selectedDiscNo = ref(0);
+
 const uploadAudioFile = async () => {
+  let selectedDisc: any = info.value.discs[selectedDiscNo.value]
   const fd = new FormData();
-  fd.append('albumId', entity!.id.toString());
+  fd.append('id', selectedDisc.id);
+  fd.append('itemId', props.id.toString());
+  fd.append('albumCatalogId', props.catalogId);
+  fd.append('discCatalogId', selectedDisc.catalogId);
+  fd.append('discNo', selectedDisc.discNo);
   fileInfos.value.forEach(f => fd.append('files', f.file));
   param.value.block = true;
-  const res = await Axios.form(API.ITEM.ALBUM_TRACK_FILES_UPLOAD, fd);
+  const res = await Axios.form(API.ITEM.ALBUM_TRACK_QUICK_UPLOAD, fd);
   if (res.success())
     bs!.toast.success(res.message);
   audioUploadDisplay.value = false;

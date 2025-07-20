@@ -33,7 +33,8 @@ const parseDisc = () => {
 const close = () => {
   dr.value.close(
       {
-        upload: upload.value
+        upload: upload.value,
+        disc: disc.value
       }
   );
 }
@@ -68,7 +69,7 @@ const submit = async () => {
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink
                                  LastPageLink CurrentPageReport RowsPerPageDropdown"
                currentPageReportTemplate="&nbsp;&nbsp;{first} to {last} of {totalRecords}&nbsp;&nbsp;"
-               scrollable scrollHeight="400px" responsiveLayout="scroll">
+               scrollable scrollHeight="40rem" responsiveLayout="scroll">
       <template #header>
         <div class="field">
           <Textarea class="w-full" size="small" rows="6" v-model="analysisInput"/>
@@ -77,6 +78,10 @@ const submit = async () => {
           <FloatLabel variant="on">
             <label>{{ t('Index') }}</label>
             <InputNumber size="large" v-model="disc.discNo" class="static w-full"/>
+          </FloatLabel>
+          <FloatLabel variant="on">
+            <label>{{ `${t('Disc')}${t('CatalogId')}` }}</label>
+            <InputText size="large" v-model="disc.catalogId" class="static w-full"/>
           </FloatLabel>
           <FloatLabel variant="on">
             <label>{{ t('MediaFormat') }}</label>
