@@ -24,7 +24,7 @@
         </div>
         <div :class="`${prefix}-item-content`">
           <RelatedPersons/>
-          <AlbumTrack v-if="itemType === $const.ITEM_TYPE.ALBUM" :id="item.id" :catalogId="item.catalogId" />
+          <AlbumTracks v-if="itemType === $const.ITEM_TYPE.ALBUM" :id="item.id" :catalogId="item.catalogId" />
           <DetailPad :text="item.detail"/>
           <RelatedFiles/>
         </div>
@@ -50,7 +50,7 @@ const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageT
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
-const AlbumTrack = defineAsyncComponent(() => import('@/components/item/AlbumTrackInfo.vue'));
+const AlbumTracks = defineAsyncComponent(() => import('@/components/item/AlbumTracks.vue'));
 const ImagePreviewer = defineAsyncComponent(() => import('@/components/image/ImagePreviewer.vue'));
 const RelatedFiles = defineAsyncComponent(() => import('@/components/file/RelatedFiles.vue'));
 const RelatedPersons = defineAsyncComponent(() => import('@/components/related/RelatedPersons.vue'));

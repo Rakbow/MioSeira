@@ -59,7 +59,7 @@ const endHover = () => {
       </RouterLink>
       <DataView :value="result.data" layout="grid">
         <template #empty>
-          <span class="empty-search-result"/>
+          <span class="empty-search-result">{{ t('NoItem') }}</span>
         </template>
         <template #grid="{items}">
           <div class="flex flex-wrap">

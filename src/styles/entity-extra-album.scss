@@ -1,0 +1,79 @@
+.album-tracks {
+
+  &-header {
+    font-size: 1.2rem;
+    margin-top: .5rem;
+    text-align: left !important;
+  }
+
+  &-disc {
+    margin-top: 1rem;
+
+    &-header {
+      margin-left: .5rem;
+      font: 1.1rem var(--r-text-small-font);
+
+      span {
+        color: gray;
+      }
+
+      p {
+        display: inline;
+      }
+
+    }
+
+    &-toggle {
+      float: left;
+      margin: .1rem;
+    }
+
+    &-total {
+      font: 1.1rem var(--r-text-small-font);
+      float: right;
+      margin: .1rem;
+      color: var(--r-steel-300);
+
+      > span {
+        color: gray
+      }
+    }
+  }
+
+  table {
+    width: 100%;
+    padding-bottom: 0;
+    border: none;
+    border-collapse: collapse;
+
+    tr {
+      border-bottom: .1rem solid var(--r-bg-indigo-700);
+      padding-bottom: .1rem;
+
+      &:hover {
+        background-color: var(--r-bg-indigo-700);
+      }
+    }
+
+    td {
+      padding-top: 0;
+
+      span {
+        font-size: 1.1rem;
+      }
+
+    }
+
+    th {
+      width: 2rem;
+      color: var(--r-steel-500);
+      font: 1.1rem var(--r-text-small-font);
+    }
+  }
+
+  &-duration {
+    text-align: right !important;
+    color: var(--r-steel-300);
+  }
+
+}

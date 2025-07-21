@@ -23,36 +23,7 @@
               {{ t('TotalLength') }}:&nbsp;<b>{{ info.totalDuration }}</b>
             </p>
             <div v-for="disc in info.discs as any[]" class="album-tracks-disc">
-              <b class="album-tracks-disc-header">
-                {{ `Disc ${disc.discNo} (${disc.mediaFormat.label})` }}
-                <template v-if="disc.catalogId">&nbsp;[{{ disc.catalogId }}]</template>
-                <template v-if="disc.albumFormat.length">
-                  &nbsp;
-                  <p v-for="(format, index) of disc.albumFormat">
-                    <span>{{ format.label }}</span>
-                    <span v-if="index < disc.albumFormat.length - 1">, </span>
-                  </p>
-                </template>
-              </b>
-              <table>
-                <tbody>
-                <tr v-for="track in disc.tracks">
-                  <th>{{ track.serial < 10 ? `0${track.serial}` : track.serial }}</th>
-                  <td nowrap="nowrap">
-                    <router-link :to="`${$api.EPISODE.DETAIL_PATH}/${track.id}`">
-                      <span>{{ track.name }}</span>
-                    </router-link>
-                  </td>
-                  <td class="album-tracks-duration">
-                    <span>{{ track.duration }}</span>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <span class="album-tracks-disc-total">
-                <span>&nbsp;{{ t('TrackNum') }}:&nbsp;</span>{{ disc.tracks.length }}
-                <span>&nbsp;{{ t('DiscLength') }}:&nbsp;</span>{{ disc.duration }}
-              </span>
+              <AlbumTrackTable :disc="disc" />
             </div>
           </div>
         </div>
@@ -130,6 +101,7 @@ import {PublicHelper} from "@/utils/publicHelper";
 import {EditParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
 
+const AlbumTrackTable = defineAsyncComponent(() => import('@/components/item/AlbumTrackTable.vue'));
 const quickCreator = defineAsyncComponent(() => import('@/components/item/AlbumTrackQuickCreator.vue'));
 
 const {t} = useI18n();
@@ -233,80 +205,5 @@ const uploadAudioFile = async () => {
 </script>
 
 <style lang="scss" scoped>
-@use '@/styles/general';
-
-.album-tracks {
-
-  &-header {
-    font-size: 1.2rem;
-    margin-top: .5rem;
-    text-align: left !important;
-  }
-
-  &-disc {
-    margin-top: 1rem;
-
-    &-header {
-      margin-left: .5rem;
-      @extend .small-font;
-
-      span {
-        color: gray;
-      }
-
-      p {
-        display: inline;
-      }
-
-    }
-
-    &-total {
-      @extend .small-font;
-      float: right;
-      margin: .1rem;
-      color: var(--r-steel-300);
-
-      > span {
-        color: gray
-      }
-    }
-  }
-
-  table {
-    width: 100%;
-    padding-bottom: 0;
-    border: none;
-    border-collapse: collapse;
-
-    tr {
-      border-bottom: .1rem solid var(--r-bg-indigo-700);
-      padding-bottom: .1rem;
-
-      &:hover {
-        background-color: var(--r-bg-indigo-700);
-      }
-    }
-
-    td {
-      padding-top: 0;
-
-      span {
-        font-size: 1.1rem;
-      }
-
-    }
-
-    th {
-      width: 2rem;
-      color: var(--r-steel-500);
-      @extend .small-font;
-    }
-  }
-
-  &-duration {
-    text-align: right !important;
-    color: var(--r-steel-300);
-  }
-
-}
+@use "@/styles/entity-extra-album";
 </style>
