@@ -20,11 +20,7 @@ onMounted(() => {
 });
 const load = async () => {
   param.value.block = true;
-  param.value.data = {
-    id: entity!.id,
-    size: 24
-  }
-  const res = await Axios.post(API.RELATION.ITEMS, {id: entity!.id, size: 24});
+  const res = await Axios.post(API.RELATION.ITEMS, {id: entity!.id, size: 27});
   if (res.success()) {
     result.value = res.data;
   }
@@ -54,16 +50,13 @@ const endHover = () => {
         <i class="pi pi-th-large"/>
         <b>{{ t('RelatedItem') }}</b>
       </template>
-      <RouterLink v-if="result.total" class="ml-4" :to="`${$api.ITEM.SEARCH_PATH}?entries=${entity.id}`">
-        <span>{{result.total}}&nbsp;<i class="pi pi-angle-double-right" style="font-size: 1.3rem" /></span>
-      </RouterLink>
-      <DataView :value="result.data" layout="grid">
+      <DataView :value="result.data" layout="grid" class="mt-2">
         <template #empty>
           <span class="empty-search-result">{{ t('NoItem') }}</span>
         </template>
         <template #grid="{items}">
           <div class="flex flex-wrap">
-            <div v-for="(item, index) in items" :key="index" class="p-2">
+            <div v-for="(item, index) in items" :key="index" style="padding: .385rem">
               <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
                            @pointerover="startHover($event, item)" @pointerleave="endHover"
                            :class="`item-thumb-grid item-thumb-grid-${item.type.value}-${item.subType.value}`">
@@ -73,6 +66,12 @@ const endHover = () => {
           </div>
         </template>
       </DataView>
+      <RouterLink v-if="result.total" class="ml-2" :to="`${$api.ITEM.SEARCH_PATH}?entries=${entity.id}`">
+        <span>
+          {{ `${t('ViewAll')}(${result.total})` }}
+          <i class="pi pi-angle-double-right" style="font-size: 1.2rem" />
+        </span>
+      </RouterLink>
     </Fieldset>
   </BlockUI>
 

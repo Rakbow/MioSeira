@@ -4,7 +4,7 @@ import {PublicHelper} from "@/utils/publicHelper";
 import {useI18n} from "vue-i18n";
 
 const ItemExtraInfo = defineAsyncComponent(() => import('@/components/item/ItemExtraInfo.vue'));
-const CurrencySelect = defineAsyncComponent(() => import('@/components/global/CurrencySelect.vue'));
+const Currency = defineAsyncComponent(() => import('@/components/global/Currency.vue'));
 
 const {t} = useI18n();
 
@@ -53,7 +53,7 @@ const props = defineProps<{
       <td>
         <template v-if="item.price">
           {{item.price}}
-          <CurrencySelect v-model="item.currency" :query="`${item.price}+${item.currency}`"/>
+          <Currency v-model="item.currency" :query="`${item.price}+${item.currency}`"/>
         </template>
         <Tag :value="item.releaseType.label"/>
         <i v-if="item.bonus" class="ml-1 pi pi-star-fill" style="color: yellow" v-tooltip="{value: t('Bonus')}"/>

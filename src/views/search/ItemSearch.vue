@@ -11,7 +11,7 @@ import {bs} from '@/service/baseService';
 import {EntitySearchParam} from "@/service/entityService";
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
-const CurrencySelect = defineAsyncComponent(() => import('@/components/global/CurrencySelect.vue'));
+const Currency = defineAsyncComponent(() => import('@/components/global/Currency.vue'));
 const selector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
 const {t} = useI18n();
@@ -49,7 +49,7 @@ onBeforeMount(() => {
     region: {value: ''},
     entries: {value: new Array<number>()},
   });
-  param.value.query.size = 45;
+  param.value.query.size = 54;
 });
 
 onMounted(async () => {
@@ -60,7 +60,7 @@ onMounted(async () => {
 
 watch(layout, (newValue) => {
   if (newValue === 'grid') {
-    param.value.query.size = 45;
+    param.value.query.size = 54;
   } else {
     param.value.query.size = 10;
   }
@@ -348,7 +348,7 @@ const openSelector = () => {
                   </span>
                   <span v-if="item.price" style="position: absolute;right: 0">
                     {{ item.price }}
-                    <CurrencySelect v-model="item.currency" :query="`${item.price}+${item.currency}`"/>
+                    <Currency v-model="item.currency" :query="`${item.price}+${item.currency}`"/>
                   </span>
                 </div>
               </div>

@@ -1,24 +1,21 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, onBeforeUnmount, onMounted, ref} from 'vue'
+import {onBeforeMount, onBeforeUnmount, onMounted, ref} from 'vue'
+import {useI18n} from "vue-i18n";
+import {useOptionStore} from "@/store/modules/option";
 
-interface Props {
-  modelValue: string
-  query: string
-}
-
-const props = defineProps<Props>();
-const {proxy} = getCurrentInstance()!;
 const show = ref(false)
-
-const filteredOptions = computed(() =>
-    Object.fromEntries(Object.entries(proxy!.$const.CURRENCIES).filter(([code]) => code !== props.modelValue))
-)
+const {locale} = useI18n();
+const currentLocale = ref();
+const optionStore = useOptionStore();
+const languages = ref([
+  {label: '简体中文', code: 'zh'},
+  {label: 'English', code: 'en'},
+]);
 
 const toggle = () => {
   show.value = !show.value;
 }
 
-// 点击外部关闭 dropdown
 const dropdownRef = ref<HTMLElement | null>(null)
 const handleClickOutside = (event: MouseEvent) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
@@ -29,23 +26,33 @@ const handleClickOutside = (event: MouseEvent) => {
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 })
+
+onBeforeMount(() => {
+  currentLocale.value = languages.value.find(l => l.code === locale.value)
+})
+
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
+
+const changeLanguage = (code: string) => {
+  locale.value = code;
+  localStorage.setItem('locale', code);
+  optionStore.clear();
+  location.reload();
+}
 </script>
 
 <template>
   <div class="r-dropdown" ref="dropdownRef">
     <a class="r-dropdown-toggle" @click.prevent="toggle">
-      <span>{{ props.modelValue }}<i class="ml-2 pi pi-sort-down-fill"/></span>
+      <span>{{ currentLocale.label }}<i class="ml-2 pi pi-sort-down-fill"/></span>
     </a>
     <div v-if="show" class="r-dropdown-menu">
       <a class="r-dropdown-item"
-          v-for="(label, code) in filteredOptions"
-          :key="code"
-          :href="`https://www.bing.com/search?q=${props.query}+IN+${code}`"
-          target="_blank">
-        {{ label }}
+         v-for="lang in languages"
+         @click.prevent="changeLanguage(lang.code)">
+        {{ lang.label }}
       </a>
     </div>
   </div>
@@ -53,9 +60,14 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .r-dropdown {
+  height: 1.7rem;
   position: relative;
   display: inline-block;
   cursor: pointer;
+
+  a:hover {
+    text-decoration: none !important;
+  }
 
   &-toggle {
     padding: 0 .5rem;
@@ -80,8 +92,8 @@ onBeforeUnmount(() => {
     position: absolute;
     top: 100%;
     left: 0;
-    width: 5rem;
-    background: var(--r-bg-blue-950);
+    width: 6rem;
+    background: var(--r-bg-indigo-700);
     border-radius: .6rem;
     margin-top: 0.5rem;
     box-shadow: 0 .4rem .8rem rgba(0, 0, 0, 0.2);
@@ -91,7 +103,7 @@ onBeforeUnmount(() => {
   &-item {
     font-size: 1rem;
     display: block;
-    padding: 0.5rem 1rem;
+    padding: 0.3rem 1rem;
     text-decoration: none !important;
     transition: background 0.2s;
 

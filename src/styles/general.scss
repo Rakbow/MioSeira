@@ -62,7 +62,38 @@ body {
   color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  margin: 0.25rem;
+  margin: 0;
+}
+
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  height: 5.2rem;
+  flex-shrink: 0;
+}
+
+footer {
+  background: var(--r-bg-neutral-950);
+  height: 3.7rem;
+  flex-shrink: 0;
+
+  > div {
+    margin-top: 1rem !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+main {
+  margin: .5rem 0;
+  flex: 1;
+  min-height: calc(100vh - 10.9rem);
 }
 
 img {
