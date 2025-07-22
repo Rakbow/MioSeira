@@ -20,13 +20,14 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, onBeforeUnmount, ref} from "vue";
-import PageHeader from "@/layouts/PageHeader.vue";
-import PageFooter from "@/layouts/PageFooter.vue";
-import {useDialog} from 'primevue/usedialog';
+import {onMounted, onBeforeUnmount, ref, defineAsyncComponent} from "vue";
 import { registerPrimevueService } from '@/service/baseService'
+import {useDialog} from 'primevue/usedialog';
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue";
+
+const PageHeader = defineAsyncComponent(() => import('@/layouts/PageHeader.vue'));
+const PageFooter = defineAsyncComponent(() => import('@/layouts/PageFooter.vue'));
 
 const toast = useToast();
 const dialog = useDialog();
@@ -34,7 +35,7 @@ const confirm = useConfirm();
 registerPrimevueService(dialog, toast, confirm);
 const mainContent = ref();
 
-const handleScroll = (event) => {
+const handleScroll = (event: Event) => {
   event.stopPropagation();
 }
 
@@ -68,9 +69,9 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
-header {
+.header {
   //position: fixed;
   top: 0;
   left: 0;
@@ -78,7 +79,7 @@ header {
   z-index: 9999; /* 如果需要header位于其他内容上方，可以提高层级 */
 }
 
-main {
+.main {
   margin-top: 1rem;
   margin-bottom: 1rem;
   //position: relative;
@@ -87,7 +88,7 @@ main {
   /* 可选：设置额外的样式，如背景色或滚动条等 */
 }
 
-footer {
+.footer {
   //position: fixed;
   bottom: 0;
   left: 0;
