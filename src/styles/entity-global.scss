@@ -829,7 +829,7 @@
         font: 1.2rem var(--r-text-small-font);
 
         td {
-          padding: .25rem;
+          padding: 0 .25rem;
         }
 
         i {
@@ -843,7 +843,12 @@
         }
 
         .p-tag {
-          margin-left: .25rem !important;
+          padding: 0 .5rem;
+          background: #333;
+
+          &-label {
+            font-weight: normal;
+          }
         }
 
       }

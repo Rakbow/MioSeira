@@ -17,15 +17,17 @@ const props = defineProps<{
 <template>
   <table>
     <tbody>
+    <tr v-if="[$const.ITEM_TYPE.BOOK, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)">
+      <td>
+        <b>{{ t('Type') }}</b>
+      </td>
+      <td>
+        <Tag :value="item.subType.label"
+             :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>
+      </td>
+    </tr>
+
     <template v-if="item.type === $const.ITEM_TYPE.BOOK">
-      <tr>
-        <td>
-          <b>{{ t('Category') }}</b>
-        </td>
-        <td>
-          <Tag :value="item.subType.label"/>
-        </td>
-      </tr>
       <tr>
         <td>
           <b>{{ t('Language') }}</b>
@@ -35,14 +37,6 @@ const props = defineProps<{
         </td>
       </tr>
     </template>
-    <tr v-else-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)">
-      <td>
-        <b>{{ t('Type') }}</b>
-      </td>
-      <td>
-        <Tag :value="item.subType.label"/>
-      </td>
-    </tr>
 
     <tr>
       <td>
