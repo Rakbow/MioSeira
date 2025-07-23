@@ -82,7 +82,7 @@ const openManager = () => {
 <template>
   <Panel>
     <template #header>
-      <span><i class="pi pi-image"/><strong>{{ t('Images') }}</strong></span>
+      <span><RIcon name="imagesmode"/><strong>{{ t('Images') }}</strong></span>
     </template>
     <template #icons>
       <RButton v-permission
@@ -138,15 +138,6 @@ const openManager = () => {
     transform: translate(-50%, -50%);
 
   }
-
-  //img {
-  //  position: absolute;
-  //  top: 50%;
-  //  left: 50%;
-  //  display: block;
-  //  transform: translate(-50%, -50%);
-  //  cursor: url("https://static.rakbow.com/common/zoomin.cur"), pointer;
-  //}
 
 }
 </style>

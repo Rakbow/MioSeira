@@ -350,6 +350,7 @@
         display: flex;
         align-items: center;
         color: var(--r-sand-200);
+
         strong {
           margin-left: 0.5rem !important;
           font-size: 1.4rem;
@@ -628,17 +629,15 @@
       margin-bottom: 1rem !important;
 
       &-header {
-        padding: .4rem .5rem .4rem 1.5rem;
+        padding: .4rem .5rem .4rem 1rem;
 
         span {
           display: flex;
           align-items: center;
-        }
 
-        i {
-          margin-top: .1rem;
-          margin-right: .7rem;
-          font-size: 1.5rem;
+          .material-symbols-outlined {
+            font-size: 2rem !important;
+          }
         }
 
         &-actions {
@@ -647,7 +646,9 @@
         }
 
         strong {
-          font-size: 1.4rem;
+          margin-left: .3rem;
+          font-size: 1.5rem !important;
+          transform: translateY(-6%);
         }
 
         .p-button {

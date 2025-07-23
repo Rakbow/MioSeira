@@ -95,7 +95,7 @@ const openBrowser = () => {
 <template>
   <Panel>
     <template #header>
-      <span><i :class="`pi pi-${props.icon}`"/><strong>{{ props.header }}</strong></span>
+      <span><RIcon :name="props.icon"/><strong>{{ props.header }}</strong></span>
     </template>
     <template #icons>
       <RButton v-permission

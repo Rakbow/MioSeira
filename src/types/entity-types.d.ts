@@ -17,7 +17,7 @@ interface ImageUpdateDTO {
     thumb: string;
 }
 
-interface ImageDeleteDTO {
+interface ImageDeleteMiniDTO {
     id: number;
     url: string;
 }
@@ -49,4 +49,16 @@ interface ItemSpecParams {
     width: number;  // mm
     height: number; // mm
     weight: number; // g
+}
+
+interface FileRelatedDeleteDTO {
+    entityType: number;
+    entityId: number;
+    ids: number[];
+}
+
+interface ImageDeleteDTO {
+    entityType: number;
+    entityId: number;
+    images: ImageDeleteMiniDTO[];
 }

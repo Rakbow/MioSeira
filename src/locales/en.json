@@ -205,6 +205,14 @@
     "FileStatistics": "File: {0}   Size: {1}"
   },
 
+  "Changelog": "Changelog",
+  "Operate": {
+    "Field": "Field",
+    "Operate": "Operate",
+    "Operator": "Operator",
+    "OperateTime": "Operate time"
+  },
+
   "SearchIn": "Search in",
   "Result": "Results",
   "Manage": "Manage"

@@ -205,6 +205,14 @@
     "FileStatistics": "总文件数: {0}   大小: {1}"
   },
 
+  "Changelog": "编辑记录",
+  "Operate": {
+    "Field": "字段",
+    "Operate": "类型",
+    "Operator": "操作者",
+    "OperateTime": "时间"
+  },
+
   "SearchIn": "耗时",
   "Result": "结果",
   "Manage": "管理"

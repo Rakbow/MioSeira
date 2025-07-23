@@ -143,10 +143,6 @@ export class EditParam {
     data: any = null;
 }
 
-export class RelatedEntitiesSearchParam {
-
-}
-
 export const loadEditor = (type: number, data: any) => {
 
     if (type === META.ENTITY.FILE) editor = fileEditor;

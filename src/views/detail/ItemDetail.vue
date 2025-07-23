@@ -33,7 +33,7 @@
     <div :class="`${prefix}-side`">
       <ImagePreviewer/>
       <RelationGroup :showRole="false"/>
-      <TrafficInfo :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime"/>
+      <Changelog :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime"/>
     </div>
   </div>
 </template>
@@ -47,6 +47,7 @@ const prefix = 'entity-detail';
 
 const Info = defineAsyncComponent(() => import('@/views/detail/info/ItemDetailInfo.vue'));
 const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
+const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));

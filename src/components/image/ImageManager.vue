@@ -111,8 +111,6 @@ import {useI18n} from "vue-i18n";
 import {useOptionStore} from "@/store/modules/option";
 import {EntitySearchParam} from "@/service/entityService";
 import {bs} from '@/service/baseService';
-
-import tingle from 'tingle.js';
 import 'tingle.js/src/tingle.css';
 
 const ImageUploader = defineAsyncComponent(() => import('@/components/image/ImageUploader.vue'));
@@ -255,15 +253,19 @@ const openDelete = () => {
 
 const remove = async () => {
   param.value.block();
-  let deleteDTOs: Array<ImageDeleteDTO> = [];
+  let dto: ImageDeleteDTO = {
+    entityType: dialogRef.value.data.type,
+    entityId: dialogRef.value.data.id,
+    images: []
+  }
   for (let i of param.value.selectedData as any[]) {
-    deleteDTOs.push({
+    dto.images.push({
       id: i.id,
       url: i.url
     })
   }
 
-  const res = await Axios.delete(API.IMAGE.DELETE, deleteDTOs);
+  const res = await Axios.delete(API.IMAGE.DELETE, dto);
   if (res.success()) {
     param.value.selectedData = [];
     await load();

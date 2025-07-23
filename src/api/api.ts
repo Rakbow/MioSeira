@@ -86,6 +86,10 @@ export const API = {
         SEARCH: '/api/db/file/search',
     },
 
+    CHANGELOG: {
+        LIST: '/api/db/changelog',
+    },
+
     //region user
     CHECK_USER_AUTHORITY: '/api/user/check-authority',
     LOGIN_PAGE: '/login',

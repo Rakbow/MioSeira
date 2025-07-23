@@ -156,7 +156,12 @@ const openDelete = () => {
 
 const remove = async () => {
   param.value.block();
-  const res = await Axios.delete(API.FILE.RELATED_DELETE, param.value.selectedData.map(d => d.relatedId));
+  let dto: FileRelatedDeleteDTO = {
+    entityType: dialogRef.value.data.type,
+    entityId: dialogRef.value.data.id,
+    ids: param.value.selectedData.map(d => d.relatedId)
+  }
+  const res = await Axios.delete(API.FILE.RELATED_DELETE, dto);
   if (res.success()) {
     param.value.selectedData = [];
     await load();
