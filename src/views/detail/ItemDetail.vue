@@ -24,7 +24,7 @@
         </div>
         <div :class="`${prefix}-item-content`">
           <RelatedPersons/>
-          <AlbumTracks v-if="itemType === $const.ITEM_TYPE.ALBUM" :id="item.id" :catalogId="item.catalogId" />
+          <AlbumTracks v-if="item.type.value === $const.ITEM_TYPE.ALBUM" :id="item.id" :catalogId="item.catalogId" />
           <DetailPad :text="item.detail"/>
           <RelatedFiles/>
         </div>
@@ -33,7 +33,7 @@
     <div :class="`${prefix}-side`">
       <ImagePreviewer/>
       <RelationGroup :showRole="false"/>
-      <Changelog :info="pageInfo" :addedTime="item.addedTime" :editedTime="item.editedTime"/>
+      <Changelog/>
     </div>
   </div>
 </template>
@@ -46,7 +46,6 @@ import {loadEditor} from "@/service/itemService";
 const prefix = 'entity-detail';
 
 const Info = defineAsyncComponent(() => import('@/views/detail/info/ItemDetailInfo.vue'));
-const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
 const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
@@ -58,7 +57,6 @@ const RelatedPersons = defineAsyncComponent(() => import('@/components/related/R
 const RelationGroup = defineAsyncComponent(() => import('@/components/related/RelationGroup.vue'));
 
 const router = useRouter();
-const itemType = ref(0);
 const item = ref<any>({});
 const pageInfo = ref<any>();
 const cover = ref<string>();
@@ -68,10 +66,9 @@ const {proxy} = getCurrentInstance()!;
 onBeforeMount(() => {
   meta.value = router.currentRoute.value.meta;
   item.value = meta.value.info.item;
-  itemType.value = meta.value.info.type;
   pageInfo.value = meta.value.info.traffic;
   cover.value = meta.value.info.cover;
-  provide('entity', {type: proxy!.$const.ENTITY.ITEM, id: item.value.id, subType: item.value.type} as Entity);
+  provide('entity', {type: proxy!.$const.ENTITY.ITEM, id: item.value.id, subType: item.value.type.value} as Entity);
 });
 
 </script>

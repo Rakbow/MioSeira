@@ -1,27 +1,34 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
-import {defineAsyncComponent, defineProps, inject} from "vue";
+import {defineAsyncComponent, inject, onMounted, ref} from "vue";
 import {bs} from "@/service/baseService";
+import {API, Axios} from "@/api";
 
 const browser = defineAsyncComponent(() => import('@/components/common/ChangelogBrowser.vue'));
 
 const {t} = useI18n();
 const entity = inject<Entity>('entity')!;
-
-const props = defineProps({
-  info: {
-    type: Object,
-    default: () => ({
-      visitCount: 0
-    })
-  } as any,
-  addedTime: {
-    type: String
-  },
-  editedTime: {
-    type: String
-  }
+const block = ref(false);
+const target = ref({
+  createTime: '',
+  lastModifyTime: '',
+  total: 0
 });
+
+onMounted(() => {
+  load();
+})
+
+const load = async () => {
+  block.value = true;
+  const res = await Axios.post(API.CHANGELOG.MINI, {entityType: entity!.type, entityId: entity!.id});
+  if (res.success()) {
+    target.value.createTime = res.data.createTime;
+    target.value.lastModifyTime = res.data.lastModifyTime;
+    target.value.total = res.data.total;
+  }
+  block.value = false;
+}
 
 const openBrowser = () => {
   bs!.dialog.open(browser, {
@@ -47,28 +54,37 @@ const openBrowser = () => {
       <span><RIcon name="acute"/><strong>{{ t('Changelog') }}</strong></span>
     </template>
     <template #icons>
-      <Button label="11" outlined @click="openBrowser"/>
+      <Button :label="target.total.toString()" outlined @click="openBrowser"/>
     </template>
 
-    <div class="formgrid grid">
-      <div class="col-fixed">
-        <i class="pi pi-chevron-circle-right"/><strong class="label-title">{{ t('AddedTime') }}</strong>
+    <div class="content-space-between">
+      <div class="mb-2">
+        <RIcon name="calendar_add_on" :size="1.3"/>
+        <strong>{{ t('AddedTime') }}</strong>
       </div>
-      <div class="col-11 col-offset-1 mb-2">{{ addedTime }}</div>
-      <div class="col-fixed">
-        <i class="pi pi-chevron-circle-right"/><strong class="label-title">{{ t('EditedTime') }}</strong>
+      <span>{{ target.createTime }}</span>
+    </div>
+    <div class="content-space-between">
+      <div>
+        <RIcon name="edit_calendar" :size="1.3"/>
+        <strong>{{ t('EditedTime') }}</strong>
       </div>
-      <div class="col-11 col-offset-1 mb-2">{{ editedTime }}</div>
-      <div class="col-fixed">
-        <i class="pi pi-chart-bar"/><strong class="label-title">{{ t('PageTraffic') }}</strong>
-      </div>
-      <div class="col-11 col-offset-1 mb-2">
-        <i class="pi pi-eye"/><strong>{{ t('Visit') }}: </strong>
-        <span class="text-center">{{ info.visitCount }}</span>
-      </div>
+      <span>{{ target.lastModifyTime }}</span>
     </div>
   </Panel>
 </template>
 
 <style scoped lang="scss">
+
+.content-space-between {
+  > div {
+    display: flex !important;
+    align-items: center !important;
+    color: var(--r-steel-500)
+  }
+}
+strong {
+  margin-left: .2rem !important;
+  transform: translateY(-3%);
+}
 </style>

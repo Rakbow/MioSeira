@@ -18,9 +18,7 @@ onBeforeMount(async () => {
     keyword: {value: ''}
   });
   param.value.initColumns([
-    new PColumn('remark', t('Remark')),
-    new PColumn('addedTime', t('AddedTime')),
-    new PColumn('editedTime', t('EditedTime'))
+    new PColumn('remark', t('Remark'))
   ])
 })
 
@@ -160,8 +158,6 @@ const exportCSV = () => {
         </a>
       </template>
     </Column>
-    <Column :header="t('AddedTime')" field="addedTime" :showFilterMenu="false" :sortable="true" style="width: 14rem" />
-    <Column :header="t('EditedTime')" field="editedTime" :showFilterMenu="false" :sortable="true" style="width: 14rem" />
     <Column :header="t('File')" field="fileCount" class="text-center" style="width: 4rem" />
   </DataTable>
 </template>

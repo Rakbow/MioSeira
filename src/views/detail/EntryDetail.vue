@@ -40,7 +40,7 @@
     </div>
     <div :class="`${prefix}-side`">
       <RelationGroup v-if="entry.subType.value !== $const.ENTRY_SUB_TYPE.MAIN_SERIES"/>
-      <TrafficInfo :info="pageInfo" :addedTime="entry.addedTime" :editedTime="entry.editedTime"/>
+      <Changelog/>
     </div>
   </div>
 </template>
@@ -53,7 +53,7 @@ import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} f
 const prefix = 'entity-detail';
 
 const Info = defineAsyncComponent(() => import('@/views/detail/info/EntryDetailInfo.vue'));
-const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
+const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));

@@ -28,9 +28,7 @@ onBeforeMount(async () => {
     keyword: {value: ''}
   });
   param.value.initColumns([
-    new PColumn('remark', t('Remark')),
-    new PColumn('addedTime', t('AddedTime')),
-    new PColumn('editedTime', t('EditedTime'))
+    new PColumn('remark', t('Remark'))
   ])
 })
 

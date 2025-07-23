@@ -199,9 +199,21 @@ export const META = {
                 value: [4, 5, 6]
             }]
         },
-        {key: [1, 4], type: 1, subConfigs: []},
-        {key: [1, 5], type: 1, subConfigs: []},
-        {key: [1, 6], type: 1, subConfigs: []}
+        {key: [1, 4], type: 1, subConfigs: [{
+                label: 'RelatedEntry',
+                icon: 'lists',
+                value: [4, 5, 6]
+            }]},
+        {key: [1, 5], type: 1, subConfigs: [{
+                label: 'RelatedEntry',
+                icon: 'lists',
+                value: [4, 5, 6]
+            }]},
+        {key: [1, 6], type: 1, subConfigs: [{
+                label: 'RelatedEntry',
+                icon: 'lists',
+                value: [4, 5, 6]
+            }]}
     ]
 }
 

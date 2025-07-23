@@ -9,7 +9,7 @@
         <div class="flex flex-wrap p-1">
           <div class="grid" style="border-radius: .5rem;background: var(--r-bg-neutral-950)">
             <div class="col-fixed p-1" style="width: 4.5rem">
-              <div class="entry-thumb">
+              <div class="entry-thumb-list">
                 <img :src="parent.thumb" role="presentation" :alt="parent.name"/>
               </div>
             </div>
@@ -48,7 +48,7 @@
         <div class="flex flex-wrap p-1">
           <div class="grid" style="border-radius: .5rem;background: var(--r-bg-neutral-950)">
             <div class="col-fixed p-1" style="width: 5rem">
-              <div class="entry-thumb">
+              <div class="entry-thumb-list">
                 <Skeleton size="4rem"/>
               </div>
             </div>

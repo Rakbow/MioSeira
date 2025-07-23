@@ -42,7 +42,6 @@
     </div>
     <div :class="`${prefix}-side`">
       <RelatedEpisodes :relatedType="episode.relatedType" :relatedId="episode.relatedId"/>
-      <TrafficInfo :info="episode.traffic" :addedTime="episode.addedTime" :editedTime="episode.editedTime"/>
     </div>
   </div>
 </template>
@@ -56,7 +55,6 @@ import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} f
 const prefix = 'entity-detail';
 const {t} = useI18n();
 
-const TrafficInfo = defineAsyncComponent(() => import('@/components/common/PageTraffic.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));

@@ -87,7 +87,8 @@ export const API = {
     },
 
     CHANGELOG: {
-        LIST: '/api/db/changelog',
+        LIST: '/api/db/changelog-list',
+        MINI: '/api/db/changelog-mini',
     },
 
     //region user
