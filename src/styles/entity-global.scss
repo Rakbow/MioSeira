@@ -538,6 +538,7 @@
       padding: 0 .5rem;
       font-size: 1.1rem;
       font-weight: normal;
+      background: var(--r-bg-p-tag);
     }
 
     .p-datatable {
@@ -844,7 +845,7 @@
 
         .p-tag {
           padding: 0 .5rem;
-          background: #333;
+          background: var(--r-bg-p-tag);
 
           &-label {
             font-weight: normal;

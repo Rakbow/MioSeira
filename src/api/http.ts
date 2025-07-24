@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import {bs} from '@/service/baseService';
 axios.defaults.withCredentials = true;
 
 class ApiResult {
@@ -17,12 +17,12 @@ class ApiResult {
 axios.interceptors.response.use(function (res) {
     if (res.data.state === Axios.SUCCESS) {
         if (res.data.message !== '') {
-            console.log(res.data.message);
+            bs!.toast.success(res.data.message);
         }
     }
     if (res.data.state === Axios.ERROR) {
         if (res.data.message !== '') {
-            console.error(res.data.message);
+            bs!.toast.error(res.data.message);
         }
     }
     return res;

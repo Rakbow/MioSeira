@@ -89,7 +89,7 @@ export const META = {
     ITEM_TYPE_SET: [
         // {icon: 'filter_alt_off', value: null, disabled: false, label: 'Entity.Album'},
         {icon: 'genres', value: '1', disabled: false, label: 'Entity.Album'},
-        {icon: 'book_2', value: '2', disabled: false, label: 'Entity.Book'},
+        {icon: 'book', value: '2', disabled: false, label: 'Entity.Book'},
         {icon: 'hangout_video', value: '3', disabled: false, label: 'Entity.Disc'},
         {icon: 'stadia_controller', value: '4', disabled: true, label: 'Entity.Game'},
         {icon: 'chess_pawn', value: '5', disabled: false, label: 'Entity.Goods'},

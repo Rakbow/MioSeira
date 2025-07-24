@@ -1,4 +1,5 @@
 import fileEditor from "@/components/file/FileEditor.vue";
+import favoriteCreator from "@/components/list/FavoriteCreator.vue";
 import {META} from "@/config/Web_Const";
 import i18n from "@/locales/i18n";
 import {PColumn} from "@/service/frame";
@@ -165,6 +166,26 @@ export const loadEditor = (type: number, data: any) => {
                     Object.assign(data, options!.data.entity);
                 }
             }
+        }
+    });
+}
+
+export const loadFavoriteCreator = (type: number, data: any[]) => {
+
+    let ids = data.map(d => d.id);
+
+    bs!.dialog.open(favoriteCreator, {
+        props: {
+            header: t('AddItemsToList'),
+            style: {
+                width: '45rem',
+            },
+            modal: true,
+            closable: true
+        },
+        data: {
+            type: type,
+            ids: ids
         }
     });
 }

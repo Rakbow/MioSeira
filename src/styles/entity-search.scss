@@ -109,7 +109,7 @@
 
         .p-tag {
           padding: 0 .5rem;
-          background: #333;
+          background: var(--r-bg-p-tag);
           margin: .2rem 0;
           &-label {
             font-size: 1.1rem;
@@ -161,7 +161,7 @@
 
       .p-tag {
         padding: 0 .5rem;
-        background: #333;
+        background: var(--r-bg-p-tag);
         margin: .2rem 0;
       }
 

@@ -215,6 +215,8 @@
 
   "SearchIn": "耗时",
   "Result": "结果",
-  "Manage": "管理"
+  "Manage": "管理",
+
+  "AddItemsToList": "添加到清单"
 
 }

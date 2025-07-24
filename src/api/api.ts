@@ -91,6 +91,14 @@ export const API = {
         MINI: '/api/db/changelog-mini',
     },
 
+    LIST: {
+        DETAIL_PATH: '/db/list',
+
+        LIST: '/api/db/list/lists',
+        CREATE: '/api/db/list/create',
+        ADD_ITEMS: '/api/db/list/add-items',
+    },
+
     //region user
     CHECK_USER_AUTHORITY: '/api/user/check-authority',
     LOGIN_PAGE: '/login',

@@ -243,7 +243,8 @@ const exportCSV = () => {
     <Column v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(store.itemCurrent)" bodyClass="text-center"
             :bodyStyle="{padding: 0}">
       <template #body="{data}">
-        <Tag :value="data.subType.label"/>
+        <Tag :value="data.subType.label"
+             :style="`color: var(--r-item-${data.type}-${data.subType.value})`"/>
       </template>
     </Column>
     <Column field="catalogId"

@@ -4,7 +4,7 @@ import {useRoute, useRouter} from "vue-router";
 import { API, Axios } from '@/api';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
-import {EntitySearchParam} from "@/service/entityService";
+import {EntitySearchParam, loadFavoriteCreator} from "@/service/entityService";
 import {PColumn} from "@/service/frame";
 
 const {t} = useI18n();
@@ -112,6 +112,8 @@ const exportCSV = () => {
     </template>
     <template #header>
       <RButton @click="exportCSV" action="export" severity="help" :disabled="!param.data.length" />
+      <RButton @click="loadFavoriteCreator($const.ENTITY.EPISODE, param.selectedData)"
+               icon="forms_add_on" tip="AddItemsToList" severity="warn" :disabled="!param.selectedData.length" />
     </template>
     <template #empty>
       <span class="entity-manager-datatable-empty-icon"><img alt="no-result" src="@/assets/no-results.svg"/></span>
@@ -151,7 +153,7 @@ const exportCSV = () => {
     <Column field="parent.name" header="Parent" style="width: 30rem" :bodyStyle="{position: 'relative'}">
       <template #body="{data}">
         <a :title="data.parent.name"
-           :href="`/db/${data.parent.tableName}/${data.parent.id}`"
+           :href="`/db/${$api.ITEM.DETAIL_PATH}/${data.parent.id}`"
            style="width: 28rem;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
            position: absolute;margin-top: 1rem;top: 0">
           {{ data!.parent.name }}

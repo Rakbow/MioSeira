@@ -44,7 +44,7 @@ onMounted(() => {
 const menuItems = ref([
   {
     label: t('Item'),
-    icon: 'chess_pawn',
+    icon: 'toys_and_games',
     url: proxy!.$api.ITEM.SEARCH_PATH
   },
   {
@@ -54,7 +54,7 @@ const menuItems = ref([
   },
   {
     label: t('Manage'),
-    icon: 'data_table',
+    icon: 'folder_managed',
     url: '/db/manage/item'
   }
 ]);
