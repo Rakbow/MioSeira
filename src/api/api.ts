@@ -94,9 +94,12 @@ export const API = {
     LIST: {
         DETAIL_PATH: '/db/list',
 
+        DETAIL: '/api/db/list/detail',
         LIST: '/api/db/list/lists',
         CREATE: '/api/db/list/create',
+        DELETE: '/api/db/list/delete',
         ADD_ITEMS: '/api/db/list/add-items',
+        GET_ITEMS: '/api/db/list/get-items',
     },
 
     //region user

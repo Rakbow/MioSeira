@@ -15,8 +15,6 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.info = res.data;
                         to.meta.title = res.data.entry.name;
                         next();
-                    } else {
-                        console.log(res.message);
                     }
                 } else {
                     next(false);
@@ -39,8 +37,6 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.info = res.data;
                         to.meta.title = res.data.item.name;
                         next();
-                    } else {
-                        console.log(res.message);
                     }
                 } else {
                     next(false);
@@ -56,13 +52,38 @@ const DetailRouter: Array<RouteRecordRaw> = [
         component: () => import('@/views/detail/EpisodeDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
-                const res = await Axios.post(`${API.EPISODE.DETAIL}/${to.params.id}`);
-                if (res.success()) {
-                    to.meta.info = res.data;
-                    to.meta.title = res.data.name;
-                    next();
-                } else {
-                    console.log(res.message);
+                const id = to.params.id;
+                if (/^\d+$/.test(String(id))) {
+                    const res = await Axios.post(`${API.EPISODE.DETAIL}/${to.params.id}`);
+                    if (res.success()) {
+                        to.meta.info = res.data;
+                        to.meta.title = res.data.name;
+                        next();
+                    }
+                }else{
+                    next(false);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    },
+    {
+        name: "ListDetail",
+        path: API.LIST.DETAIL_PATH + "/:id",
+        component: () => import('@/views/detail/ListDetail.vue'),
+        beforeEnter: async (to, _from, next) => {
+            try {
+                const id = to.params.id;
+                if (/^\d+$/.test(String(id))) {
+                    const res = await Axios.post(`${API.LIST.DETAIL}/${to.params.id}`);
+                    if (res.success()) {
+                        to.meta.info = res.data;
+                        to.meta.title = res.data.name;
+                        next();
+                    }
+                }else{
+                    next(false);
                 }
             } catch (e) {
                 console.error(e);
