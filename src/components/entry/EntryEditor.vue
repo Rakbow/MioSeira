@@ -77,7 +77,7 @@ const close = () => {
         <template v-if="[$const.ENTRY_TYPE.PERSON, $const.ENTRY_TYPE.CHARACTER].includes(entry.type.value)">
           <label>{{ t('Gender') }}</label>
           <Select v-model="entry.gender" :options="store.options.genderSet" filled
-                  size="large" optionLabel="label"/>
+                  size="large" optionValue="value" optionLabel="label"/>
         </template>
         <template v-if="entry.type.value === $const.ENTRY_TYPE.PRODUCT">
           <label>{{ t('Category') }}</label>

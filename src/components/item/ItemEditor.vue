@@ -18,6 +18,7 @@ const param = ref(new EditParam());
 onBeforeMount(() => {
   store.fetchOptions();
   item.value = PublicHelper.deepCopy(dialogRef.value.data.item);
+  console.log(item.value)
 })
 
 onMounted(() => {
@@ -64,7 +65,6 @@ const parseItemSpec = () => {
 
 const handleAttributeBeforeUpdate = () => {
   param.value.data = PublicHelper.deepCopy(item.value);
-
   PublicHelper.handleAttributes(param.value.data);
 
 }
@@ -87,7 +87,7 @@ const handleAttributeBeforeUpdate = () => {
     <div class="grid">
       <FloatLabel variant="on">
         <label>{{ t('Barcode') }}</label>
-        <InputText size="large" v-if="item.type !== $const.ITEM_TYPE.BOOK" v-model="item!.barcode"/>
+        <InputText size="large" v-if="item.type.value !== $const.ITEM_TYPE.BOOK" v-model="item!.barcode"/>
         <InputGroup v-else>
           <InputText size="large" v-model="item!.barcode"/>
           <Button size="large" icon="pi pi-sync" class="p-button-warning"
@@ -96,7 +96,7 @@ const handleAttributeBeforeUpdate = () => {
       </FloatLabel>
       <FloatLabel variant="on">
         <label>{{ t('CatalogId') }}</label>
-        <InputText size="large" v-model="item.catalogId" :disabled="item.type == $const.ITEM_TYPE.BOOK"/>
+        <InputText size="large" v-model="item.catalogId" :disabled="item.type.value == $const.ITEM_TYPE.BOOK"/>
       </FloatLabel>
     </div>
 
@@ -131,16 +131,11 @@ const handleAttributeBeforeUpdate = () => {
                     offIcon="pi pi-times-circle" :offLabel="t('BonusExclusion')"/>
     </div>
 
-    <template v-if="item.type === $const.ITEM_TYPE.BOOK">
+    <template v-if="item.type.value === $const.ITEM_TYPE.BOOK">
       <div class="grid">
         <FloatLabel variant="on">
           <label>{{ t('Category') }}<i class="pi pi-asterisk"/></label>
           <Select size="large" v-model="item.subType" :options="store.options.bookTypeSet"
-                  optionLabel="label" filled/>
-        </FloatLabel>
-        <FloatLabel variant="on">
-          <label>{{ t('Language') }}<i class="pi pi-asterisk"/></label>
-          <Select size="large" v-model="item.lang" :options="store.options.languageSet"
                   optionLabel="label" filled/>
         </FloatLabel>
       </div>
@@ -149,35 +144,30 @@ const handleAttributeBeforeUpdate = () => {
     <Divider align="center"><b>{{ t('Dimensions') }}</b></Divider>
 
     <div class="grid">
-      <template v-if="item.type === $const.ITEM_TYPE.BOOK">
+      <template v-if="item.type.value === $const.ITEM_TYPE.BOOK">
         <FloatLabel variant="on">
           <label>{{ t('Pages') }}</label>
           <InputNumber size="large" v-model="item.pages"/>
         </FloatLabel>
         <FloatLabel variant="on">
           <label>{{ t('BookSize') }}</label>
-          <InputText size="large" v-model="item.size"/>
+          <InputText size="large" v-model="item.scale"/>
         </FloatLabel>
       </template>
-      <template v-if="item.type === $const.ITEM_TYPE.ALBUM || item.type === $const.ITEM_TYPE.DISC">
-        <FloatLabel variant="on" v-if="item.type === $const.ITEM_TYPE.DISC">
-          <label>{{ t('MediaFormat') }}<i class="pi pi-asterisk"/></label>
-          <MultiSelect showClear v-model="item.mediaFormat" :options="store.options.mediaFormatSet"
-                       optionLabel="label" display="chip"/>
-        </FloatLabel>
+      <template v-if="[$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.VIDEO].includes(item.type.value)">
+<!--        <FloatLabel variant="on" v-if="item.type === $const.ITEM_TYPE.VIDEO">-->
+<!--          <label>{{ t('MediaFormat') }}<i class="pi pi-asterisk"/></label>-->
+<!--          <MultiSelect showClear v-model="item.mediaFormat" :options="store.options.mediaFormatSet"-->
+<!--                       optionLabel="label" display="chip"/>-->
+<!--        </FloatLabel>-->
         <FloatLabel variant="on">
           <label>{{ t('Discs') }}</label>
           <InputNumber size="large" v-model="item.discs"/>
         </FloatLabel>
         <FloatLabel variant="on">
-          <template v-if="item.type === $const.ITEM_TYPE.ALBUM">
-            <label>{{ t('Tracks') }}</label>
-            <InputNumber size="large" v-model="item.tracks"/>
-          </template>
-          <template v-if="item.type === $const.ITEM_TYPE.DISC">
-            <label>{{ t('Episodes') }}</label>
-            <InputNumber size="large" v-model="item.episodes"/>
-          </template>
+          <label v-if="item.type.value === $const.ITEM_TYPE.ALBUM">{{ t('Tracks') }}</label>
+          <label v-if="item.type.value === $const.ITEM_TYPE.VIDEO">{{ t('Episodes') }}</label>
+          <InputNumber size="large" v-model="item.episodes"/>
         </FloatLabel>
         <FloatLabel variant="on">
           <label>{{ t('RunTime') }}</label>
@@ -210,7 +200,7 @@ const handleAttributeBeforeUpdate = () => {
       </InputGroup>
     </div>
 
-    <template v-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)">
+    <template v-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type.value)">
       <Divider align="center"><b>{{ t('Other') }}</b></Divider>
       <div class="grid">
         <FloatLabel variant="on">

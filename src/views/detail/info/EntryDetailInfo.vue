@@ -18,9 +18,9 @@ const props = defineProps<{
     <li v-if="entry.nameEn">
       <span>{{ t('NameEn') }}:&nbsp;</span>{{ entry!.nameEn }}
     </li>
-    <li v-if="entry.gender.value">
+    <li v-if="entry.gender">
       <span>{{ t('Gender') }}:&nbsp;</span>
-      <i :class="PublicHelper.getGenderIcon(entry.gender.value)"/>
+      <i :class="PublicHelper.getGenderIcon(entry.gender)"/>
     </li>
     <li v-if="entry.date">
       <span>{{ t('Date') }}:&nbsp;</span>{{ entry.date }}
@@ -34,14 +34,14 @@ const props = defineProps<{
         </li>
       </ul>
     </li>
-    <li v-if="entry.links.length" style="border-bottom: 0">
-      <ul>
-        <li v-for="(link, index) in entry.links" :class="{ sub: index > 0 }">
-          <span v-if="index === 0">{{ t('Link') }}:&nbsp;</span>
-          <a :href="link" target="_blank"><i class="pi pi-link"/>{{ PublicHelper.getHostname(link) }}</a>
-        </li>
-      </ul>
-    </li>
+<!--    <li v-if="entry.links.length" style="border-bottom: 0">-->
+<!--      <ul>-->
+<!--        <li v-for="(link, index) in entry.links" :class="{ sub: index > 0 }">-->
+<!--          <span v-if="index === 0">{{ t('Link') }}:&nbsp;</span>-->
+<!--          <a :href="link" target="_blank"><i class="pi pi-link"/>{{ PublicHelper.getHostname(link) }}</a>-->
+<!--        </li>-->
+<!--      </ul>-->
+<!--    </li>-->
   </ul>
 </template>
 

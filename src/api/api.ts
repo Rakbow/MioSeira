@@ -5,6 +5,8 @@ export const API = {
         UPDATE_DETAIL: '/api/db/update-entity-detail',
         GET_OPTION: '/api/db/get-options',
         LIKE: '/api/db/like',
+        LINK: '/api/db/links',
+        ENTITY_LOCAL_PATH: '/api/db/local-path',
     },
 
     ITEM: {
@@ -110,7 +112,7 @@ export const API = {
     VERIFY_CODE: '/api/kaptcha',
     //endregion
 
-    COMMON_EMPTY_COVER_IMAGE: 'https://static.rakbow.com/common/404.jpg?imageMogr2/auto-orient/thumbnail/160x160',
-    COMMON_EMPTY_THUMB_IMAGE: 'https://static.rakbow.com/common/404.jpg?imageMogr2/auto-orient/thumbnail/60x60',
-    STATIC_DOMAIN: 'https://static.rakbow.com/'
+    COMMON_EMPTY_COVER_IMAGE: 'https://oss.rakbow.com/common/404.jpg?imageMogr2/auto-orient/thumbnail/160x160',
+    COMMON_EMPTY_THUMB_IMAGE: 'https://oss.rakbow.com/common/404.jpg?imageMogr2/auto-orient/thumbnail/60x60',
+    STATIC_DOMAIN: 'https://oss.rakbow.com/'
 }

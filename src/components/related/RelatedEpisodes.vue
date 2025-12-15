@@ -15,7 +15,7 @@
             </div>
             <div class="col p-1" style="width: 24rem">
                 <span class="block data-table-field-text-overflow-hidden">
-                  <a :href="`/db/${$api.ITEM.DETAIL_PATH}/${parent.id}`" :title="parent.name">{{ parent.name }}</a>
+                  <a :href="`${$api.ITEM.DETAIL_PATH}/${parent.id}`" :title="parent.name">{{ parent.name }}</a>
                 </span>
               <small style="color: gray" class="block data-table-field-text-overflow-hidden">
                 {{ parent.subName }}

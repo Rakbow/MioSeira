@@ -39,8 +39,9 @@
       </template>
     </div>
     <div :class="`${prefix}-side`">
+      <Links/>
       <RelationGroup v-if="entry.subType.value !== $const.ENTRY_SUB_TYPE.MAIN_SERIES"/>
-      <Changelog/>
+<!--      <Changelog/>-->
     </div>
   </div>
 </template>
@@ -53,6 +54,7 @@ import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} f
 const prefix = 'entity-detail';
 
 const Info = defineAsyncComponent(() => import('@/views/detail/info/EntryDetailInfo.vue'));
+const Links = defineAsyncComponent(() => import('@/components/common/EntityLink.vue'));
 const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));

@@ -34,9 +34,7 @@ export class ItemCreateDTO {
 
     //book
     pages: number = 0;
-    lang: string = 'ja-JP';
     size: string = '';
-
 
     remark: string = '';
     detail: string = '';

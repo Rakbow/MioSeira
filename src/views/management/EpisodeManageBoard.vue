@@ -4,8 +4,10 @@ import {useRoute, useRouter} from "vue-router";
 import { API, Axios } from '@/api';
 import {useI18n} from "vue-i18n";
 import "flag-icons/css/flag-icons.min.css";
-import {EntitySearchParam, loadFavoriteCreator} from "@/service/entityService";
+import {EntitySearchParam} from "@/service/entityService";
 import {PColumn} from "@/service/frame";
+import {bs} from "@/service/baseService";
+import favoriteCreator from "@/components/list/FavoriteCreator.vue";
 
 const {t} = useI18n();
 const dt = ref();
@@ -15,6 +17,7 @@ const param = ref(new EntitySearchParam());
 
 onBeforeMount(async () => {
   param.value.initFilters({
+    albumId: {value: -1},
     keyword: {value: ''}
   });
   param.value.initColumns([
@@ -39,6 +42,7 @@ const initQueryParam = async () => {
 
   param.value.query.page = parseInt(query.page?.toString() ?? '1');
   param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
+  param.value.query.filters.albumId.value = parseInt(query.albumId?.toString() ?? '-1');
 }
 
 const updateQueryParam = () => {
@@ -47,7 +51,7 @@ const updateQueryParam = () => {
 
   curQuery.page = page.toString();
 
-  ['keyword'].forEach(key => {
+  ['albumId', 'keyword'].forEach(key => {
     if (filters[key]?.value) {
       curQuery[key] = filters[key].value;
     } else {
@@ -95,6 +99,30 @@ const exportCSV = () => {
   dt.value.exportCSV();
 };
 
+const loadFavoriteCreator = (type: number) => {
+
+  let ids = param.value.selectedData.map(d => d.id);
+  ids.sort()
+
+  bs!.dialog.open(favoriteCreator, {
+    props: {
+      header: t('AddItemsToList'),
+      style: {
+        width: '45rem',
+      },
+      modal: true,
+      closable: true
+    },
+    data: {
+      type: type,
+      ids: ids
+    },
+    onClose() {
+      param.value.selectedData = [];
+    },
+  });
+}
+
 </script>
 
 <template>
@@ -112,7 +140,7 @@ const exportCSV = () => {
     </template>
     <template #header>
       <RButton @click="exportCSV" action="export" severity="help" :disabled="!param.data.length" />
-      <RButton @click="loadFavoriteCreator($const.ENTITY.EPISODE, param.selectedData)"
+      <RButton @click="loadFavoriteCreator($const.ENTITY.EPISODE)"
                icon="forms_add_on" tip="AddItemsToList" severity="warn" :disabled="!param.selectedData.length" />
     </template>
     <template #empty>
@@ -127,6 +155,11 @@ const exportCSV = () => {
     <Column class="entity-manager-datatable-edit-column">
       <template #body>
         <RButton size="small" action="update"/>
+      </template>
+    </Column>
+    <Column :header="t('Index')" :showFilterMenu="false" style="width: 5rem">
+      <template #body="{data}">
+        {{ `${data!.discNo}-${data!.serial}` }}
       </template>
     </Column>
     <Column :header="t('Name')" field="name" filterField="keyword" :showFilterMenu="false" :showClearButton="true"
@@ -144,16 +177,16 @@ const exportCSV = () => {
       </template>
     </Column>
     <Column :header="t('Duration')" field="duration" :showFilterMenu="false" :sortable="true" style="width: 6rem" />
-    <Column :header="t('Index')" :showFilterMenu="false" style="width: 5rem">
-      <template #body="{data}">
-        {{ `${data!.discNo}-${data!.serial}` }}
-      </template>
-    </Column>
+<!--    <Column :header="t('Index')" :showFilterMenu="false" style="width: 5rem">-->
+<!--      <template #body="{data}">-->
+<!--        {{ `${data!.discNo}-${data!.serial}` }}-->
+<!--      </template>-->
+<!--    </Column>-->
 
     <Column field="parent.name" header="Parent" style="width: 30rem" :bodyStyle="{position: 'relative'}">
       <template #body="{data}">
         <a :title="data.parent.name"
-           :href="`/db/${$api.ITEM.DETAIL_PATH}/${data.parent.id}`"
+           :href="`${$api.ITEM.DETAIL_PATH}/${data.parent.id}`"
            style="width: 28rem;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
            position: absolute;margin-top: 1rem;top: 0">
           {{ data!.parent.name }}

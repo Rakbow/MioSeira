@@ -14,6 +14,8 @@
             <Info :item="item"/>
             <div :class="`${prefix}-item-actions`">
               <div style="top: 0" v-permission>
+                <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM" icon="draft" size="small"
+                         @click="openLocalPath" />
                 <StatusEditor :status="item.status"/>
                 <RButton @click="loadEditor(item)" action="update"/>
               </div>
@@ -33,7 +35,8 @@
     <div :class="`${prefix}-side`">
       <ImagePreviewer/>
       <RelationGroup :showRole="false"/>
-      <Changelog/>
+      <Links/>
+<!--      <Changelog/>-->
     </div>
   </div>
 </template>
@@ -42,10 +45,12 @@
 import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} from "vue";
 import {useRouter} from "vue-router";
 import {loadEditor} from "@/service/itemService";
+import {API, Axios} from "@/api";
 
 const prefix = 'entity-detail';
 
 const Info = defineAsyncComponent(() => import('@/views/detail/info/ItemDetailInfo.vue'));
+const Links = defineAsyncComponent(() => import('@/components/common/EntityLink.vue'));
 const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
 const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
@@ -70,6 +75,15 @@ onBeforeMount(() => {
   cover.value = meta.value.info.cover;
   provide('entity', {type: proxy!.$const.ENTITY.ITEM, id: item.value.id, subType: item.value.type.value} as Entity);
 });
+
+const openLocalPath = async () => {
+  const res = await Axios.post(API.ENTITY.ENTITY_LOCAL_PATH, {
+    entityType: proxy!.$const.ENTITY.ITEM,
+    entitySubType: item.value.type.value,
+    entityId: item.value.id
+  });
+  console.log(res.data)
+}
 
 </script>
 <style lang="scss" scoped>

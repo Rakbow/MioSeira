@@ -1,5 +1,5 @@
 export const META = {
-    STATIC_DOMAIN: 'https://static.rakbow.com/',
+    STATIC_DOMAIN: 'https://oss.rakbow.com/',
     RELATION_RELATED_DIRECTION: {
         POSITIVE: 1,
         NEGATIVE: -1
@@ -31,7 +31,7 @@ export const META = {
     ITEM_TYPE: {
         ALBUM: 1,
         BOOK: 2,
-        DISC: 3,
+        VIDEO: 3,
         GAME: 4,
         GOODS: 5,
         FIGURE: 6,

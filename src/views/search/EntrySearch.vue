@@ -196,6 +196,9 @@ const onSortChange = (ev: any) => {
                   <span class="text-ellipsis-one" style="flex-shrink: 1;flex-grow: 1;font-size: 1rem;color: #999999"
                         :title="entry.subName">{{ entry.subName }}</span>
                   <span style="flex-shrink: 0;white-space: nowrap;margin-left: .8rem;">
+
+                    <span v-if="entry.subType.value" class="small-font" style="font-size: 1rem;color: #999999">{{ `(${entry.subType.label})` }}</span>
+
                     <i v-if="entry.gender.value" :class="PublicHelper.getGenderIcon(entry.gender.value)"/>
                     <span v-if="entry.date" class="entity-search-entry-list-info-time"
                           style="display: inline">{{ entry.date }}</span>

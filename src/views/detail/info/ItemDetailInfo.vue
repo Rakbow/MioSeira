@@ -27,17 +27,6 @@ const props = defineProps<{
       </td>
     </tr>
 
-    <template v-if="item.type === $const.ITEM_TYPE.BOOK">
-      <tr>
-        <td>
-          <b>{{ t('Language') }}</b>
-        </td>
-        <td>
-          <Tag :value="item.lang.label"/>
-        </td>
-      </tr>
-    </template>
-
     <tr>
       <td>
         <b>{{ t('Releases') }}</b>
@@ -73,24 +62,24 @@ const props = defineProps<{
         <b>{{ t('Spec') }}</b>
       </td>
       <td>
-        <template v-if="item.type === $const.ITEM_TYPE.ALBUM">
+        <template v-if="[$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.VIDEO].includes(item.type.value)">
           <span v-if="item.discs">{{ item.discs }}&nbsp;discs,&nbsp;</span>
-          <span v-if="item.tracks">{{ item.tracks }}&nbsp;tracks,&nbsp;</span>
+          <span v-if="item.episodes">{{ item.episodes }}&nbsp;tracks,&nbsp;</span>
           <span v-if="item.runTime">{{ PublicHelper.secondsToTimeFormat(item.runTime) }}</span>
         </template>
-        <template v-if="item.type === $const.ITEM_TYPE.BOOK">
-          <span v-if="item.size">{{ item.size }},&nbsp;</span>
+        <template v-if="item.type.value === $const.ITEM_TYPE.BOOK">
+          <span v-if="item.scale">{{ item.scale }},&nbsp;</span>
           <span v-if="item.pages">{{ item.pages }}&nbsp;pages</span>
         </template>
-        <template v-if="item.type === $const.ITEM_TYPE.DISC">
-          <span v-if="item.discs">{{ item.discs }}&nbsp;discs,&nbsp;</span>
-          <span v-if="item.episodes">{{ item.episodes }}&nbsp;episodes,&nbsp;</span>
-          <span v-if="item.runTime">{{ PublicHelper.secondsToTimeFormat(item.runTime) }}</span>
-        </template>
+<!--        <template v-if="item.type.value === $const.ITEM_TYPE.VIDEO">-->
+<!--          <span v-if="item.discs">{{ item.discs }}&nbsp;discs,&nbsp;</span>-->
+<!--          <span v-if="item.episodes">{{ item.episodes }}&nbsp;episodes,&nbsp;</span>-->
+<!--          <span v-if="item.runTime">{{ PublicHelper.secondsToTimeFormat(item.runTime) }}</span>-->
+<!--        </template>-->
       </td>
     </tr>
 
-    <template v-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type)">
+    <template v-if="[$const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(item.type.value)">
       <tr v-if="item.versions.length">
         <td>
           <b>{{ t('Version') }}</b>

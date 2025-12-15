@@ -31,29 +31,37 @@ const toggleCollapse = () => {
   </b>
   <table>
     <tbody>
-    <tr v-for="track in visibleRows">
-      <th>{{ track.serial < 10 ? `0${track.serial}` : track.serial }}</th>
-      <td nowrap="nowrap">
-        <router-link :to="`${$api.EPISODE.DETAIL_PATH}/${track.id}`">
-          <span>{{ track.name }}</span>
-        </router-link>
-      </td>
-      <td class="album-tracks-duration">
-        <span>{{ track.duration }}</span>
-      </td>
-    </tr>
+      <tr v-for="track in visibleRows">
+        <th>{{ track.serial < 10 ? `0${track.serial}` : track.serial }}</th>
+        <td nowrap="nowrap">
+          <router-link :to="`${$api.EPISODE.DETAIL_PATH}/${track.id}`">
+            <span>{{ track.name }}</span>
+          </router-link>
+        </td>
+        <td class="album-tracks-duration">
+          <span>{{ track.duration }}</span>
+        </td>
+      </tr>
     </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">
+          <div class="album-tracks-disc-toggle">
+            <Button v-if="disc.tracks.length > maxRows" @click="toggleCollapse" class="p-button-link" size="small">
+              <span v-if="isCollapsed" style="font-size: 1.1rem">{{ t('Expand') }}&nbsp;<i class="pi pi-sort-down-fill"/></span>
+              <span v-else>{{ t('Collapse') }}&nbsp;<i class="pi pi-sort-up-fill"/></span>
+            </Button>
+          </div>
+        </td>
+        <td>
+          <div class="album-tracks-disc-total">
+            <span>&nbsp;{{ t('TrackNum') }}:&nbsp;</span>{{ disc.tracks.length }}
+            <span v-if="disc.duration">&nbsp;{{ t('DiscLength') }}:&nbsp;</span>{{ disc.duration }}
+          </div>
+        </td>
+      </tr>
+    </tfoot>
   </table>
-  <div class="album-tracks-disc-toggle">
-    <Button v-if="disc.tracks.length > maxRows" @click="toggleCollapse" class="p-button-link" size="small">
-      <span v-if="isCollapsed" style="font-size: 1.1rem">{{ t('Expand') }}&nbsp;<i class="pi pi-sort-down-fill"/></span>
-      <span v-else>{{ t('Collapse') }}&nbsp;<i class="pi pi-sort-up-fill"/></span>
-    </Button>
-  </div>
-  <span class="album-tracks-disc-total">
-    <span>&nbsp;{{ t('TrackNum') }}:&nbsp;</span>{{ disc.tracks.length }}
-    <span>&nbsp;{{ t('DiscLength') }}:&nbsp;</span>{{ disc.duration }}
-  </span>
 </template>
 
 <style scoped lang="scss">

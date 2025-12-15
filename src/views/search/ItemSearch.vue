@@ -335,7 +335,7 @@ const openSelector = () => {
                 <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`" class="text-ellipsis-one"
                              :title="item.name">{{ item.name }}
                 </router-link>
-                <Tag v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(item.type.value)"
+                <Tag v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.VIDEO].includes(item.type.value)"
                      :value="item.subType.label"
                      :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>
                 <Tag v-else :value="item.type.label"

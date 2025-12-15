@@ -8,6 +8,8 @@ import "flag-icons/css/flag-icons.min.css";
 import {EntitySearchParam} from '@/service/entityService';
 import {useOptionStore} from "@/store/modules/option";
 import {PColumn} from "@/service/frame";
+import {bs} from "@/service/baseService";
+import favoriteCreator from "@/components/list/FavoriteCreator.vue";
 
 const {t} = useI18n();
 const dt = ref();
@@ -143,6 +145,30 @@ const openCreateTab = () => {
 const exportCSV = () => {
   dt.value.exportCSV();
 };
+
+const loadFavoriteCreator = (type: number) => {
+
+  let ids = param.value.selectedData.map(d => d.id);
+  ids.sort()
+
+  bs!.dialog.open(favoriteCreator, {
+    props: {
+      header: t('AddItemsToList'),
+      style: {
+        width: '45rem',
+      },
+      modal: true,
+      closable: true
+    },
+    data: {
+      type: type,
+      ids: ids
+    },
+    onClose() {
+      param.value.selectedData = [];
+    },
+  });
+}
 </script>
 
 <template>
@@ -178,6 +204,8 @@ const exportCSV = () => {
                :disabled="!param.selectedData.length"/>
       <RButton @click="exportCSV" action="export"
                severity="help" :disabled="!param.result.total"/>
+      <RButton @click="loadFavoriteCreator($const.ENTITY.ITEM)"
+               icon="forms_add_on" tip="AddItemsToList" severity="warn" :disabled="!param.selectedData.length" />
       <MultiSelect :model-value="param.selectedColumns" :options="param.columns" optionLabel="header"
                    @update:modelValue="onToggle" :placeholder="t('SelectedDisplayColumns')" size="large"/>
     </template>
@@ -203,7 +231,7 @@ const exportCSV = () => {
       </Row>
       <Row>
         <Column :header="t('Type')" :sortable="true" field="subType" style="width: 9rem"
-                v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(store.itemCurrent)"/>
+                v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.VIDEO].includes(store.itemCurrent)"/>
         <Column :header="t('CatalogId')" :sortable="true" field="catalogId" style="width: 11rem"
                 v-if="![$const.ITEM_TYPE.BOOK, $const.ITEM_TYPE.GOODS, $const.ITEM_TYPE.FIGURE].includes(store.itemCurrent)"/>
         <Column :header="t('Barcode')" :sortable="true" field="barcode" style="width: 9rem"/>
@@ -240,7 +268,7 @@ const exportCSV = () => {
                    @keydown.enter="filterCallback()"/>
       </template>
     </Column>
-    <Column v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.DISC].includes(store.itemCurrent)" bodyClass="text-center"
+    <Column v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.VIDEO].includes(store.itemCurrent)" bodyClass="text-center"
             :bodyStyle="{padding: 0}">
       <template #body="{data}">
         <Tag :value="data.subType.label"

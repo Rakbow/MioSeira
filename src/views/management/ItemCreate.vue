@@ -152,7 +152,7 @@ const openAlbumTrackQuickCreatorDialog = () => {
 
 const handleTracks = () => {
   if (dto.value.item.disc.tracks.length === 0) return;
-  dto.value.item.tracks = dto.value.item.disc.tracks.length;
+  dto.value.item.episodes = dto.value.item.disc.tracks.length;
   dto.value.item.discs = 1;
   dto.value.item.runTime = dto.value.item.disc.tracks.reduce((sum: number, item: any) => {
     return sum + PublicHelper.getDuration(item.duration);
@@ -248,8 +248,8 @@ const handleTracks = () => {
               </div>
 
               <div class="grid"
-                   v-if="dto.item.type === $const.ITEM_TYPE.ALBUM || dto.item.type === $const.ITEM_TYPE.DISC">
-                <FloatLabel variant="on" v-if="dto.item.type === $const.ITEM_TYPE.DISC">
+                   v-if="dto.item.type === $const.ITEM_TYPE.ALBUM || dto.item.type === $const.ITEM_TYPE.VIDEO">
+                <FloatLabel variant="on" v-if="dto.item.type === $const.ITEM_TYPE.VIDEO">
                   <label>{{ t('MediaFormat') }}<i class="required-label pi pi-asterisk"/></label>
                   <MultiSelect showClear v-model="dto.item.mediaFormat" :options="store.options.mediaFormatSet"
                                optionLabel="label" optionValue="value" display="chip"/>
@@ -263,7 +263,7 @@ const handleTracks = () => {
                     <label>{{ t('Tracks') }}</label>
                     <InputNumber v-model="dto.item.tracks"/>
                   </template>
-                  <template v-if="dto.item.type === $const.ITEM_TYPE.DISC">
+                  <template v-if="dto.item.type === $const.ITEM_TYPE.VIDEO">
                     <label>{{ t('Episodes') }}</label>
                     <InputNumber v-model="dto.item.episodes"/>
                   </template>
@@ -276,17 +276,12 @@ const handleTracks = () => {
 
               <div class="grid" v-if="dto.item.type === $const.ITEM_TYPE.BOOK">
                 <FloatLabel variant="on">
-                  <label class="mb-3">{{ t('Language') }}<i class="required-label pi pi-asterisk"/></label>
-                  <Select v-model="dto.item.lang" :options="store.options.languageSet"
-                          optionLabel="label" optionValue="value"/>
-                </FloatLabel>
-                <FloatLabel variant="on">
                   <label>{{ t('Pages') }}</label>
                   <InputNumber v-model="dto.item.pages"/>
                 </FloatLabel>
                 <FloatLabel variant="on">
                   <label>{{ t('BookSize') }}</label>
-                  <InputText v-model="dto.item.size"/>
+                  <InputText v-model="dto.item.scale"/>
                 </FloatLabel>
               </div>
 
