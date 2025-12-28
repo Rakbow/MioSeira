@@ -103,22 +103,32 @@ export const i18nConst = {
         zh: [
             {label: "默认", value: 0},
             {label: "动画", value: 1},
-            {label: "小说", value: 2},
-            {label: "漫画", value: 3},
+            {label: "印刷出版物", value: 2},
+            {label: "动画电影", value: 3},
             {label: "游戏", value: 4},
-            {label: "电影", value: 5},
-            {label: "电视剧", value: 6},
+            {label: "真人作品", value: 5},
+            {label: "特摄", value: 6},
+            {label: "广播剧/电台", value: 7},
+            {label: "多媒体企划", value: 8},
+            {label: "公司/组织", value: 9},
+            {label: "组合/团体", value: 10},
+            {label: "工作室", value: 11},
             {label: "系列", value: 100}
         ],
         en: [
             {label: "Default", value: 0},
             {label: "Animation", value: 1},
-            {label: "Novel", value: 2},
-            {label: "Manga", value: 3},
+            {label: "Print Publication", value: 2},
+            {label: "Anime Movie", value: 3},
             {label: "Game", value: 4},
-            {label: "Movie", value: 5},
-            {label: "TV Series", value: 6},
-            {label: "Main Series", value: 100}
+            {label: "Live Action", value: 5},
+            {label: "Tokusatsu", value: 6},
+            {label: "Radio & Audio Drama", value: 7},
+            {label: "Multimedia", value: 8},
+            {label: "Company", value: 9},
+            {label: "Unit", value: 10},
+            {label: "Studio", value: 11},
+            {label: "Franchise", value: 100}
         ]
     } as Record<string, Attribute<number>[]>,
     releaseTypeSet: {

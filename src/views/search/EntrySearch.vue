@@ -197,11 +197,13 @@ const onSortChange = (ev: any) => {
                         :title="entry.subName">{{ entry.subName }}</span>
                   <span style="flex-shrink: 0;white-space: nowrap;margin-left: .8rem;">
 
-                    <span v-if="entry.subType.value" class="small-font" style="font-size: 1rem;color: #999999">{{ `(${entry.subType.label})` }}</span>
+                    <span v-if="entry.subType.value" class="small-font" style="font-size: 1rem;color: #999999">{{ `(${entry.subType.label})&nbsp;` }}</span>
 
-                    <i v-if="entry.gender.value" :class="PublicHelper.getGenderIcon(entry.gender.value)"/>
-                    <span v-if="entry.date" class="entity-search-entry-list-info-time"
-                          style="display: inline">{{ entry.date }}</span>
+                    <i v-if="entry.gender" :class="PublicHelper.getGenderIcon(entry.gender)" />
+                    <span v-if="entry.startDate" class="entity-search-entry-list-info-time"
+                          style="display: inline">{{ entry.startDate }}</span>
+                    <span v-if="entry.endDate" class="entity-search-entry-list-info-time"
+                          style="display: inline">-{{ entry.endDate }}</span>
                   </span>
                 </span>
               </div>

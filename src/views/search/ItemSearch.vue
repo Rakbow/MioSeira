@@ -9,6 +9,19 @@ import {useI18n} from "vue-i18n";
 import {useOptionStore} from "@/store/modules/option";
 import {bs} from '@/service/baseService';
 import {EntitySearchParam} from "@/service/entityService";
+import favoriteCreator from "@/components/list/FavoriteCreator.vue";
+
+const props = defineProps({
+  component: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  listId: {
+    type: Number,
+    required: false
+  }
+});
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
 const Currency = defineAsyncComponent(() => import('@/components/global/Currency.vue'));
@@ -48,6 +61,7 @@ onBeforeMount(() => {
     catalogId: {value: ''},
     region: {value: ''},
     entries: {value: new Array<number>()},
+    listId: {value: props.listId}
   });
   param.value.query.size = 54;
 });
@@ -81,6 +95,8 @@ const switchEntitySubType = (ev: any) => {
 }
 
 const initQueryParam = async () => {
+  if (props.component) return;
+
   const {query} = route;
 
   if (query.sort) {
@@ -112,6 +128,8 @@ const initQueryParam = async () => {
 }
 
 const updateQueryParam = () => {
+  if (props.component) return;
+
   const {query: {filters, sortField, sortOrder, page}} = param.value;
   const curQuery = {...route.query};
 
@@ -164,6 +182,8 @@ const loadItems = async () => {
 }
 
 const loadEntries = async () => {
+  if (props.component) return;
+
   if (param.value.query.filters.entries.value.length) {
     param.value.loading2 = true;
     const res = await Axios.post(API.ENTRY.MINI, param.value.query.filters.entries.value);
@@ -204,6 +224,7 @@ const resetFilter = () => {
     subType: {value: null},
     releaseType: {value: null},
     entries: {value: []},
+    listId: {value: param.value.query.filters.listId.value}
   };
   if(entitySubType.value) {
     param.value.query.filters.type.value = parseInt(entitySubType.value.value);
@@ -250,6 +271,34 @@ const openSelector = () => {
   })
 }
 
+const loadFavList = (id: number) => {
+  bs!.dialog.open(favoriteCreator, {
+    props: {
+      header: t('AddItemsToList'),
+      style: {
+        width: '45rem',
+      },
+      modal: true,
+      closable: true
+    },
+    data: {
+      type: proxy?.$const.ENTITY.ITEM,
+      ids: [id]
+    },
+    onClose() {
+      param.value.selectedData = [];
+    },
+  });
+}
+
+const openLocalPath = async (id: number) => {
+  const res = await Axios.post(API.ENTITY.ENTITY_LOCAL_PATH, {
+    entityType: proxy!.$const.ENTITY.ITEM,
+    entitySubType: proxy!.$const.ITEM_TYPE.ALBUM,
+    entityId: id
+  });
+  console.log(res.data)
+}
 </script>
 
 <template>
@@ -325,16 +374,24 @@ const openSelector = () => {
                 <Skeleton width="20rem" height="1.7rem"/>
               </div>
             </div>
-            <div class="grid" v-if="!param.loading" v-for="item in items as any[]">
+            <div class="grid relative" v-if="!param.loading" v-for="item in items as any[]">
+              <div v-permission style="position: absolute;top: 0;right: 1.6rem">
+                <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM && props.component" icon="draft" size="small"
+                         @click="openLocalPath(item.id)" severity="warn" tip="LocalFile" />
+                <RButton @click="loadFavList(item.id)" size="small"
+                         icon="bookmark" tip="Collect" severity="info" v-if="!props.component" />
+              </div>
               <div class="entity-search-item-list-thumb col-fixed">
                 <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`" class="item-thumb-list">
                   <img role="presentation" :alt="item.id" :src="item.thumb"/>
                 </router-link>
               </div>
               <div class="entity-search-item-list-info col">
-                <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`" class="text-ellipsis-one"
-                             :title="item.name">{{ item.name }}
-                </router-link>
+                <div class="text-ellipsis-one" style="max-width: 55rem">
+                  <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
+                               :title="item.name">{{ item.name }}
+                  </router-link>
+                </div>
                 <Tag v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.VIDEO].includes(item.type.value)"
                      :value="item.subType.label"
                      :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>

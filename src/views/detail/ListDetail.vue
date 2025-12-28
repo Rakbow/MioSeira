@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} from "vue";
+import {defineAsyncComponent, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 
-const FavoriteBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteBrowser.vue'));
+const FavEpBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteEpisodeBrowser.vue'));
+// const FavItemBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteItemBrowser.vue'));
+const ItemSearch = defineAsyncComponent(() => import('@/views/search/ItemSearch.vue'));
 
 const prefix = 'entity-detail';
 const router = useRouter();
 const list = ref<any>();
-const {proxy} = getCurrentInstance()!;
 
 onBeforeMount(() => {
   list.value = router.currentRoute.value.meta.info;
-  provide('list', {listId: list.value.id, type: list.value.type.value});
 });
 </script>
 
@@ -39,9 +39,12 @@ onBeforeMount(() => {
           </div>
         </div>
       </div>
-      <FavoriteBrowser />
     </div>
   </div>
+
+  <FavEpBrowser :listId="list.id" v-if="list.type.value === $const.ENTITY.EPISODE" />
+  <ItemSearch :listId="list.id" :component="true"
+              v-if="list.type.value === $const.ENTITY.ITEM"/>
 </template>
 
 <style scoped lang="scss">

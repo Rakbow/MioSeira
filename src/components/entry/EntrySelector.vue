@@ -3,6 +3,8 @@
     <BlockUI :blocked="param.loading">
       <EntryTypeSelector v-if="option.all" :disabled="false"
                          v-model="param.query.filters.type.value" @update="switchEntryType" />
+      <Select v-model="param.query.filters.subType.value" :options="store.options.entrySubTypeSet"
+              size="large" optionLabel="label" optionValue="value" :disabled="param.loading"/>
       <IconField>
         <InputIcon class="pi pi-search" v-if="!param.query.filters.keyword.value"/>
         <InputText size="large" v-model="param.query.filters.keyword.value" @keyup.enter="search"/>
@@ -20,9 +22,19 @@
               <img role="presentation" :alt="entity.name" :src="entity.thumb"/>
             </div>
             <div class="related-entity-info">
-              <a :href="`${$api.ENTRY.DETAIL_PATH}/${entity.id}`" :title="entity.name">
-                {{ entity.name }}
-              </a>
+              <div>
+                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entity.id}`" :title="entity.name">
+                  {{ entity.name }}
+                </a>
+                <span style="flex-shrink: 0;white-space: nowrap;margin-left: .8rem;">
+                  <span v-if="entity.subType.value" class="small-font" style="font-size: 1rem;color: #999999">{{ `(${entity.subType.label})&nbsp;` }}</span>
+                  <i v-if="entity.gender" :class="PublicHelper.getGenderIcon(entity.gender)" />
+                  <span v-if="entity.startDate" class="entity-search-entry-list-info-time"
+                        style="display: inline">{{ entity.startDate }}</span>
+                  <span v-if="entity.endDate" class="entity-search-entry-list-info-time"
+                        style="display: inline">-{{ entity.endDate }}</span>
+                </span>
+              </div>
               <small :title="entity.subName">
                 {{ entity.subName }}
               </small>
@@ -63,6 +75,8 @@ import {defineAsyncComponent, inject, onBeforeMount, onMounted, ref} from "vue";
 import {API, Axios} from "@/api";
 import {useI18n} from "vue-i18n";
 import {EntitySearchParam} from "@/service/entityService";
+import {PublicHelper} from "@/utils/publicHelper";
+import {useOptionStore} from "@/store/modules/option";
 
 const EntryTypeSelector = defineAsyncComponent(() => import('@/components/entry/EntryTypeSelector.vue'));
 
@@ -70,6 +84,7 @@ const emit = defineEmits(['pick']);
 const {t} = useI18n();
 const param = ref<EntitySearchParam>(new EntitySearchParam());
 const dialogRef = inject<any>('dialogRef');
+const store = useOptionStore();
 
 const option = ref({
   all: false,
@@ -95,8 +110,10 @@ const initParam = () => {
 }
 
 onBeforeMount(() => {
+  store.fetchOptions();
   param.value.initFilters({
     type: {value: null},
+    subType: {value: null},
     keyword: {value: ''}
   });
   param.value.query.size = 7;

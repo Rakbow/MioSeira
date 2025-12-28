@@ -31,18 +31,19 @@
         <Column class="entity-manager-datatable-select-column" selectionMode="multiple"/>
         <Column :header="t('Name')">
           <template #body="{data}">
-            <a :href="`/db/${path}/${data.target.entityId}`">
-          <span :title="data.target.name">
-            {{ data.target.name }}
+            <a :href="`${$api.EPISODE.DETAIL_PATH}/${data.id}`">
+          <span :title="data.name">
+            {{ data.name }}
           </span>
             </a>
           </template>
         </Column>
-        <Column :header="t('Duration')" field="target.subInfo"/>
-        <Column field="parent.name" :header="t('Entity.Album')" style="width: 30rem" :bodyStyle="{position: 'relative'}">
+        <Column :header="t('Duration')" field="target.duration"/>
+        <Column field="parent.name" :header="t('Entity.Album')" style="width: 30rem"
+                :bodyStyle="{position: 'relative'}">
           <template #body="{data}">
             <a :title="data.parent.name"
-               :href="`/db/${$api.ITEM.DETAIL_PATH}/${data.parent.id}`"
+               :href="`${$api.ITEM.DETAIL_PATH}/${data.parent.id}`"
                style="width: 28rem;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
            position: absolute;margin-top: 1rem;top: 0">
               {{ data!.parent.name }}
@@ -57,36 +58,24 @@
 </template>
 
 <script setup lang="ts">
-import {getCurrentInstance, inject, onBeforeMount, onMounted, ref} from "vue";
+import {defineProps, getCurrentInstance, onBeforeMount, onMounted, ref} from "vue";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
 import {EntitySearchParam} from "@/service/entityService";
 import {bs} from "@/service/baseService";
 
+const {proxy} = getCurrentInstance()!;
 const {t} = useI18n();
 const dt = ref();
 const param = ref(new EntitySearchParam());
-const list = inject<any>('list');
-const path = ref();
-const {proxy} = getCurrentInstance()!;
+
+const props = defineProps<{
+  listId: number
+}>();
 
 onBeforeMount(async () => {
-  param.value.initFilters({
-    listId: {value: list.listId},
-    type: {value: list.type}
-  });
-  setPath();
+  param.value.initFilters({});
 })
-
-const setPath = () => {
-  if(list.type === proxy!.$const.ENTITY.ITEM) {
-    path.value = 'item';
-  }else if (list.type === proxy!.$const.ENTITY.ENTRY) {
-    path.value = 'entry';
-  }else if (list.type === proxy!.$const.ENTITY.EPISODE) {
-    path.value = 'ep';
-  }
-}
 
 onMounted(() => {
   param.value.query.size = 10;
@@ -105,7 +94,13 @@ const onSort = (ev: any) => {
 
 const load = async () => {
   param.value.load();
-  const res = await Axios.post(API.LIST.GET_ITEMS, param.value.query);
+  const res = await Axios.post(API.LIST.GET_ITEMS,
+      {
+        listId: props.listId,
+        type: proxy!.$const.ENTITY.EPISODE,
+        param: param.value.query
+      }
+  );
   if (res.success()) {
     param.value.loadResult(res.data);
   }
