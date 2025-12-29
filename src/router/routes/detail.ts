@@ -15,9 +15,21 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.info = res.data;
                         to.meta.title = res.data.entry.name;
                         next();
+                    }else {
+                        if(res.code === '404') {
+                            to.meta.notFound = true;
+                            to.meta.errorMessage = res.message;
+                            to.meta.title = '404 Not Found';
+                            next();
+                            return;
+                        }
                     }
                 } else {
-                    next(false);
+                    to.meta.notFound = true;
+                    to.meta.errorMessage = '404';
+                    to.meta.title = '404 Not Found';
+                    next();
+                    return;
                 }
             } catch (e) {
                 console.error(e);
@@ -37,9 +49,21 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.info = res.data;
                         to.meta.title = res.data.item.name;
                         next();
+                    } else {
+                        if (res.code === '404') {
+                            to.meta.notFound = true;
+                            to.meta.errorMessage = res.message;
+                            to.meta.title = '404 Not Found';
+                            next();
+                            return;
+                        }
                     }
                 } else {
-                    next(false);
+                    to.meta.notFound = true;
+                    to.meta.errorMessage = '404';
+                    to.meta.title = '404 Not Found';
+                    next();
+                    return;
                 }
             } catch (e) {
                 console.error(e);
@@ -59,9 +83,21 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.info = res.data;
                         to.meta.title = res.data.name;
                         next();
+                    } else {
+                        if (res.code === '404') {
+                            to.meta.notFound = true;
+                            to.meta.errorMessage = res.message;
+                            to.meta.title = '404 Not Found';
+                            next();
+                            return;
+                        }
                     }
-                }else{
-                    next(false);
+                } else {
+                    to.meta.notFound = true;
+                    to.meta.errorMessage = '404';
+                    to.meta.title = '404 Not Found';
+                    next();
+                    return;
                 }
             } catch (e) {
                 console.error(e);
@@ -81,9 +117,21 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.info = res.data;
                         to.meta.title = res.data.name;
                         next();
+                    } else {
+                        if (res.code === '404') {
+                            to.meta.notFound = true;
+                            to.meta.errorMessage = res.message;
+                            to.meta.title = '404 Not Found';
+                            next();
+                            return;
+                        }
                     }
-                }else{
-                    next(false);
+                } else {
+                    to.meta.notFound = true;
+                    to.meta.errorMessage = '404';
+                    to.meta.title = '404 Not Found';
+                    next();
+                    return;
                 }
             } catch (e) {
                 console.error(e);

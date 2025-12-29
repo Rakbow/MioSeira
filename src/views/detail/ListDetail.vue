@@ -2,6 +2,7 @@
 import {defineAsyncComponent, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 
+const NotFound = defineAsyncComponent(() => import('@/views/NotFound.vue'));
 const FavEpBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteEpisodeBrowser.vue'));
 // const FavItemBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteItemBrowser.vue'));
 const ItemSearch = defineAsyncComponent(() => import('@/views/search/ItemSearch.vue'));
@@ -9,42 +10,48 @@ const ItemSearch = defineAsyncComponent(() => import('@/views/search/ItemSearch.
 const prefix = 'entity-detail';
 const router = useRouter();
 const list = ref<any>();
+const meta = ref<any>();
 
 onBeforeMount(() => {
-  list.value = router.currentRoute.value.meta.info;
+  meta.value = router.currentRoute.value.meta;
+  if (!meta.value.notFound) {
+    list.value = meta.value.info;
+  }
 });
 </script>
 
 <template>
-  <div :class="`${prefix}`">
-    <div :class="`${prefix}-main`">
-      <div :class="`${prefix}-list-info`">
-        <div class="flex flex-col">
-          <div>
-            <div :class="`${prefix}-list-name`">{{ list.name }}</div>
-            <div :class="`${prefix}-list-log`">
-              <div>
-                <RIcon name="person" :size="1.4"/>
-                <span>{{ list.creator }}</span>
-              </div>
-              <div>
-                <RIcon name="calendar_add_on" :size="1.4"/>
-                <span>{{ list.createTime }}</span>
-              </div>
-              <div>
-                <RIcon name="edit_calendar" :size="1.4"/>
-                <span>{{ list.updateTime }}</span>
+  <NotFound v-if="meta.notFound"/>
+  <div v-else>
+    <div :class="`${prefix}`">
+      <div :class="`${prefix}-main`">
+        <div :class="`${prefix}-list-info`">
+          <div class="flex flex-col">
+            <div>
+              <div :class="`${prefix}-list-name`">{{ list.name }}</div>
+              <div :class="`${prefix}-list-log`">
+                <div>
+                  <RIcon name="person" :size="1.4"/>
+                  <span>{{ list.creator }}</span>
+                </div>
+                <div>
+                  <RIcon name="calendar_add_on" :size="1.4"/>
+                  <span>{{ list.createTime }}</span>
+                </div>
+                <div>
+                  <RIcon name="edit_calendar" :size="1.4"/>
+                  <span>{{ list.updateTime }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <FavEpBrowser :listId="list.id" v-if="list.type.value === $const.ENTITY.EPISODE"/>
+    <ItemSearch :listId="list.id" :component="true"
+                v-if="list.type.value === $const.ENTITY.ITEM"/>
   </div>
-
-  <FavEpBrowser :listId="list.id" v-if="list.type.value === $const.ENTITY.EPISODE" />
-  <ItemSearch :listId="list.id" :component="true"
-              v-if="list.type.value === $const.ENTITY.ITEM"/>
 </template>
 
 <style scoped lang="scss">

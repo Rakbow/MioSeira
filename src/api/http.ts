@@ -7,6 +7,7 @@ class ApiResult {
     data: any = null;
     total: number = 0;
     message: string = '';
+    code: string = '';
 
     success(): boolean {
         return this.state === Axios.SUCCESS;

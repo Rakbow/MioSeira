@@ -1,5 +1,6 @@
 <template>
-  <div :class="`${prefix}`">
+  <NotFound v-if="meta.notFound" />
+  <div v-else :class="`${prefix}`">
     <div :class="`${prefix}-main`">
       <div :class="`${prefix}-title`">
         <h1 style="display: inline;">{{ entry.name }}</h1>
@@ -41,7 +42,7 @@
     <div :class="`${prefix}-side`">
       <Links/>
       <RelationGroup v-if="entry.subType.value !== $const.ENTRY_SUB_TYPE.MAIN_SERIES"/>
-<!--      <Changelog/>-->
+      <!--      <Changelog/>-->
     </div>
   </div>
 </template>
@@ -53,6 +54,7 @@ import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} f
 
 const prefix = 'entity-detail';
 
+const NotFound = defineAsyncComponent(() => import('@/views/NotFound.vue'));
 const Info = defineAsyncComponent(() => import('@/views/detail/info/EntryDetailInfo.vue'));
 const Links = defineAsyncComponent(() => import('@/components/common/EntityLink.vue'));
 const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
@@ -73,10 +75,16 @@ const {proxy} = getCurrentInstance()!;
 
 onBeforeMount(() => {
   meta.value = router.currentRoute.value.meta;
-  entry.value = meta.value.info.entry;
-  pageInfo.value = meta.value.info.traffic;
-  cover.value = meta.value.info.cover;
-  provide('entity', {type: proxy!.$const.ENTITY.ENTRY, id: entry.value.id, subType: entry.value.type.value} as Entity);
+  if (!meta.value.notFound) {
+    entry.value = meta.value.info.entry;
+    pageInfo.value = meta.value.info.traffic;
+    cover.value = meta.value.info.cover;
+    provide('entity', {
+      type: proxy!.$const.ENTITY.ENTRY,
+      id: entry.value.id,
+      subType: entry.value.type.value
+    } as Entity);
+  }
 });
 </script>
 

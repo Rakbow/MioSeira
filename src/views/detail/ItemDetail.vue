@@ -1,5 +1,6 @@
 <template>
-  <div id="main" :class="prefix">
+  <NotFound v-if="meta.notFound" />
+  <div v-else id="main" :class="prefix">
     <div :class="`${prefix}-main`">
       <div :class="`${prefix}-title`">
         <h1 :title="item.name">{{ item.name }}</h1>
@@ -47,6 +48,7 @@ import {API, Axios} from "@/api";
 
 const prefix = 'entity-detail';
 
+const NotFound = defineAsyncComponent(() => import('@/views/NotFound.vue'));
 const Info = defineAsyncComponent(() => import('@/views/detail/info/ItemDetailInfo.vue'));
 const Links = defineAsyncComponent(() => import('@/components/common/EntityLink.vue'));
 const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
@@ -68,10 +70,12 @@ const {proxy} = getCurrentInstance()!;
 
 onBeforeMount(() => {
   meta.value = router.currentRoute.value.meta;
-  item.value = meta.value.info.item;
-  pageInfo.value = meta.value.info.traffic;
-  cover.value = meta.value.info.cover;
-  provide('entity', {type: proxy!.$const.ENTITY.ITEM, id: item.value.id, subType: item.value.type.value} as Entity);
+  if (!meta.value.notFound) {
+    item.value = meta.value.info.item;
+    pageInfo.value = meta.value.info.traffic;
+    cover.value = meta.value.info.cover;
+    provide('entity', {type: proxy!.$const.ENTITY.ITEM, id: item.value.id, subType: item.value.type.value} as Entity);
+  }
 });
 
 </script>
