@@ -103,6 +103,8 @@ const update = async () => {
   param.value.block();
   const res = await Axios.post(API.RELATION.UPDATE, {
     id: updateDTO.value.id,
+    entityType: dialogRef.value.data.entityType,
+    entityId: dialogRef.value.data.entityId,
     roleId: updateDTO.value.role.value,
     relatedRoleId: updateDTO.value.target.role.value,
     remark: updateDTO.value.remark,
@@ -147,7 +149,11 @@ const openDelete = () => {
 };
 
 const remove = async () => {
-  const res = await Axios.delete(API.RELATION.DELETE, {ids: param.value.selectedData.map(i => i.id)});
+  const res = await Axios.delete(API.RELATION.DELETE, {
+    entityType: dialogRef.value.data.entityType,
+    entityId: dialogRef.value.data.entityId,
+    ids: param.value.selectedData.map(i => i.id)
+  });
   if (res.success()) {
     isUpdate.value = true;
     bs!.toast.success(res.message);

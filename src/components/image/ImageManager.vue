@@ -53,7 +53,7 @@
     <Column :header="t('Type')" filterField="type" :showFilterMenu="false" :sortable="true" class="text-center"
             style="width: 7rem">
       <template #body="{data}">
-        <Tag :value="data.type.label"/>
+        <Tag v-if="data.type.value !== $const.IMAGE_TYPE.DEFAULT" :value="data.type.label"/>
       </template>
       <template #filter="{filterModel,filterCallback}">
         <Select size="large" v-model="filterModel.value" :options="store.options.imageTypeSet"

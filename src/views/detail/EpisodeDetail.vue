@@ -36,7 +36,7 @@
         </div>
         <div :class="`${prefix}-entry-content`">
           <DetailPad :text="episode.detail"/>
-          <RelatedFiles/>
+<!--          <RelatedFiles/>-->
         </div>
       </div>
     </div>

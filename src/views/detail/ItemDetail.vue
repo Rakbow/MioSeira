@@ -27,7 +27,7 @@
           <RelatedPersons/>
           <AlbumTracks v-if="item.type.value === $const.ITEM_TYPE.ALBUM" :id="item.id" :catalogId="item.catalogId" />
           <DetailPad :text="item.detail"/>
-          <RelatedFiles/>
+<!--          <RelatedFiles/>-->
         </div>
       </div>
     </div>
