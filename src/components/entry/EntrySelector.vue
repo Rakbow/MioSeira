@@ -112,6 +112,7 @@ const initParam = () => {
 onBeforeMount(() => {
   store.fetchOptions();
   param.value.initFilters({
+    listId: {value: dialogRef.value.data.listId},
     type: {value: null},
     subType: {value: null},
     keyword: {value: ''}

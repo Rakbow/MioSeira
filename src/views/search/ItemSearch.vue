@@ -266,7 +266,8 @@ const openSelector = () => {
     },
     data: {
       entries: entries.value,
-      all: true
+      all: true,
+      listId: props.listId
     }
   })
 }
