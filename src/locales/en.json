@@ -181,6 +181,8 @@
   "EpisodeType1": "Series episode",
 
   "LocalFile": "Local file",
+  "LocalFileCompleted": "Local file completed",
+  "LocalFileNonCompleted": "Local file non completed",
   "CloudFile": "Cloud file",
 
   "Entity": {

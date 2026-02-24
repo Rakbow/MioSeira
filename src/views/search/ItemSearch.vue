@@ -32,7 +32,11 @@ const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
 
-const sortKey = ref({label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: -1});
+const sortKey = ref(
+    props.listId ?
+        {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: -1} :
+        {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: -1}
+);
 const sortOptions = ref<any[]>([
   {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: -1},
   {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: 1},
@@ -44,7 +48,7 @@ const sortOptions = ref<any[]>([
 const param = ref(new EntitySearchParam());
 
 //region data view and paginator
-const layout = ref('grid');
+const layout = ref(props.listId ? 'list' : 'grid');
 const dataviewOptions = ref(['grid', 'list']);
 const entries = ref<any[]>([]);
 const {proxy} = getCurrentInstance()!;
@@ -76,7 +80,7 @@ watch(layout, (newValue) => {
   if (newValue === 'grid') {
     param.value.query.size = 54;
   } else {
-    param.value.query.size = 10;
+    param.value.query.size = 50;
   }
   param.value.query.page = 1;
   loadItems()
@@ -226,7 +230,7 @@ const resetFilter = () => {
     entries: {value: []},
     listId: {value: param.value.query.filters.listId.value}
   };
-  if(entitySubType.value) {
+  if (entitySubType.value) {
     param.value.query.filters.type.value = parseInt(entitySubType.value.value);
   }
   sortKey.value = sortOptions.value[0];
@@ -298,7 +302,18 @@ const openLocalPath = async (id: number) => {
     entitySubType: proxy!.$const.ITEM_TYPE.ALBUM,
     entityId: id
   });
-  console.log(res.data)
+}
+
+const changeLocalCompletedFlag = async (item: any) => {
+  const res = await Axios.post(API.ENTITY.ENTITY_LOCAL_COMPLETED_FLAG_CHANGE, {
+    entityType: proxy!.$const.ENTITY.ITEM,
+    entityId: item.id,
+    flag: item.completedFlag ? 0 : 1
+  });
+  if (res.success()) {
+    item.completedFlag = true;
+    loadItems();
+  }
 }
 </script>
 
@@ -322,14 +337,14 @@ const openLocalPath = async (id: number) => {
                       @change="onSortChange" size="small">
                 <template #value="{value}">
                   <div style="display: flex;align-items: center">
-                    <RIcon :name="value.order === -1 ? 'south' : 'north'" :size="1.5" />
-                    <RIcon :name="value.icon" :size="1.5" />
+                    <RIcon :name="value.order === -1 ? 'south' : 'north'" :size="1.5"/>
+                    <RIcon :name="value.icon" :size="1.5"/>
                     <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(value.label) }}</span>
                   </div>
                 </template>
                 <template #option="{option}">
-                  <RIcon :name="option.order === -1 ? 'south' : 'north'" :size="1.5" />
-                  <RIcon :name="option.icon" :size="1.5" />
+                  <RIcon :name="option.order === -1 ? 'south' : 'north'" :size="1.5"/>
+                  <RIcon :name="option.icon" :size="1.5"/>
                   <span style="font-size: 1.2rem;margin-left: .5rem">{{ t(option.label) }}</span>
                 </template>
               </Select>
@@ -377,10 +392,14 @@ const openLocalPath = async (id: number) => {
             </div>
             <div class="grid relative" v-if="!param.loading" v-for="item in items as any[]">
               <div v-permission style="position: absolute;top: 0;right: 1.6rem">
-                <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM && props.component" icon="draft" size="small"
-                         @click="openLocalPath(item.id)" severity="warn" tip="LocalFile" />
+                <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM && props.component"
+                         @click="changeLocalCompletedFlag(item)" :severity="item.completedFlag ? 'success': 'danger'"
+                         :icon="item.completedFlag ? 'folder_check' : 'folder_off'"
+                         size="small" :tip="item.completedFlag ? 'LocalFileCompleted' : 'LocalFileNonCompleted'"/>&nbsp;
+                <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM && props.component" icon="folder" size="small"
+                         @click="openLocalPath(item.id)" severity="warn" tip="LocalFile"/>
                 <RButton @click="loadFavList(item.id)" size="small"
-                         icon="bookmark" tip="Collect" severity="info" v-if="!props.component" />
+                         icon="bookmark" tip="Collect" severity="info" v-if="!props.component"/>
               </div>
               <div class="entity-search-item-list-thumb col-fixed">
                 <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`" class="item-thumb-list">
@@ -388,7 +407,7 @@ const openLocalPath = async (id: number) => {
                 </router-link>
               </div>
               <div class="entity-search-item-list-info col">
-                <div class="text-ellipsis-one" style="max-width: 55rem">
+                <div class="text-ellipsis-one" style="max-width: 52rem">
                   <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
                                :title="item.name">{{ item.name }}
                   </router-link>

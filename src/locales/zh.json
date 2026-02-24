@@ -181,6 +181,8 @@
   "EpisodeType1": "剧集",
 
   "LocalFile": "本地文件",
+  "LocalFileCompleted": "收集齐全",
+  "LocalFileNonCompleted": "暂时缺失",
   "CloudFile": "云端文件",
 
   "Entity": {

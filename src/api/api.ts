@@ -7,6 +7,7 @@ export const API = {
         LIKE: '/api/db/like',
         LINK: '/api/db/links',
         ENTITY_LOCAL_PATH: '/api/db/local-path',
+        ENTITY_LOCAL_COMPLETED_FLAG_CHANGE: '/api/db/local-completed-flag-update',
     },
 
     ITEM: {
