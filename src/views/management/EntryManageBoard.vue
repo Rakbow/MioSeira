@@ -37,13 +37,13 @@ onMounted(() => {
   load();
 })
 
-const switchEntityType = (value: any) => {
+const switchEntityType = (value: number) => {
   if (value === null)
     entryType.value = proxy!.$const.ENTRY_TYPE.PRODUCT;
   else
     entryType.value = value;
   store.entryCurrent = parseInt(entryType.value);
-  param.value.query.filters.type.value = entryType.value;
+  param.value.query.filters.type.value = parseInt(entryType.value);
   param.value.clearSort();
   param.value.initPage();
   load();
@@ -61,7 +61,7 @@ const initQueryParam = async () => {
 
   param.value.query.page = parseInt(query.page?.toString() ?? '1');
   param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
-  param.value.query.filters.type.value = query.type?.toString() ?? store.entryCurrent;
+  param.value.query.filters.type.value = parseInt(query.type?.toString()) ?? store.entryCurrent;
 }
 
 const updateQueryParam = () => {

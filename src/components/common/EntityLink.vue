@@ -48,8 +48,8 @@ const load = async () => {
         <div class="link-item" v-for="link of item.links">
           <img :src="`https://oss.rakbow.com/common/link/link-${link.tag ? link.tag : 'misc'}.png`" alt="" />&nbsp;
           <a class="link-item-title" :href="link.url" style="font-size: 1.1rem"
-             :title="link.title" target="_blank" rel="noopener noreferrer">
-            {{ link.title }}
+             :title="link.title ? link.title : link.url" target="_blank" rel="noopener noreferrer">
+            {{ link.title ? link.title : link.url }}
           </a>
         </div>
       </div>

@@ -6,13 +6,14 @@ export const useUserStore = defineStore('user', {
         ticket: '' as string
     }),
     actions: {
-        login(u: User, t: string) {
+        login(u: User) {
             this.info = u
-            this.ticket = t
+            this.ticket = u.ticket
         },
         logout() {
             this.info = null
             this.ticket = ''
+            localStorage.removeItem('user')
         }
     },
     persist: true

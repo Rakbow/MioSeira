@@ -4,9 +4,9 @@ import {bs} from "@/service/baseService";
 
 const login = async (param: any) => {
     const userStore = useUserStore();
-    const res = await Axios.post(API.LOGIN, param);
+    const res = await Axios.post(API.AUTH.LOGIN, param);
     if (res.success()) {
-        userStore.login(res.data.user, res.data.ticket);
+        userStore.login(res.data);
         location.reload();
     } else {
         bs!.toast.error(res.message);
@@ -15,8 +15,11 @@ const login = async (param: any) => {
 
 const logout = async () => {
     const userStore = useUserStore();
-    const res = await Axios.post(API.LOGOUT);
-    if(res.success()) userStore.logout();
+    const res = await Axios.post(API.AUTH.LOGOUT);
+    if(res.success()) {
+        userStore.logout();
+        location.reload();
+    }
 }
 
 export { login, logout };

@@ -52,7 +52,7 @@ onMounted(() => {
 });
 
 const refreshKaptcha = () => {
-  const path = API.VERIFY_CODE + "?p=" + Math.random();
+  const path = API.AUTH.VERIFY_CODE + "?p=" + Math.random();
   $("#kaptcha").attr("src", path);
 }
 

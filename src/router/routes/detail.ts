@@ -16,7 +16,7 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.title = res.data.entry.name;
                         next();
                     }else {
-                        if(res.code === '404') {
+                        if(res.status === 404) {
                             to.meta.notFound = true;
                             to.meta.errorMessage = res.message;
                             to.meta.title = '404 Not Found';
@@ -50,7 +50,7 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.title = res.data.item.name;
                         next();
                     } else {
-                        if (res.code === '404') {
+                        if (res.status === 404) {
                             to.meta.notFound = true;
                             to.meta.errorMessage = res.message;
                             to.meta.title = '404 Not Found';
@@ -84,7 +84,7 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.title = res.data.name;
                         next();
                     } else {
-                        if (res.code === '404') {
+                        if (res.status === 404) {
                             to.meta.notFound = true;
                             to.meta.errorMessage = res.message;
                             to.meta.title = '404 Not Found';
@@ -118,7 +118,7 @@ const DetailRouter: Array<RouteRecordRaw> = [
                         to.meta.title = res.data.name;
                         next();
                     } else {
-                        if (res.code === '404') {
+                        if (res.status === 404) {
                             to.meta.notFound = true;
                             to.meta.errorMessage = res.message;
                             to.meta.title = '404 Not Found';

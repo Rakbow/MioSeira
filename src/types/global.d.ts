@@ -6,8 +6,13 @@ interface Attribute<T> {
 interface User {
     id: string;
     name: string;
-    type: number;
     avatar: string;
+
+    ticket: string;
+    expires: number;
+
+    roles: string[];
+    permissions: string[];
 }
 
 interface Entity {

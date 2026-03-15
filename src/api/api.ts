@@ -105,12 +105,11 @@ export const API = {
         GET_ITEMS: '/api/db/list/get-items',
     },
 
-    //region user
-    CHECK_USER_AUTHORITY: '/api/user/check-authority',
-    LOGIN_PAGE: '/login',
-    LOGIN: '/api/login',
-    LOGOUT: '/api/logout',
-    VERIFY_CODE: '/api/kaptcha',
+    AUTH: {
+        LOGIN: '/api/auth/login',
+        LOGOUT: '/api/auth/logout',
+        VERIFY_CODE: '/api/auth/kaptcha',
+    },
     //endregion
 
     COMMON_EMPTY_COVER_IMAGE: 'https://oss.rakbow.com/common/404.jpg?imageMogr2/auto-orient/thumbnail/160x160',

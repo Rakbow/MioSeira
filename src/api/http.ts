@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import {bs} from '@/service/baseService';
 axios.defaults.withCredentials = true;
 
@@ -7,7 +7,7 @@ class ApiResult {
     data: any = null;
     total: number = 0;
     message: string = '';
-    code: string = '';
+    status: number = 200;
 
     success(): boolean {
         return this.state === Axios.SUCCESS;
@@ -37,22 +37,21 @@ export class Axios {
 
     // @ts-ignore
     static async post(url: string, data: any = null) : Promise<ApiResult> {
-        try {
-            let res = await axios({
-                method: 'post',
-                url: url,
-                data: data,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-            });
-            const result = new ApiResult();
-            Object.assign(result, res.data);
-            return result;
-        } catch (error) {
-            // console.log(error);
-        }
+        let res = await axios({
+            method: 'post',
+            url: url,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            withCredentials: true,
+            validateStatus: (status) => true
+        });
+        const result = new ApiResult();
+        Object.assign(result, res.data);
+        result.status = res.status
+        return result;
     }
 
     // @ts-ignore
@@ -65,9 +64,11 @@ export class Axios {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
+                withCredentials: true
             });
             const result = new ApiResult();
             Object.assign(result, res.data);
+            result.status = res.status
             return result;
         } catch (error) {
             // console.log(error);
@@ -84,10 +85,12 @@ export class Axios {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
-                }
+                },
+                withCredentials: true
             });
             const result = new ApiResult();
             Object.assign(result, res.data);
+            result.status = res.status
             return result;
         } catch (error) {
             // console.log(error);
@@ -104,10 +107,12 @@ export class Axios {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'X-Requested-With': 'XMLHttpRequest'
-                }
+                },
+                withCredentials: true
             });
             const result = new ApiResult();
             Object.assign(result, res.data);
+            result.status = res.status
             return result;
         } catch (error) {
             // console.log(error);

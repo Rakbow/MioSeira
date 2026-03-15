@@ -47,11 +47,11 @@ const openLogin = () => {
 
 <template>
   <div class="r-dropdown" ref="dropdownRef">
-    <a v-if="!user.info" class="r-dropdown-toggle" @click.prevent="openLogin">
+    <a v-if="user.info === null" class="r-dropdown-toggle" @click.prevent="openLogin">
       <span>{{ t('SignIn') }}</span>
     </a>
     <a v-else class="r-dropdown-toggle" @click.prevent="toggle">
-      <span>{{ user.info.username }}<i class="ml-2 pi pi-sort-down-fill"/></span>
+      <span>{{ user.info.name }}<i class="ml-2 pi pi-sort-down-fill"/></span>
     </a>
     <div v-if="show" class="r-dropdown-menu">
       <a class="r-dropdown-item" @click.prevent="logout">

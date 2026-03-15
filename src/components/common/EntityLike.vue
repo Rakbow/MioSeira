@@ -39,9 +39,6 @@ const like = async () => {
   if (res.success()) {
     likeCount.value++;
     liked.value = true;
-    bs!.toast.success(res.message);
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.block = false;
 };
