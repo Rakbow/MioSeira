@@ -6,15 +6,15 @@ const ManageRouter: Array<RouteRecordRaw> = [
         path: "/db/manage",
         component: () => import('@/views/management/ManageBoard.vue'),
         meta: {
-            title: "Manage",
-            perm: "entity:manage:entry"
+            title: "Manage"
         },
         children: [
             {
                 path: 'entry',
                 component: () => import('@/views/management/EntryManageBoard.vue'),
                 meta: {
-                    title: "Entry Management"
+                    title: "Entry Management",
+                    perm: "entity:manage:entry"
                 }
             },
             {

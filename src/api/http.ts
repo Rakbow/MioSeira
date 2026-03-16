@@ -27,7 +27,6 @@ axios.interceptors.response.use(function (res) {
             bs!.toast.error(res.data.message);
         }
     }
-
     if (res.status === 401) {
         useUserStore().logout()
     }
