@@ -23,6 +23,14 @@ const routers: Array<RouteRecordRaw> = [
         meta: {
             title: "Error"
         }
+    },
+    {
+        path: '/403',
+        component: () => import('@/views/Forbidden.vue'),
+        props: true,
+        meta: {
+            title: "Forbidden"
+        }
     }
 ];
 

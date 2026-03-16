@@ -4,7 +4,8 @@
       <img alt="logo" :src="`${$const.STATIC_DOMAIN}common/logo.png`" height="40" class="mr-2" />
     </template>
     <template #item="{item}">
-      <Button @click="router.push(item.url!.toString())" size="large" link :label="item.label!.toString()">
+      <Button v-permission="item.perm ?? ''" @click="router.push(item.url!.toString())" size="large"
+              link :label="item.label!.toString()">
         <template #icon>
             <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24">
               {{ item.icon }}
@@ -55,7 +56,8 @@ const menuItems = ref([
   {
     label: t('Manage'),
     icon: 'folder_managed',
-    url: '/db/manage/item'
+    url: '/db/manage/item',
+    perm: 'entity:manage:*'
   }
 ]);
 </script>

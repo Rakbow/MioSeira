@@ -4,7 +4,7 @@
 
 <template>
   <div class="not-found">
-    <img src="https://oss.rakbow.com/common/500.png" alt="500"/>
+    <img src="https://oss.rakbow.com/common/403.png" alt="403"/>
   </div>
 </template>
 

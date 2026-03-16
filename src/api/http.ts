@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import {bs} from '@/service/baseService';
+import {useUserStore} from "@/store/modules/user";
 axios.defaults.withCredentials = true;
 
 class ApiResult {
@@ -26,6 +27,11 @@ axios.interceptors.response.use(function (res) {
             bs!.toast.error(res.data.message);
         }
     }
+
+    if (res.status === 401) {
+        useUserStore().logout()
+    }
+
     return res;
 });
 

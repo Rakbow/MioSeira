@@ -61,7 +61,7 @@ const initQueryParam = async () => {
 
   param.value.query.page = parseInt(query.page?.toString() ?? '1');
   param.value.query.filters.keyword.value = query.keyword?.toString() ?? '';
-  param.value.query.filters.type.value = parseInt(query.type?.toString()) ?? store.entryCurrent;
+  param.value.query.filters.type.value = parseInt(query.type?.toString() ?? store.entryCurrent.toString());
 }
 
 const updateQueryParam = () => {
@@ -149,7 +149,7 @@ const exportCSV = () => {
     </template>
     <template #header>
       <EntryTypeSelector v-model="entryType" @update="switchEntityType" :disabled="param.loading" />
-      <RButton @click="openCreateTab" action="create"/>
+      <RButton @click="openCreateTab" action="create" v-permission="'entity:entry:add'" />
       <RButton @click="confirmDeleteSelected" action="delete"
                :disabled="!param.selectedData.length"/>
       <RButton @click="exportCSV" action="export"
