@@ -9,7 +9,7 @@ import {useI18n} from "vue-i18n";
 import {useOptionStore} from "@/store/modules/option";
 import {bs} from '@/service/baseService';
 import {EntitySearchParam} from "@/service/entityService";
-import favoriteCreator from "@/components/list/FavoriteCreator.vue";
+import IndexCreator from "@/components/index/IndexCreator.vue";
 
 const props = defineProps({
   component: {
@@ -179,8 +179,6 @@ const loadItems = async () => {
   const res = await Axios.post(API.ITEM.SEARCH, param.value.query);
   if (res.success()) {
     param.value.loadResult(res.data);
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.loading = false;
 }
@@ -276,8 +274,8 @@ const openSelector = () => {
   })
 }
 
-const loadFavList = (id: number) => {
-  bs!.dialog.open(favoriteCreator, {
+const loadIndex = (id: number) => {
+  bs!.dialog.open(IndexCreator, {
     props: {
       header: t('AddItemsToList'),
       style: {
@@ -398,7 +396,7 @@ const changeLocalCompletedFlag = async (item: any) => {
                          size="small" :tip="item.completedFlag ? 'LocalFileCompleted' : 'LocalFileNonCompleted'"/>&nbsp;
                 <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM && props.component" icon="folder" size="small"
                          @click="openLocalPath(item.id)" severity="warn" tip="LocalFile"/>
-                <RButton @click="loadFavList(item.id)" size="small"
+                <RButton @click="loadIndex(item.id)" size="small"
                          icon="bookmark" tip="Collect" severity="info" v-if="!props.component"/>
               </div>
               <div class="entity-search-item-list-thumb col-fixed">

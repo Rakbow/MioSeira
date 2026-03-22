@@ -106,13 +106,13 @@ const DetailRouter: Array<RouteRecordRaw> = [
     },
     {
         name: "ListDetail",
-        path: API.LIST.DETAIL_PATH + "/:id",
-        component: () => import('@/views/detail/ListDetail.vue'),
+        path: API.INDEX.DETAIL_PATH + "/:id",
+        component: () => import('@/views/detail/IndexDetail.vue'),
         beforeEnter: async (to, _from, next) => {
             try {
                 const id = to.params.id;
                 if (/^\d+$/.test(String(id))) {
-                    const res = await Axios.post(`${API.LIST.DETAIL}/${to.params.id}`);
+                    const res = await Axios.post(`${API.INDEX.DETAIL}/${to.params.id}`);
                     if (res.success()) {
                         to.meta.info = res.data;
                         to.meta.title = res.data.name;

@@ -28,7 +28,7 @@ const path = ref();
       <img role="presentation" :alt="entity.target.name" :src="entity.target.thumb"/>
     </div>
     <div class="related-entity-info">
-      <a :href="`/db/${path}/${entity.target.entityId}`" :title="entity.target.name">
+      <a :href="`/${path}/${entity.target.entityId}`" :title="entity.target.name">
         {{ entity.target.name }}
       </a>
       <small :title="entity.target.subName">

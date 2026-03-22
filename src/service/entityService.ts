@@ -1,5 +1,5 @@
 import fileEditor from "@/components/file/FileEditor.vue";
-import favoriteCreator from "@/components/list/FavoriteCreator.vue";
+import IndexCreator from "@/components/index/IndexCreator.vue";
 import {META} from "@/config/Web_Const";
 import i18n from "@/locales/i18n";
 import {PColumn} from "@/service/frame";
@@ -170,11 +170,11 @@ export const loadEditor = (type: number, data: any) => {
     });
 }
 
-export const loadFavoriteCreator = (type: number, data: any[]) => {
+export const loadIndexCreator = (type: number, data: any[]) => {
 
     let ids = data.map(d => d.id);
 
-    bs!.dialog.open(favoriteCreator, {
+    bs!.dialog.open(IndexCreator, {
         props: {
             header: t('AddItemsToList'),
             style: {

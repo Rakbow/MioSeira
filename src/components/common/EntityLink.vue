@@ -23,8 +23,6 @@ const load = async () => {
   const res = await Axios.post(API.ENTITY.LINK, param.value.data);
   if (res.success()) {
     linkRes.value = res.data;
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.block = false;
 }

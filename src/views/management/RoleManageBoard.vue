@@ -132,8 +132,6 @@ const create = async () => {
     bs!.toast.success(res.message);
     closeAddDialog();
     await load();
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endLoad();
 }
@@ -145,8 +143,6 @@ const update = async () => {
     bs!.toast.success(res.message);
     closeEditDialog();
     await load();
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endLoad();
 }
@@ -157,8 +153,6 @@ const refresh = async () => {
   if (res.success()) {
     store.clear();
     bs!.toast.success(res.message);
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endLoad();
 }

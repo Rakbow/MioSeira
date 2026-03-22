@@ -189,8 +189,6 @@ const upload = async () => {
     bs!.toast.success(res.message);
     uploadDisplay.value = false;
     await load();
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 }
@@ -218,8 +216,6 @@ const update = async () => {
     bs!.toast.success(res.message);
     updateDisplay.value = false;
     await load();
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 };
@@ -270,8 +266,6 @@ const remove = async () => {
     param.value.selectedData = [];
     await load();
     bs!.toast.success(res.message);
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 }

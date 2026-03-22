@@ -65,8 +65,6 @@ const upload = async () => {
     if (image.value.type === proxy!.$const.IMAGE_TYPE.MAIN) cover.value = res.data;
     else if (image.value.type === proxy!.$const.IMAGE_TYPE.THUMB) thumb.value = res.data;
     uploadDialogDisplay.value = false;
-  } else {
-    bs!.toast.error(res.message);
   }
   loading.value = false;
 };

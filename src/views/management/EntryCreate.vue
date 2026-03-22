@@ -56,8 +56,6 @@ const submit = async () => {
   const res = await Axios.post(API.ENTRY.CREATE, dto.value);
   if (res.success())
     await router.push(`${proxy!.$api.ENTRY.DETAIL_PATH}/${res.data}`);
-  else
-    bs!.toast.error(res.message);
   param.value.block = false;
 }
 </script>

@@ -3,7 +3,7 @@ import {defineAsyncComponent, onBeforeMount, ref} from "vue";
 import {useRouter} from "vue-router";
 
 const NotFound = defineAsyncComponent(() => import('@/views/NotFound.vue'));
-const FavEpBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteEpisodeBrowser.vue'));
+const IndexEpBrowser = defineAsyncComponent(() => import('@/components/index/IndexEpisodeBrowser.vue'));
 // const FavItemBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteItemBrowser.vue'));
 const ItemSearch = defineAsyncComponent(() => import('@/views/search/ItemSearch.vue'));
 
@@ -32,15 +32,15 @@ onBeforeMount(() => {
               <div :class="`${prefix}-list-log`">
                 <div>
                   <RIcon name="person" :size="1.4"/>
-                  <span>{{ list.creator }}</span>
+                  <span>{{ list.createdBy }}</span>
                 </div>
                 <div>
                   <RIcon name="calendar_add_on" :size="1.4"/>
-                  <span>{{ list.createTime }}</span>
+                  <span>{{ list.createdAt }}</span>
                 </div>
                 <div>
                   <RIcon name="edit_calendar" :size="1.4"/>
-                  <span>{{ list.updateTime }}</span>
+                  <span>{{ list.updatedAt }}</span>
                 </div>
               </div>
             </div>
@@ -48,7 +48,7 @@ onBeforeMount(() => {
         </div>
       </div>
     </div>
-    <FavEpBrowser :listId="list.id" v-if="list.type.value === $const.ENTITY.EPISODE"/>
+    <IndexEpBrowser :listId="list.id" v-if="list.type.value === $const.ENTITY.EPISODE"/>
     <ItemSearch :listId="list.id" :component="true"
                 v-if="list.type.value === $const.ENTITY.ITEM"/>
   </div>

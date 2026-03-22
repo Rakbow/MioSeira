@@ -8,8 +8,6 @@ const login = async (param: any) => {
     if (res.success()) {
         userStore.login(res.data);
         location.reload();
-    } else {
-        bs!.toast.error(res.message);
     }
 }
 

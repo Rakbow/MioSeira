@@ -78,8 +78,6 @@ const submitByUpload = async () => {
   const res = await Axios.form(API.FILE.UPLOAD, fd);
   if (res.success())
     bs!.toast.success(res.message);
-  else
-    bs!.toast.error(res.message);
   param.value.isUpdate = true;
   close();
   fileInfos.value = [];

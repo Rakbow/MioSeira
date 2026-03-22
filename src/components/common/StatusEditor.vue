@@ -29,8 +29,6 @@ const updateStatus = async () => {
   const res = await Axios.post(API.ENTITY.UPDATE_STATUS, param.value.data);
   if (res.success()) {
     bs!.toast.success(res.message);
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.block = false;
 };

@@ -94,7 +94,7 @@ const onSort = (ev: any) => {
 
 const load = async () => {
   param.value.load();
-  const res = await Axios.post(API.LIST.GET_ITEMS,
+  const res = await Axios.post(API.INDEX.GET_ITEMS,
       {
         listId: props.listId,
         type: proxy!.$const.ENTITY.EPISODE,
@@ -134,7 +134,7 @@ const openDelete = () => {
 
 const remove = async () => {
   param.value.block();
-  const res = await Axios.delete(API.LIST.DELETE, param.value.selectedData.map(d => d.id));
+  const res = await Axios.delete(API.INDEX.DELETE, param.value.selectedData.map(d => d.id));
   if (res.success()) {
     param.value.selectedData = [];
     await load();

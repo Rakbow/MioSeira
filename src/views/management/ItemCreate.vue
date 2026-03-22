@@ -81,8 +81,6 @@ const submit = async () => {
   const res = await Axios.form(API.ITEM.CREATE, fd);
   if (res.success())
     await router.push(`${proxy!.$api.ITEM.DETAIL_PATH}/${res.data}`);
-  else
-    bs!.toast.error(res.message);
   param.value.block = false;
 }
 

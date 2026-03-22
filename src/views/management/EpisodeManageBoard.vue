@@ -7,7 +7,7 @@ import "flag-icons/css/flag-icons.min.css";
 import {EntitySearchParam} from "@/service/entityService";
 import {PColumn} from "@/service/frame";
 import {bs} from "@/service/baseService";
-import favoriteCreator from "@/components/list/FavoriteCreator.vue";
+import IndexCreator from "@/components/index/IndexCreator.vue";
 
 const {t} = useI18n();
 const dt = ref();
@@ -99,12 +99,12 @@ const exportCSV = () => {
   dt.value.exportCSV();
 };
 
-const loadFavoriteCreator = (type: number) => {
+const loadIndexCreator = (type: number) => {
 
   let ids = param.value.selectedData.map(d => d.id);
   ids.sort()
 
-  bs!.dialog.open(favoriteCreator, {
+  bs!.dialog.open(IndexCreator, {
     props: {
       header: t('AddItemsToList'),
       style: {
@@ -140,7 +140,7 @@ const loadFavoriteCreator = (type: number) => {
     </template>
     <template #header>
       <RButton @click="exportCSV" action="export" severity="help" :disabled="!param.data.length" />
-      <RButton @click="loadFavoriteCreator($const.ENTITY.EPISODE)"
+      <RButton @click="loadIndexCreator($const.ENTITY.EPISODE)"
                icon="forms_add_on" tip="AddItemsToList" severity="warn" :disabled="!param.selectedData.length" />
     </template>
     <template #empty>

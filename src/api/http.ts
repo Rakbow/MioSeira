@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import {bs} from '@/service/baseService';
 import {useUserStore} from "@/store/modules/user";
 axios.defaults.withCredentials = true;

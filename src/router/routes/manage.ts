@@ -1,9 +1,11 @@
 import {RouteRecordRaw} from 'vue-router';
+import {PERM_KEY} from "@/config/permKey";
+import {API} from "@/api/api";
 
 const ManageRouter: Array<RouteRecordRaw> = [
     {
         name: "Management",
-        path: "/db/manage",
+        path: "/manage",
         component: () => import('@/views/management/ManageBoard.vue'),
         meta: {
             title: "Manage"
@@ -14,14 +16,15 @@ const ManageRouter: Array<RouteRecordRaw> = [
                 component: () => import('@/views/management/EntryManageBoard.vue'),
                 meta: {
                     title: "Entry Management",
-                    perm: "entity:manage:entry"
+                    perm: PERM_KEY.ENTRY.QUERY_LIST
                 }
             },
             {
                 path: 'item',
                 component: () => import('@/views/management/ItemManageBoard.vue'),
                 meta: {
-                    title: "Item Management"
+                    title: "Item Management",
+                    perm: PERM_KEY.ITEM.QUERY_LIST
                 }
             },
             {
@@ -35,7 +38,8 @@ const ManageRouter: Array<RouteRecordRaw> = [
                 path: 'role',
                 component: () => import('@/views/management/RoleManageBoard.vue'),
                 meta: {
-                    title: "Role Management"
+                    title: "Role Management",
+                    perm: PERM_KEY.ROLE.QUERY_LIST
                 }
             },
             {
@@ -48,14 +52,14 @@ const ManageRouter: Array<RouteRecordRaw> = [
         ],
     },
     {
-        path: '/db/item/new',
+        path: API.ITEM.CREATE_PATH,
         component: () => import('@/views/management/ItemCreate.vue'),
         meta: {
             title: "New Item"
         }
     },
     {
-        path: '/db/entry/new',
+        path: API.ENTRY.CREATE_PATH,
         component: () => import('@/views/management/EntryCreate.vue'),
         meta: {
             title: "New Entry"

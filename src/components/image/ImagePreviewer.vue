@@ -30,8 +30,6 @@ const load = async () => {
   if (res.success()) {
     images.value = res.data.images;
     count.value = res.data.count;
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.block = false;
 }

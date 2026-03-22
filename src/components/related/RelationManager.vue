@@ -85,8 +85,6 @@ const create = async () => {
     createDialog.value = false;
     await load();
     bs!.toast.success(res.message);
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 }
@@ -115,8 +113,6 @@ const update = async () => {
     updateDialog.value = false;
     await load();
     bs!.toast.success(res.message);
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 }
@@ -158,8 +154,6 @@ const remove = async () => {
     isUpdate.value = true;
     bs!.toast.success(res.message);
     await load();
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.endBlock();
 }

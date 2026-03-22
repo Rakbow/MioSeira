@@ -56,8 +56,9 @@ const menuItems = ref([
   {
     label: t('Manage'),
     icon: 'folder_managed',
-    url: '/db/manage/item',
-    perm: 'entity:manage:*'
+    url: '/manage/item',
+    //todo
+    perm: 'admin'
   }
 ]);
 </script>

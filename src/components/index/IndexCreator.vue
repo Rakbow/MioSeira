@@ -26,7 +26,7 @@ const onPage = (ev: any) => {
 
 const loadLists = async () => {
   param.value.load();
-  const res = await Axios.post(API.LIST.LIST, param.value.query);
+  const res = await Axios.post(API.INDEX.LIST, param.value.query);
   if (res.success()) {
     param.value.loadResult(res.data);
   }
@@ -53,7 +53,7 @@ const openCreator = () => {
 };
 const create = async () => {
   param.value.load();
-  const res = await Axios.post(API.LIST.CREATE, createDTO.value);
+  const res = await Axios.post(API.INDEX.CREATE, createDTO.value);
   if (res.success()) {
     createView.value = false;
     await loadLists();
@@ -71,7 +71,7 @@ const addItemsDTO = ref({
 const addItems = async () => {
   param.value.load();
   addItemsDTO.value.listId = (param.value.selectedData as any).id;
-  const res = await Axios.post(API.LIST.ADD_ITEMS, addItemsDTO.value);
+  const res = await Axios.post(API.INDEX.ADD_ITEMS, addItemsDTO.value);
   if (res.success()) dialogRef.value.close();
   param.value.endLoad();
 };

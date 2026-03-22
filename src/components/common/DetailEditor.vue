@@ -37,8 +37,6 @@ const submit = async () => {
     bs!.toast.success(res.message);
     param.value.isUpdate = true;
     close();
-  } else {
-    bs!.toast.error(res.message);
   }
   param.value.block = false;
 }

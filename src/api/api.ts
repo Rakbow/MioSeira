@@ -11,9 +11,9 @@ export const API = {
     },
 
     ITEM: {
-        DETAIL_PATH: '/db/item',
-        SEARCH_PATH: '/db/item',
-        CREATE_PATH: '/db/item/new',
+        DETAIL_PATH: '/item',
+        SEARCH_PATH: '/item',
+        CREATE_PATH: '/item/new',
 
         SEARCH: '/api/db/item/search',
         DETAIL: '/api/db/item/detail',
@@ -29,9 +29,9 @@ export const API = {
     },
 
     ENTRY: {
-        DETAIL_PATH: '/db/entry',
-        SEARCH_PATH: '/db/entry',
-        CREATE_PATH: '/db/entry/new',
+        DETAIL_PATH: '/entry',
+        SEARCH_PATH: '/entry',
+        CREATE_PATH: '/entry/new',
 
         SEARCH: '/api/db/entry/search',
         MINI: '/api/db/entry/mini',
@@ -44,7 +44,7 @@ export const API = {
     },
 
     EPISODE: {
-        DETAIL_PATH: '/db/ep',
+        DETAIL_PATH: '/ep',
 
         LIST: '/api/db/ep/list',
         DETAIL: '/api/db/ep/detail',
@@ -78,7 +78,7 @@ export const API = {
     },
 
     FILE: {
-        DETAIL_PATH: '/db/file',
+        DETAIL_PATH: '/file',
 
         LIST: '/api/db/file/list',
         RELATED: '/api/db/file/related',
@@ -94,15 +94,15 @@ export const API = {
         MINI: '/api/db/changelog-mini',
     },
 
-    LIST: {
-        DETAIL_PATH: '/db/list',
+    INDEX: {
+        DETAIL_PATH: '/index',
 
-        DETAIL: '/api/db/list/detail',
-        LIST: '/api/db/list/lists',
-        CREATE: '/api/db/list/create',
-        DELETE: '/api/db/list/delete',
-        ADD_ITEMS: '/api/db/list/add-items',
-        GET_ITEMS: '/api/db/list/get-items',
+        DETAIL: '/api/db/index/detail',
+        LIST: '/api/db/index/list',
+        CREATE: '/api/db/index/create',
+        DELETE: '/api/db/index/delete',
+        ADD_ITEMS: '/api/db/index/add-items',
+        GET_ITEMS: '/api/db/index/get-items',
     },
 
     AUTH: {
