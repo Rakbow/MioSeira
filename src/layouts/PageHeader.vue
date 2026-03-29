@@ -1,5 +1,5 @@
 <template>
-  <Menubar :model="menuItems" style="border-style: none !important;">
+  <Menubar :model="menuItems" style="border-style: none !important;background: var(--r-bg-neutral-950)">
     <template #start>
       <img alt="logo" :src="`${$const.STATIC_DOMAIN}common/logo.png`" height="40" class="mr-2" />
     </template>

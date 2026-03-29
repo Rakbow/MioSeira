@@ -295,7 +295,7 @@ const loadIndex = (id: number) => {
 }
 
 const openLocalPath = async (id: number) => {
-  const res = await Axios.post(API.ENTITY.ENTITY_LOCAL_PATH, {
+  await Axios.post(API.ENTITY.ENTITY_LOCAL_PATH, {
     entityType: proxy!.$const.ENTITY.ITEM,
     entitySubType: proxy!.$const.ITEM_TYPE.ALBUM,
     entityId: id
@@ -310,7 +310,7 @@ const changeLocalCompletedFlag = async (item: any) => {
   });
   if (res.success()) {
     item.completedFlag = true;
-    loadItems();
+    await loadItems();
   }
 }
 </script>

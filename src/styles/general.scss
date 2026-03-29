@@ -55,13 +55,15 @@ $common-border-up-radius: 1rem 1rem 0 0;
 html {
   font-size: 62.5%;
   -webkit-text-size-adjust: 100%;
+  color: white;
 }
 
 body {
   background-color: var(--r-bg-blue-950);
   min-width: 125rem;
+  color: white;
 
-  color: var(--text-color);
+  //color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;

@@ -4,7 +4,57 @@ import {App} from "vue";
 import PrimeVue from "primevue/config";
 
 const MyPreset = definePreset(Aura, {
+    semantic: {
+        colorScheme: {
+            dark: {
+                semantic: {
+                    surface: {
+                        0: '#000000'
+                    }
+                }
+            }
+        }
+    },
     components: {
+        datatable: {
+            root: {
+                header: {
+                    background: 'var(--r-bg-neutral-950)',
+                    color: 'white'
+                }
+            },
+            css: () => `
+                .p-datatable {
+                    border: none;
+                }
+            `
+        },
+        popover: {
+            root: {
+                background: 'var(--r-bg-neutral-950)',
+                color: 'white'
+            },
+            css: () => `
+                .p-popover {
+                    border: none;
+                }
+            `
+        },
+        card : {
+            root: {
+                background: 'var(--r-bg-neutral-950)'
+            }
+        },
+        fieldset : {
+            root: {
+                color: 'white'
+            },
+            css: () => `
+                .p-fieldset {
+                    border: none;
+                }
+            `
+        },
         panel: {
             root: {
                 background: '#2F364F',
@@ -66,8 +116,13 @@ const MyPreset = definePreset(Aura, {
         },
         dialog: {
             root: {
+                background: 'var(--r-bg-neutral-950)',
+                color: 'white'
             },
             css: ({dt}: any) => `
+                .p-dialog {
+                    border: none;
+                }
                 .p-dialog-mask {
                     //background: black !important;
                 }
@@ -92,8 +147,12 @@ export default {
             ripple: true,
             theme: {
                 preset: MyPreset,
-                option: {
-                    darkModeSelector: true
+                options: {
+                    darkModeSelector: '.p-dark',
+                    cssLayer: {
+                        name: 'primevue',
+                        order: 'tailwind-base, primevue, tailwind-utilities'
+                    }
                 }
             }
         });
