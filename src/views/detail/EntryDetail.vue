@@ -54,17 +54,17 @@ import {defineAsyncComponent, getCurrentInstance, onBeforeMount, provide, ref} f
 
 const prefix = 'entity-detail';
 
+import Info from '@/views/detail/info/EntryDetailInfo.vue';
+import Links from'@/components/common/EntityLink.vue';
+import DetailPad from '@/components/common/DetailPad.vue';
+import Like from '@/components/common/EntityLike.vue';
+import RelatedItems from '@/components/item/RelatedItems.vue';
+import RelationGroup from '@/components/related/RelationGroup.vue';
 const NotFound = defineAsyncComponent(() => import('@/views/NotFound.vue'));
-const Info = defineAsyncComponent(() => import('@/views/detail/info/EntryDetailInfo.vue'));
-const Links = defineAsyncComponent(() => import('@/components/common/EntityLink.vue'));
 const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
-const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
-const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
 const RelatedPersons = defineAsyncComponent(() => import('@/components/related/RelatedPersons.vue'));
-const RelatedItems = defineAsyncComponent(() => import('@/components/item/RelatedItems.vue'));
 const SubProductInfo = defineAsyncComponent(() => import('@/components/entry/SubProductInfo.vue'));
-const RelationGroup = defineAsyncComponent(() => import('@/components/related/RelationGroup.vue'));
 
 const meta = ref<any>();
 const router = useRouter();

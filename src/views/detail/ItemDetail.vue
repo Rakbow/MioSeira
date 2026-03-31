@@ -47,19 +47,21 @@ import {loadEditor} from "@/service/itemService";
 import {API, Axios} from "@/api";
 
 const prefix = 'entity-detail';
+// 修改导入方式，将 defineAsyncComponent 改为直接 import
+import Info from "@/views/detail/info/ItemDetailInfo.vue";
+import RelatedPersons from "@/components/related/RelatedPersons.vue";
+import ImagePreviewer from "@/components/image/ImagePreviewer.vue";
+import RelationGroup from "@/components/related/RelationGroup.vue";
+import DetailPad from "@/components/common/DetailPad.vue";
+import Links from "@/components/common/EntityLink.vue";
 
+// 仅对非核心或条件渲染的重型组件保留异步导入（如 AlbumTracks）
 const NotFound = defineAsyncComponent(() => import('@/views/NotFound.vue'));
-const Info = defineAsyncComponent(() => import('@/views/detail/info/ItemDetailInfo.vue'));
-const Links = defineAsyncComponent(() => import('@/components/common/EntityLink.vue'));
 const Changelog = defineAsyncComponent(() => import('@/components/common/Changelog.vue'));
-const DetailPad = defineAsyncComponent(() => import('@/components/common/DetailPad.vue'));
 const Like = defineAsyncComponent(() => import('@/components/common/EntityLike.vue'));
 const StatusEditor = defineAsyncComponent(() => import('@/components/common/StatusEditor.vue'));
 const AlbumTracks = defineAsyncComponent(() => import('@/components/item/AlbumTracks.vue'));
-const ImagePreviewer = defineAsyncComponent(() => import('@/components/image/ImagePreviewer.vue'));
 const RelatedFiles = defineAsyncComponent(() => import('@/components/file/RelatedFiles.vue'));
-const RelatedPersons = defineAsyncComponent(() => import('@/components/related/RelatedPersons.vue'));
-const RelationGroup = defineAsyncComponent(() => import('@/components/related/RelationGroup.vue'));
 
 const router = useRouter();
 const item = ref<any>({});
