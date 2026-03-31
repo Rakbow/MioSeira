@@ -68,6 +68,7 @@ onBeforeMount(() => {
     listId: {value: props.listId}
   });
   param.value.query.size = 54;
+  param.value.loading = true;
 });
 
 onMounted(async () => {
@@ -318,7 +319,7 @@ const changeLocalCompletedFlag = async (item: any) => {
 <template>
   <div class="entity-search">
     <div class="entity-search-main">
-      <DataView :value="param.result.data" :layout="layout">
+      <DataView :value="param.loading ? Array.from({ length: param.query.size }) : param.result.data" :layout="layout">
         <template #header>
           <div class="content-space-between">
             <SelectButton size="large" :options="$const.ITEM_TYPE_SET" :disabled="param.loading"
@@ -356,7 +357,7 @@ const changeLocalCompletedFlag = async (item: any) => {
           </div>
         </template>
         <template #empty>
-            <span class="empty-search-result">
+            <span v-if="!param.loading" class="empty-search-result">
                 {{ t('NoSearchResult') }}
             </span>
         </template>

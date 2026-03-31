@@ -27,6 +27,7 @@ onBeforeMount(() => {
     keyword: {value: ''}
   });
   param.value.query.size = 10;
+  param.value.loading = true;
 });
 
 onMounted(() => {
@@ -126,7 +127,7 @@ const onSortChange = (ev: any) => {
 <template>
   <div class="entity-search">
     <div class="entity-search-main">
-      <DataView :value="param.result.data" layout="list">
+      <DataView :value="param.loading ? Array.from({ length: param.query.size }) : param.result.data" layout="list">
         <template #header>
           <div class="grid" style="width: 100%">
             <div class="col-12 content-space-between">
@@ -162,7 +163,7 @@ const onSortChange = (ev: any) => {
           </div>
         </template>
         <template #empty>
-            <span class="empty-search-result">
+            <span v-if="!param.loading" class="empty-search-result">
                 {{ t('NoSearchResult') }}
             </span>
         </template>

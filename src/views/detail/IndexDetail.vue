@@ -5,7 +5,7 @@ import {useRouter} from "vue-router";
 const NotFound = defineAsyncComponent(() => import('@/views/NotFound.vue'));
 const IndexEpBrowser = defineAsyncComponent(() => import('@/components/index/IndexEpisodeBrowser.vue'));
 // const FavItemBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteItemBrowser.vue'));
-const ItemSearch = defineAsyncComponent(() => import('@/views/search/ItemSearch.vue'));
+const ItemSearch = defineAsyncComponent(() => import('@/components/index/IndexItemList.vue'));
 
 const prefix = 'entity-detail';
 const router = useRouter();
