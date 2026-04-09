@@ -4,8 +4,7 @@ import {useRouter} from "vue-router";
 
 const NotFound = defineAsyncComponent(() => import('@/views/NotFound.vue'));
 const IndexEpBrowser = defineAsyncComponent(() => import('@/components/index/IndexEpisodeBrowser.vue'));
-// const FavItemBrowser = defineAsyncComponent(() => import('@/components/list/FavoriteItemBrowser.vue'));
-const ItemSearch = defineAsyncComponent(() => import('@/components/index/IndexItemList.vue'));
+const IndexElementBrowser = defineAsyncComponent(() => import('@/components/index/IndexElementBrowser.vue'));
 
 const prefix = 'entity-detail';
 const router = useRouter();
@@ -49,8 +48,7 @@ onBeforeMount(() => {
       </div>
     </div>
     <IndexEpBrowser :listId="list.id" v-if="list.type.value === $const.ENTITY.EPISODE"/>
-    <ItemSearch :listId="list.id" :component="true"
-                v-if="list.type.value === $const.ENTITY.ITEM"/>
+    <IndexElementBrowser :indexId="list.id" v-if="list.type.value === $const.ENTITY.ITEM"/>
   </div>
 </template>
 

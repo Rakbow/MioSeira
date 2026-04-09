@@ -103,6 +103,7 @@ export const API = {
         DELETE: '/api/db/index/delete',
         ADD_ITEMS: '/api/db/index/add-items',
         GET_ITEMS: '/api/db/index/get-items',
+        GET_ITEMS_TMP: '/api/db/index/get-items',
     },
 
     AUTH: {

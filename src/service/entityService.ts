@@ -71,6 +71,7 @@ export class EntitySearchQuery {
     page: number = 1;
     size: number = 15;
     sortField: string | null = null;
+    groupField: string | null = null;
     sortOrder: number = 1;
     filters: any | null = null;
 }
@@ -109,6 +110,8 @@ export class EntitySearchParam {
 
     clearSort(): void {
         this.query.sortField = null;
+        this.query.groupField = null;
+        this.query.sortOrder = 0;
     }
 
     initFilters(filters: any): void {
