@@ -14,9 +14,9 @@
   <Toast position="top-center" class="custom-toast"/>
   <DynamicDialog @scroll="handleScroll"/>
   <ConfirmDialog group="templating">
-    <template #message="slotProps">
-      <i :class="slotProps.message.icon" style="font-size: 3rem"/>
-      <p>{{ slotProps.message.message }}</p>
+    <template #message="{message}">
+      <i :class="message.icon" style="font-size: 3rem"/>
+      <p>{{ message.message }}</p>
     </template>
   </ConfirmDialog>
 </template>
