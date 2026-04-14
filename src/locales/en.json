@@ -10,6 +10,8 @@
   "Draft": "Draft",
   "Get": "Get",
   "Cancel": "Cancel",
+  "CreatedAt": "Created at",
+  "UpdatedAt": "Updated at",
   "Update": "Update",
   "Commit": "Commit",
   "Clear": "Clear",
