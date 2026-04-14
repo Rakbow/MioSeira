@@ -53,7 +53,12 @@ onBeforeMount(() => {
 </template>
 
 <style scoped lang="scss">
+.entity-detail-main {
+  width: 106rem !important;
+}
+
 .entity-detail-list {
+
   &-info {
     background: var(--r-bg-indigo-700);
     border-radius: 1rem;

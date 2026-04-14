@@ -33,7 +33,6 @@ const items = ref([
 </script>
 
 <template>
-  <Toast />
   <div style="display: flex;justify-content: center;">
 
     <div class="grid" style="width: 150rem">

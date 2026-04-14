@@ -11,7 +11,7 @@
     </footer>
   </div>
 
-  <Toast/>
+  <Toast position="top-center" class="custom-toast"/>
   <DynamicDialog @scroll="handleScroll"/>
   <ConfirmDialog group="templating">
     <template #message="slotProps">
@@ -41,5 +41,47 @@ const handleScroll = (event: Event) => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.custom-toast {
+  .p-toast {
+
+    &-message {
+      border: none !important;
+
+      &-content {
+        padding: 1rem !important;
+        border: none !important;
+
+        .p-toast {
+          &-message-icon {
+            display: none !important;
+          }
+
+          &-summary {
+            display: none !important;
+          }
+
+          &-close-icon {
+            display: none !important;
+          }
+
+          &-close-button {
+            display: none !important;
+          }
+
+          &-detail {
+            font-size: 1.3rem !important;
+            text-align: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.6;
+          }
+        }
+
+      }
+
+    }
+
+  }
+}
 </style>

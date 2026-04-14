@@ -95,9 +95,11 @@ export const API = {
     },
 
     INDEX: {
+        SEARCH_PATH: '/index',
         DETAIL_PATH: '/index',
 
         DETAIL: '/api/db/index/detail',
+        SEARCH: '/api/db/index/search',
         LIST: '/api/db/index/list',
         CREATE: '/api/db/index/create',
         DELETE: '/api/db/index/delete',

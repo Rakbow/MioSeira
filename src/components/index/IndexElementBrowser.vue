@@ -34,9 +34,7 @@ const sortOptions = ref<any[]>([
       {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: -1},
       {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: 1},
       {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: -1},
-      {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: 1},
-      {label: 'Price', icon: 'paid', field: 'price', order: -1},
-      {label: 'Price', icon: 'paid', field: 'price', order: 1}
+      {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: 1}
     ]
   },
   {
@@ -141,6 +139,7 @@ const initQueryParam = async () => {
 
   if (query.entries) {
     param.value.query.filters.entries.value = query.entries.toString().split(',').map(Number)
+    param.value.query.groupField = null;
   }
 
   if (param.value.query.filters.type.value) {
@@ -196,6 +195,7 @@ const updateQueryParam = async () => {
 
   if (Array.isArray(param.value.query.filters.entries.value) && param.value.query.filters.entries.value.length) {
     curQuery.entries = param.value.query.filters.entries.value.join(',');
+    delete curQuery.group;
   } else {
     delete curQuery.entries;
   }
@@ -286,6 +286,7 @@ const onSortChange = (ev: any) => {
     param.value.query.sortField = null;
     param.value.query.sortOrder = 0;
   }
+  param.value.query.page = 1;
   loadItems();
 };
 

@@ -44,6 +44,11 @@ onMounted(() => {
 
 const menuItems = ref([
   {
+    label: t('Indexes'),
+    icon: 'developer_guide',
+    url: proxy!.$api.INDEX.SEARCH_PATH
+  },
+  {
     label: t('Item'),
     icon: 'toys_and_games',
     url: proxy!.$api.ITEM.SEARCH_PATH

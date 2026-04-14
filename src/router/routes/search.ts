@@ -3,6 +3,14 @@ import {API} from "@/api";
 
 const SearchRouter: Array<RouteRecordRaw> = [
     {
+        name: "IndexSearch",
+        path: API.INDEX.SEARCH_PATH,
+        component: () => import('@/views/search/IndexSearch.vue'),
+        meta: {
+            title: "Indexes"
+        }
+    },
+    {
         name: "ItemSearch",
         path: API.ITEM.SEARCH_PATH,
         component: () => import('@/views/search/ItemSearch.vue'),
