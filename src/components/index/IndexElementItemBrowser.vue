@@ -17,7 +17,7 @@ const props = defineProps({
   }
 });
 
-const ItemPopover = defineAsyncComponent(() => import('@/components/item/ItemPopover.vue'));
+const ItemPopover = defineAsyncComponent(() => import('@/components/index/IndexElementItemPopover.vue'));
 const selector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
 
 const {t} = useI18n();
@@ -525,6 +525,7 @@ const isNewGroup = (item: any, prevItem: any) => {
                       <span class="index-element-item-list-info-sub" v-if="item.barcode">
                         <span v-if="item.catalogId">{{ item.catalogId }}</span>
                       </span>
+                      <i v-if="item.remark" style="margin-left: 2rem">{{ item.remark }}</i>
                     </div>
                   </div>
                 </div>

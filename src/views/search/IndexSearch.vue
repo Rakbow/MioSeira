@@ -184,17 +184,15 @@ const onSortChange = (ev: any) => {
                              :title="i.name">{{ i.name }}
                 </router-link>
 
-                <span style="width: 56rem;display: flex;align-items: center;white-space: nowrap;overflow: hidden;">
+                <span style="width: 60rem;display: flex;align-items: center;white-space: nowrap;overflow: hidden;">
                   <span class="text-ellipsis-one" style="flex-shrink: 1;flex-grow: 1;font-size: 1rem;color: #999999"
                         :title="i.remark">{{ i.remark }}</span>
                   <span style="flex-shrink: 0;white-space: nowrap;margin-left: .8rem;">
 
 <!--                    <span v-if="i.subType.value" class="small-font" style="font-size: 1rem;color: #999999">{{ `(${i.subType.label})&nbsp;` }}</span>-->
 
-                    <span class="entity-search-entry-list-info-time"
-                          style="display: inline">{{ i.createdAt }}</span>
-                    <span class="entity-search-entry-list-info-time"
-                          style="display: inline">-{{ i.updatedAt }}</span>
+                    <span style="color: #B0C4DE">{{ i.createdAt }}•</span>
+                    <span style="color: #2ea6ff">{{ i.createdBy }}</span>
                   </span>
                 </span>
               </div>
