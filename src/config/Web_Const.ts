@@ -1,4 +1,23 @@
 export const META = {
+    INDEX: {
+        ELEMENT: {
+            ITEM_GROUP_KEY_SET: ['product', 'character', 'classification', 'material', 'event'],
+            ITEM_SORT_KEY_SET: ['releaseDate', 'price', 'id'],
+            ITEM_SORT_OPTIONS: [
+                {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: 1},
+                {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: -1},
+                {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: 1},
+                {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: -1}
+            ],
+            ITEM_GROUP_OPTIONS: [
+                {label: 'Product', icon: 'dataset', field: 'product', order: 0},
+                {label: 'Character', icon: 'person', field: 'character', order: 0},
+                {label: 'Classification', icon: 'label', field: 'classification', order: 0},
+                {label: 'Material', icon: 'family_history', field: 'material', order: 0},
+                {label: 'Event', icon: 'location_on', field: 'event', order: 0},
+            ]
+        }
+    },
     STATIC_DOMAIN: 'https://oss.rakbow.com/',
     RELATION_RELATED_DIRECTION: {
         POSITIVE: 1,
@@ -86,8 +105,6 @@ export const META = {
         {icon: 'diamond', value: '5', label: 'Material'},
         {icon: 'distance', value: '6', label: 'Event'}
     ],
-    INDEX_ITEM_GROUP_KEY_SET: ['product', 'character', 'classification', 'material', 'event'],
-    INDEX_ITEM_SORT_KEY_SET: ['releaseDate', 'price', 'id'],
     ITEM_FILTER_KEY_SET: ['keyword', 'type', 'subType', 'releaseType', 'barcode', 'region', 'catalogId'],
     ITEM_TYPE_SET: [
         // {icon: 'filter_alt_off', value: null, disabled: false, label: 'Entity.Album'},
@@ -202,21 +219,27 @@ export const META = {
                 value: [4, 5, 6]
             }]
         },
-        {key: [1, 4], type: 1, subConfigs: [{
+        {
+            key: [1, 4], type: 1, subConfigs: [{
                 label: 'RelatedEntry',
                 icon: 'lists',
                 value: [4, 5, 6]
-            }]},
-        {key: [1, 5], type: 1, subConfigs: [{
+            }]
+        },
+        {
+            key: [1, 5], type: 1, subConfigs: [{
                 label: 'RelatedEntry',
                 icon: 'lists',
                 value: [4, 5, 6]
-            }]},
-        {key: [1, 6], type: 1, subConfigs: [{
+            }]
+        },
+        {
+            key: [1, 6], type: 1, subConfigs: [{
                 label: 'RelatedEntry',
                 icon: 'lists',
                 value: [4, 5, 6]
-            }]}
+            }]
+        }
     ]
 }
 

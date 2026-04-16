@@ -24,28 +24,18 @@ const {t} = useI18n();
 const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
+const {proxy} = getCurrentInstance()!;
 
 const isGroup = ref(false);
-const sortKey = ref({label: 'Product', icon: 'dataset', field: 'product', order: 0});
+const sortKey = ref(proxy!.$const.INDEX.ELEMENT.ITEM_SORT_OPTIONS[0]);
 const sortOptions = ref<any[]>([
   {
     label: 'SORT BY',
-    items: [
-      {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: -1},
-      {label: 'AddedTime', icon: 'calendar_add_on', field: 'id', order: 1},
-      {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: -1},
-      {label: 'ReleaseDate', icon: 'event_available', field: 'releaseDate', order: 1}
-    ]
+    items: proxy!.$const.INDEX.ELEMENT.ITEM_SORT_OPTIONS
   },
   {
     label: 'GROUP BY',
-    items: [
-      {label: 'Product', icon: 'dataset', field: 'product', order: 0},
-      {label: 'Character', icon: 'person', field: 'character', order: 0},
-      {label: 'Classification', icon: 'label', field: 'classification', order: 0},
-      {label: 'Material', icon: 'family_history', field: 'material', order: 0},
-      {label: 'Event', icon: 'location_on', field: 'event', order: 0},
-    ]
+    items: proxy!.$const.INDEX.ELEMENT.ITEM_GROUP_OPTIONS
   }
 ]);
 const param = ref(new EntitySearchParam());
@@ -54,7 +44,6 @@ const param = ref(new EntitySearchParam());
 const layout = ref('list');
 const dataviewOptions = ref(['grid', 'list']);
 const entries = ref<any[]>([]);
-const {proxy} = getCurrentInstance()!;
 //endregion
 
 onBeforeMount(() => {
@@ -106,7 +95,7 @@ const initQueryParam = async () => {
   const {query} = route;
   if (query.sort) {
     let sortField = query.sort.toString();
-    if (proxy!.$const.INDEX_ITEM_SORT_KEY_SET.includes(sortField)) {
+    if (proxy!.$const.INDEX.ELEMENT.ITEM_SORT_KEY_SET.includes(sortField)) {
       param.value.query.sortField = sortField;
       if (query.order) {
         let sortOrder = query.order.toString();
@@ -123,7 +112,7 @@ const initQueryParam = async () => {
   }
   if (query.group) {
     let groupField = query.group.toString();
-    if (proxy!.$const.INDEX_ITEM_GROUP_KEY_SET.includes(groupField)) {
+    if (proxy!.$const.INDEX.ELEMENT.ITEM_GROUP_KEY_SET.includes(groupField)) {
       param.value.query.groupField = groupField;
     }
   }
@@ -153,7 +142,12 @@ const updateQueryParam = async () => {
   const {query: {filters, sortField, sortOrder, groupField, page}} = param.value;
   const curQuery = {...route.query};
 
-  curQuery.page = page.toString();
+  // 只在非第一页时添加page参数
+  if (page > 1) {
+    curQuery.p = page.toString();
+  } else {
+    delete curQuery.p;
+  }
 
   proxy!.$const.ITEM_FILTER_KEY_SET.forEach(key => {
     if (filters[key]?.value || filters[key]?.value === 0) {
@@ -162,10 +156,10 @@ const updateQueryParam = async () => {
       delete curQuery[key];
     }
   });
-  if (sortField && proxy!.$const.INDEX_ITEM_SORT_KEY_SET.includes(sortField)) {
+  if (sortField && proxy!.$const.INDEX.ELEMENT.ITEM_SORT_KEY_SET.includes(sortField)) {
     delete curQuery.group;
     curQuery.sort = sortField;
-    switch (sortOrder) {
+    switch (parseInt(sortOrder!.toString())) {
       case 1:
         curQuery.order = 'asc';
         break;
@@ -177,7 +171,7 @@ const updateQueryParam = async () => {
     }
     sortKey.value = sortOptions.value.flatMap(group => group.items)
         .find(op => op.field === sortField && op.order === sortOrder);
-  } else if (groupField && proxy!.$const.INDEX_ITEM_GROUP_KEY_SET.includes(groupField)) {
+  } else if (groupField && proxy!.$const.INDEX.ELEMENT.ITEM_GROUP_KEY_SET.includes(groupField)) {
     delete curQuery.sort;
     delete curQuery.order;
     curQuery.group = groupField;
@@ -185,9 +179,10 @@ const updateQueryParam = async () => {
   } else {
     delete curQuery.sort;
     delete curQuery.order;
-    sortKey.value = sortOptions.value[0].items[0];
-    curQuery.sort = sortOptions.value[0].items[0].field;
-    curQuery.order = sortOptions.value[0].items[0].order;
+    let option = proxy!.$const.INDEX.ELEMENT.ITEM_SORT_OPTIONS[0];
+    sortKey.value = option;
+    curQuery.sort = option.field;
+    curQuery.order = option.order.toString();
 
     param.value.query.sortField = curQuery.sort!.toString();
     param.value.query.sortOrder = parseInt(curQuery.order!.toString());
@@ -270,17 +265,17 @@ const resetFilter = () => {
   if (entitySubType.value) {
     param.value.query.filters.type.value = parseInt(entitySubType.value.value);
   }
-  sortKey.value = sortOptions.value[0].items[0];
+  sortKey.value = proxy!.$const.INDEX.ELEMENT.ITEM_SORT_OPTIONS[0];
   param.value.clearSort();
 }
 
 const onSortChange = (ev: any) => {
-  if (proxy!.$const.INDEX_ITEM_SORT_KEY_SET.includes(ev.value.field)) {
+  if (proxy!.$const.INDEX.ELEMENT.ITEM_SORT_KEY_SET.includes(ev.value.field)) {
     param.value.query.sortField = ev.value.field;
     param.value.query.sortOrder = ev.value.order;
 
     param.value.query.groupField = null;
-  } else if (proxy!.$const.INDEX_ITEM_GROUP_KEY_SET.includes(ev.value.field)) {
+  } else if (proxy!.$const.INDEX.ELEMENT.ITEM_GROUP_KEY_SET.includes(ev.value.field)) {
     param.value.query.groupField = ev.value.field;
 
     param.value.query.sortField = null;
