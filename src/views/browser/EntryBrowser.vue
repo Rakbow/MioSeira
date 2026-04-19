@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import "@/styles/entity-search.scss";
+import "@/styles/entity-browser.scss";
 import "flag-icons/css/flag-icons.min.css";
 
 import {API, Axios} from "@/api";
-import {onBeforeMount, onMounted, ref} from "vue";
+import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntitySearchParam} from "@/service/entityService";
+import {PublicHelper} from "@/utils/publicHelper";
+
+const EntryTypeSelector = defineAsyncComponent(() => import('@/components/entry/EntryTypeSelector.vue'));
 
 const {t} = useI18n();
 const route = useRoute();
@@ -31,6 +34,11 @@ onMounted(() => {
   initQueryParam();
   load();
 })
+
+const switchEntitySubType = (value: any) => {
+  param.value.query.filters.type.value = value;
+  load();
+}
 
 const initQueryParam = async () => {
   const {query} = route;
@@ -83,7 +91,7 @@ const onPage = (ev: any) => {
 const load = async () => {
   updateQueryParam();
   param.value.loading = true;
-  const res = await Axios.post(API.INDEX.SEARCH, param.value.query);
+  const res = await Axios.post(API.ENTRY.SEARCH, param.value.query);
   if (res.success()) {
     param.value.loadResult(res.data)
   }
@@ -117,12 +125,14 @@ const onSortChange = (ev: any) => {
 </script>
 
 <template>
-  <div class="entity-search">
-    <div class="entity-search-main">
+  <div class="entity-browser">
+    <div class="entity-browser-main">
       <DataView :value="param.loading ? Array.from({ length: param.query.size }) : param.result.data" layout="list">
         <template #header>
           <div class="grid" style="width: 100%">
             <div class="col-12 content-space-between">
+              <EntryTypeSelector v-model="param.query.filters.type.value"
+                                 @update="switchEntitySubType" :disabled="param.loading" />
               <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"
                       @change="onSortChange" size="small" :disabled="param.loading">
                 <template #value="{value}">
@@ -158,8 +168,8 @@ const onSortChange = (ev: any) => {
             </span>
         </template>
         <template #list="{items}">
-          <div class="entity-search-entry-list">
-            <div v-if="param.loading" v-for="() in param.query.size" class="entity-search-entry-list-loading grid">
+          <div class="entity-browser-entry-list">
+            <div v-if="param.loading" v-for="() in param.query.size" class="entity-browser-entry-list-loading grid">
               <div class="col-fixed">
                 <Skeleton size="3.5rem"/>
               </div>
@@ -171,30 +181,39 @@ const onSortChange = (ev: any) => {
                 <Skeleton size="2rem" height="1.5rem"/>
               </div>
             </div>
-            <div v-if="!param.loading" v-for="i in items" class="grid">
-              <div class="entity-search-entry-list-thumb col-fixed">
-                <a :href="`${$api.INDEX.DETAIL_PATH}/${i.id}`" class="entry-thumb-list">
-<!--                  <img role="presentation" :alt="i.id" :src="i.thumb"/>-->
-                  <img role="presentation" :alt="i.id" :src="$api.COMMON_EMPTY_THUMB_IMAGE"/>
+            <div v-if="!param.loading" v-for="entry in items" class="grid">
+              <div class="entity-browser-entry-list-thumb col-fixed">
+                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="entry-thumb-list">
+                  <img :alt="entry.id" :src="entry.thumb"/>
                 </a>
               </div>
-              <div class="entity-search-entry-list-info col">
-                <router-link :to="`${$api.INDEX.DETAIL_PATH}/${i.id}`" class="text-ellipsis-one"
+              <div class="entity-browser-entry-list-info col">
+                <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="text-ellipsis-one"
                              style="width: 56rem"
-                             :title="i.name">{{ i.name }}
+                             :title="entry.name">{{ entry.name }}
                 </router-link>
 
-                <span style="width: 60rem;display: flex;align-items: center;white-space: nowrap;overflow: hidden;">
+                <span style="width: 56rem;display: flex;align-items: center;white-space: nowrap;overflow: hidden;">
                   <span class="text-ellipsis-one" style="flex-shrink: 1;flex-grow: 1;font-size: 1rem;color: #999999"
-                        :title="i.remark">{{ i.remark }}</span>
+                        :title="entry.subName">{{ entry.subName }}</span>
                   <span style="flex-shrink: 0;white-space: nowrap;margin-left: .8rem;">
 
-<!--                    <span v-if="i.subType.value" class="small-font" style="font-size: 1rem;color: #999999">{{ `(${i.subType.label})&nbsp;` }}</span>-->
+                    <span v-if="entry.subType.value" class="small-font" style="font-size: 1rem;color: #999999">{{ `(${entry.subType.label})&nbsp;` }}</span>
 
-                    <span style="color: #B0C4DE">{{ i.createdAt }}•</span>
-                    <span style="color: #2ea6ff">{{ i.createdBy }}</span>
+                    <i v-if="entry.gender" :class="PublicHelper.getGenderIcon(entry.gender)" />
+                    <span v-if="entry.startDate" class="entity-browser-entry-list-info-time"
+                          style="display: inline">{{ entry.startDate }}</span>
+                    <span v-if="entry.endDate" class="entity-browser-entry-list-info-time"
+                          style="display: inline">-{{ entry.endDate }}</span>
                   </span>
                 </span>
+              </div>
+              <div class="flex align-items-center justify-content-center" style="width: 4rem">
+                <span class="material-symbols-outlined"
+                      style="font-size: 2rem;font-weight: 700"
+                      :style="`color: var(--r-entry-${entry.type.value})`">
+                      {{ $const.ENTRY_TYPE_SET[entry.type.value - 1].icon }}
+                    </span>
               </div>
             </div>
           </div>

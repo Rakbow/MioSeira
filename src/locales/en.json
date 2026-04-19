@@ -223,6 +223,19 @@
   "Manage": "Manage",
 
   "AddItemsToList": "Add to list",
-  "List": "List"
+  "List": "List",
+
+  "ImageCropper": {
+    "NoImageSelected": "No image selected",
+    "InvalidImageFile": "Invalid image file",
+    "LoadImageFailed": "Failed to load image",
+    "ImageResolutionTooLow": "Image resolution too low, minimum required {minWidth}x{minHeight}, current is {width}x{height}",
+    "PleaseSelectCropArea": "Please select crop area",
+    "ImageCroppedSuccessfully": "Image cropped successfully",
+    "CropFailed": "Crop failed",
+    "CropInfo": "Crop ratio is fixed at 1:1, output size is 600x600 pixels",
+    "Confirm": "Confirm Crop",
+    "Cancel": "Cancel"
+  }
 
 }

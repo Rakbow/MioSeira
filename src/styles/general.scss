@@ -103,6 +103,10 @@ main {
 img {
   user-drag: none; /* 禁用拖动 */
   -webkit-user-drag: none; /* 兼容 Webkit 浏览器 */
+  user-select: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
 }
 
 .card {

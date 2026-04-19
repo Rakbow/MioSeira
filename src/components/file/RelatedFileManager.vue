@@ -165,7 +165,6 @@ const remove = async () => {
   if (res.success()) {
     param.value.selectedData = [];
     await load();
-    bs!.toast.success(res.message);
   }
   param.value.endBlock();
 }

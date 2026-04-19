@@ -25,7 +25,9 @@ const route = useRoute();
 const router = useRouter();
 const store = useOptionStore();
 const {proxy} = getCurrentInstance()!;
+import {useUserStore} from "@/store/modules/user";
 
+const user = useUserStore();
 const isGroup = ref(false);
 const sortKey = ref(proxy!.$const.INDEX.ELEMENT.ITEM_SORT_OPTIONS[0]);
 const sortOptions = ref<any[]>([
@@ -355,6 +357,13 @@ const isNewGroup = (item: any, prevItem: any) => {
   if (!prevItem) return true;
   return label !== getGroupLabel(prevItem);
 };
+
+const updateRemark = async (e: any) => {
+  await Axios.post(API.INDEX.ELEMENT_UPDATE, {
+    indexElementId: e.indexElementId,
+    remark: e.remark
+  });
+};
 </script>
 
 <template>
@@ -441,7 +450,7 @@ const isNewGroup = (item: any, prevItem: any) => {
                              @pointerover="startHover($event, item)"
                              @pointerleave="endHover"
                              :class="`item-thumb-grid item-thumb-grid-${item.type.value}-${item.subType.value}`">
-                  <img role="presentation" :alt="item.id" :src="item.thumb"/>
+                  <img :alt="item.id" :src="item.thumb"/>
                 </router-link>
 
               </template>
@@ -469,7 +478,7 @@ const isNewGroup = (item: any, prevItem: any) => {
 
                     <div class="index-element-item-list-group-entry-thumb">
                       <a :href="`${$api.ENTRY.DETAIL_PATH}/${item.entryId}`" class="entry-thumb-list">
-                        <img role="presentation" :alt="item.entryId" :src="item.entryThumb"/>
+                        <img :alt="item.entryId" :src="item.entryThumb"/>
                       </a>
                     </div>
                     <div class="index-element-item-list-group-entry-info">
@@ -501,7 +510,7 @@ const isNewGroup = (item: any, prevItem: any) => {
                   <div class="index-element-item-list-thumb col-fixed">
                     <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`" class="item-thumb-list"
                                  style="width: 3.5rem;height: 3.5rem">
-                      <img role="presentation" :alt="item.id" :src="item.thumb" style="width: 3.5rem;height: 3.5rem"/>
+                      <img :alt="item.id" :src="item.thumb" style="width: 3.5rem;height: 3.5rem"/>
                     </router-link>
                   </div>
                   <div class="index-element-item-list-info col">
@@ -510,17 +519,19 @@ const isNewGroup = (item: any, prevItem: any) => {
                                    :title="item.name">{{ item.name }}
                       </router-link>
                     </div>
-                    <div class="relative">
-                      <Tag v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.VIDEO].includes(item.type.value)"
-                           :value="item.subType.label"
-                           :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>
-                      <Tag v-else :value="item.type.label"
-                           :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>
-                      <span class="index-element-item-list-info-time" v-if="item.releaseDate">{{ item.releaseDate }}&nbsp;&nbsp;</span>
-                      <span class="index-element-item-list-info-sub" v-if="item.barcode">
-                        <span v-if="item.catalogId">{{ item.catalogId }}</span>
-                      </span>
-                      <i v-if="item.remark" style="margin-left: 2rem">{{ item.remark }}</i>
+                    <div class="relative" style="display: flex; align-items: center; justify-content: space-between;max-width: 52rem">
+                      <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0;">
+                        <Tag v-if="![$const.ITEM_TYPE.ALBUM, $const.ITEM_TYPE.VIDEO].includes(item.type.value)"
+                             :value="item.subType.label"
+                             :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>
+                        <Tag v-else :value="item.type.label"
+                             :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>
+                        <span class="index-element-item-list-info-time" v-if="item.releaseDate">{{ item.releaseDate }}&nbsp;</span>
+                        <span class="index-element-item-list-info-sub" v-if="item.catalogId">{{ item.catalogId }}</span>
+                      </div>
+                      <InputText v-if="user.roles.includes('admin')" size="small" v-model="item.remark" @blur="updateRemark(item)"
+                                 :pt="{ root: { style: 'background-color: var(--r-bg-indigo-700);width: 25rem' } }" />
+                      <i v-else style="margin-left: 2rem">{{ item.remark }}</i>
                     </div>
                   </div>
                 </div>
@@ -529,10 +540,8 @@ const isNewGroup = (item: any, prevItem: any) => {
           </div>
         </template>
         <template #footer>
-          <BlockUI :blocked="param.loading">
-            <RPaginator v-model:page="param.query.page" v-model:size="param.query.size" alwaysShow
-                        :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
-          </BlockUI>
+          <RPaginator v-model:page="param.query.page" v-model:size="param.query.size" v-model:blocked="param.loading"
+                      alwaysShow :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
         </template>
       </DataView>
     </div>
@@ -589,7 +598,7 @@ const isNewGroup = (item: any, prevItem: any) => {
             <div class="related-entity" style="width: 30rem"
                  v-for="(entry, index) in entries as any[]" :key="index">
               <div class="related-entity-thumb">
-                <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
+                <img :alt="entry.name" :src="entry.thumb"/>
               </div>
               <div class="related-entity-info">
                 <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`"

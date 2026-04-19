@@ -14,7 +14,6 @@ import {MdEditor} from "md-editor-v3";
 import {inject, onMounted, ref} from "vue";
 import {API, Axios} from '@/api';
 import {useI18n} from "vue-i18n";
-import {bs} from '@/service/baseService';
 import {EditParam} from "@/service/entityService";
 
 const {t} = useI18n();
@@ -34,7 +33,6 @@ const submit = async () => {
     text: text.value
   });
   if (res.success()) {
-    bs!.toast.success(res.message);
     param.value.isUpdate = true;
     close();
   }
@@ -53,5 +51,4 @@ const close = () => {
 </script>
 
 <style scoped lang="scss">
-
 </style>

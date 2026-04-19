@@ -23,9 +23,9 @@ const path = ref();
 </script>
 
 <template>
-  <div class="related-entity" style="background: #222">
+  <div class="related-entity" style="background: #222;width: 28rem">
     <div class="related-entity-thumb">
-      <img role="presentation" :alt="entity.target.name" :src="entity.target.thumb"/>
+      <img :alt="entity.target.name" :src="entity.target.thumb"/>
     </div>
     <div class="related-entity-info">
       <a :href="`/${path}/${entity.target.entityId}`" :title="entity.target.name">

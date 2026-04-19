@@ -24,7 +24,6 @@ const submit = async () => {
   entity.value.name = `${entity.value.name}.${entity.value.extension}`;
   const res = await Axios.post(API.FILE.UPDATE, entity.value);
   if (res.success()) {
-    bs!.toast.success(res.message);
     param.value.isUpdate = true;
     close();
   }

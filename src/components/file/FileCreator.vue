@@ -77,7 +77,6 @@ const submitByUpload = async () => {
   param.value.block = true;
   const res = await Axios.form(API.FILE.UPLOAD, fd);
   if (res.success())
-    bs!.toast.success(res.message);
   param.value.isUpdate = true;
   close();
   fileInfos.value = [];
@@ -91,9 +90,7 @@ const submitByCould = async () => {
     fileIds: fileInfos.value!.map(f => f.id)
   }
   param.value.block = true;
-  const res = await Axios.post(API.FILE.RELATED_CREATE, param.value.data);
-  if (res.success())
-    bs!.toast.success(res.message);
+  await Axios.post(API.FILE.RELATED_CREATE, param.value.data);
   param.value.isUpdate = true;
   close();
   fileInfos.value = [];

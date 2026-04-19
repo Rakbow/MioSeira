@@ -71,7 +71,7 @@ const addItemsDTO = ref({
 const addItems = async () => {
   param.value.load();
   addItemsDTO.value.listId = (param.value.selectedData as any).id;
-  const res = await Axios.post(API.INDEX.ADD_ITEMS, addItemsDTO.value);
+  const res = await Axios.post(API.INDEX.ELEMENT_ADD, addItemsDTO.value);
   if (res.success()) dialogRef.value.close();
   param.value.endLoad();
 };

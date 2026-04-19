@@ -102,8 +102,14 @@ export const API = {
         SEARCH: '/api/db/index/search',
         LIST: '/api/db/index/list',
         CREATE: '/api/db/index/create',
+        UPDATE: '/api/db/index/update',
         DELETE: '/api/db/index/delete',
-        ADD_ITEMS: '/api/db/index/add-items',
+
+        UPLOAD_IMAGE: '/api/db/index/upload-image',
+
+        ELEMENT_ADD: '/api/db/index/add-items',
+        ELEMENT_UPDATE: '/api/db/index/update-element',
+
         GET_ITEMS: '/api/db/index/get-items',
         GET_ITEMS_TMP: '/api/db/index/get-items',
     },

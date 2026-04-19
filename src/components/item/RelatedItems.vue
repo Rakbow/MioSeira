@@ -20,11 +20,14 @@ onMounted(() => {
 });
 const load = async () => {
   param.value.block = true;
-  const res = await Axios.post(API.RELATION.ITEMS, {id: entity!.id, size: 27});
-  if (res.success()) {
-    result.value = res.data;
+  try {
+    const res = await Axios.post(API.RELATION.ITEMS, {id: entity!.id, size: 27});
+    if (res.success()) {
+      result.value = res.data;
+    }
+  } finally {
+    param.value.block = false;
   }
-  param.value.block = false;
 }
 
 //region pop
@@ -56,11 +59,11 @@ const endHover = () => {
         </template>
         <template #grid="{items}">
           <div class="flex flex-wrap">
-            <div v-for="(item, index) in items" :key="index" style="padding: .385rem">
+            <div v-for="(item, index) in items" :key="index" style="padding: .385rem;height: 7rem;width: 7rem">
               <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
                            @pointerover="startHover($event, item)" @pointerleave="endHover"
                            :class="`item-thumb-grid item-thumb-grid-${item.type.value}-${item.subType.value}`">
-                <img role="presentation" :alt="item.id" :src="item.thumb"/>
+                <img :alt="item.id" :src="item.thumb"/>
               </router-link>
             </div>
           </div>
@@ -82,5 +85,5 @@ const endHover = () => {
 </template>
 
 <style scoped lang="scss">
-@import "@/styles/entity-search";
+@import "@/styles/entity-browser";
 </style>

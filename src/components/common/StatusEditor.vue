@@ -26,10 +26,7 @@ const updateStatus = async () => {
     ids: [entity!.id],
     status: !status.value
   };
-  const res = await Axios.post(API.ENTITY.UPDATE_STATUS, param.value.data);
-  if (res.success()) {
-    bs!.toast.success(res.message);
-  }
+  await Axios.post(API.ENTITY.UPDATE_STATUS, param.value.data);
   param.value.block = false;
 };
 </script>

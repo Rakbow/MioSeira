@@ -77,7 +77,7 @@
   <Dialog :modal="true" v-model:visible="updateDisplay" :header="t('Edit')" class="entity-editor">
     <div class="flex flex-wrap mb-3" style="display: flex;justify-content: center;">
       <div class="entry-thumb">
-        <img role="presentation" :alt="updateDTO!.name" :src="updateDTO!.thumb"/>
+        <img :alt="updateDTO!.name" :src="updateDTO!.thumb"/>
       </div>
     </div>
     <FloatLabel class="field" variant="on">
@@ -186,7 +186,6 @@ const upload = async () => {
   param.value.block();
   const res = await Axios.form(API.IMAGE.UPLOAD, fd);
   if (res.success()) {
-    bs!.toast.success(res.message);
     uploadDisplay.value = false;
     await load();
   }
@@ -213,7 +212,6 @@ const update = async () => {
   param.value.block();
   const res = await Axios.post(API.IMAGE.UPDATE, updateDTO.value);
   if (res.success()) {
-    bs!.toast.success(res.message);
     updateDisplay.value = false;
     await load();
   }
@@ -265,7 +263,6 @@ const remove = async () => {
   if (res.success()) {
     param.value.selectedData = [];
     await load();
-    bs!.toast.success(res.message);
   }
   param.value.endBlock();
 }

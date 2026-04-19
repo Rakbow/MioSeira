@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import "@/styles/entity-search.scss";
+import "@/styles/entity-browser.scss";
 import "flag-icons/css/flag-icons.min.css";
 
 import {API, Axios} from "@/api";
-import {defineAsyncComponent, onBeforeMount, onMounted, ref} from "vue";
+import {onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {EntitySearchParam} from "@/service/entityService";
 import {PublicHelper} from "@/utils/publicHelper";
-
-const EntryTypeSelector = defineAsyncComponent(() => import('@/components/entry/EntryTypeSelector.vue'));
+import {loadEditor} from "@/service/indexService";
 
 const {t} = useI18n();
 const route = useRoute();
@@ -34,11 +33,6 @@ onMounted(() => {
   initQueryParam();
   load();
 })
-
-const switchEntitySubType = (value: any) => {
-  param.value.query.filters.type.value = value;
-  load();
-}
 
 const initQueryParam = async () => {
   const {query} = route;
@@ -91,11 +85,14 @@ const onPage = (ev: any) => {
 const load = async () => {
   updateQueryParam();
   param.value.loading = true;
-  const res = await Axios.post(API.ENTRY.SEARCH, param.value.query);
-  if (res.success()) {
-    param.value.loadResult(res.data)
+  try {
+    const res = await Axios.post(API.INDEX.SEARCH, param.value.query);
+    if (res.success()) {
+      param.value.loadResult(res.data)
+    }
+  } finally {
+    param.value.loading = false;
   }
-  param.value.loading = false;
 }
 
 const search = () => {
@@ -125,14 +122,12 @@ const onSortChange = (ev: any) => {
 </script>
 
 <template>
-  <div class="entity-search">
-    <div class="entity-search-main">
+  <div class="entity-browser">
+    <div class="entity-browser-main">
       <DataView :value="param.loading ? Array.from({ length: param.query.size }) : param.result.data" layout="list">
         <template #header>
           <div class="grid" style="width: 100%">
             <div class="col-12 content-space-between">
-              <EntryTypeSelector v-model="param.query.filters.type.value"
-                                 @update="switchEntitySubType" :disabled="param.loading" />
               <Select v-model="sortKey" :options="sortOptions" filled style="width: 13rem" scrollHeight="20rem"
                       @change="onSortChange" size="small" :disabled="param.loading">
                 <template #value="{value}">
@@ -168,61 +163,47 @@ const onSortChange = (ev: any) => {
             </span>
         </template>
         <template #list="{items}">
-          <div class="entity-search-entry-list">
-            <div v-if="param.loading" v-for="() in param.query.size" class="entity-search-entry-list-loading grid">
+          <div class="entity-browser-index-list">
+            <div v-if="param.loading" v-for="() in param.query.size" class="entity-browser-index-list-loading grid">
               <div class="col-fixed">
-                <Skeleton size="3.5rem"/>
+                <Skeleton size="5rem"/>
               </div>
               <div class="col" style="padding: .5rem 0 0 .25rem !important;width: 56rem;">
-                <Skeleton width="30rem" height="1.2rem" style="margin: .3rem 0"/>
-                <Skeleton width="20rem" height="1rem" style="margin: .3rem 0"/>
+                <Skeleton width="30rem" height="1.5rem" style="margin: .3rem 0"/>
+                <Skeleton width="50rem" height="1.2rem" style="margin: .3rem 0"/>
+                <Skeleton width="20rem" height="1.1rem" style="margin: .3rem 0"/>
               </div>
               <div class="flex align-items-center justify-content-center" style="width: 4rem">
                 <Skeleton size="2rem" height="1.5rem"/>
               </div>
             </div>
-            <div v-if="!param.loading" v-for="entry in items" class="grid">
-              <div class="entity-search-entry-list-thumb col-fixed">
-                <a :href="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="entry-thumb-list">
-                  <img role="presentation" :alt="entry.id" :src="entry.thumb"/>
+            <div v-else v-for="i in items" class="grid">
+              <div class="entity-browser-index-list-thumb col-fixed">
+                <a :href="`${$api.INDEX.DETAIL_PATH}/${i.id}`">
+                  <img :alt="i.id" :src="i.cover"/>
                 </a>
               </div>
-              <div class="entity-search-entry-list-info col">
-                <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`" class="text-ellipsis-one"
-                             style="width: 56rem"
-                             :title="entry.name">{{ entry.name }}
+              <div class="entity-browser-index-list-info col">
+                <router-link :to="`${$api.INDEX.DETAIL_PATH}/${i.id}`" class="text-ellipsis-one"
+                             style="width: 56rem" :title="i.name">{{ i.name }}
                 </router-link>
-
-                <span style="width: 56rem;display: flex;align-items: center;white-space: nowrap;overflow: hidden;">
-                  <span class="text-ellipsis-one" style="flex-shrink: 1;flex-grow: 1;font-size: 1rem;color: #999999"
-                        :title="entry.subName">{{ entry.subName }}</span>
-                  <span style="flex-shrink: 0;white-space: nowrap;margin-left: .8rem;">
-
-                    <span v-if="entry.subType.value" class="small-font" style="font-size: 1rem;color: #999999">{{ `(${entry.subType.label})&nbsp;` }}</span>
-
-                    <i v-if="entry.gender" :class="PublicHelper.getGenderIcon(entry.gender)" />
-                    <span v-if="entry.startDate" class="entity-search-entry-list-info-time"
-                          style="display: inline">{{ entry.startDate }}</span>
-                    <span v-if="entry.endDate" class="entity-search-entry-list-info-time"
-                          style="display: inline">-{{ entry.endDate }}</span>
-                  </span>
+                <span class="text-ellipsis-one" style="flex-shrink: 1;font-size: 1.1rem;flex-grow: 1;color: #B0C4DE"
+                      :title="i.remark">{{ i.remark }}&nbsp;</span>
+                <span style="flex-shrink: 0;font-size: 1rem;white-space: nowrap">
+                  <span style="color: #2ea6ff">{{ i.createdBy }}</span>
+                  <span style="color: #808080">•{{ t('CreatedAt') }}&nbsp;</span>
+                  <span style="color: #999999">{{ PublicHelper.timeStamp2Date(i.createdAt) }}</span>
+                  <span style="color: #808080">•{{ t('UpdatedAt') }}&nbsp;</span>
+                  <span style="color: #999999">{{ PublicHelper.timeStamp2Date(i.updatedAt) }}</span>
                 </span>
               </div>
-              <div class="flex align-items-center justify-content-center" style="width: 4rem">
-                <span class="material-symbols-outlined"
-                      style="font-size: 2rem;font-weight: 700"
-                      :style="`color: var(--r-entry-${entry.type.value})`">
-                      {{ $const.ENTRY_TYPE_SET[entry.type.value - 1].icon }}
-                    </span>
-              </div>
+              <RButton v-permission @click="loadEditor(i)" action="update"/>
             </div>
           </div>
         </template>
         <template #footer>
-          <BlockUI :blocked="param.loading">
-            <RPaginator v-model:page="param.query.page" v-model:size="param.query.size" alwaysShow
-                        :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
-          </BlockUI>
+          <RPaginator v-model:page="param.query.page" v-model:size="param.query.size" v-model:blocked="param.loading"
+                      alwaysShow :total="param.result.total" @page="onPage($event)" :time="param.result.time"/>
         </template>
       </DataView>
     </div>

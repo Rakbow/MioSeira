@@ -129,7 +129,6 @@ const create = async () => {
   param.value.load();
   const res = await Axios.post(API.ROLE.CREATE, createDTO.value);
   if (res.success()) {
-    bs!.toast.success(res.message);
     closeAddDialog();
     await load();
   }
@@ -140,7 +139,6 @@ const update = async () => {
   param.value.load();
   const res = await Axios.post(API.ROLE.UPDATE, updateDTO.value);
   if (res.success()) {
-    bs!.toast.success(res.message);
     closeEditDialog();
     await load();
   }
@@ -152,7 +150,6 @@ const refresh = async () => {
   const res = await Axios.post(API.ROLE.REFRESH);
   if (res.success()) {
     store.clear();
-    bs!.toast.success(res.message);
   }
   param.value.endLoad();
 }

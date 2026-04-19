@@ -84,7 +84,6 @@ const create = async () => {
     isUpdate.value = true;
     createDialog.value = false;
     await load();
-    bs!.toast.success(res.message);
   }
   param.value.endBlock();
 }
@@ -112,7 +111,6 @@ const update = async () => {
     isUpdate.value = true;
     updateDialog.value = false;
     await load();
-    bs!.toast.success(res.message);
   }
   param.value.endBlock();
 }
@@ -152,7 +150,6 @@ const remove = async () => {
   });
   if (res.success()) {
     isUpdate.value = true;
-    bs!.toast.success(res.message);
     await load();
   }
   param.value.endBlock();
@@ -268,7 +265,7 @@ const openSelector = () => {
         <template #grid="{items}">
           <div class="related-create-entity" v-for="(entry, index) in items" :key="index">
             <div class="related-create-entity-thumb">
-              <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
+              <img :alt="entry.name" :src="entry.thumb"/>
             </div>
             <div class="related-create-entity-info">
               <span :title="entry.name">{{ entry.name }}</span><br>
@@ -297,7 +294,7 @@ const openSelector = () => {
     <BlockUI :blocked="param.blocking" class="entity-editor">
       <div class="related-create-entity">
         <div class="related-create-entity-thumb">
-          <img role="presentation" :alt="updateDTO.target.name" :src="updateDTO.target.thumb"/>
+          <img :alt="updateDTO.target.name" :src="updateDTO.target.thumb"/>
         </div>
         <div class="related-create-entity-info">
           <span :title="updateDTO.target.name">{{ updateDTO.target.name }}</span><br>

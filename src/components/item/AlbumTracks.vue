@@ -195,9 +195,7 @@ const uploadAudioFile = async () => {
   fd.append('discNo', selectedDisc.discNo);
   fileInfos.value.forEach(f => fd.append('files', f.file));
   param.value.block = true;
-  const res = await Axios.form(API.ITEM.ALBUM_TRACK_QUICK_UPLOAD, fd);
-  if (res.success())
-    bs!.toast.success(res.message);
+  await Axios.form(API.ITEM.ALBUM_TRACK_QUICK_UPLOAD, fd);
   audioUploadDisplay.value = false;
   fileInfos.value = [];
   param.value.block = false;

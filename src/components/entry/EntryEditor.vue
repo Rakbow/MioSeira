@@ -24,7 +24,6 @@ const submit = async () => {
   param.value.block = true;
   const res = await Axios.post(API.ENTRY.UPDATE, entry.value);
   if (res.success()) {
-    bs!.toast.success(res.message);
     param.value.isUpdate = true;
     close();
   }

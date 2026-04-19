@@ -11,6 +11,13 @@ onBeforeMount(() => {
         tip: 'Add'
       }
     }
+    else if (props.action === 'save') {
+      finalProps.value = {
+        severity: 'info',
+        icon: 'save',
+        tip: 'Save'
+      }
+    }
     else if (props.action === 'update') {
       finalProps.value = {
         severity: 'info',

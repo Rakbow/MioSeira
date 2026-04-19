@@ -61,7 +61,6 @@ const upload = async () => {
   formData.append('imageType', image.value.type);
   const res = await Axios.form(API.ENTRY.UPLOAD_IMAGE, formData);
   if (res.success()) {
-    bs!.toast.success(res.message);
     if (image.value.type === proxy!.$const.IMAGE_TYPE.MAIN) cover.value = res.data;
     else if (image.value.type === proxy!.$const.IMAGE_TYPE.THUMB) thumb.value = res.data;
     uploadDialogDisplay.value = false;

@@ -26,14 +26,17 @@ onBeforeMount(() => {
   <div v-else>
     <div :class="`${prefix}`">
       <div :class="`${prefix}-main`">
-        <div :class="`${prefix}-list-info`">
-          <div :class="`${prefix}-list-name`">{{ entity.name }}</div>
-          <article>{{ entity.remark }}</article>
+        <div :class="`${prefix}-cover`">
+          <img :src="entity.cover" alt="cover"/>
+        </div>
+        <div :class="`${prefix}-info`">
+          <div :class="`${prefix}-name`">{{ entity.name }}</div>
+          <div :class="`${prefix}-desc`">{{ entity.remark }}</div>
           <span style="color: #2ea6ff">{{ entity.createdBy }}</span>
           <span style="color: #808080">•{{ t('CreatedAt') }}&nbsp;</span>
-          <span style="color: #B0C4DE">{{ entity.createdAt }}</span>
+          <span style="color: #999999">{{ entity.createdAt }}</span>
           <span style="color: #808080">•{{ t('UpdatedAt') }}&nbsp;</span>
-          <span style="color: #B0C4DE">{{ entity.updatedAt }}</span>
+          <span style="color: #999999">{{ entity.updatedAt }}</span>
         </div>
       </div>
     </div>
@@ -48,46 +51,46 @@ onBeforeMount(() => {
   flex-wrap: wrap !important;
   justify-content: center !important;
 
-  article {
-    color: #d8d8d8 !important;
-    margin-bottom: .5rem;
-  }
-
   span {
     font-size: 1.1rem;
   }
 
   &-main {
     width: 106rem !important;
+    background: var(--r-bg-indigo-700);
+    border-radius: 1rem;
+    padding: .7rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
   }
 
-  &-list {
-
-    &-info {
-      background: var(--r-bg-indigo-700);
-      border-radius: 1rem;
-      padding: 1.5rem;
-    }
-
-    &-name {
-      color: var(--r-sand-200);
-      font-weight: 700 !important;
-      font-size: 2rem !important;
-      margin-bottom: .5rem !important;
-    }
-
-    &-log {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      gap: 5rem !important;
-
-      > div {
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
-      }
-    }
-
+  img {
+    width: 10rem;
+    border-radius: 0.5rem;
   }
+
+  &-cover {
+    width: 10rem;
+    height: 10rem;
+    flex-shrink: 0;
+  }
+
+  &-info {
+    flex: 1;
+  }
+
+  &-name {
+    color: var(--r-sand-200);
+    font-weight: 700 !important;
+    font-size: 2.5rem !important;
+  }
+
+  &-desc {
+    color: #B0C4DE !important;
+    font-size: 1.4rem;
+    height: 4.5rem;
+  }
+
 }
 </style>

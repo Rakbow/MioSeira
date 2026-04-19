@@ -20,11 +20,14 @@ const load = async () => {
     entityType: entity!.type,
     entityId: entity!.id
   }
-  const res = await Axios.post(API.ENTITY.LINK, param.value.data);
-  if (res.success()) {
-    linkRes.value = res.data;
+  try {
+    const res = await Axios.post(API.ENTITY.LINK, param.value.data);
+    if (res.success()) {
+      linkRes.value = res.data;
+    }
+  } finally {
+    param.value.block = false;
   }
-  param.value.block = false;
 }
 </script>
 

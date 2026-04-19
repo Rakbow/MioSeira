@@ -44,7 +44,6 @@ const submit = async () => {
     param.value.block = true;
     const res = await Axios.post(API.ITEM.ALBUM_TRACK_QUICK_CREATE, disc.value);
     if (res.success()) {
-      bs!.toast.success(res.message);
       upload.value = true;
       close();
     }

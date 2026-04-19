@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" v-no-img>
     <header>
       <PageHeader/>
     </header>

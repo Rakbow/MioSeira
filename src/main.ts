@@ -21,6 +21,8 @@ import RIcon from "@/components/global/RIcon.vue";
 import RButton from "@/components/global/RButton.vue";
 import RPaginator from "@/components/global/RPaginator.vue";
 import permissionDirective from '@/directives/permission'
+// main.ts
+import noImgAction from "./directives/no-img-action";
 
 
 const app = createApp(App);
@@ -46,5 +48,5 @@ app.use(pinia);
 app.component('RIcon', RIcon);
 app.component('RButton', RButton);
 app.component('RPaginator', RPaginator);
-
+app.directive("no-img", noImgAction);
 app.mount("#app");

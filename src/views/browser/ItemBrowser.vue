@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import "@/styles/entity-search.scss";
+import "@/styles/entity-browser.scss";
 import "flag-icons/css/flag-icons.min.css";
 
 import {API, Axios} from "@/api";
@@ -317,8 +317,8 @@ const changeLocalCompletedFlag = async (item: any) => {
 </script>
 
 <template>
-  <div class="entity-search">
-    <div class="entity-search-main">
+  <div class="entity-browser">
+    <div class="entity-browser-main">
       <DataView :value="param.loading ? Array.from({ length: param.query.size }) : param.result.data" :layout="layout">
         <template #header>
           <div class="content-space-between">
@@ -362,9 +362,9 @@ const changeLocalCompletedFlag = async (item: any) => {
             </span>
         </template>
         <template #grid="{items}">
-          <div class="entity-search-item-grid">
+          <div class="entity-browser-item-grid">
             <div v-if="param.loading" v-for="() in param.query.size">
-              <div class="entity-search-item-grid-loading">
+              <div class="entity-browser-item-grid-loading">
                 <Skeleton/>
               </div>
             </div>
@@ -372,14 +372,14 @@ const changeLocalCompletedFlag = async (item: any) => {
               <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
                            @pointerover="startHover($event, item)" @pointerleave="endHover"
                            :class="`item-thumb-grid item-thumb-grid-${item.type.value}-${item.subType.value}`">
-                <img role="presentation" :alt="item.id" :src="item.thumb"/>
+                <img :alt="item.id" :src="item.thumb"/>
               </router-link>
             </div>
           </div>
         </template>
         <template #list="{items}">
-          <div class="entity-search-item-list">
-            <div v-if="param.loading" v-for="() in param.query.size" class="entity-search-item-list-loading grid">
+          <div class="entity-browser-item-list">
+            <div v-if="param.loading" v-for="() in param.query.size" class="entity-browser-item-list-loading grid">
               <div class="col-fixed">
                 <Skeleton size="6rem"/>
               </div>
@@ -389,7 +389,7 @@ const changeLocalCompletedFlag = async (item: any) => {
                 <Skeleton width="20rem" height="1.7rem"/>
               </div>
             </div>
-            <div class="grid relative" v-if="!param.loading" v-for="item in items as any[]">
+            <div v-else class="grid relative" v-for="item in items as any[]">
               <div v-permission style="position: absolute;top: 0;right: 1.6rem">
                 <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM && props.component"
                          @click="changeLocalCompletedFlag(item)" :severity="item.completedFlag ? 'success': 'danger'"
@@ -400,12 +400,12 @@ const changeLocalCompletedFlag = async (item: any) => {
                 <RButton @click="loadIndex(item.id)" size="small"
                          icon="bookmark" tip="Collect" severity="info" v-if="!props.component"/>
               </div>
-              <div class="entity-search-item-list-thumb col-fixed">
+              <div class="entity-browser-item-list-thumb col-fixed">
                 <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`" class="item-thumb-list">
-                  <img role="presentation" :alt="item.id" :src="item.thumb"/>
+                  <img :alt="item.id" :src="item.thumb"/>
                 </router-link>
               </div>
-              <div class="entity-search-item-list-info col">
+              <div class="entity-browser-item-list-info col">
                 <div class="text-ellipsis-one" style="max-width: 52rem">
                   <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`"
                                :title="item.name">{{ item.name }}
@@ -417,8 +417,8 @@ const changeLocalCompletedFlag = async (item: any) => {
                 <Tag v-else :value="item.type.label"
                      :style="`color: var(--r-item-${item.type.value}-${item.subType.value})`"/>
                 <div class="relative">
-                  <span class="entity-search-item-list-info-time" v-if="item.releaseDate">{{ item.releaseDate }}&nbsp;&nbsp;</span>
-                  <span class="entity-search-item-list-info-sub" v-if="item.barcode">
+                  <span class="entity-browser-item-list-info-time" v-if="item.releaseDate">{{ item.releaseDate }}&nbsp;&nbsp;</span>
+                  <span class="entity-browser-item-list-info-sub" v-if="item.barcode">
                     <span v-if="item.catalogId">{{ item.catalogId }}&nbsp;•&nbsp;</span>
                     <span v-if="item.barcode">{{ item.barcode }}</span>
                   </span>
@@ -439,7 +439,7 @@ const changeLocalCompletedFlag = async (item: any) => {
         </template>
       </DataView>
     </div>
-    <Card class="entity-search-side entity-editor">
+    <Card class="entity-browser-side entity-editor">
       <template #content>
         <Divider align="left"><i class="pi pi-list"/><b>{{ t('BasicInfo') }}</b></Divider>
         <FloatLabel class="field" variant="on">
@@ -492,7 +492,7 @@ const changeLocalCompletedFlag = async (item: any) => {
             <div class="related-entity" style="width: 30rem"
                  v-for="(entry, index) in entries as any[]" :key="index">
               <div class="related-entity-thumb">
-                <img role="presentation" :alt="entry.name" :src="entry.thumb"/>
+                <img :alt="entry.name" :src="entry.thumb"/>
               </div>
               <div class="related-entity-info">
                 <router-link :to="`${$api.ENTRY.DETAIL_PATH}/${entry.id}`"

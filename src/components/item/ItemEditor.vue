@@ -18,7 +18,6 @@ const param = ref(new EditParam());
 onBeforeMount(() => {
   store.fetchOptions();
   item.value = PublicHelper.deepCopy(dialogRef.value.data.item);
-  console.log(item.value)
 })
 
 onMounted(() => {
@@ -29,7 +28,6 @@ const submit = async () => {
   handleAttributeBeforeUpdate();
   const res = await Axios.post(API.ITEM.UPDATE, param.value.data);
   if (res.success()) {
-    bs!.toast.success(res.message);
     param.value.isUpdate = true;
     close();
   }

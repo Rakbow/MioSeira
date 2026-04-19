@@ -224,6 +224,19 @@
 
   "AddItemsToList": "添加到清单",
   "List": "列表",
-  "Indexes": "索引"
+  "Indexes": "索引",
+
+  "ImageCropper": {
+    "NoImageSelected": "未选择图片",
+    "InvalidImageFile": "无效的图片文件",
+    "LoadImageFailed": "加载图片失败",
+    "ImageResolutionTooLow": "图片分辨率过低，最小要求{minWidth}x{minHeight}，当前为{width}x{height}",
+    "PleaseSelectCropArea": "请选择裁剪区域",
+    "ImageCroppedSuccessfully": "图片裁剪成功",
+    "CropFailed": "裁剪失败",
+    "CropInfo": "裁剪比例固定为1:1，输出尺寸为600x600像素",
+    "Confirm": "确认裁剪",
+    "Cancel": "取消"
+  }
 
 }
