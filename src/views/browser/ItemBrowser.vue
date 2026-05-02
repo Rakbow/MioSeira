@@ -303,14 +303,14 @@ const openLocalPath = async (id: number) => {
   });
 }
 
-const changeLocalCompletedFlag = async (item: any) => {
-  const res = await Axios.post(API.ENTITY.ENTITY_LOCAL_COMPLETED_FLAG_CHANGE, {
+const updateResourceFlag = async (item: any) => {
+  const res = await Axios.post(API.ENTITY.ENTITY_RESOURCE_FLAG_UPDATE, {
     entityType: proxy!.$const.ENTITY.ITEM,
     entityId: item.id,
-    flag: item.completedFlag ? 0 : 1
+    flag: item.resourceFlag ? 0 : 1
   });
   if (res.success()) {
-    item.completedFlag = true;
+    item.resourceFlag = true;
     await loadItems();
   }
 }
@@ -392,9 +392,9 @@ const changeLocalCompletedFlag = async (item: any) => {
             <div v-else class="grid relative" v-for="item in items as any[]">
               <div v-permission style="position: absolute;top: 0;right: 1.6rem">
                 <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM && props.component"
-                         @click="changeLocalCompletedFlag(item)" :severity="item.completedFlag ? 'success': 'danger'"
-                         :icon="item.completedFlag ? 'folder_check' : 'folder_off'"
-                         size="small" :tip="item.completedFlag ? 'LocalFileCompleted' : 'LocalFileNonCompleted'"/>&nbsp;
+                         @click="updateResourceFlag(item)" :severity="item.resourceFlag ? 'success': 'danger'"
+                         :icon="item.resourceFlag ? 'folder_check' : 'folder_off'"
+                         size="small" :tip="item.resourceFlag ? 'LocalFileCompleted' : 'LocalFileNonCompleted'"/>&nbsp;
                 <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM && props.component" icon="folder" size="small"
                          @click="openLocalPath(item.id)" severity="warn" tip="LocalFile"/>
                 <RButton @click="loadIndex(item.id)" size="small"

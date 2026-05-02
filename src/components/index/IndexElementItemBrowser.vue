@@ -54,6 +54,7 @@ onBeforeMount(() => {
     type: {value: null},
     subType: {value: null},
     releaseType: {value: null},
+    onlyResource: {value: false},
     keyword: {value: ''},
     barcode: {value: ''},
     catalogId: {value: ''},
@@ -127,6 +128,7 @@ const initQueryParam = async () => {
   param.value.query.filters.region.value = query.region?.toString() ?? '';
   param.value.query.filters.type.value = query.type ? parseInt(query.type?.toString()) : null;
   param.value.query.filters.subType.value = query.subType ? parseInt(query.subType?.toString()) : null;
+  param.value.query.filters.onlyResource.value = query.onlyResource ? query.onlyResource?.toString() == '1' ? true : null : null;
 
   if (query.entries) {
     param.value.query.filters.entries.value = query.entries.toString().split(',').map(Number)
@@ -260,6 +262,7 @@ const resetFilter = () => {
     region: {value: ''},
     type: {value: null},
     subType: {value: null},
+    onlyResource: {value: false},
     releaseType: {value: null},
     entries: {value: []},
     indexId: {value: param.value.query.filters.indexId.value}
@@ -328,14 +331,14 @@ const openLocalPath = async (id: number) => {
   });
 }
 
-const changeLocalCompletedFlag = async (item: any) => {
-  const res = await Axios.post(API.ENTITY.ENTITY_LOCAL_COMPLETED_FLAG_CHANGE, {
+const changeResourceFlag = async (item: any) => {
+  const res = await Axios.post(API.ENTITY.ENTITY_RESOURCE_FLAG_UPDATE, {
     entityType: proxy!.$const.ENTITY.ITEM,
     entityId: item.id,
-    flag: item.completedFlag ? 0 : 1
+    flag: item.resourceFlag ? 0 : 1
   });
   if (res.success()) {
-    item.completedFlag = true;
+    item.resourceFlag = true;
     await loadItems();
   }
 }
@@ -500,10 +503,10 @@ const updateRemark = async (e: any) => {
                 <div class="grid relative">
                   <div v-permission style="position: absolute;top: 0;right: 1.6rem">
                     <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM"
-                             @click="changeLocalCompletedFlag(item)"
-                             :severity="item.completedFlag ? 'success': 'danger'"
-                             :icon="item.completedFlag ? 'folder_check' : 'folder_off'"
-                             size="small" :tip="item.completedFlag ? 'LocalFileCompleted' : 'LocalFileNonCompleted'"/>&nbsp;
+                             @click="changeResourceFlag(item)"
+                             :severity="item.resourceFlag ? 'success': 'danger'"
+                             :icon="item.resourceFlag ? 'folder_check' : 'folder_off'"
+                             size="small" :tip="item.resourceFlag ? 'LocalFileCompleted' : 'LocalFileNonCompleted'"/>&nbsp;
                     <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM" icon="folder" size="small"
                              @click="openLocalPath(item.id)" severity="warn" tip="LocalFile"/>
                   </div>

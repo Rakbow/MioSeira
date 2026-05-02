@@ -6,8 +6,8 @@ export const API = {
         GET_OPTION: '/api/db/get-options',
         LIKE: '/api/db/like',
         LINK: '/api/db/links',
-        ENTITY_LOCAL_PATH: '/api/db/local-path',
-        ENTITY_LOCAL_COMPLETED_FLAG_CHANGE: '/api/db/local-completed-flag-update',
+        ENTITY_LOCAL_PATH: '/api/db/resource/local-path',
+        ENTITY_RESOURCE_FLAG_UPDATE: '/api/db/resource/update-resource-flag',
     },
 
     ITEM: {

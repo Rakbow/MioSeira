@@ -105,7 +105,7 @@ export const META = {
         {icon: 'diamond', value: '5', label: 'Material'},
         {icon: 'distance', value: '6', label: 'Event'}
     ],
-    ITEM_FILTER_KEY_SET: ['keyword', 'type', 'subType', 'releaseType', 'barcode', 'region', 'catalogId'],
+    ITEM_FILTER_KEY_SET: ['keyword', 'type', 'subType', 'releaseType', 'barcode', 'region', 'catalogId', 'onlyResource'],
     ITEM_TYPE_SET: [
         // {icon: 'filter_alt_off', value: null, disabled: false, label: 'Entity.Album'},
         {icon: 'genres', value: '1', disabled: false, label: 'Entity.Album'},
