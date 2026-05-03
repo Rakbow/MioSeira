@@ -207,7 +207,8 @@
   },
 
   "Resource": {
-    "FileStatistics": "File: {0}   Size: {1}"
+    "FileStatistics": "File: {0}   Size: {1}",
+    "onlyResource": "With File"
   },
 
   "Changelog": "Changelog",

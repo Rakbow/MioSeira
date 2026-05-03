@@ -207,7 +207,8 @@
   },
 
   "Resource": {
-    "FileStatistics": "总文件数: {0}   大小: {1}"
+    "FileStatistics": "总文件数: {0}   大小: {1}",
+    "onlyResource": "有资源"
   },
 
   "Changelog": "编辑记录",

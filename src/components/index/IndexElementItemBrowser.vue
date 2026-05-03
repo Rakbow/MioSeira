@@ -54,7 +54,7 @@ onBeforeMount(() => {
     type: {value: null},
     subType: {value: null},
     releaseType: {value: null},
-    onlyResource: {value: false},
+    onlyResource: {value: true},
     keyword: {value: ''},
     barcode: {value: ''},
     catalogId: {value: ''},
@@ -128,7 +128,7 @@ const initQueryParam = async () => {
   param.value.query.filters.region.value = query.region?.toString() ?? '';
   param.value.query.filters.type.value = query.type ? parseInt(query.type?.toString()) : null;
   param.value.query.filters.subType.value = query.subType ? parseInt(query.subType?.toString()) : null;
-  param.value.query.filters.onlyResource.value = query.onlyResource ? query.onlyResource?.toString() == '1' ? true : null : null;
+  param.value.query.filters.onlyResource.value = query.onlyResource ? query.onlyResource?.toString() != 'false' : true;
 
   if (query.entries) {
     param.value.query.filters.entries.value = query.entries.toString().split(',').map(Number)
@@ -385,6 +385,11 @@ const updateRemark = async (e: any) => {
             </SelectButton>
 
             <div style="align-items: center;display: flex;gap: 1rem">
+              <div style="display: flex;align-items: center">
+                <label>{{ t('Resource.onlyResource') }}</label>
+                <Checkbox style="margin-left: .6rem"
+                          v-model="param.query.filters.onlyResource.value" @change="loadItems" binary />
+              </div>
               <Select v-model="sortKey" :options="sortOptions" filled @change="onSortChange"
                       optionGroupLabel="label" optionGroupChildren="items"
                       style="width: 13rem" scrollHeight="20rem" size="small">
