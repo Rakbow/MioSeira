@@ -148,6 +148,7 @@ const remove = async () => {
     entityId: dialogRef.value.data.entityId,
     ids: param.value.selectedData.map(i => i.id)
   });
+  param.value.selectedData = [];
   if (res.success()) {
     isUpdate.value = true;
     await load();

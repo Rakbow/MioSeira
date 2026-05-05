@@ -19,6 +19,7 @@ const props = defineProps({
 
 const ItemPopover = defineAsyncComponent(() => import('@/components/index/IndexElementItemPopover.vue'));
 const selector = defineAsyncComponent(() => import('@/components/entry/EntrySelector.vue'));
+const resourceManager = defineAsyncComponent(() => import('@/components/file/ResourceManager.vue'));
 
 const {t} = useI18n();
 const route = useRoute();
@@ -348,7 +349,7 @@ const getGroupLabel = (item: any) => {
     return item.entryId;
   } else {
     if (param.value.query.sortField === 'releaseDate' && item.releaseDate) {
-      return item.releaseDate.substring(0, 7).replace('/', '-'); // Year-Month
+      return item.releaseDate.substring(0, 4).replace('/', '-'); // Year-Month
     }
   }
   return null;
@@ -367,6 +368,23 @@ const updateRemark = async (e: any) => {
     remark: e.remark
   });
 };
+
+const openResourceManager = (id: number) => {
+  bs!.dialog.open(resourceManager, {
+    props: {
+      header: t('Resource.ResourceInfo'),
+      style: {
+        width: '90rem',
+      },
+      modal: true,
+      closable: true
+    },
+    data: {
+      entityType: proxy!.$const.ENTITY.ITEM,
+      entityId: id
+    }
+  });
+}
 </script>
 
 <template>
@@ -514,6 +532,7 @@ const updateRemark = async (e: any) => {
                              size="small" :tip="item.resourceFlag ? 'LocalFileCompleted' : 'LocalFileNonCompleted'"/>&nbsp;
                     <RButton v-if="item.type.value === $const.ITEM_TYPE.ALBUM" icon="folder" size="small"
                              @click="openLocalPath(item.id)" severity="warn" tip="LocalFile"/>
+                    <RButton @click="openResourceManager(item.id)" icon="file_present" tip="File" severity="info"/>
                   </div>
                   <div class="index-element-item-list-thumb col-fixed">
                     <router-link :to="`${$api.ITEM.DETAIL_PATH}/${item.id}`" class="item-thumb-list"

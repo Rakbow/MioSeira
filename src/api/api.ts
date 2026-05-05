@@ -119,6 +119,13 @@ export const API = {
         LOGOUT: '/api/auth/logout',
         VERIFY_CODE: '/api/auth/kaptcha',
     },
+
+    RESOURCE: {
+        LIST: '/api/db/resource/list',
+        CREATE: '/api/db/resource/create',
+        UPDATE: '/api/db/resource/update',
+        DELETE: '/api/db/resource/delete'
+    },
     //endregion
 
     COMMON_EMPTY_COVER_IMAGE: 'https://oss.rakbow.com/common/404.jpg?imageMogr2/auto-orient/thumbnail/160x160',

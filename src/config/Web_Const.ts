@@ -123,6 +123,10 @@ export const META = {
         O: 'item',
         1: 'entry'
     },
+    RESOURCE_TYPE: {
+        LOCAL: 1,
+        CLOUD: 2
+    },
 
     RELATION_CONFIG: [
         {
